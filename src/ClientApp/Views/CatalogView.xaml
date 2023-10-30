@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentPageBase
+    x:Class="eShop.ClientApp.Views.CatalogView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:animations="clr-namespace:eShop.ClientApp.Animations"
+    xmlns:templates="clr-namespace:eShop.ClientApp.Views.Templates"
+    xmlns:triggers="clr-namespace:eShop.ClientApp.Triggers"
+    xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
+    xmlns:views="clr-namespace:eShop.ClientApp.Views"
+    Title="CATALOG"
+    x:DataType="viewmodels:CatalogViewModel">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <Style x:Key="FilterLabelStyle" TargetType="{x:Type Label}">
+                <Setter Property="TextColor" Value="{StaticResource WhiteColor}" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+
+            <animations:StoryBoard x:Key="ProductsAnimation" Target="{x:Reference Products}">
+                <animations:FadeInAnimation
+                    Delay="250"
+                    Direction="Up"
+                    Duration="1500" />
+            </animations:StoryBoard>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Triggers>
+        <EventTrigger Event="Appearing">
+            <triggers:BeginAnimation Animation="{StaticResource ProductsAnimation}" />
+        </EventTrigger>
+    </ContentPage.Triggers>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem IconImageSource="{DynamicResource FilterIconForTitleImageSource}" Command="{Binding ShowFilterCommand, Mode=OneTime}" />
+    </ContentPage.ToolbarItems>
+    <Grid ColumnSpacing="0" RowSpacing="0">
+        <!--  CATALOG  -->
+        <Label
+            IsVisible="{Binding Products.Count, Converter={StaticResource DoesNotHaveCountConverter}}"
+            Text="NO PRODUCTS FOUND"
+            HorizontalOptions="Center"
+            VerticalOptions="Center" />
+        <CollectionView
+            x:Name="Products"
+            HorizontalOptions="CenterAndExpand"
+            SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+            IsVisible="{Binding Products.Count, Converter={StaticResource HasCountConverter}}"
+            ItemsSource="{Binding Products, Mode=OneTime}"
+            SelectionMode="Single"
+            VerticalScrollBarVisibility="Never"
+            SelectionChangedCommand="{Binding AddCatalogItemCommand}"
+            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}">
+			<CollectionView.ItemsLayout>
+				<GridItemsLayout Orientation="Vertical"
+								 Span="2" />
+			</CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <templates:ProductTemplate />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <!--  INDICATOR  -->
+		<ActivityIndicator
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center"
+            Color="{StaticResource BlackColor}"/>
+
+        <views:BadgeView
+            x:Name="badge"
+            Margin="16"
+            Text="{Binding BadgeCount, Mode=OneWay}"
+            BadgeColor="{AppThemeBinding Light={StaticResource DarkBackgroundColor}, Dark={StaticResource LightBackgroundColor}}"
+            TextColor="{AppThemeBinding Light={StaticResource DarkForegroundColor}, Dark={StaticResource LightForegroundColor}}"
+            HorizontalOptions="End"
+            VerticalOptions="End">
+                <Button
+                    ImageSource="{DynamicResource BasketIconForTitleImageSource}"
+                    Command="{Binding ViewBasketCommand, Mode=OneTime}"
+                    BackgroundColor="{StaticResource LightGrayColor}"
+                    Padding="8"
+                    CornerRadius="8"
+                    HeightRequest="56"
+                    WidthRequest="56"/>
+        </views:BadgeView>
+    </Grid>
+</views:ContentPageBase>

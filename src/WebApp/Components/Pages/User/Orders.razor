@@ -1,0 +1,58 @@
+﻿@page "/user/orders"
+@attribute [Authorize]
+@attribute [StreamRendering]
+@inject OrderingService OrderingService
+
+<PageTitle>Orders | Northern Mountains</PageTitle>
+<SectionContent SectionName="page-header-title">Orders</SectionContent>
+<OrdersRefreshOnStatusChange />
+
+<div class="orders">
+@if (orders is null)
+{
+    <p>Loading...</p>
+}
+else if (orders.Length == 0)
+{
+    <p>You haven't yet placed any orders.</p>
+}
+else
+{
+    <ul class="orders-list">
+        <li class="orders-header orders-item">
+            <div>Number</div>
+            <div>Date</div>
+            <div class="total-header">Total</div>
+            <div>Status</div>
+        </li>
+        @foreach (var order in orders)
+        {
+            <li class="orders-item">
+                <div class="order-number">
+                    @order.OrderNumber
+                </div>
+                <div class="order-date">
+                    @order.Date
+                </div>
+                <div class="order-total">
+                   $@order.Total.ToString("0.00")
+                </div>
+                <div class="order-status">
+                    <span class="status @order.Status">
+                        @order.Status
+                    </span>
+                </div>
+            </li>
+        }
+    </ul>
+}
+</div>
+
+@code {
+    private OrderRecord[]? orders;
+
+    protected override async Task OnInitializedAsync()
+    {
+        orders = await OrderingService.GetOrders();
+    }
+}

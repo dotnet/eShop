@@ -1,0 +1,25 @@
+name: "Build for PR"
+description: "Builds a docker image without pushing"
+
+inputs:
+  service:
+    description: "Service to build"
+    required: true
+  registry_endpoint:
+    description: "Image registry repo e.g. myacr.azureacr.io/eshop"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+  - name: Setup .NET
+    uses: actions/setup-dotnet@v3
+    with:
+      global-json-file: src/global.json
+  - name: Build ${{ inputs.service }}
+    shell: bash
+    run: dotnet build
+    working-directory: ./src
+    env:
+      TAG: ${{ env.BRANCH }}
+      REGISTRY: ${{ inputs.registry_endpoint }}

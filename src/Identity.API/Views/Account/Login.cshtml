@@ -1,0 +1,47 @@
+@model LoginViewModel
+
+<div class="login-page">
+    <div class="container">
+        <div class="row top-buffer">
+
+            @if (Model.EnableLocalLogin)
+            {
+                <div class="col"></div>
+                <div class="col-sm-6">
+                    <form asp-route="Login">
+                        <input type="hidden" asp-for="ReturnUrl" />
+                        <div class="login-container">
+                            <h2>Login</h2>
+                            <partial name="_ValidationSummary" />
+                            <div class="form-group">
+                                <label asp-for="Username"></label>
+                                <input class="form-control" placeholder="Username" asp-for="Username" autofocus>
+                            </div> 
+                            <div class="form-group">
+                                <label asp-for="Password"></label>
+                                <input type="password" class="form-control" placeholder="Password" asp-for="Password" autocomplete="off">
+                            </div>
+                            @if (Model.AllowRememberLogin)
+                            {
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input" asp-for="RememberLogin">
+                                        <label class="form-check-label" asp-for="RememberLogin">
+                                            Remember me
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+
+                            <div>
+                                <p>The default users are alice/bob, password: Pass123$</p>
+                            </div>
+                            <button class="btn btn-primary" name="button" value="login">Login</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col"></div>
+            }
+        </div>
+    </div>
+</div>

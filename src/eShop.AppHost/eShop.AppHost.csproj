@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <IsAspireHost>true</IsAspireHost>
+    <IsPackable>false</IsPackable>
+    <UserSecretsId>b99dbce4-17d4-41d2-858a-2b0529d60bb8</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mobile.Bff.Shopping\Mobile.Bff.Shopping.csproj" />
+    <ProjectReference Include="..\Basket.API\Basket.API.csproj" />
+    <ProjectReference Include="..\Catalog.API\Catalog.API.csproj" />
+    <ProjectReference Include="..\Identity.API\Identity.API.csproj" />
+    <ProjectReference Include="..\Ordering.API\Ordering.API.csproj" />
+    <ProjectReference Include="..\Ordering.BackgroundTasks\Ordering.BackgroundTasks.csproj" />
+    <ProjectReference Include="..\Payment.API\Payment.API.csproj" />
+    <ProjectReference Include="..\Webhooks.API\Webhooks.API.csproj" />
+    <ProjectReference Include="..\WebApp\WebApp.csproj" />
+    <ProjectReference Include="..\WebhookClient\WebhookClient.csproj" />
+  </ItemGroup>
+
+</Project>

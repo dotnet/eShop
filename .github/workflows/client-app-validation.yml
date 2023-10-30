@@ -1,0 +1,52 @@
+name: build
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/ClientApp/**'
+      - 'tests/ClientApp.UnitTests/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/ClientApp/**'
+      - 'tests/ClientApp.UnitTests/**'
+
+env:
+  DOTNET_VERSION: '8.0.x' # The .NET SDK version to use
+
+jobs:
+  build:
+
+    name: Build All Projects
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+        - src/ClientApp/ClientApp.csproj
+        - tests/ClientApp.UnitTests/ClientApp.UnitTests.csproj
+        
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1.1
+      with:
+        vs-prerelease: true
+    
+    - name: Install .NET workloads
+      shell: pwsh
+      run: |
+        dotnet workload install android
+        dotnet workload install ios
+        dotnet workload install maccatalyst
+        dotnet workload install maui
+      
+    - name: Build ${{ matrix.project }}
+      run: dotnet build "${{ matrix.project }}"

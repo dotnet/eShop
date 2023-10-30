@@ -1,0 +1,134 @@
+﻿.cart {
+    padding: 0 10rem;
+    display: flex;
+    gap: 6rem;
+}
+
+.cart .cart-items {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    flex: 1 0 0;
+}
+
+.cart-items .cart-item-header {
+    display: flex;
+    padding: 0.5rem 0;
+    align-items: center;
+    align-self: stretch;
+    border-bottom: 1px solid #D2D2D2;
+    flex-grow: 1;
+}
+
+.cart-items .cart-item {
+    display: flex;
+    padding-bottom: 1.25rem;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
+    border-bottom: 1px solid #D2D2D2;
+}
+
+.cart-items .cart-item .catalog-item-info {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    align-self: stretch;
+    flex-basis: 60%;
+}
+
+.cart-items .cart-item-header .catalog-item-info {
+    flex-basis: 60%;
+}
+
+.cart-items .cart-item .catalog-item-quantity,
+.cart-items .cart-item-header .catalog-item-quantity {
+    flex-grow: 1;
+}
+
+.cart-items .cart-item .catalog-item-quantity form {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.cart-items .cart-item .catalog-item-quantity input {
+    max-width: 3rem;
+    padding: 1rem 0.75rem;
+}
+
+.cart-items .cart-item .catalog-item-info img {
+    max-height: 12rem;
+    max-width: 12rem;
+}
+
+.cart-summary-container {
+    display: flex;
+    padding: 1rem 1.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-shrink: 0;
+    background: #F7F7F7;
+}
+
+.cart-summary-header {
+    display: flex;
+    padding: 0.5rem 0;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
+    border-bottom: 1px solid #000;
+    gap: 0.5rem;
+    color: #000;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 120%;
+}
+
+.cart-summary-breakdown {
+    display: flex;
+    padding-bottom: 0.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    align-self: stretch;
+    border-bottom: 1px solid #444;
+}
+
+.cart-summary-breakdown-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    align-self: stretch;
+}
+
+.cart-summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    align-self: stretch;
+}
+
+.cart-summary .cart-summary-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #000;
+    text-decoration: none;
+}
+
+.cart-summary .filter-badge {
+    background: #000;
+    color: #FFF;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    line-height: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+}

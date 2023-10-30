@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Ordering.BackgroundTasks": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:16888"
+    }
+  }
+}

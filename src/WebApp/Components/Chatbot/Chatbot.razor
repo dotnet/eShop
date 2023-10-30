@@ -1,0 +1,90 @@
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.SemanticKernel.AI.ChatCompletion
+@using eShop.WebApp.Chatbot
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+@inject CatalogService CatalogService
+@inject BasketState BasketState
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IConfiguration Configuration
+@inject ILoggerFactory LoggerFactory
+
+<div class="floating-pane">
+    <a href="@Nav.GetUriWithQueryParameter("chat", (string?)null)" class="hide-chatbot" title="Close .NET Concierge"><span>✖</span></a>
+
+    <div class="chatbot-chat" @ref="chat">
+        @if (chatState is not null)
+        {
+            foreach (var message in chatState.Messages.Where(m => m.Role == AuthorRole.Assistant || m.Role == AuthorRole.User))
+            {
+                if (!string.IsNullOrEmpty(message.Content))
+                {
+                    <p @key="@message" class="message message-@message.Role">@MessageProcessor.AllowImages(message.Content)</p>
+                }
+            }
+        }
+        else if (missingConfiguration)
+        {
+            <p class="message message-assistant"><strong>The chatbot is missing required configuration.</strong> Please edit appsettings.json in the WebApp project. You'll need an API key to enable AI features.</p>
+        }
+
+        @if (thinking)
+        {
+            <p class="thinking">Thinking...</p>
+        }
+    </div>
+
+    <form class="chatbot-input" @onsubmit="SendMessageAsync">
+        <textarea placeholder="Start chatting..." @ref="@textbox" @bind="messageToSend"></textarea>
+        <button type="submit" title="Send" disabled="@(chatState is null)">Send</button>
+    </form>
+</div>
+
+@code {
+    bool missingConfiguration;
+    ChatState? chatState;
+    ElementReference textbox;
+    ElementReference chat;
+    string? messageToSend;
+    bool thinking;
+    IJSObjectReference? jsModule;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ChatConfig.TryReadFromConfig(Configuration, out var chatConfig))
+        {
+            AuthenticationState auth = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            chatState = new ChatState(CatalogService, BasketState, auth.User, Nav, chatConfig, LoggerFactory);
+        }
+        else
+        {
+            missingConfiguration = true;
+        }
+    }
+
+    private async Task SendMessageAsync()
+    {
+        var messageCopy = messageToSend?.Trim();
+        messageToSend = null;
+
+        if (chatState is not null && !string.IsNullOrEmpty(messageCopy))
+        {
+            thinking = true;
+            await chatState.AddUserMessageAsync(messageCopy, onMessageAdded: StateHasChanged);
+            thinking = false;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        jsModule ??= await JS.InvokeAsync<IJSObjectReference>("import", "./Components/Chatbot/Chatbot.razor.js");
+        await jsModule.InvokeVoidAsync("scrollToEnd", chat);
+
+        if (firstRender)
+        {
+            await textbox.FocusAsync();
+            await jsModule.InvokeVoidAsync("submitOnEnter", textbox);
+        }
+    }
+}

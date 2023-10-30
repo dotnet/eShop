@@ -1,0 +1,13 @@
+﻿@inject NavigationManager Nav
+
+<a class="show-chatbot" href="@Nav.GetUriWithQueryParameter("chat", true)" title="Show chatbot"></a>
+
+@if (ShowChat)
+{
+    <Chatbot />
+}
+
+@code {
+    [SupplyParameterFromQuery(Name = "chat")]
+    public bool ShowChat { get; set; }
+}
