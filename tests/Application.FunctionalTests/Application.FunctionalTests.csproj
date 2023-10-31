@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Basket.API\Basket.API.csproj" />
-    <ProjectReference Include="..\Basket.FunctionalTests\Basket.FunctionalTests.csproj" />
     <ProjectReference Include="..\..\src\Catalog.API\Catalog.API.csproj" />
     <ProjectReference Include="..\Catalog.FunctionalTests\Catalog.FunctionalTests.csproj" />
     <ProjectReference Include="..\..\src\Ordering.API\Ordering.API.csproj" />
