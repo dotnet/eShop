@@ -23,34 +23,34 @@ A reference .NET application implementing an eCommerce web site using a services
 
 ### Prerequisites
 
-* Install Visual Studio 2022 Int Preview: https://aka.ms/vs/17/intpreview/vs_enterprise.exe
-* Install and start Docker Desktop:  https://docs.docker.com/desktop/
-* Install the Azure Artifacts Credential Provider from https://github.com/microsoft/artifacts-credprovider
-* Install the .NET 8 SDK (RC2 or newer).
-   1. [Windows x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rc.2.23472.8/dotnet-sdk-8.0.100-rc.2.23472.8-win-x64.exe)
-   2. [Linux x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rc.2.23472.8/dotnet-sdk-8.0.100-rc.2.23472.8-linux-x64.tar.gz)
-   3. [OSX x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rc.2.23472.8/dotnet-sdk-8.0.100-rc.2.23472.8-osx-x64.tar.gz)
+* Clone the eShop repository: https://github.com/dotnet-architecture/eShop
+* Install Visual Studio Int Preview: https://aka.ms/vs/17/intpreview/vs_enterprise.exe
+* Install & start Docker Desktop:  https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe
+* Install the .NET 8 RC2 SDK version 8.0.100-rtm.23523.2 or [newer](https://github.com/dotnet/installer#table).
+   1. [Windows x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23523.2/dotnet-sdk-8.0.100-rtm.23523.2-win-x64.exe)
+   2. [Linux x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23523.2/dotnet-sdk-8.0.100-rtm.23523.2-linux-x64.tar.gz )
+   3. [OSX x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23523.2/dotnet-sdk-8.0.100-rtm.23523.2-osx-x64.tar.gz)
 
 ### Running the solution
-* Clone the eShop repository: https://github.com/dotnet-architecture/eShop
-* Open a terminal and navigate to the repository's `src` directory (where the NuGet.config file resides)
-* Update .NET workloads
 
 ```powershell
 dotnet workload update --skip-sign-check
-```
-* Install Aspire .NET workload
-```powershell
 dotnet workload install aspire --skip-sign-check --interactive
+dotnet restore eShop.Web.slnf
 ```
-* To run the application from Visual Studio:
-   * Open the eShop.sln file in Visual Studio
-   * Set eShop.AppHost.csproj as your startup project
-   * Hit F5 to debug the solution, or Ctrl+F5 to run without debugging
+
+> [!WARNING]
+> Remember to ensure that Docker is started
+
+* Run the application from Visual Studio:
+	* Open the `eShop.Web.slnf` file in Visual Studio
+	* Ensure that `eShop.AppHost.csproj` is your startup project
+	* Hit Ctrl-F5 to launch Aspire
 
 * To instead run the application from your terminal:
+
 ```powershell
-dotnet run --project eShop.AppHost/eShop.AppHost.csproj
+dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj
 ```
 
 ### TODO
