@@ -26,10 +26,10 @@ A reference .NET application implementing an eCommerce web site using a services
 * Clone the eShop repository: https://github.com/dotnet-architecture/eShop
 * Install Visual Studio Int Preview: https://aka.ms/vs/17/intpreview/vs_enterprise.exe
 * Install & start Docker Desktop:  https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe
-* Install the .NET 8 RC2 SDK version 8.0.100-rtm.23523.2 or [newer](https://github.com/dotnet/installer#table).
-   1. [Windows x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23523.2/dotnet-sdk-8.0.100-rtm.23523.2-win-x64.exe)
-   2. [Linux x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23523.2/dotnet-sdk-8.0.100-rtm.23523.2-linux-x64.tar.gz )
-   3. [OSX x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23523.2/dotnet-sdk-8.0.100-rtm.23523.2-osx-x64.tar.gz)
+* Install the .NET 8 RC2 SDK version 8.0.100-rtm.23524.25 or [newer](https://github.com/dotnet/installer#table).
+   1. [Windows x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23524.25/dotnet-sdk-8.0.100-rtm.23524.25-win-x64.exe)
+   2. [Linux x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23524.25/dotnet-sdk-8.0.100-rtm.23524.25-linux-x64.tar.gz)
+   3. [OSX x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23524.25/dotnet-sdk-8.0.100-rtm.23524.25-osx-x64.tar.gz)
 
 ### Running the solution
 
