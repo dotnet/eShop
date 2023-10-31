@@ -24,18 +24,19 @@ A reference .NET application implementing an eCommerce web site using a services
 ### Prerequisites
 
 * Clone the eShop repository: https://github.com/dotnet-architecture/eShop
-* Install Visual Studio Int Preview: https://aka.ms/vs/17/intpreview/vs_enterprise.exe
+* (Windows only) Install Visual Studio Int Preview: https://aka.ms/vs/17/intpreview/vs_enterprise.exe
 * Install & start Docker Desktop:  https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe
 * Install the Azure Artifacts Credential Provider from https://github.com/microsoft/artifacts-credprovider
 * Install the .NET 8 RC2 SDK version 8.0.100-rtm.23524.25 or [newer](https://github.com/dotnet/installer#table).
    1. [Windows x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23530.12/dotnet-sdk-8.0.100-win-x64.exe)
    2. [Linux x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23530.12/dotnet-sdk-8.0.100-linux-x64.tar.gz)
    3. [OSX x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23530.12/dotnet-sdk-8.0.100-osx-x64.tar.gz)
+  and ensure this dotnet is on your PATH.
 
 ### Running the solution
 
 ```powershell
-dotnet workload update --skip-sign-check
+dotnet workload update --skip-sign-check --interactive
 dotnet workload install aspire --skip-sign-check --interactive
 dotnet restore eShop.Web.slnf
 ```
@@ -43,16 +44,18 @@ dotnet restore eShop.Web.slnf
 > [!WARNING]
 > Remember to ensure that Docker is started
 
-* Run the application from Visual Studio:
+* (Windows only) Run the application from Visual Studio:
 	* Open the `eShop.Web.slnf` file in Visual Studio
 	* Ensure that `eShop.AppHost.csproj` is your startup project
 	* Hit Ctrl-F5 to launch Aspire
 
-* To instead run the application from your terminal:
-
+* Or run the application from your terminal:
 ```powershell
 dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj
 ```
+then look for lines like this in the console output in order to find the URL to open the Aspire dashboard:
+```
+Now listening on: http://localhost:18848
 
 ### TODO
 - Contribution guide
