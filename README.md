@@ -26,6 +26,7 @@ A reference .NET application implementing an eCommerce web site using a services
 * Clone the eShop repository: https://github.com/dotnet-architecture/eShop
 * Install Visual Studio Int Preview: https://aka.ms/vs/17/intpreview/vs_enterprise.exe
 * Install & start Docker Desktop:  https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe
+* Install the Azure Artifacts Credential Provider from https://github.com/microsoft/artifacts-credprovider
 * Install the .NET 8 RC2 SDK version 8.0.100-rtm.23524.25 or [newer](https://github.com/dotnet/installer#table).
    1. [Windows x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23530.12/dotnet-sdk-8.0.100-win-x64.exe)
    2. [Linux x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23530.12/dotnet-sdk-8.0.100-linux-x64.tar.gz)
