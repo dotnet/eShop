@@ -56,6 +56,7 @@ dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj
 then look for lines like this in the console output in order to find the URL to open the Aspire dashboard:
 ```
 Now listening on: http://localhost:18848
+```
 
 ### TODO
 - Contribution guide
