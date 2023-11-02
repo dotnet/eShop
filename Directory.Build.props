@@ -9,7 +9,6 @@
     <DebugSymbols>true</DebugSymbols>
     <LangVersion>preview</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:8.0.0-rc.1</ContainerBaseImage>
   </PropertyGroup>
 
 </Project>
