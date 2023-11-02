@@ -59,8 +59,7 @@
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="7.0.0" />
     <!-- AI -->
     <PackageVersion Include="Azure.AI.OpenAI" Version="1.0.0-beta.8" />
-    <PackageVersion Include="Azure.AI.Vision.ImageAnalysis" Version="0.15.1-beta.1" />
-    <PackageVersion Include="Microsoft.SemanticKernel" Version="1.0.0-beta1" />
+    <PackageVersion Include="Microsoft.SemanticKernel" Version="1.0.0-beta4" />
     <!-- Open Telemetry -->
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.7.0-alpha.1" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.7.0-alpha.1" />
