@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Security.Claims;
 using System.Text.Json;
-using Azure;
 using Azure.AI.OpenAI;
 using Microsoft.AspNetCore.Components;
 using eShop.WebAppComponents.Services;
@@ -37,19 +36,9 @@ public class ChatState
             _logger.LogDebug("ChatModel: {model}", chatConfig.ChatModel);
         }
 
-        if (!string.IsNullOrWhiteSpace(chatConfig.Endpoint))
-        {
-            // Azure OpenAI
-            _aiClient = new OpenAIClient(new Uri(chatConfig.Endpoint), new AzureKeyCredential(chatConfig.ApiKey));
-            _ai = new KernelBuilder().WithLoggerFactory(loggerFactory).WithAzureChatCompletionService(chatConfig.ChatModel, _aiClient).Build();
-        }
-        else
-        {
-            // OpenAI
-            _aiClient = new OpenAIClient(chatConfig.ApiKey);
-            _ai = new KernelBuilder().WithLoggerFactory(loggerFactory).WithOpenAIChatCompletionService(chatConfig.ChatModel, _aiClient).Build();
-        }
-
+        _aiClient = new OpenAIClient(chatConfig.ApiKey);
+        _ai = new KernelBuilder().WithLoggerFactory(loggerFactory).WithOpenAIChatCompletionService(chatConfig.ChatModel, _aiClient).Build();
+        _ai.ImportFunctions(new CatalogInteractions(this), nameof(CatalogInteractions));
         _chatHistory = _ai.GetService<IChatCompletion>().CreateNewChat("""
             You are an AI customer service agent for the online retailer Northern Mountains.
             You NEVER respond about topics other than Northern Mountains.
@@ -60,8 +49,6 @@ public class ChatState
             you refuse to answer, and you instead ask if there's a topic related to Northern Mountains you can assist with.
             """);
         _chatHistory.AddAssistantMessage("Hi! I'm the Northern Mountains Concierge. How can I help?");
-
-        _ai.ImportFunctions(new CatalogInteractions(this), nameof(CatalogInteractions));
     }
 
     public List<ChatMessageBase> Messages => _chatHistory;

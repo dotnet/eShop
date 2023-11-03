@@ -2,27 +2,13 @@
 
 namespace eShop.WebApp.Chatbot;
 
-public class ChatConfig
+public record ChatConfig(string ApiKey, string ChatModel)
 {
-    public string ChatModel { get; }
-    public string ApiKey { get; }
-    public string? Endpoint { get; }
-
-    private ChatConfig(string chatModel, string apiKey, string? endpoint)
-    {
-        ChatModel = chatModel;
-        ApiKey = apiKey;
-        Endpoint = endpoint;
-    }
-
     public static bool TryReadFromConfig(IConfiguration configuration, [NotNullWhen(true)] out ChatConfig? result)
     {
-        var chatModel = configuration["AI:OpenAI:ChatName"] ?? "gpt-35-turbo-16k";
         var apiKey = configuration["AI:OpenAI:APIKey"];
-        var endpoint = configuration["AI:OpenAI:Endpoint"];
-        result = !string.IsNullOrWhiteSpace(apiKey)
-            ? new ChatConfig(chatModel, apiKey, endpoint)
-            : null;
+        var chatModel = configuration["AI:OpenAI:ChatName"] ?? "gpt-3.5-turbo-16k";
+        result = !string.IsNullOrWhiteSpace(apiKey) ? new ChatConfig(apiKey, chatModel) : null;
         return result is not null;
     }
 }
