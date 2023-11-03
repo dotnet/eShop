@@ -30,8 +30,8 @@ A reference .NET application implementing an eCommerce web site using a services
 * Install the .NET 8 SDK version 8.0.100-rtm.23530.12 or [newer](https://github.com/dotnet/installer#table).
    * [Windows x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23530.12/dotnet-sdk-8.0.100-win-x64.exe)
    * [Linux x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23530.12/dotnet-sdk-8.0.100-linux-x64.tar.gz)
-   * [macOS arm64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23530.12/dotnet-sdk-8.0.100-osx-arm64.tar.gz)
-   * [marOS x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23530.12/dotnet-sdk-8.0.100-osx-x64.tar.gz)
+   * [macOS Arm64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23530.12/dotnet-sdk-8.0.100-osx-arm64.tar.gz)
+   * [macOS x64 link](https://dotnetbuilds.azureedge.net/public/Sdk/8.0.100-rtm.23530.12/dotnet-sdk-8.0.100-osx-x64.tar.gz)
   and ensure this dotnet is on your PATH.
 
 ### Running the solution
