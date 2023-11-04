@@ -1,6 +1,4 @@
-﻿using Aspire.Hosting.ApplicationModel;
-
-var builder = DistributedApplication.CreateBuilder(args);
+﻿var builder = DistributedApplication.CreateBuilder(args);
 
 var redis = builder.AddRedisContainer("redis");
 var rabbitMq = builder.AddRabbitMQContainer("EventBus");
