@@ -42,8 +42,6 @@ public static class Extensions
             options.Scope.Add("profile");
             options.Scope.Add("orders");
             options.Scope.Add("basket");
-            options.Scope.Add("webshoppingagg");
-            options.Scope.Add("webhooks");
         });
 
         // Blazor auth services

@@ -4,7 +4,7 @@ using Order = eShop.Ordering.API.Application.Queries.Order;
 
 public static class OrdersApi
 {
-    public static IEndpointRouteBuilder MapOrdersApi(this IEndpointRouteBuilder app)
+    public static RouteGroupBuilder MapOrdersApi(this RouteGroupBuilder app)
     {
         app.MapPut("/cancel", CancelOrderAsync);
         app.MapPut("/ship", ShipOrderAsync);
