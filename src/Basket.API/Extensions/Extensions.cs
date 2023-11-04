@@ -9,12 +9,15 @@ public static class Extensions
 {
     public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
+        builder.AddDefaultAuthentication();
+
         builder.AddRedis("redis");
+
+        builder.Services.AddSingleton<IBasketRepository, RedisBasketRepository>();
+
         builder.AddRabbitMqEventBus("EventBus")
                .AddSubscription<OrderStartedIntegrationEvent, OrderStartedIntegrationEventHandler>()
                .ConfigureJsonOptions(options => options.TypeInfoResolverChain.Add(IntegrationEventContext.Default));
-
-        builder.Services.AddSingleton<IBasketRepository, RedisBasketRepository>();
     }
 }
 

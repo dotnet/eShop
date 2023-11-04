@@ -2,6 +2,8 @@
 {
     public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
+        builder.AddDefaultAuthentication();
+
         builder.AddRabbitMqEventBus("EventBus")
                .AddEventBusSubscriptions();
 

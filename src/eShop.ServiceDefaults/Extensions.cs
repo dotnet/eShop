@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.JsonWebTokens;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
@@ -43,11 +41,6 @@ public static partial class Extensions
     {
         // Default health checks assume the event bus and self health checks
         builder.AddDefaultHealthChecks();
-
-        builder.AddDefaultAuthentication();
-
-        // Add the accessor
-        builder.Services.AddHttpContextAccessor();
 
         builder.ConfigureOpenTelemetry();
 
@@ -111,45 +104,6 @@ public static partial class Extensions
             "Microsoft.AspNetCore.Hosting",
             "Microsoft.AspNetCore.Server.Kestrel",
             "System.Net.Http");
-
-    public static IServiceCollection AddDefaultAuthentication(this IHostApplicationBuilder builder)
-    {
-        var services = builder.Services;
-        var configuration = builder.Configuration;
-
-        // {
-        //   "Identity": {
-        //     "Url": "http://identity",
-        //     "Audience": "basket"
-        //    }
-        // }
-
-        var identitySection = configuration.GetSection("Identity");
-
-        if (!identitySection.Exists())
-        {
-            // No identity section, so no authentication
-            return services;
-        }
-
-        // prevent from mapping "sub" claim to nameidentifier.
-        JsonWebTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
-
-        services.AddAuthentication().AddJwtBearer(options =>
-        {
-            var identityUrl = identitySection.GetRequiredValue("Url");
-            var audience = identitySection.GetRequiredValue("Audience");
-
-            options.Authority = identityUrl;
-            options.RequireHttpsMetadata = false;
-            options.Audience = audience;
-            options.TokenValidationParameters.ValidateAudience = false;
-        });
-
-        services.AddAuthorization();
-
-        return services;
-    }
 
     public static IHostApplicationBuilder AddDefaultHealthChecks(this IHostApplicationBuilder builder)
     {
