@@ -12,7 +12,8 @@ app.UseDefaultOpenApi();
 
 app.MapDefaultEndpoints();
 
-app.MapGroup("/api/v1/Orders")
-    .MapOrdersApi();
+app.MapGroup("/api/v1/orders")
+   .MapOrdersApi()
+   .RequireAuthorization();
 
 app.Run();

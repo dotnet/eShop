@@ -9,8 +9,6 @@
             {
                 new ApiResource("orders", "Orders Service"),
                 new ApiResource("basket", "Basket Service"),
-                new ApiResource("mobileshoppingagg", "Mobile Shopping Aggregator"),
-                new ApiResource("webshoppingagg", "Web Shopping Aggregator"),
                 new ApiResource("webhooks", "Webhooks registration Service"),
             };
         }
@@ -23,8 +21,6 @@
             {
                 new ApiScope("orders", "Orders Service"),
                 new ApiScope("basket", "Basket Service"),
-                new ApiScope("mobileshoppingagg", "Mobile Shopping Aggregator"),
-                new ApiScope("webshoppingagg", "Web Shopping Aggregator"),
                 new ApiScope("webhooks", "Webhooks registration Service"),
             };
         }
@@ -45,27 +41,6 @@
         {
             return new List<Client>
             {
-                // JavaScript Client
-                new Client
-                {
-                    ClientId = "js",
-                    ClientName = "eShop SPA OpenId Client",
-                    AllowedGrantTypes = GrantTypes.Implicit,
-                    AllowAccessTokensViaBrowser = true,
-                    RedirectUris =           { $"{configuration["SpaClient"]}/" },
-                    RequireConsent = false,
-                    PostLogoutRedirectUris = { $"{configuration["SpaClient"]}/" },
-                    AllowedCorsOrigins =     { $"{configuration["SpaClient"]}" },
-                    AllowedScopes =
-                    {
-                        IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile,
-                        "orders",
-                        "basket",
-                        "webshoppingagg",
-                        "webhooks"
-                    },
-                },
                 new Client
                 {
                     ClientId = "xamarin",
@@ -94,43 +69,6 @@
                     //Allow requesting refresh tokens for long lived API access
                     AllowOfflineAccess = true,
                     AllowAccessTokensViaBrowser = true
-                },
-                new Client
-                {
-                    ClientId = "mvc",
-                    ClientName = "MVC Client",
-                    ClientSecrets = new List<Secret>
-                    {
-
-                        new Secret("secret".Sha256())
-                    },
-                    ClientUri = $"{configuration["MvcClient"]}",                             // public uri of the client
-                    AllowedGrantTypes = GrantTypes.Code,
-                    AllowAccessTokensViaBrowser = false,
-                    RequireConsent = false,
-                    AllowOfflineAccess = true,
-                    AlwaysIncludeUserClaimsInIdToken = true,
-                    RequirePkce = false,
-                    RedirectUris = new List<string>
-                    {
-                        $"{configuration["MvcClient"]}/signin-oidc"
-                    },
-                    PostLogoutRedirectUris = new List<string>
-                    {
-                        $"{configuration["MvcClient"]}/signout-callback-oidc"
-                    },
-                    AllowedScopes = new List<string>
-                    {
-                        IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile,
-                        IdentityServerConstants.StandardScopes.OfflineAccess,
-                        "orders",
-                        "basket",
-                        "webshoppingagg",
-                        "webhooks"
-                    },
-                    AccessTokenLifetime = 60*60*2, // 2 hours
-                    IdentityTokenLifetime= 60*60*2 // 2 hours
                 },
                 new Client
                 {
@@ -202,38 +140,6 @@
                 },
                 new Client
                 {
-                    ClientId = "mvctest",
-                    ClientName = "MVC Client Test",
-                    ClientSecrets = new List<Secret>
-                    {
-                        new Secret("secret".Sha256())
-                    },
-                    ClientUri = $"{configuration["Mvc"]}",                             // public uri of the client
-                    AllowedGrantTypes = GrantTypes.Code,
-                    AllowAccessTokensViaBrowser = true,
-                    RequireConsent = false,
-                    AllowOfflineAccess = true,
-                    RedirectUris = new List<string>
-                    {
-                        $"{configuration["MvcClient"]}/signin-oidc"
-                    },
-                    PostLogoutRedirectUris = new List<string>
-                    {
-                        $"{configuration["MvcClient"]}/signout-callback-oidc"
-                    },
-                    AllowedScopes = new List<string>
-                    {
-                        IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile,
-                        IdentityServerConstants.StandardScopes.OfflineAccess,
-                        "orders",
-                        "basket",
-                        "webshoppingagg",
-                        "webhooks"
-                    },
-                },
-                new Client
-                {
                     ClientId = "basketswaggerui",
                     ClientName = "Basket Swagger UI",
                     AllowedGrantTypes = GrantTypes.Implicit,
@@ -260,37 +166,6 @@
                     AllowedScopes =
                     {
                         "orders"
-                    }
-                },
-                new Client
-                {
-                    ClientId = "mobileshoppingaggswaggerui",
-                    ClientName = "Mobile Shopping Aggregattor Swagger UI",
-                    AllowedGrantTypes = GrantTypes.Implicit,
-                    AllowAccessTokensViaBrowser = true,
-
-                    RedirectUris = { $"{configuration["MobileShoppingAggClient"]}/swagger/oauth2-redirect.html" },
-                    PostLogoutRedirectUris = { $"{configuration["MobileShoppingAggClient"]}/swagger/" },
-
-                    AllowedScopes =
-                    {
-                        "mobileshoppingagg"
-                    }
-                },
-                new Client
-                {
-                    ClientId = "webshoppingaggswaggerui",
-                    ClientName = "Web Shopping Aggregattor Swagger UI",
-                    AllowedGrantTypes = GrantTypes.Implicit,
-                    AllowAccessTokensViaBrowser = true,
-
-                    RedirectUris = { $"{configuration["WebShoppingAggClient"]}/swagger/oauth2-redirect.html" },
-                    PostLogoutRedirectUris = { $"{configuration["WebShoppingAggClient"]}/swagger/" },
-
-                    AllowedScopes =
-                    {
-                        "webshoppingagg",
-                        "basket"
                     }
                 },
                 new Client
