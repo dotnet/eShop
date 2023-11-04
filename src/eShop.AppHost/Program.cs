@@ -16,7 +16,6 @@ var webhooksDb = postgres.AddDatabase("WebHooksDB");
 
 // Services
 var identityApi = builder.AddProject<Projects.Identity_API>("identity-api")
-    .WithReference(rabbitMq)
     .WithReference(identityDb);
 
 var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
