@@ -1,0 +1,26 @@
+<Project>
+
+  <PropertyGroup Condition="'$(PublishAot)' == 'true'">
+    <!-- EventSource is disabled by default for non-ASP.NET AOT'd apps, re-enable it -->
+    <EventSourceSupport>true</EventSourceSupport>
+
+    <!-- Ensure individual warnings are shown when publishing -->
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <!-- But ignore the single warn files marked below to suppress their known warnings. -->
+    <NoWarn>$(NoWarn);IL2104</NoWarn>
+  </PropertyGroup>
+
+  <Target Name="ConfigureTrimming"
+          BeforeTargets="PrepareForILLink">
+    <!-- Single warn the following assemblies, which have known warnings, so the warnings can be suppressed for now. -->
+    <ItemGroup>
+      <!-- https://github.com/rabbitmq/rabbitmq-dotnet-client/issues/1410 is tracking fixing the one EventSource warning in RabbitMQ. -->
+      <IlcArg Include="--singlewarnassembly:RabbitMQ.Client" />
+
+      <!-- https://github.com/dotnet/runtime/issues/94117 will fix the warnings coming from the ConfigBinder source generator in these assemblies. -->
+      <IlcArg Include="--singlewarnassembly:Aspire.RabbitMQ.Client" />
+      <IlcArg Include="--singlewarnassembly:Aspire.StackExchange.Redis" />
+    </ItemGroup>
+  </Target>
+
+</Project>
