@@ -2,12 +2,7 @@
 
 var redis = builder.AddRedisContainer("redis");
 var rabbitMq = builder.AddRabbitMQContainer("EventBus");
-var postgres = builder.AddPostgresContainer("postgres")
-    .WithAnnotation(new ContainerImageAnnotation
-    {
-        Image = "ankane/pgvector",
-        Tag = "latest"
-    });
+var postgres = builder.AddPgVector("postgres");
 
 var catalogDb = postgres.AddDatabase("CatalogDB");
 var identityDb = postgres.AddDatabase("IdentityDB");
