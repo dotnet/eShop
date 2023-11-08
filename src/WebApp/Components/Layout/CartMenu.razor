@@ -5,8 +5,8 @@
 @inject NavigationManager NavigationManager
 @implements IDisposable
 
-<a href="cart">
-    <img src="icons/cart.svg" />
+<a aria-label="cart" href="cart">
+    <img role="presentation" src="icons/cart.svg" />
     @if (basketItems?.Count > 0)
     {
         <span class="cart-badge">@TotalQuantity</span>

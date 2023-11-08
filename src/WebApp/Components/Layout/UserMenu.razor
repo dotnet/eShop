@@ -9,7 +9,7 @@
     <Authorized>
         <h3>@context.User.Identity?.Name</h3>
         <div class="dropdown-menu">
-            <span class="dropdown-button"><img src="icons/user.svg" /></span>
+            <span class="dropdown-button"><img role="presentation" src="icons/user.svg" /></span>
             <div class="dropdown-content">
                 <a class="dropdown-item" href="user/orders">My orders</a>
                 <form class="dropdown-item" method="post" action="user/logout" @formname="logout" @onsubmit="LogOutAsync">
@@ -20,7 +20,7 @@
         </div>
     </Authorized>
     <NotAuthorized>
-        <a href="@Pages.User.LogIn.Url(Nav)"><img src="icons/user.svg" /></a>
+        <a aria-label="Sign in" href="@Pages.User.LogIn.Url(Nav)"><img role="presentation" src="icons/user.svg" /></a>
     </NotAuthorized>
 </AuthorizeView>
 
