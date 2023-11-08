@@ -134,6 +134,13 @@ body {
     position: relative;
 }
 
+.welcome-page {
+    background: #fff;
+    max-width: 60rem;
+    margin: auto;
+    padding: 3rem;
+}
+
 .eshop-banner {
     display: flex;
     justify-content: center;
