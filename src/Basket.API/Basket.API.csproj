@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <UserSecretsId>2964ec8e-0d48-4541-b305-94cab537f867</UserSecretsId>
+    <PublishAot Condition="'$(EnableAotPublishing)' == 'true'">true</PublishAot>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Aspire.StackExchange.Redis" />

@@ -2,10 +2,10 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    <AspnetVersion>8.0.0-rtm.23524.5</AspnetVersion>
-    <EfVersion>8.0.0-rtm.23524.5</EfVersion>
+    <AspnetVersion>8.0.0</AspnetVersion>
+    <EfVersion>8.0.0</EfVersion>
     <RuntimeVersion>8.0.0</RuntimeVersion>
-    <AspireVersion>8.0.0-preview.1.23551.7</AspireVersion>
+    <AspireVersion>8.0.0-preview.1.23557.2</AspireVersion>
     <GrpcVersion>2.59.0-pre1</GrpcVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -100,6 +100,6 @@
     <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
     <PackageVersion Include="xunit" Version="2.5.1" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.1" />
-    <PackageVersion Include="Yarp.ReverseProxy" Version="2.1.0-preview.1.23472.1" />
+    <PackageVersion Include="Yarp.ReverseProxy" Version="2.1.0-preview.1.23556.5" />
   </ItemGroup>
 </Project>
