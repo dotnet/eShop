@@ -1,24 +1,16 @@
 ﻿namespace eShop.Catalog.API.IntegrationEvents;
 
-public class CatalogIntegrationEventService : ICatalogIntegrationEventService, IDisposable
+public sealed class CatalogIntegrationEventService(ILogger<CatalogIntegrationEventService> logger,
+    IEventBus eventBus,
+    CatalogContext catalogContext,
+    IIntegrationEventLogService integrationEventLogService)
+    : ICatalogIntegrationEventService, IDisposable
 {
-    private readonly IEventBus _eventBus;
-    private readonly CatalogContext _catalogContext;
-    private readonly IIntegrationEventLogService _eventLogService;
-    private readonly ILogger<CatalogIntegrationEventService> _logger;
+    private readonly IEventBus _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
+    private readonly CatalogContext _catalogContext = catalogContext ?? throw new ArgumentNullException(nameof(catalogContext));
+    private readonly IIntegrationEventLogService _eventLogService = integrationEventLogService ?? throw new ArgumentNullException(nameof(integrationEventLogService));
+    private readonly ILogger<CatalogIntegrationEventService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     private volatile bool disposedValue;
-
-    public CatalogIntegrationEventService(
-        ILogger<CatalogIntegrationEventService> logger,
-        IEventBus eventBus,
-        CatalogContext catalogContext,
-        IIntegrationEventLogService integrationEventLogService)
-    {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _catalogContext = catalogContext ?? throw new ArgumentNullException(nameof(catalogContext));
-        _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
-        _eventLogService = integrationEventLogService ?? throw new ArgumentNullException(nameof(integrationEventLogService));
-    }
 
     public async Task PublishThroughEventBusAsync(IntegrationEvent evt)
     {
@@ -51,7 +43,7 @@ public class CatalogIntegrationEventService : ICatalogIntegrationEventService, I
         });
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (!disposedValue)
         {
