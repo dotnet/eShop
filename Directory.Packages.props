@@ -92,7 +92,6 @@
     <PackageVersion Include="KubernetesClient" Version="11.0.44" />
     <PackageVersion Include="MediatR" Version="12.1.1" />
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
-    <PackageVersion Include="Moq" Version="4.20.69" />
     <PackageVersion Include="Polly" Version="8.0.0" />
     <PackageVersion Include="RabbitMQ.Client" Version="6.6.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
