@@ -1,3 +1,3 @@
-﻿namespace eShop.Catalog.API.IntegrationEvents.Events;
+﻿namespace Webhooks.API.IntegrationEvents;
 
 public record OrderStockItem(int ProductId, int Units);
