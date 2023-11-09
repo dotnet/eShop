@@ -31,7 +31,7 @@
                 var quantity = CurrentOrPendingQuantity(item.ProductId, item.Quantity);
                 <div class="cart-item" @key="@item.Id">
                     <div class="catalog-item-info">
-                        <img src="@item.PictureUrl" />
+                        <img alt="@item.ProductName" src="@item.PictureUrl" />
                         <div class="catalog-item-content">
                             <p class="name">@item.ProductName</p>
                             <p class="price">$@item.UnitPrice.ToString("0.00")</p>
@@ -41,7 +41,7 @@
                         <form method="post" data-enhance>
                             <input type="hidden" name="_handler" value="update-cart" />
                             <AntiforgeryToken />
-                            <input type="number" name="UpdateQuantityValue" value="@quantity" min="0" />
+                            <input aria-label="product quantity" type="number" name="UpdateQuantityValue" value="@quantity" min="0" />
                             <button type="submit" 
                                     class="button button-secondary"
                                     name="UpdateQuantityId" 
@@ -61,7 +61,7 @@
         <div class="cart-summary">
             <div class="cart-summary-container">
                 <div class="cart-summary-header">
-                    <img src="icons/cart.svg" />
+                    <img role="presentation" src="icons/cart.svg" />
                     Your shopping bag
                     <span class="filter-badge">@TotalQuantity</span>
                 </div>
@@ -71,7 +71,7 @@
                 </div>
                 <a href="checkout" class="button button-primary">Check out</a>
                 <a href="" class="cart-summary-link">
-                    <img src="icons/arrow-left.svg" />
+                    <img role="presentation" src="icons/arrow-left.svg" />
                     <p>Continue shopping</p>
                 </a>
             </div>
