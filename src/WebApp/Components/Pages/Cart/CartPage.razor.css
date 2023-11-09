@@ -132,3 +132,32 @@
     justify-content: center;
     margin-left: auto;
 }
+
+@media only screen and (max-width: 480px) { 
+    .cart {
+        padding: 0 1rem;
+        gap: 1rem;
+        flex-direction: column-reverse
+    }
+
+    .cart-item-header div {
+        display: none;
+    }
+
+    .cart-item {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .cart-items .cart-item .catalog-item-info {
+        flex-basis: 100%;
+    }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+    .cart {
+        padding: 0 3rem;
+        gap: 2rem;
+        flex-direction: column-reverse;
+    } 
+}

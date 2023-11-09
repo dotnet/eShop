@@ -21,3 +21,16 @@
   color: white;
   margin-right: auto;
 }
+
+
+@media only screen and (max-width: 480px) { 
+  .eshop-footer-row {
+    padding: 3.5rem 1rem;
+  }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+  .eshop-footer-row {
+    padding: 3.5rem 3rem;
+  }
+}

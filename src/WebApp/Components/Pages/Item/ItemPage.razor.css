@@ -12,6 +12,7 @@ p:first-of-type {
 
 img {
     width: 25rem;
+    max-width: 50%;
 }
 
 .description {
@@ -51,4 +52,24 @@ img {
 
 a {
     color: black;
+}
+
+@media only screen and (max-width: 480px) { 
+    .item-details {
+        padding: 1.5rem 1rem 0 1rem;
+        flex-direction: column;
+        gap: 1rem;
+    }    
+
+    .item-details img {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+    .item-details {
+        gap: 1rem;
+        padding: 0 3rem 0 3rem;
+    }    
 }

@@ -42,7 +42,7 @@
     font-style: normal;
     font-weight: 400;
     line-height: 150%;
-    width: 100%;
+    width: calc(100% - 1rem);
     padding: 0.5rem;
 }
 
@@ -68,4 +68,16 @@
     flex-direction: column;
     gap: 1.25rem;
     align-self: stretch;
+}
+
+@media only screen and (max-width: 480px) { 
+    .checkout {
+        padding: 0 1rem;
+    }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+    .checkout {
+        padding: 0 3rem;
+    }
 }

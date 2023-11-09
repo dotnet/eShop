@@ -114,3 +114,28 @@
     color: #F7F7F7;
     background-color: #000;
 }
+
+
+@media only screen and (max-width: 480px) { 
+    .catalog {
+        padding: 0 1rem;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .page-links {
+        flex-wrap: wrap;
+    }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+    .catalog {
+        padding: 0 3rem;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .page-links {
+        flex-wrap: wrap;
+    }
+}
