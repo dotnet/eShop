@@ -26,7 +26,7 @@ app.MapDefaultControllerRoute();
 app.MapRazorPages();
 
 bool.TryParse(builder.Configuration["ValidateToken"], out var validateToken);
-var tokenToValidate = builder.Configuration["Token"];
+var tokenToValidate = builder.Configuration["WebhookClientOptions:Token"];
 
 app.MapMethods("/check", [HttpMethods.Options], Results<Ok, BadRequest<string>> ([FromHeader(Name = HeaderNames.WebHookCheckHeader)] string value, HttpResponse response) =>
 {
