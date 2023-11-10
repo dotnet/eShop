@@ -1,3 +1,7 @@
+h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+}
+
 h1:focus {
     outline: none;
 }
@@ -26,4 +30,37 @@ h1:focus {
 
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
+}
+
+button.action, a.action {
+    background-color: #1a7dad;
+    color: white;
+    padding: 0.4rem 1.25rem;
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0px 3px 4px #00000070;
+    transition: all 0.1s cubic-bezier(.16,1.13,.57,.94);
+    display: inline-block;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    button.action:hover, a.action:hover {
+        background-color: #23a0dc;
+    }
+
+    button.action:active, a.action:active {
+        background-color: #00496c;
+        transform: scale(0.98) translateY(1px);
+    }
+
+.grid-placeholder {
+    height: 5rem;
+    background-color: #e1e1e1;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    border-radius: 0.5rem;
 }

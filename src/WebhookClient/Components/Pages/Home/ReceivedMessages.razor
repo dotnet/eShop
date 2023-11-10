@@ -3,7 +3,7 @@
 
 @if (messages is null)
 {
-    <p>Loading...</p>
+    <div class="grid-placeholder">Loading...</div>
 }
 else if (messages.Any())
 {
@@ -15,7 +15,7 @@ else if (messages.Any())
 }
 else
 {
-    <p>None yet received</p>
+    <div class="grid-placeholder">None yet received</div>
 }
 
 @code {

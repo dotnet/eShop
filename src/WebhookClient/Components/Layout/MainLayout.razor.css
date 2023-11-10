@@ -16,3 +16,26 @@
         right: 0.75rem;
         top: 0.5rem;
     }
+
+header {
+    background: #156082;
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
+header, main {
+    padding: 2rem;
+}
+
+h1 {
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+.user-info {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}

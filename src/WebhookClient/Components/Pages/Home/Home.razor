@@ -1,17 +1,17 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Components.Authorization
 
-<PageTitle>Order Management</PageTitle>
+<PageTitle>Order management</PageTitle>
 
 <h2>Registered webhooks</h2>
 
 <AuthorizeView>
     <Authorized>
         <RegisteredHooks />
-        <p><a href="add-webhook">Add webhook registration</a></p>
+        <a class="action" href="add-webhook">Add webhook registration</a>
     </Authorized>
     <NotAuthorized>
-        <p>Log in to view or edit webhook registrations</p>
+        Log in to view or edit webhook registrations
     </NotAuthorized>
 </AuthorizeView>
 

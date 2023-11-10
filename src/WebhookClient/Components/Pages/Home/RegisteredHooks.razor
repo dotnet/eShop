@@ -2,7 +2,7 @@
 
 @if (webhooks is null)
 {
-    <p>Loading...</p>
+    <div class="grid-placeholder">Loading...</div>
 }
 else if (webhooks.Any())
 {
@@ -14,7 +14,7 @@ else if (webhooks.Any())
 }
 else
 {
-    <p>None registered</p>
+    <div class="grid-placeholder">None registered</div>
 }
 
 @code {

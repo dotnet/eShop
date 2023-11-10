@@ -4,14 +4,14 @@
 
 <AuthorizeView>
     <Authorized>
-        @context.User.Identity?.Name
+        <strong>@context.User.Identity?.Name</strong>
         <form method="post" action="logout">
             <AntiforgeryToken />
-            <button type="submit">Log out</button>
+            <button class="action" type="submit">Log out</button>
         </form>
     </Authorized>
     <NotAuthorized>
-        <button @onclick="@LogIn">Log in</button>
+        <button class="action" @onclick="@LogIn">Log in</button>
     </NotAuthorized>
 </AuthorizeView>
 
