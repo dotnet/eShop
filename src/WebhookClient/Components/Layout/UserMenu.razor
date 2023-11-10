@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using System.Web
+@inject NavigationManager Nav
+
+<AuthorizeView>
+    <Authorized>
+        <strong>@context.User.Identity?.Name</strong>
+        <form method="post" action="logout">
+            <AntiforgeryToken />
+            <button class="action" type="submit">Log out</button>
+        </form>
+    </Authorized>
+    <NotAuthorized>
+        <button class="action" @onclick="@LogIn">Log in</button>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private void LogIn()
+    {
+        var returnUrl = Nav.ToBaseRelativePath(Nav.Uri);
+        Nav.NavigateTo($"login?returnUrl={HttpUtility.UrlEncode(returnUrl)}", forceLoad: true);
+    }
+}

@@ -1,0 +1,65 @@
+﻿@page "/add-webhook"
+@using Microsoft.Extensions.Options
+@inject IOptions<WebhookClientOptions> options
+@inject NavigationManager Nav
+@inject WebhooksClient WebhooksClient
+
+<h2>Register a new webhook</h2>
+
+<p>This page registers the "OrderPaid" Webhook by sending a POST to the WebHooks API. Once the Webhook is set, you will be able to see new paid orders from the <a href="">home</a> page.</p>
+
+<form @onsubmit="RegisterAsync">
+    <p>
+        Token:
+        <input type="text" @bind="@token" placeholder="Token" />
+    </p>
+    <button class="action" type="submit">Register</button>
+</form>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <p class="error-message">@message</p>
+}
+
+@code {
+    string? token;
+    string? message;
+
+    protected override void OnInitialized()
+    {
+        token = options.Value.Token;
+    }
+
+    private async Task RegisterAsync()
+    {
+        if (string.IsNullOrEmpty(token))
+        {
+            return;
+        }
+
+        message = null;
+        var baseUrl = !string.IsNullOrEmpty(options.Value.SelfUrl)
+            ? options.Value.SelfUrl
+            : Nav.BaseUri;
+        var granturl = $"{baseUrl}check";
+        var url = $"{baseUrl}webhook-received";
+
+        var payload = new WebhookSubscriptionRequest
+        {
+            Event = "OrderPaid",
+            GrantUrl = granturl,
+            Url = url,
+            Token = token
+        };
+
+        var response = await WebhooksClient.AddWebHookAsync(payload);
+        if (response.IsSuccessStatusCode)
+        {
+            Nav.NavigateTo("");
+        }
+        else
+        {
+            message = $"Registation was rejected with status {(int)response.StatusCode} {response.ReasonPhrase}";
+        }
+    }
+}

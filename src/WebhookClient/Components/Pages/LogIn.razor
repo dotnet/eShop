@@ -1,0 +1,12 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject NavigationManager Nav
+@code {
+    [SupplyParameterFromQuery] public string? ReturnUrl { get; set; }
+    protected override void OnInitialized()
+    {
+        var returnUrl = new Uri(ReturnUrl ?? "", UriKind.Relative);
+        Nav.NavigateTo(returnUrl.ToString(), replace: true);
+    }
+}
