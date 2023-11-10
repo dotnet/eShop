@@ -4,21 +4,24 @@
 {
     <p>Loading...</p>
 }
+else if (webhooks.Any())
+{
+    <QuickGrid Items="@webhooks">
+        <PropertyColumn Sortable="@true" IsDefaultSortColumn="true" InitialSortDirection="@SortDirection.Descending" Title="Date" Property="@(hook => hook.Date)" />
+        <PropertyColumn Sortable="@true" Title="Destination" Property="@(hook => hook.DestUrl)" />
+        <PropertyColumn Sortable="@true" Title="Token" Property="@(hook => hook.Token)" />
+    </QuickGrid>
+}
 else
 {
-    @foreach (var webhook in webhooks)
-    {
-        <p>@webhook.Date</p>
-        <p>@webhook.DestUrl</p>
-        <p>@webhook.Token</p>
-    }
+    <p>None registered</p>
 }
 
 @code {
-    IEnumerable<WebhookResponse>? webhooks;
+    IQueryable<WebhookResponse>? webhooks;
 
     protected override async Task OnInitializedAsync()
     {
-        webhooks = await WebhooksClient.LoadWebhooks();
+        webhooks = (await WebhooksClient.LoadWebhooks()).AsQueryable();
     }
 }
