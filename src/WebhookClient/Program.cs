@@ -8,7 +8,6 @@ using WebhookClient.Services;
 using eShop.ServiceDefaults;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
@@ -17,6 +16,7 @@ builder.AddServiceDefaults();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.AddHttpClient<WebhooksClient>(o => o.BaseAddress = new("http://webhooks-api")).AddAuthToken();
 builder.Services.AddOptions<WebhookClientOptions>().BindConfiguration(nameof(WebhookClientOptions));
+builder.Services.AddSingleton<HooksRepository>();
 builder.AddAuthenticationServices();
 
 var app = builder.Build();
@@ -44,22 +44,47 @@ app.MapPost("/logout", async (HttpContext httpContext, IAntiforgery antiforgery)
     await httpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
 });
 
+const string webhookCheckHeader = "X-eshop-whtoken";
 bool.TryParse(builder.Configuration["ValidateToken"], out var validateToken);
 var tokenToValidate = builder.Configuration["Token"];
 
-app.MapMethods("/check", [HttpMethods.Options], Results<Ok, BadRequest<string>> ([FromHeader(Name = "X-eshop-whtoken")] string value, HttpResponse response) =>
+app.MapMethods("/check", [HttpMethods.Options], Results<Ok, BadRequest<string>> ([FromHeader(Name = webhookCheckHeader)] string value, HttpResponse response) =>
 {
     if (!validateToken || value == tokenToValidate)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
-            response.Headers.Append("X-eshop-whtoken", value);
+            response.Headers.Append(webhookCheckHeader, value);
         }
 
         return TypedResults.Ok();
     }
 
     return TypedResults.BadRequest("Invalid token");
+});
+
+app.MapPost("/webhook-received", async (WebhookData hook, HttpRequest request, ILogger<Program> logger, HooksRepository hooksRepository) =>
+{
+    var token = request.Headers[webhookCheckHeader];
+
+    logger.LogInformation("Received hook with token {Token}. My token is {MyToken}. Token validation is set to {ValidateToken}", token, tokenToValidate, validateToken);
+
+    if (!validateToken || tokenToValidate == token)
+    {
+        logger.LogInformation("Received hook is going to be processed");
+        var newHook = new WebHookReceived()
+        {
+            Data = hook.Payload,
+            When = hook.When,
+            Token = token
+        };
+        await hooksRepository.AddNew(newHook);
+        logger.LogInformation("Received hook was processed.");
+        return Results.Ok(newHook);
+    }
+
+    logger.LogInformation("Received hook is NOT processed - Bad Request returned.");
+    return Results.BadRequest();
 });
 
 app.Run();
