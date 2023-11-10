@@ -33,7 +33,7 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.Empty.ToString() } }
         };
-        var response = await _httpClient.PutAsync("api/v1/orders/cancel", content);
+        var response = await _httpClient.PutAsync("/api/v1/orders/cancel", content);
 
         var s = await response.Content.ReadAsStringAsync();
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
