@@ -2,13 +2,14 @@
 
 public class HooksRepository
 {
-    private readonly List<WebHookReceived> _data;
+    private readonly List<WebHookReceived> _data = new();
 
-    public HooksRepository() => _data = new List<WebHookReceived>();
+    public event EventHandler? OnReceived;
 
     public Task AddNew(WebHookReceived hook)
     {
         _data.Add(hook);
+        OnReceived?.Invoke(this, default!);
         return Task.CompletedTask;
     }
 

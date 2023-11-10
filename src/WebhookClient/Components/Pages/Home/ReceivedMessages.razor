@@ -1,0 +1,58 @@
+﻿@inject HooksRepository HooksRepository
+@implements IDisposable
+
+@if (messages is null)
+{
+    <p>Loading...</p>
+}
+else if (messages.Any())
+{
+    <QuickGrid Items="@messages">
+        <PropertyColumn Sortable="@true" Title="When" Property="@(hook => hook.When)" />
+        <PropertyColumn Sortable="@true" Title="Data" Property="@(hook => hook.Data)" />
+        <PropertyColumn Sortable="@true" Title="Token" Property="@(hook => hook.Token)" />
+    </QuickGrid>
+}
+else
+{
+    <p>None yet received</p>
+}
+
+@code {
+    private IQueryable<WebHookReceived>? messages;
+
+    protected override async Task OnInitializedAsync()
+    {
+        HooksRepository.OnReceived += OnMessagesChanged;
+        await RefreshDataAsync();
+    }
+
+    private async Task RefreshDataAsync()
+        => messages = (await HooksRepository.GetAll()).AsQueryable();
+
+    private void OnMessagesChanged(object? sender, EventArgs args)
+    {
+        _ = InvokeAsync(async () =>
+        {
+            try
+            {
+                await OnMessagesChangedAsync();
+            }
+            catch (Exception ex)
+            {
+                await DispatchExceptionAsync(ex);
+            }
+        });
+    }
+
+    private async Task OnMessagesChangedAsync()
+    {
+        await RefreshDataAsync();
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        HooksRepository.OnReceived -= OnMessagesChanged;
+    }
+}
