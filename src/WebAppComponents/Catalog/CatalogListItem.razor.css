@@ -48,3 +48,16 @@
     line-height: 150%;
     margin-left: auto;
 }
+
+
+@media only screen and (max-width: 480px) { 
+    .catalog-item {
+        flex-basis: calc(100% - 2rem);
+    }    
+}
+
+@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+    .catalog-item {
+        flex-basis: calc(50% - 3rem);
+    }    
+}

@@ -73,3 +73,36 @@
   width: 100%;
   margin-top: 1rem;
 }
+
+@media only screen and (max-width: 480px) { 
+  .catalog-search {
+      width: 100%;
+  }
+
+  .catalog-search .catalog-search-header {
+    display: none;
+  }
+
+  .catalog-search-group .catalog-search-group-tags {
+    justify-content: space-between;
+  }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+  .catalog-search {
+    width: 100%;
+  }
+
+  .catalog-search-types {
+    display: flex;
+    gap: 3rem;
+  }
+
+  .catalog-search-group {
+    flex-basis: calc(50% - 3rem);
+  }
+
+  .catalog-search-group .catalog-search-group-tags {
+    justify-content: space-between;
+  }
+}

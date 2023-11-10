@@ -62,3 +62,15 @@
     color: #2A9E01;
     border: 1px solid #2A9E01;
 }
+
+@media only screen and (max-width: 480px) { 
+    .orders {
+        padding: 0 1rem;
+    }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+    .orders {
+        padding: 0 3rem;
+    }    
+}

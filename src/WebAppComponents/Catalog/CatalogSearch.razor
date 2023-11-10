@@ -8,37 +8,39 @@
             <img role="presentation" src="icons/filters.svg" />
             Filters
         </div>
-        <div class="catalog-search-group">
-            <h3>Brand</h3>
-            <div class="catalog-search-group-tags">
-                <a href="@BrandUri(null)"
-                   class="catalog-search-tag @(BrandId == null ? "active " : "")">
-                    All
-                </a>
-                @foreach (var brand in catalogBrands)
-                {
-                    <a href="@BrandUri(brand.Id)"
-                       class="catalog-search-tag @(BrandId == brand.Id ? "active " : "")">
-                        @brand.Brand
+        <div class="catalog-search-types">
+            <div class="catalog-search-group">
+                <h3>Brand</h3>
+                <div class="catalog-search-group-tags">
+                    <a href="@BrandUri(null)"
+                    class="catalog-search-tag @(BrandId == null ? "active " : "")">
+                        All
                     </a>
-                }
+                    @foreach (var brand in catalogBrands)
+                    {
+                        <a href="@BrandUri(brand.Id)"
+                        class="catalog-search-tag @(BrandId == brand.Id ? "active " : "")">
+                            @brand.Brand
+                        </a>
+                    }
+                </div>
             </div>
-        </div>
-        <div class="catalog-search-group">
-            <h3>Type</h3>
+            <div class="catalog-search-group">
+                <h3>Type</h3>
 
-            <div class="catalog-search-group-tags">
-                <a href="@TypeUri(null)"
-                   class="catalog-search-tag @(ItemTypeId == null ? "active " : "")">
-                   All
-                </a>
-                @foreach (var itemType in catalogItemTypes)
-                {
-                    <a href="@TypeUri(itemType.Id)"
-                       class="catalog-search-tag @(ItemTypeId == itemType.Id ? "active " : "")">
-                        @itemType.Type
+                <div class="catalog-search-group-tags">
+                    <a href="@TypeUri(null)"
+                    class="catalog-search-tag @(ItemTypeId == null ? "active " : "")">
+                    All
                     </a>
-                }
+                    @foreach (var itemType in catalogItemTypes)
+                    {
+                        <a href="@TypeUri(itemType.Id)"
+                        class="catalog-search-tag @(ItemTypeId == itemType.Id ? "active " : "")">
+                            @itemType.Type
+                        </a>
+                    }
+                </div>
             </div>
         </div>
     </div>

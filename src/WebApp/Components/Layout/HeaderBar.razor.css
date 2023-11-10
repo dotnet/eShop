@@ -66,3 +66,82 @@
     margin-top: 1.25rem;
     gap: 1.5rem;
 }
+
+@media only screen and (max-width: 480px) { 
+    .eshop-header-hero {
+        height: 18rem;
+    }
+
+    .eshop-header-hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .eshop-header .eshop-header-container {
+        height: 15rem;
+        margin-bottom: 4rem;
+    }
+
+    .eshop-header-container {
+        margin: 0 1rem;
+    }
+
+    .eshop-header.home .eshop-header-container {
+        height: 18rem;
+        margin: 0 1rem;
+    }
+
+    .eshop-header-intro {
+        white-space: wrap;
+        bottom: 0;
+    }
+
+    .eshop-header-intro h1 {
+        font-size: 2rem;
+    }
+    
+    .eshop-header-intro p {
+        font-size: 1.5rem;
+    }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+    .eshop-header.home .eshop-header-hero {
+        height: 24rem;
+    }
+
+    .eshop-header .eshop-header-hero {
+        height: 15rem;
+    }
+
+    .eshop-header-hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .eshop-header-container {
+        margin: 0 1rem;
+        margin: 0 3rem;
+    }
+
+    .eshop-header.home .eshop-header-container {
+        height: 24rem;
+        margin: 0 3rem;
+    }
+
+    .eshop-header-intro {
+        white-space: wrap;
+    }
+
+    .eshop-header-intro h1 {
+        font-size: 2rem;
+    }
+    
+    .eshop-header-intro p {
+        font-size: 1.5rem;
+    }
+}
