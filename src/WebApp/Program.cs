@@ -1,25 +1,10 @@
-﻿using eShop.WebAppComponents.Services;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
-builder.AddAuthenticationServices();
-builder.AddRabbitMqEventBus("EventBus")
-       .AddEventBusSubscriptions();
-
-// Application services
-builder.Services.AddScoped<BasketState>();
-builder.Services.AddScoped<LogOutService>();
-builder.Services.AddSingleton<BasketService>();
-builder.Services.AddSingleton<OrderStatusNotificationService>();
-
-// Backend services
-builder.Services.AddGrpcClient<Basket.BasketClient>(o => o.Address = new("http://basket-api")).AddAuthToken();
-builder.Services.AddHttpClient<CatalogService>(o => o.BaseAddress = new("http://catalog-api")).AddAuthToken();
-builder.Services.AddHttpClient<OrderingService>(o => o.BaseAddress = new("http://ordering-api")).AddAuthToken();
+builder.AddApplicationServices();
 
 var app = builder.Build();
 
