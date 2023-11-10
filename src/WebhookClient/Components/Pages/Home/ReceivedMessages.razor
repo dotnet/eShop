@@ -20,39 +20,32 @@ else
 
 @code {
     private IQueryable<WebHookReceived>? messages;
+    private IDisposable? subscription;
 
     protected override async Task OnInitializedAsync()
     {
-        HooksRepository.OnReceived += OnMessagesChanged;
+        subscription = HooksRepository.Subscribe(() => InvokeAsync(OnMessageReceivedAsync));
         await RefreshDataAsync();
     }
 
     private async Task RefreshDataAsync()
         => messages = (await HooksRepository.GetAll()).AsQueryable();
 
-    private void OnMessagesChanged(object? sender, EventArgs args)
+    private async Task OnMessageReceivedAsync()
     {
-        _ = InvokeAsync(async () =>
+        try
         {
-            try
-            {
-                await OnMessagesChangedAsync();
-            }
-            catch (Exception ex)
-            {
-                await DispatchExceptionAsync(ex);
-            }
-        });
-    }
-
-    private async Task OnMessagesChangedAsync()
-    {
-        await RefreshDataAsync();
-        StateHasChanged();
+            await RefreshDataAsync();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await DispatchExceptionAsync(ex);
+        }
     }
 
     public void Dispose()
     {
-        HooksRepository.OnReceived -= OnMessagesChanged;
+        subscription?.Dispose();
     }
 }
