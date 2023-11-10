@@ -23,7 +23,14 @@ public static class AuthenticationServicesExtensions
             options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
         })
-        .AddCookie(options => options.ExpireTimeSpan = TimeSpan.FromMinutes(sessionCookieLifetime))
+        .AddCookie(options =>
+        {
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(sessionCookieLifetime);
+
+            // Must be distinct from WebApp's cookie name, otherwise the two sites will interfere
+            // with each other when both are on localhost (yes, even when they are on different ports)
+            options.Cookie.Name = ".AspNetCore.WebHooksClientIdentity";
+        })
         .AddOpenIdConnect(options =>
         {
             options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
