@@ -1,5 +1,17 @@
-h1, h2, h3, h4, h5, h6, p {
-    margin: 0;
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 400;
+}
+
+h2 {
+    font-size: 1.3rem;
+}
+
+    h2:first-child, h3:first-child {
+        margin-top: 0;
+    }
+
+p {
+    line-height: 1.35rem;
 }
 
 h1:focus {
@@ -43,6 +55,7 @@ button.action, a.action {
     display: inline-block;
     text-decoration: none;
     cursor: pointer;
+    font-size: 1.05em;
 }
 
     button.action:hover, a.action:hover {
@@ -63,4 +76,20 @@ button.action, a.action {
     justify-content: center;
     color: #555;
     border-radius: 0.5rem;
+}
+
+input[type=text] {
+    font-size: 1.05rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.4rem;
+    margin-left: 0.5rem;
+    border: 2px solid #038ac7;
+}
+
+.error-message {
+    color: red;
+    background: #ffefef;
+    padding: 0.4rem 1rem;
+    border: 1px solid #ffb4b4;
+    border-radius: 0.4rem;
 }
