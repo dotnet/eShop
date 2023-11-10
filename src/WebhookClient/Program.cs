@@ -4,12 +4,16 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using WebhookClient;
 using WebhookClient.Components;
+using WebhookClient.Services;
+using eShop.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.AddServiceDefaults();
 
 // Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+builder.Services.AddHttpClient<WebhooksClient>(o => o.BaseAddress = new("http://webhooks-api")).AddAuthToken();
+builder.Services.AddOptions<WebhookClientOptions>().BindConfiguration(nameof(WebhookClientOptions));
 builder.AddAuthenticationServices();
 
 var app = builder.Build();

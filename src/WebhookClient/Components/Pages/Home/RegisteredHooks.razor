@@ -1,0 +1,24 @@
+﻿@inject WebhooksClient WebhooksClient
+
+@if (webhooks is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    @foreach (var webhook in webhooks)
+    {
+        <p>@webhook.Date</p>
+        <p>@webhook.DestUrl</p>
+        <p>@webhook.Token</p>
+    }
+}
+
+@code {
+    IEnumerable<WebhookResponse>? webhooks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        webhooks = await WebhooksClient.LoadWebhooks();
+    }
+}
