@@ -32,9 +32,9 @@ app.MapMethods("/check", [HttpMethods.Options], Results<Ok, BadRequest<string>> 
 {
     if (!validateToken || value == tokenToValidate)
     {
-        if (!string.IsNullOrWhiteSpace(tokenToValidate))
+        if (!string.IsNullOrWhiteSpace(value))
         {
-            response.Headers.Append(HeaderNames.WebHookCheckHeader, tokenToValidate);
+            response.Headers.Append(HeaderNames.WebHookCheckHeader, value);
         }
 
         return TypedResults.Ok();
