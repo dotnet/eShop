@@ -1,5 +1,23 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@inherits LayoutComponentBase
 
+<header>
+    <h1>Order management</h1>
+    <div class="user-info">
+        <AuthorizeView>
+            <Authorized>
+                @context.User.Identity?.Name
+                <form method="post" action="logout">
+                    <AntiforgeryToken />
+                    <button type="submit">Log out</button>
+                </form>
+            </Authorized>
+            <NotAuthorized>
+                Log in
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+</header>
 @Body
 
 <div id="blazor-error-ui">
