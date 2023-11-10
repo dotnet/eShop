@@ -44,6 +44,10 @@ h1:focus {
     border-color: #929292;
 }
 
+button {
+    font-size: 1rem;
+}
+
 button.action, a.action {
     background-color: #1a7dad;
     color: white;
@@ -93,3 +97,21 @@ input[type=text] {
     border: 1px solid #ffb4b4;
     border-radius: 0.4rem;
 }
+
+.quickgrid {
+    margin-bottom: 1rem;
+    border-spacing: 0;
+}
+
+    .quickgrid th {
+        border-bottom: 1px solid gray;
+    }
+
+    .quickgrid tr:not(:last-child) td {
+        border-bottom: 1px solid #e1e1e1;
+    }
+
+    .quickgrid td, .quickgrid th {
+        padding-top: 0.4rem !important;
+        padding-bottom: 0.4rem !important;
+    }
