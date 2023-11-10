@@ -11,7 +11,7 @@ public sealed class CatalogApiFixture : WebApplicationFactory<Program>, IAsyncLi
 
     public CatalogApiFixture()
     {
-        var options = new DistributedApplicationOptions { AssemblyName = typeof(CatalogApiFixture).Assembly.FullName };
+        var options = new DistributedApplicationOptions { AssemblyName = typeof(CatalogApiFixture).Assembly.FullName, DisableDashboard = true };
         var appBuilder = DistributedApplication.CreateBuilder(options);
         Postgres = appBuilder.AddPostgresContainer("CatalogDB")
             .WithAnnotation(new ContainerImageAnnotation
