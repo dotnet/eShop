@@ -73,6 +73,7 @@ button.action, a.action {
 
 .grid-placeholder {
     height: 5rem;
+    max-width: 50rem;
     background-color: #e1e1e1;
     margin-bottom: 1rem;
     display: flex;

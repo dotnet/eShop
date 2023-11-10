@@ -15,7 +15,10 @@ else if (messages.Any())
 }
 else
 {
-    <div class="grid-placeholder">None yet received</div>
+    <div class="grid-placeholder">
+        <div>None yet received</div>
+    </div>
+    <p>Webhook messages will appear once a webhook is registered and an order transitions into "paid" status.</p>
 }
 
 @code {
