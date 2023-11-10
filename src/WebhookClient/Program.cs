@@ -6,6 +6,9 @@ using WebhookClient;
 using WebhookClient.Components;
 using WebhookClient.Services;
 using eShop.ServiceDefaults;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
@@ -39,6 +42,24 @@ app.MapPost("/logout", async (HttpContext httpContext, IAntiforgery antiforgery)
     await antiforgery.ValidateRequestAsync(httpContext);
     await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     await httpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
+});
+
+bool.TryParse(builder.Configuration["ValidateToken"], out var validateToken);
+var tokenToValidate = builder.Configuration["Token"];
+
+app.MapMethods("/check", [HttpMethods.Options], Results<Ok, BadRequest<string>> ([FromHeader(Name = "X-eshop-whtoken")] string value, HttpResponse response) =>
+{
+    if (!validateToken || value == tokenToValidate)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            response.Headers.Append("X-eshop-whtoken", value);
+        }
+
+        return TypedResults.Ok();
+    }
+
+    return TypedResults.BadRequest("Invalid token");
 });
 
 app.Run();
