@@ -18,7 +18,7 @@ public class HooksRepository
             catch (Exception)
             {
                 // It's the subscriber's responsibility to report/handle any exceptions
-                // that occur during their callbacl
+                // that occur during their callback
             }
         }
 
