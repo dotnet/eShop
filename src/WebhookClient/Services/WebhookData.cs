@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace WebhookClient.Services;
+namespace eShop.WebhookClient.Services;
 
 public class WebhookData
 {
