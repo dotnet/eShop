@@ -20,7 +20,6 @@
       "src\\Webhooks.API\\Webhooks.API.csproj",
       "src\\eShop.AppHost\\eShop.AppHost.csproj",
       "src\\eShop.ServiceDefaults\\eShop.ServiceDefaults.csproj",
-      "tests\\Application.FunctionalTests\\Application.FunctionalTests.csproj",
       "tests\\Basket.UnitTests\\Basket.UnitTests.csproj",
       "tests\\Catalog.FunctionalTests\\Catalog.FunctionalTests.csproj",
       "tests\\Ordering.FunctionalTests\\Ordering.FunctionalTests.csproj",
