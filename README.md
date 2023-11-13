@@ -36,6 +36,8 @@ A reference .NET application implementing an eCommerce web site using a services
 
 ### Running the solution
 
+Running eShop requires a dependency on .NET Aspire. To learn more about .NET Aspire, read [the official documentation](https://aka.ms/dotnet/aspire/docs).
+
 ```powershell
 dotnet workload update --skip-sign-check --interactive
 dotnet workload install aspire --skip-sign-check --interactive
