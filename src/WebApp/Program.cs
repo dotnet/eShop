@@ -26,4 +26,6 @@ app.UseStaticFiles();
 
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
+app.MapProductImageProxy();
+
 app.Run();
