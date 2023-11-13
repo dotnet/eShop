@@ -1,19 +1,21 @@
-﻿namespace eShop.WebhookClient.Services;
+﻿using System.Collections.Concurrent;
+
+namespace eShop.WebhookClient.Services;
 
 public class HooksRepository
 {
-    private readonly List<WebHookReceived> _data = new();
-    private readonly HashSet<OnChangeSubscription> _onChangeSubscriptions = new();
+    private readonly ConcurrentQueue<WebHookReceived> _data = new();
+    private readonly ConcurrentDictionary<OnChangeSubscription, object?> _onChangeSubscriptions = new();
 
     public Task AddNew(WebHookReceived hook)
     {
-        _data.Add(hook);
+        _data.Enqueue(hook);
 
         foreach (var subscription in _onChangeSubscriptions)
         {
             try
             {
-                _ = subscription.NotifyAsync();
+                _ = subscription.Key.NotifyAsync();
             }
             catch (Exception)
             {
@@ -33,7 +35,7 @@ public class HooksRepository
     public IDisposable Subscribe(Func<Task> callback)
     {
         var subscription = new OnChangeSubscription(callback, this);
-        _onChangeSubscriptions.Add(subscription);
+        _onChangeSubscriptions.TryAdd(subscription, null);
         return subscription;
     }
 
@@ -41,6 +43,6 @@ public class HooksRepository
     {
         public Task NotifyAsync() => callback();
 
-        public void Dispose() => owner._onChangeSubscriptions.Remove(this);
+        public void Dispose() => owner._onChangeSubscriptions.Remove(this, out _);
     }
 }
