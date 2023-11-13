@@ -3,10 +3,23 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 
-namespace WebhookClient;
+namespace eShop.WebhookClient.Extensions;
 
-public static class AuthenticationServicesExtensions
+public static class Extensions
 {
+    public static void AddApplicationServices(this IHostApplicationBuilder builder)
+    {
+        builder.AddAuthenticationServices();
+
+        // Application services
+        builder.Services.AddOptions<WebhookClientOptions>().BindConfiguration(nameof(WebhookClientOptions));
+        builder.Services.AddSingleton<HooksRepository>();
+
+        // HTTP client registrations
+        builder.Services.AddHttpClient<WebhooksClient>(o => o.BaseAddress = new("http://webhooks-api"))
+            .AddAuthToken();
+    }
+
     public static void AddAuthenticationServices(this IHostApplicationBuilder builder)
     {
         var configuration = builder.Configuration;
