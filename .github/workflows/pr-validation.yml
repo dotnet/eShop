@@ -1,0 +1,29 @@
+name: eShop Pull Request Validation
+
+on:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+
+
+jobs:  
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET (global.json)
+        uses: actions/setup-dotnet@v3
+      - name: Update Workloads
+        run: dotnet workload update
+      - name: Install Workloads
+        run: dotnet workload install aspire
+      - name: Build 
+        run: dotnet build eShop.Web.slnf
+      - name: Test
+        run: dotnet test eShop.Web.slnf
