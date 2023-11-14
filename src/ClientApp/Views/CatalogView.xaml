@@ -55,7 +55,7 @@
             SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}">
 			<CollectionView.ItemsLayout>
 				<GridItemsLayout Orientation="Vertical"
-								 Span="2" />
+								 Span="{OnIdiom 2, Desktop=4}" />
 			</CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
