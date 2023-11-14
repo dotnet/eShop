@@ -30,16 +30,16 @@ dotnet restore eShop.Web.slnf
 > Remember to ensure that Docker is started
 
 * (Windows only) Run the application from Visual Studio:
-	* Open the `eShop.Web.slnf` file in Visual Studio
-	* Ensure that `eShop.AppHost.csproj` is your startup project
-	* Hit Ctrl-F5 to launch Aspire
+ - Open the `eShop.Web.slnf` file in Visual Studio
+ - Ensure that `eShop.AppHost.csproj` is your startup project
+ - Hit Ctrl-F5 to launch Aspire
 
 * Or run the application from your terminal:
 ```powershell
 dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj
 ```
 then look for lines like this in the console output in order to find the URL to open the Aspire dashboard:
-```
+```sh
 Now listening on: http://localhost:18848
 ```
 
