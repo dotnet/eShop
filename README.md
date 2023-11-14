@@ -15,18 +15,16 @@ A reference .NET application implementing an eCommerce web site using a services
   - During installation, ensure that the following are selected:
     - `ASP.NET and web development` workload.
     - `.NET Aspire SDK` component in `Individual components`.
-- Install & start Docker Desktop:  https://docs.docker.com/engine/install/
 - Install the latest [.NET 8 SDK](https://github.com/dotnet/installer#installers-and-binaries)
-
-### Running the solution
-
-Running eShop requires a dependency on .NET Aspire. To learn more about .NET Aspire, read [the official documentation](https://aka.ms/dotnet/aspire/docs).
-
+- On Mac/Linux (or if not using Visual Studio), install the Aspire workload with the following commands:
 ```powershell
-dotnet workload update --skip-sign-check --interactive
-dotnet workload install aspire --skip-sign-check --interactive
+dotnet workload update
+dotnet workload install aspire
 dotnet restore eShop.Web.slnf
 ```
+- Install & start Docker Desktop:  https://docs.docker.com/engine/install/
+
+### Running the solution
 
 > [!WARNING]
 > Remember to ensure that Docker is started
