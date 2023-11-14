@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Setup .NET 8
+      - name: Setup .NET (global.json)
         uses: actions/setup-dotnet@v3
       - name: Install Workloads
         run: dotnet workload install aspire
