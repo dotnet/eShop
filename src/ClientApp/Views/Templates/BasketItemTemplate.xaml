@@ -119,6 +119,14 @@
                     Grid.Row="2"
                     Text="{Binding Total, StringFormat='${0:N}'}"
                     Style="{StaticResource OrderTotalStyle}"/>
+                <!-- DELETE BUTTON IF ON DESKTOP -->
+                <Button
+                    IsVisible="{OnIdiom False, Desktop=True}"
+                    Text="Delete"
+                    Grid.Row="2"
+                    HorizontalOptions="Start"
+                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BasketViewModel }}, Path=DeleteCommand}"
+                    CommandParameter="{Binding}" />
             </Grid>
             <Grid
                 Grid.Column="0"

@@ -45,6 +45,9 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width=".5*" />
+            </Grid.ColumnDefinitions>
             <!--  IMAGE  -->
             <Image
                 Grid.Row="0"
@@ -53,7 +56,8 @@
 
             <Grid
                 Grid.Row="0"
-                Grid.RowSpan="2"
+                HorizontalOptions="End"
+                VerticalOptions="End"
                 Style="{StaticResource AddButtonStyle}">
                 <controls:AddBasketButton />
             </Grid>
