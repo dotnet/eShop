@@ -32,7 +32,7 @@ var orderingApi = builder.AddProject<Projects.Ordering_API>("ordering-api")
     .WithReference(orderDb)
     .WithEnvironmentForServiceBinding("Identity__Url", identityApi);
 
-builder.AddProject<Projects.Ordering_BackgroundTasks>("order-processor")
+builder.AddProject<Projects.OrderProcessor>("order-processor")
     .WithReference(rabbitMq)
     .WithReference(orderDb);
 

@@ -1,4 +1,4 @@
-﻿namespace eShop.Ordering.BackgroundTasks;
+﻿namespace eShop.OrderProcessor;
 
 public class BackgroundTaskOptions
 {

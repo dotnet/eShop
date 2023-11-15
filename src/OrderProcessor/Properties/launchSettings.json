@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Ordering.BackgroundTasks": {
+    "OrderProcessor": {
       "commandName": "Project",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"

@@ -35,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mobile.Bff.Shopping", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ordering.API", "src\Ordering.API\Ordering.API.csproj", "{C8BA83CE-480E-4CC7-9508-747A76671F63}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ordering.BackgroundTasks", "src\Ordering.BackgroundTasks\Ordering.BackgroundTasks.csproj", "{0E5BE4C6-BF24-4BDA-908F-EFB99D22159D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderProcessor", "src\OrderProcessor\OrderProcessor.csproj", "{0E5BE4C6-BF24-4BDA-908F-EFB99D22159D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ordering.Domain", "src\Ordering.Domain\Ordering.Domain.csproj", "{DCA3AE8C-904C-48A6-BC0C-2CF995DDFD99}"
 EndProject
