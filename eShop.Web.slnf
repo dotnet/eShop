@@ -13,7 +13,7 @@
       "src\\OrderProcessor\\OrderProcessor.csproj",
       "src\\Ordering.Domain\\Ordering.Domain.csproj",
       "src\\Ordering.Infrastructure\\Ordering.Infrastructure.csproj",
-      "src\\Payment.API\\Payment.API.csproj",
+      "src\\PaymentProcessor\\PaymentProcessor.csproj",
       "src\\WebAppComponents\\WebAppComponents.csproj",
       "src\\WebApp\\WebApp.csproj",
       "src\\WebhookClient\\WebhookClient.csproj",

@@ -1,4 +1,4 @@
-﻿namespace eShop.Payment.API;
+﻿namespace eShop.PaymentProcessor;
 
 public class PaymentOptions
 {

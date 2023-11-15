@@ -36,7 +36,7 @@ builder.AddProject<Projects.OrderProcessor>("order-processor")
     .WithReference(rabbitMq)
     .WithReference(orderDb);
 
-builder.AddProject<Projects.Payment_API>("payment-processor")
+builder.AddProject<Projects.PaymentProcessor>("payment-processor")
     .WithReference(rabbitMq);
 
 var webHooksApi = builder.AddProject<Projects.Webhooks_API>("webhooks-api")

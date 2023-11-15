@@ -41,7 +41,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ordering.Domain", "src\Orde
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ordering.Infrastructure", "src\Ordering.Infrastructure\Ordering.Infrastructure.csproj", "{75474943-A318-4DF0-AB01-04F752827152}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Payment.API", "src\Payment.API\Payment.API.csproj", "{A2369111-2D88-4612-BFD2-9BEA0CB6D37E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentProcessor", "src\PaymentProcessor\PaymentProcessor.csproj", "{A2369111-2D88-4612-BFD2-9BEA0CB6D37E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp", "src\WebApp\WebApp.csproj", "{BE636956-26D5-404D-B269-17800032625D}"
 EndProject
