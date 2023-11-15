@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Payment.API": {
+    "PaymentProcessor": {
       "commandName": "Project",
       "launchBrowser": false,
       "applicationUrl": "http://localhost:5226",

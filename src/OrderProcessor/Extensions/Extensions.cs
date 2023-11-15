@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using eShop.Ordering.BackgroundTasks.Events;
+using eShop.OrderProcessor.Events;
 
-namespace eShop.Ordering.BackgroundTasks.Extensions;
+namespace eShop.OrderProcessor.Extensions;
 
 public static class Extensions
 {

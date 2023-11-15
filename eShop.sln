@@ -35,13 +35,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mobile.Bff.Shopping", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ordering.API", "src\Ordering.API\Ordering.API.csproj", "{C8BA83CE-480E-4CC7-9508-747A76671F63}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ordering.BackgroundTasks", "src\Ordering.BackgroundTasks\Ordering.BackgroundTasks.csproj", "{0E5BE4C6-BF24-4BDA-908F-EFB99D22159D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderProcessor", "src\OrderProcessor\OrderProcessor.csproj", "{0E5BE4C6-BF24-4BDA-908F-EFB99D22159D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ordering.Domain", "src\Ordering.Domain\Ordering.Domain.csproj", "{DCA3AE8C-904C-48A6-BC0C-2CF995DDFD99}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ordering.Infrastructure", "src\Ordering.Infrastructure\Ordering.Infrastructure.csproj", "{75474943-A318-4DF0-AB01-04F752827152}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Payment.API", "src\Payment.API\Payment.API.csproj", "{A2369111-2D88-4612-BFD2-9BEA0CB6D37E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentProcessor", "src\PaymentProcessor\PaymentProcessor.csproj", "{A2369111-2D88-4612-BFD2-9BEA0CB6D37E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp", "src\WebApp\WebApp.csproj", "{BE636956-26D5-404D-B269-17800032625D}"
 EndProject

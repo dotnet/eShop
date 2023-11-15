@@ -1,4 +1,4 @@
-﻿namespace eShop.Ordering.BackgroundTasks.Events
+﻿namespace eShop.OrderProcessor.Events
 {
     using eShop.EventBus.Events;
 
