@@ -7,14 +7,14 @@ using Microsoft.IdentityModel.JsonWebTokens;
 
 public static class Extensions
 {
-    private const string ProductImageProxyHttpClient = "product-image-proxy";
-
     public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
         builder.AddAuthenticationServices();
 
         builder.AddRabbitMqEventBus("EventBus")
                .AddEventBusSubscriptions();
+
+        builder.Services.AddHttpForwarderWithServiceDiscovery();
 
         // Application services
         builder.Services.AddScoped<BasketState>();
@@ -32,8 +32,6 @@ public static class Extensions
 
         builder.Services.AddHttpClient<OrderingService>(o => o.BaseAddress = new("http://ordering-api"))
             .AddAuthToken();
-
-        builder.Services.AddHttpClient(ProductImageProxyHttpClient, o => o.BaseAddress = new("http://catalog-api"));
     }
 
     public static void AddEventBusSubscriptions(this IEventBusBuilder eventBus)
@@ -99,27 +97,5 @@ public static class Extensions
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         return user.FindFirst("name")?.Value;
-    }
-
-    public static void MapProductImageProxy(this IEndpointRouteBuilder app)
-    {
-        app.MapGet("/product-images/{id:int}", async (IHttpClientFactory httpClientFactory, int id) =>
-        {
-            var httpClient = httpClientFactory.CreateClient(ProductImageProxyHttpClient);
-            var imageResponse = await httpClient.GetAsync($"/api/v1/catalog/items/{id}/pic");
-
-            if (imageResponse.IsSuccessStatusCode)
-            {
-                var imageHeaders = imageResponse.Content.Headers;
-                return Results.Stream(
-                    await imageResponse.Content.ReadAsStreamAsync(),
-                    contentType: imageHeaders.ContentType?.ToString(),
-                    lastModified: imageHeaders.LastModified);
-            }
-            else
-            {
-                return Results.StatusCode((int)imageResponse.StatusCode);
-            }
-        });
     }
 }
