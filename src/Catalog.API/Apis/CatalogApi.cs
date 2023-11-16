@@ -319,6 +319,7 @@ public static class CatalogApi
         ".wmf" => "image/wmf",
         ".jp2" => "image/jp2",
         ".svg" => "image/svg+xml",
+        ".webp" => "image/webp",
         _ => "application/octet-stream",
     };
 
