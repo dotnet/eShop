@@ -6,10 +6,9 @@ namespace eShop.HybridApp;
 
 public static class MauiProgram
 {
-    // NOTE: Must have a trailing slash to ensure the full BaseAddress URL is used to resolve relative URLs
-    private static string MobileBffBaseUrl = "http://localhost:61632/catalog-api/";
-
-    internal static string ProductImageHostUrl = "https://localhost:7298";
+    // NOTE: Must have a trailing slash on base URLs to ensure the full BaseAddress URL is used to resolve relative URLs
+    private static string MobileBffHost = "http://localhost:61632";
+    internal static string MobileBffCatalogBaseUrl = $"{MobileBffHost}/catalog-api/";
 
     public static MauiApp CreateMauiApp()
     {
@@ -28,7 +27,7 @@ public static class MauiProgram
 		builder.Logging.AddDebug();
 #endif
 
-        builder.Services.AddHttpClient<CatalogService>(o => o.BaseAddress = new(MobileBffBaseUrl));
+        builder.Services.AddHttpClient<CatalogService>(o => o.BaseAddress = new(MobileBffCatalogBaseUrl));
         builder.Services.AddSingleton<IProductImageUrlProvider, ProductImageUrlProvider>();
 
         return builder.Build();
