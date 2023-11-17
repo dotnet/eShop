@@ -200,16 +200,8 @@ public class RabbitMQEventBus(
         // REVIEW: This could be done in parallel
 
         // Get all the handlers using the event type as the key
-        // foreach (var handler in scope.ServiceProvider.GetKeyedServices<IIntegrationEventHandler>(eventType))
-
-        _subscriptionInfo.HandlerTypes.TryGetValue(eventType, out var handlerTypes);
-
-        handlerTypes ??= [];
-
-        foreach (var handlerType in handlerTypes)
+        foreach (var handler in scope.ServiceProvider.GetKeyedServices<IIntegrationEventHandler>(eventType))
         {
-            var handler = scope.ServiceProvider.GetRequiredService(handlerType) as IIntegrationEventHandler;
-
             // Deserialize the event
             var integrationEvent = DeserializeMessage(message, eventType);
 
