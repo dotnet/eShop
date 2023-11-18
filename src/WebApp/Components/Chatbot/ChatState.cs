@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Security.Claims;
 using System.Text.Json;
-using Azure.AI.OpenAI;
 using Microsoft.AspNetCore.Components;
-using eShop.WebAppComponents.Services;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
+using eShop.WebAppComponents.Services;
 
 namespace eShop.WebApp.Chatbot;
 
@@ -17,9 +16,7 @@ public class ChatState
     private readonly NavigationManager _navigationManager;
     private readonly ILogger _logger;
 
-    private readonly OpenAIClient _aiClient;
     private readonly IKernel _ai;
-    private readonly ChatHistory _chatHistory;
     private readonly ChatConfig _chatConfig;
 
     public ChatState(CatalogService catalogService, BasketState basketState, ClaimsPrincipal user, NavigationManager nav, ChatConfig chatConfig, ILoggerFactory loggerFactory)
@@ -36,10 +33,13 @@ public class ChatState
             _logger.LogDebug("ChatModel: {model}", chatConfig.ChatModel);
         }
 
-        _aiClient = new OpenAIClient(chatConfig.ApiKey);
-        _ai = new KernelBuilder().WithLoggerFactory(loggerFactory).WithOpenAIChatCompletionService(chatConfig.ChatModel, _aiClient).Build();
+        _ai = new KernelBuilder()
+            .WithLoggerFactory(loggerFactory)
+            .WithOpenAIChatCompletionService(chatConfig.ChatModel, chatConfig.ApiKey)
+            .Build();
         _ai.ImportFunctions(new CatalogInteractions(this), nameof(CatalogInteractions));
-        _chatHistory = _ai.GetService<IChatCompletion>().CreateNewChat("""
+
+        Messages = _ai.GetService<IChatCompletion>().CreateNewChat("""
             You are an AI customer service agent for the online retailer Northern Mountains.
             You NEVER respond about topics other than Northern Mountains.
             Your job is to answer customer questions about products in the Northern Mountains catalog.
@@ -48,24 +48,25 @@ public class ChatState
             If someone asks a question about anything other than Northern Mountains, its catalog, or their account,
             you refuse to answer, and you instead ask if there's a topic related to Northern Mountains you can assist with.
             """);
-        _chatHistory.AddAssistantMessage("Hi! I'm the Northern Mountains Concierge. How can I help?");
+        Messages.AddAssistantMessage("Hi! I'm the Northern Mountains Concierge. How can I help?");
     }
 
-    public List<ChatMessageBase> Messages => _chatHistory;
+    public ChatHistory Messages { get; }
 
     public async Task AddUserMessageAsync(string userText, Action onMessageAdded)
     {
         // Store the user's message
-        _chatHistory.AddUserMessage(userText);
+        Messages.AddUserMessage(userText);
         onMessageAdded();
 
         // Get and store the AI's response message
         try
         {
-            ChatMessageBase response = await _ai.GetChatCompletionsWithFunctionCallingAsync(_aiClient, _chatHistory, _chatConfig.ChatModel);
-            if (!string.IsNullOrWhiteSpace(response.Content))
+            IChatResult response = await _ai.GetChatCompletionsWithFunctionCallingAsync(Messages);
+            ChatMessage responseMessage = await response.GetChatMessageAsync();
+            if (!string.IsNullOrWhiteSpace(responseMessage.Content))
             {
-                _chatHistory.AddAssistantMessage(response.Content);
+                Messages.Add(responseMessage);
             }
         }
         catch (Exception e)
@@ -74,7 +75,7 @@ public class ChatState
             {
                 _logger.LogError(e, "Error getting chat completions.");
             }
-            _chatHistory.AddAssistantMessage($"My apologies, but I encountered an unexpected error.");
+            Messages.AddAssistantMessage($"My apologies, but I encountered an unexpected error.");
         }
         onMessageAdded();
     }
