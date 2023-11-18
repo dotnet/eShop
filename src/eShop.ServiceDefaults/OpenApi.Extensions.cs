@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -116,14 +117,21 @@ public static partial class Extensions
             options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
             {
                 Type = SecuritySchemeType.OAuth2,
-                Flows = new OpenApiOAuthFlows()
+                Flows = new OpenApiOAuthFlows
                 {
-                    // TODO: Change this to use Authorization Code flow with PKCE
-                    Implicit = new OpenApiOAuthFlow()
+                    AuthorizationCode = new OpenApiOAuthFlow
                     {
                         AuthorizationUrl = new Uri($"{identityUrlExternal}/connect/authorize"),
                         TokenUrl = new Uri($"{identityUrlExternal}/connect/token"),
                         Scopes = scopes,
+                        Extensions =
+                        {
+                            ["x-pkce"] = new OpenApiObject
+                            {
+                                ["required"] = new OpenApiBoolean(true),
+                                ["method"] = new OpenApiString("S256")
+                            }
+                        }
                     }
                 }
             });
