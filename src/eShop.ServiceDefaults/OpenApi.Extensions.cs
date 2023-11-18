@@ -48,7 +48,9 @@ public static partial class Extensions
             if (authSection.Exists())
             {
                 setup.OAuthClientId(authSection.GetRequiredValue("ClientId"));
+                setup.OAuthClientSecret(authSection.GetRequiredValue("ClientSecret"));
                 setup.OAuthAppName(authSection.GetRequiredValue("AppName"));
+                setup.OAuthUsePkce();
             }
         });
 
