@@ -2,10 +2,7 @@
 {
     public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
-        builder.Services
-            .AddReverseProxy()
-            .LoadFromConfig(builder.Configuration.GetRequiredSection("ReverseProxy"))
-            .AddServiceDiscoveryDestinationResolver();
+        builder.Services.AddHttpForwarderWithServiceDiscovery();
 
         builder.Services.AddHealthChecks()
             .AddUrlGroup(new Uri("http://catalog-api/health"), name: "catalogapi-check")
