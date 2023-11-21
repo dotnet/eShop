@@ -157,25 +157,29 @@
                 {
                     ClientId = "orderingswaggerui",
                     ClientName = "Ordering Swagger UI",
+                    ClientSecrets = new List<Secret>()
+                    {
+                        new Secret("secret".Sha256())
+                    },
                     AllowedGrantTypes = GrantTypes.Code,
                     AllowAccessTokensViaBrowser = true,
-
+                    
                     RedirectUris = { $"{configuration["OrderingApiClient"]}/swagger/oauth2-redirect.html" },
                     PostLogoutRedirectUris = { $"{configuration["OrderingApiClient"]}/swagger/" },
 
                     AllowedScopes =
                     {
                         "orders"
-                    },
-                    ClientSecrets = new List<Secret>()
-                    {
-                        new Secret("secret".Sha256())
                     }
                 },
                 new Client
                 {
                     ClientId = "webhooksswaggerui",
                     ClientName = "WebHooks Service Swagger UI",
+                    ClientSecrets = new List<Secret>()
+                    {
+                        new Secret("secret".Sha256())
+                    },
                     AllowedGrantTypes = GrantTypes.Code,
                     AllowAccessTokensViaBrowser = true,
 
@@ -185,10 +189,6 @@
                     AllowedScopes =
                     {
                         "webhooks"
-                    },
-                    ClientSecrets = new List<Secret>()
-                    {
-                        new Secret("secret".Sha256())
                     }
                 }
             };

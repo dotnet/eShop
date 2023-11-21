@@ -125,15 +125,7 @@ public static partial class Extensions
                     {
                         AuthorizationUrl = new Uri($"{identityUrlExternal}/connect/authorize"),
                         TokenUrl = new Uri($"{identityUrlExternal}/connect/token"),
-                        Scopes = scopes,
-                        Extensions =
-                        {
-                            ["x-pkce"] = new OpenApiObject
-                            {
-                                ["required"] = new OpenApiBoolean(true),
-                                ["method"] = new OpenApiString("S256")
-                            }
-                        }
+                        Scopes = scopes
                     }
                 }
             });
