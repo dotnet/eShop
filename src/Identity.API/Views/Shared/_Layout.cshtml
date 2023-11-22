@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -18,10 +21,12 @@
         <img role="presentation" src="/images/banner.png" />
     </div>
     <div class="eshop-header">
-      <div class="eshop-header-container">
-        <nav class="eshop-header-navbar">
-          <img alt="Northern Mountains" src='/images/logo-header.svg' class='logo logo-header' />
-        </nav>
+        <div class="eshop-header-container">
+            <nav class="eshop-header-navbar">
+                <a href="@Configuration["WebAppClient"]" class='logo logo-header'>
+                    <img alt="Northern Mountains" src='/images/logo-header.svg' />
+                </a>
+            </nav>
       </div>
     </div>
 
