@@ -65,7 +65,7 @@ namespace eShop.Catalog.API.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<Vector>("Embedding")
-                        .HasColumnType("vector(1536)");
+                        .HasColumnType("vector(1024)");
 
                     b.Property<int>("MaxStockThreshold")
                         .HasColumnType("integer");

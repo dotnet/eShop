@@ -13,7 +13,7 @@ class CatalogItemEntityTypeConfiguration
         builder.Ignore(ci => ci.PictureUri);
 
         builder.Property(ci => ci.Embedding)
-            .HasColumnType("vector(1536)");
+            .HasColumnType("vector(1024)");
 
         builder.HasOne(ci => ci.CatalogBrand)
             .WithMany();
