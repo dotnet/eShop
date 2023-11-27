@@ -117,8 +117,9 @@ public static class CatalogApi
 
         string imageFileExtension = Path.GetExtension(item.PictureFileName);
         string mimetype = GetImageMimeTypeFromImageFileExtension(imageFileExtension);
+        DateTime lastModified = File.GetLastWriteTimeUtc(path);
 
-        return TypedResults.PhysicalFile(path, mimetype);
+        return TypedResults.PhysicalFile(path, mimetype, lastModified: lastModified);
     }
 
     public static async Task<Results<BadRequest<string>, RedirectToRouteHttpResult, Ok<PaginatedItems<CatalogItem>>>> GetItemsBySemanticRelevance(
@@ -319,6 +320,7 @@ public static class CatalogApi
         ".wmf" => "image/wmf",
         ".jp2" => "image/jp2",
         ".svg" => "image/svg+xml",
+        ".webp" => "image/webp",
         _ => "application/octet-stream",
     };
 

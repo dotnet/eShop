@@ -1,6 +1,7 @@
 ﻿@page "/cart"
 @inject NavigationManager Nav
 @inject BasketState Basket
+@inject IProductImageUrlProvider ProductImages
 @attribute [StreamRendering]
 @attribute [Authorize]
 
@@ -31,7 +32,7 @@
                 var quantity = CurrentOrPendingQuantity(item.ProductId, item.Quantity);
                 <div class="cart-item" @key="@item.Id">
                     <div class="catalog-item-info">
-                        <img alt="@item.ProductName" src="@item.PictureUrl" />
+                        <img alt="@item.ProductName" src="@ProductImages.GetProductImageUrl(item.ProductId)" />
                         <div class="catalog-item-content">
                             <p class="name">@item.ProductName</p>
                             <p class="price">$@item.UnitPrice.ToString("0.00")</p>

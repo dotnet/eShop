@@ -1,9 +1,10 @@
 ﻿@using eShop.WebAppComponents.Item
+@inject IProductImageUrlProvider ProductImages
 
 <div class="catalog-item">
     <a class="catalog-product" href="@ItemHelper.Url(Item)" data-enhance-nav="false">
         <span class='catalog-product-image'>
-            <img alt="@Item.Name" src='@Item.PictureUri' />
+            <img alt="@Item.Name" src='@ProductImages.GetProductImageUrl(Item)' />
         </span>
         <span class='catalog-product-content'>
             <span class='name'>@Item.Name</span>

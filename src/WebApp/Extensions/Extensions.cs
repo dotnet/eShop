@@ -14,11 +14,14 @@ public static class Extensions
         builder.AddRabbitMqEventBus("EventBus")
                .AddEventBusSubscriptions();
 
+        builder.Services.AddHttpForwarderWithServiceDiscovery();
+
         // Application services
         builder.Services.AddScoped<BasketState>();
         builder.Services.AddScoped<LogOutService>();
         builder.Services.AddSingleton<BasketService>();
         builder.Services.AddSingleton<OrderStatusNotificationService>();
+        builder.Services.AddSingleton<IProductImageUrlProvider, ProductImageUrlProvider>();
 
         // HTTP and GRPC client registrations
         builder.Services.AddGrpcClient<Basket.BasketClient>(o => o.Address = new("http://basket-api"))

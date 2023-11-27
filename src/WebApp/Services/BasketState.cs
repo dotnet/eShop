@@ -137,7 +137,6 @@ public class BasketState(
                 {
                     Id = Guid.NewGuid().ToString(), // TODO: this value is meaningless, use ProductId instead.
                     ProductId = catalogItem.Id,
-                    PictureUrl = catalogItem.PictureUri,
                     ProductName = catalogItem.Name,
                     UnitPrice = catalogItem.Price,
                     Quantity = item.Quantity,

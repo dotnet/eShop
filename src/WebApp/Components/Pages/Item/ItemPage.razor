@@ -3,6 +3,7 @@
 @inject CatalogService CatalogService
 @inject BasketState BasketState
 @inject NavigationManager Nav
+@inject IProductImageUrlProvider ProductImages
 
 @if (item is not null)
 {
@@ -11,7 +12,7 @@
     <SectionContent SectionName="page-header-subtitle">@item.CatalogBrand?.Brand</SectionContent>
 
     <div class="item-details">
-        <img alt="@item.Name" src="@item.PictureUri" />
+        <img alt="@item.Name" src="@ProductImages.GetProductImageUrl(item)" />
         <div class="description">
             <p>@item.Description</p>
             <p>
