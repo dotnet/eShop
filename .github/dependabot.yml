@@ -1,0 +1,67 @@
+version: 2
+registries:
+  public-nuget:
+    type: nuget-feed
+    url: https://api.nuget.org/v3/index.json
+updates:
+  - package-ecosystem: nuget
+    directory: "/"
+    registries:
+      - public-nuget
+    schedule:
+      interval: weekly
+      day: "sunday"
+      time: "07:00"
+      timezone: "America/Los_Angeles"
+    open-pull-requests-limit: 15
+    groups:
+      Aspire:
+        patterns:
+          - "Aspire.*"
+          - "Microsoft.Extensions.ServiceDiscovery.*"
+      AspNetCore:
+        patterns:
+          - "Microsoft.AspNetCore.*"
+          - "Microsoft.Extensions.Diagnostics.*"
+          - "Microsoft.Extensions.Identity.Stores"
+          - "Microsoft.Extensions.HttpResilience"
+      EntityFrameworkCore:
+        patterns:
+          - "Microsoft.EntityFrameworkCore.*"
+      Npgsql:
+        patterns:
+          - "Npgsql.*"
+          - "Pgvector.*"
+      NSubstitute:
+        patterns:
+          - "NSubstitute.*"
+      IdentityServer:
+          - "Duende.*"
+      MicrosoftExtensions:
+        patterns:
+          - "Microsoft.Extensions.*"
+      AspNetCoreHealthChecks:
+        patterns:
+          - "AspNetCore.HealthChecks.*"
+      Azure:
+        patterns:
+          - "Azure.*"
+          - "Microsoft.Azure.*"
+          - "Microsoft.Extensions.Azure"
+      SemanticKernel:
+        patterns:
+          - "Microsoft.SemanticKernel.*"
+      OpenTelemetry:
+        patterns:
+          - "OpenTelemetry.*"
+      Grpc:
+        patterns:
+          - "Grpc.*"
+      Yarp:
+        patterns:
+          - "Yarp.*"
+      Misc:
+        patterns:
+          - "*"
+    labels:
+      - "area-codeflow"
