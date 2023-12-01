@@ -14,8 +14,8 @@ public class Order
     [Required]
     public Address Address { get; private set; }
 
-    public int? GetBuyerId => _buyerId;
-    private int? _buyerId;
+    public int? BuyerId { get; private set; }
+
 
     public OrderStatus OrderStatus { get; private set; }
     private int _orderStatusId;
@@ -54,7 +54,7 @@ public class Order
     public Order(string userId, string userName, Address address, int cardTypeId, string cardNumber, string cardSecurityNumber,
             string cardHolderName, DateTime cardExpiration, int? buyerId = null, int? paymentMethodId = null) : this()
     {
-        _buyerId = buyerId;
+        BuyerId = buyerId;
         _paymentMethodId = paymentMethodId;
         _orderStatusId = OrderStatus.Submitted.Id;
         _orderDate = DateTime.UtcNow;
@@ -102,7 +102,7 @@ public class Order
 
     public void SetBuyerId(int id)
     {
-        _buyerId = id;
+        BuyerId = id;
     }
 
     public void SetAwaitingValidationStatus()

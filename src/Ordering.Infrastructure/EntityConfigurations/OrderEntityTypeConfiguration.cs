@@ -14,9 +14,9 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
         //Address value object persisted as owned entity type supported since EF Core 2.0
         orderConfiguration
             .OwnsOne(o => o.Address);
-
+        
         orderConfiguration
-            .Property("_buyerId")
+            .Property(o=> o.BuyerId)
             .HasColumnName("BuyerId");
 
         orderConfiguration
@@ -40,7 +40,7 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
 
         orderConfiguration.HasOne<Buyer>()
             .WithMany()
-            .HasForeignKey("_buyerId");
+            .HasForeignKey(o=> o.BuyerId);
 
         orderConfiguration.HasOne(o => o.OrderStatus)
             .WithMany()
