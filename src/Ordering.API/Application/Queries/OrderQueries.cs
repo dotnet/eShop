@@ -1,28 +1,35 @@
 ﻿namespace eShop.Ordering.API.Application.Queries;
 
-public class OrderQueries(NpgsqlDataSource dataSource)
+public class OrderQueries(NpgsqlDataSource dataSource, IOrderRepository orderRepository)
     : IOrderQueries
 {
     public async Task<Order> GetOrderAsync(int id)
     {
-        using var connection = dataSource.OpenConnection();
-
-        var result = await connection.QueryAsync<dynamic>("""
-            SELECT o."Id" AS ordernumber, o."OrderDate" AS date, o."Description" AS description, o."Address_City" AS city,
-                o."Address_Country" AS country, o."Address_State" AS state, o."Address_Street" AS street,
-                o."Address_ZipCode" AS zipcode, os."Name" AS status, oi."ProductName" AS productname, oi."Units" AS units,
-                oi."UnitPrice" AS unitprice, oi."PictureUrl" AS pictureurl
-            FROM ordering.Orders AS o
-            LEFT JOIN ordering."orderItems" AS oi ON o."Id" = oi."OrderId"
-            LEFT JOIN ordering.orderstatus AS os ON o."OrderStatusId" = os."Id"
-            WHERE o."Id" = @id
-            """,
-            new { id });
-
-        if (result.AsList().Count == 0)
+        var order = await orderRepository.GetAsync(id);
+        if (order is null)
             throw new KeyNotFoundException();
 
-        return MapOrderItems(result);
+        return new Order
+        {
+            ordernumber = order.Id,
+            date = order.GetOrderDate(),
+            description = order.GetDescription(),
+            city = order.Address.City,
+            country = order.Address.Country,
+            state = order.Address.State,
+            street = order.Address.Street,
+            zipcode = order.Address.ZipCode,
+            status = order.OrderStatus.Name,
+            total = order.GetTotal(),
+            orderitems = order.OrderItems.Select(oi => new Orderitem
+            {
+                productname = oi.GetOrderItemProductName(),
+                units = oi.GetUnits(),
+                unitprice = (double)oi.GetUnitPrice(),
+                pictureurl = oi.GetPictureUri(),
+            }).ToList()
+        };
+
     }
 
     public async Task<IEnumerable<OrderSummary>> GetOrdersFromUserAsync(string userId)
