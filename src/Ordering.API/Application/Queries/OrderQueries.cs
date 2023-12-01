@@ -26,7 +26,7 @@ public class OrderQueries(NpgsqlDataSource dataSource, IOrderRepository orderRep
                 productname = oi.GetOrderItemProductName(),
                 units = oi.GetUnits(),
                 unitprice = (double)oi.GetUnitPrice(),
-                pictureurl = oi.GetPictureUri(),
+                pictureurl = oi.GetPictureUri()
             }).ToList()
         };
 
@@ -54,39 +54,5 @@ public class OrderQueries(NpgsqlDataSource dataSource, IOrderRepository orderRep
         using var connection = dataSource.OpenConnection();
 
         return await connection.QueryAsync<CardType>("SELECT * FROM ordering.cardtypes");
-    }
-
-    private Order MapOrderItems(dynamic result)
-    {
-        var order = new Order
-        {
-            ordernumber = result[0].ordernumber,
-            date = result[0].date,
-            status = result[0].status,
-            description = result[0].description,
-            street = result[0].street,
-            city = result[0].city,
-            state = result[0].state,
-            zipcode = result[0].zipcode,
-            country = result[0].country,
-            orderitems = new List<Orderitem>(),
-            total = 0
-        };
-
-        foreach (dynamic item in result)
-        {
-            var orderitem = new Orderitem
-            {
-                productname = item.productname,
-                units = item.units,
-                unitprice = (double)item.unitprice,
-                pictureurl = item.pictureurl
-            };
-
-            order.total += item.units * item.unitprice;
-            order.orderitems.Add(orderitem);
-        }
-
-        return order;
     }
 }
