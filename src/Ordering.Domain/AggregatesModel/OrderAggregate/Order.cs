@@ -195,4 +195,15 @@ public class Order
     {
         return _orderItems.Sum(o => o.GetUnits() * o.GetUnitPrice());
     }
+    
+    
+    public DateTime GetOrderDate()
+    {
+        return _orderDate;
+    }
+    
+    public string GetDescription()
+    {
+        return _description;
+    }
 }
