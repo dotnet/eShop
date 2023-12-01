@@ -1,6 +1,6 @@
 ﻿namespace eShop.Ordering.API.Application.Queries;
 
-public class OrderQueries(NpgsqlDataSource dataSource, IOrderRepository orderRepository)
+public class OrderQueries(NpgsqlDataSource dataSource, IOrderRepository orderRepository, OrderingContext context)
     : IOrderQueries
 {
     public async Task<Order> GetOrderAsync(int id)
@@ -49,10 +49,6 @@ public class OrderQueries(NpgsqlDataSource dataSource, IOrderRepository orderRep
             new { userId });
     }
 
-    public async Task<IEnumerable<CardType>> GetCardTypesAsync()
-    {
-        using var connection = dataSource.OpenConnection();
-
-        return await connection.QueryAsync<CardType>("SELECT * FROM ordering.cardtypes");
-    }
+    public async Task<IEnumerable<CardType>> GetCardTypesAsync() => 
+        await context.CardTypes.Select(c=> new CardType { Id = c.Id, Name = c.Name }).ToListAsync();
 }
