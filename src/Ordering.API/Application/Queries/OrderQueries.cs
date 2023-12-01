@@ -1,6 +1,6 @@
 ﻿namespace eShop.Ordering.API.Application.Queries;
 
-public class OrderQueries(NpgsqlDataSource dataSource, IOrderRepository orderRepository, OrderingContext context)
+public class OrderQueries(IOrderRepository orderRepository, OrderingContext context)
     : IOrderQueries
 {
     public async Task<Order> GetOrderAsync(int id)
@@ -34,19 +34,22 @@ public class OrderQueries(NpgsqlDataSource dataSource, IOrderRepository orderRep
 
     public async Task<IEnumerable<OrderSummary>> GetOrdersFromUserAsync(string userId)
     {
-        using var connection = dataSource.OpenConnection();
-
-        return await connection.QueryAsync<OrderSummary>("""
-            SELECT o."Id" AS ordernumber, o."OrderDate" AS date, os."Name" AS status, SUM(oi."Units" * oi."UnitPrice") AS total
-            FROM ordering.orders AS o
-            LEFT JOIN ordering."orderItems" AS oi ON o."Id" = oi."OrderId"
-            LEFT JOIN ordering.orderstatus AS os ON o."OrderStatusId" = os."Id"
-            LEFT JOIN ordering.buyers AS ob ON o."BuyerId" = ob."Id"
-            WHERE ob."IdentityGuid" = @userId
-            GROUP BY o."Id", o."OrderDate", os."Name"
-            ORDER BY o."Id"
-            """,
-            new { userId });
+        return await context.Orders
+            .Include(o => o.OrderItems)
+            .Include(o => o.OrderStatus)
+            .Join(context.Buyers,
+                o => o.BuyerId,  
+                b => b.Id,       
+                (order, buyer) => new { order, buyer })
+            .Where(ob => ob.buyer.IdentityGuid == userId)  
+            .Select(ob => new OrderSummary
+            {
+                ordernumber = ob.order.Id,
+                date = ob.order.GetOrderDate(),
+                status = ob.order.OrderStatus.Name,
+                total = (double)ob.order.GetTotal()
+            })
+            .ToListAsync();
     }
 
     public async Task<IEnumerable<CardType>> GetCardTypesAsync() => 
