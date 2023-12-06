@@ -49,9 +49,8 @@ public sealed class CatalogAI : ICatalogAI
             _logger.LogInformation("Getting embedding for \"{text}\"", text);
         }
 
-        EmbeddingsOptions options = new(text);
-        var result = (await GetAIClient().GetEmbeddingsAsync(_aiEmbeddingModel, options)).Value.Data[0].Embedding;
-        return new Vector(result as float[] ?? [.. result]);
+        EmbeddingsOptions options = new(_aiEmbeddingModel, [text]);
+        return new Vector((await GetAIClient().GetEmbeddingsAsync(options)).Value.Data[0].Embedding);
     }
 
     /// <summary>Gets an embedding vector for the specified catalog item.</summary>
