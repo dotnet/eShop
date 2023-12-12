@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 
 namespace eShop.Ordering.UnitTests.Application;
 
@@ -11,8 +11,8 @@ public class SetStockRejectedOrderStatusCommandTest
         var command = new SetStockRejectedOrderStatusCommand(123, new List<int> { 1, 2, 3 });
 
         // Act
-        var json = JsonConvert.SerializeObject(command);
-        var deserializedCommand = JsonConvert.DeserializeObject<SetStockRejectedOrderStatusCommand>(json);
+        var json = JsonSerializer.Serialize(command);
+        var deserializedCommand = JsonSerializer.Deserialize<SetStockRejectedOrderStatusCommand>(json);
 
         //Assert
         Assert.Equal(command.OrderNumber, deserializedCommand.OrderNumber);
@@ -20,6 +20,11 @@ public class SetStockRejectedOrderStatusCommandTest
         //Assert for List<int>
         Assert.NotNull(deserializedCommand.OrderStockItems);
         Assert.Equal(command.OrderStockItems.Count, deserializedCommand.OrderStockItems.Count);
+
+        for (int i = 0; i < command.OrderStockItems.Count; i++)
+        {
+            Assert.Equal(command.OrderStockItems[i], deserializedCommand.OrderStockItems[i]);
+        }
     }
 }
 
