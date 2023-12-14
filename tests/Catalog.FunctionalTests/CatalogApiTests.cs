@@ -87,4 +87,184 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         Assert.Equal(1.99m, updatedItem.Price);
         Assert.NotEqual(priorAvailableStock, updatedItem.AvailableStock);
     }
+
+    [Fact]
+    public async Task GetCatalogItemsbyIds()
+    {
+        // Act
+        var response = await _httpClient.GetAsync("/api/v1/catalog/items/by?ids=1&ids=2&ids=3");
+
+        // Arrange   
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<List<CatalogItem>>(body, _jsonSerializerOptions);
+
+        // Assert 3 items      
+        Assert.Equal(3, result.Count);
+    }
+
+    [Fact]
+    public async Task GetCatalogItemWithId()
+    {
+        // Act
+        var response = await _httpClient.GetAsync("/api/v1/catalog/items/2");
+
+        // Assert   
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<CatalogItem>(body, _jsonSerializerOptions);
+
+        // Assert       
+        Assert.Equal(2, result.Id);
+        Assert.NotNull(result);
+    }
+
+    [Fact]
+    public async Task GetCatalogItemWithExactName()
+    {
+        // Act
+        var response = await _httpClient.GetAsync("api/v1/catalog/items/by/Wanderer%20Black%20Hiking%20Boots?PageSize=5&PageIndex=0");
+
+        // Assert   
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
+
+        // Assert
+        Assert.NotNull(result.Data);
+        Assert.Equal(1, result.Count);
+        Assert.Equal(0, result.PageIndex);
+        Assert.Equal(5, result.PageSize);
+        Assert.Equal("Wanderer Black Hiking Boots", result.Data.ToList().FirstOrDefault().Name);
+    }
+
+    // searching partial name Alpine
+    [Fact]
+    public async Task GetCatalogItemWithPartialName()
+    {
+       // Act
+       var response = await _httpClient.GetAsync("api/v1/catalog/items/by/Alpine?PageSize=5&PageIndex=0");
+
+        // Arrange   
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
+
+        // Assert
+        Assert.NotNull(result.Data);
+        Assert.Equal(4, result.Count);
+        Assert.Equal(0, result.PageIndex);
+        Assert.Equal(5, result.PageSize);
+        Assert.Contains("Alpine", result.Data.ToList().FirstOrDefault().Name);
+    }
+
+
+    [Fact]
+    public async Task GetCatalogItemPicWithId()
+    {
+        // Act
+        var response = await _httpClient.GetAsync("api/v1/catalog/items/1/pic");
+
+        // Assert   
+        response.EnsureSuccessStatusCode();
+        var result = response.Content.Headers.ContentType.MediaType;
+
+        // Assert       
+        Assert.Equal("image/webp", result);
+    }
+
+
+    [Fact]
+    public async Task GetCatalogItemWithsemanticrelevance()
+    {
+        // Act
+        var response = await _httpClient.GetAsync("api/v1/catalog/items/withsemanticrelevance/Wanderer?PageSize=5&PageIndex=0");
+
+        // Assert   
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
+
+        // Assert       
+        Assert.Equal(1, result.Count);
+        Assert.NotNull(result.Data);
+        Assert.Equal(0, result.PageIndex);
+        Assert.Equal(5, result.PageSize);
+    }
+
+    [Fact]
+    public async Task GetCatalogItemWithTypeIdBrandId()
+    {
+        // Act
+        var response = await _httpClient.GetAsync("api/v1/catalog/items/type/3/brand/3?PageSize=5&PageIndex=0");
+
+        // Assert   
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
+
+        // Assert    
+        Assert.NotNull(result.Data);
+        Assert.Equal(4, result.Count);
+        Assert.Equal(0, result.PageIndex);
+        Assert.Equal(5, result.PageSize);
+        Assert.Equal(3, result.Data.ToList().FirstOrDefault().CatalogTypeId);
+        Assert.Equal(3, result.Data.ToList().FirstOrDefault().CatalogBrandId);
+    }
+
+    [Fact]
+    public async Task GetAllCatalogTypeItemWithBrandId()
+    {
+        // Act
+        var response = await _httpClient.GetAsync("api/v1/catalog/items/type/all/brand/3?PageSize=5&PageIndex=0");
+
+        // Assert   
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
+
+        // Assert              
+        Assert.NotNull(result.Data);
+        Assert.Equal(11, result.Count);
+        Assert.Equal(0, result.PageIndex);
+        Assert.Equal(5, result.PageSize);
+        Assert.Equal(3, result.Data.ToList().FirstOrDefault().CatalogBrandId);
+    }
+
+    [Fact]
+    public async Task GetAllCatalogTypes()
+    {
+        // Act
+        var response = await _httpClient.GetAsync("api/v1/catalog/catalogtypes");
+
+        // Assert   
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<List<CatalogType>>(body, _jsonSerializerOptions);
+
+        //// Assert       
+        Assert.Equal(8, result.Count);
+        Assert.NotNull(result);
+
+    }
+
+    [Fact]
+    public async Task GetAllCatalogBrands()
+    {
+        // Act
+        var response = await _httpClient.GetAsync("api/v1/catalog/catalogbrands");
+
+        // Assert   
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<List<CatalogBrand>>(body, _jsonSerializerOptions);
+
+        //// Assert       
+        Assert.Equal(13, result.Count);
+        Assert.NotNull(result);
+
+    }
+
+
+
 }
