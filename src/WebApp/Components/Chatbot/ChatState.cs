@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
 using eShop.WebAppComponents.Services;
+using Microsoft.SemanticKernel.AI;
+using Microsoft.SemanticKernel.Connectors.AI.OpenAI;
 
 namespace eShop.WebApp.Chatbot;
 
@@ -15,9 +17,8 @@ public class ChatState
     private readonly ClaimsPrincipal _user;
     private readonly NavigationManager _navigationManager;
     private readonly ILogger _logger;
-
-    private readonly IKernel _ai;
-    private readonly ChatConfig _chatConfig;
+    private readonly Kernel _kernel;
+    private readonly OpenAIPromptExecutionSettings _aiSettings = new() { FunctionCallBehavior = FunctionCallBehavior.AutoInvokeKernelFunctions };
 
     public ChatState(CatalogService catalogService, BasketState basketState, ClaimsPrincipal user, NavigationManager nav, ChatConfig chatConfig, ILoggerFactory loggerFactory)
     {
@@ -25,7 +26,6 @@ public class ChatState
         _basketState = basketState;
         _user = user;
         _navigationManager = nav;
-        _chatConfig = chatConfig;
         _logger = loggerFactory.CreateLogger(typeof(ChatState));
 
         if (_logger.IsEnabled(LogLevel.Debug))
@@ -33,13 +33,13 @@ public class ChatState
             _logger.LogDebug("ChatModel: {model}", chatConfig.ChatModel);
         }
 
-        _ai = new KernelBuilder()
+        _kernel = new KernelBuilder()
             .WithLoggerFactory(loggerFactory)
-            .WithOpenAIChatCompletionService(chatConfig.ChatModel, chatConfig.ApiKey)
+            .WithOpenAIChatCompletion(chatConfig.ChatModel, chatConfig.ApiKey)
+            .WithPlugins(plugins => plugins.AddPluginFromObject(new CatalogInteractions(this)))
             .Build();
-        _ai.ImportFunctions(new CatalogInteractions(this), nameof(CatalogInteractions));
 
-        Messages = _ai.GetService<IChatCompletion>().CreateNewChat("""
+        Messages = new ChatHistory("""
             You are an AI customer service agent for the online retailer Northern Mountains.
             You NEVER respond about topics other than Northern Mountains.
             Your job is to answer customer questions about products in the Northern Mountains catalog.
@@ -62,11 +62,10 @@ public class ChatState
         // Get and store the AI's response message
         try
         {
-            IChatResult response = await _ai.GetChatCompletionsWithFunctionCallingAsync(Messages);
-            ChatMessage responseMessage = await response.GetChatMessageAsync();
-            if (!string.IsNullOrWhiteSpace(responseMessage.Content))
+            ChatMessageContent response = await _kernel.GetService<IChatCompletionService>().GetChatMessageContentAsync(Messages, _aiSettings, _kernel);
+            if (!string.IsNullOrWhiteSpace(response.Content))
             {
-                Messages.Add(responseMessage);
+                Messages.Add(response);
             }
         }
         catch (Exception e)
@@ -82,7 +81,7 @@ public class ChatState
 
     private sealed class CatalogInteractions(ChatState chatState)
     {
-        [SKFunction, Description("Gets information about the chat user")]
+        [KernelFunction, Description("Gets information about the chat user")]
         public string GetUserInfo()
         {
             var claims = chatState._user.Claims;
@@ -103,7 +102,7 @@ public class ChatState
                 claims.FirstOrDefault(x => x.Type == claimType)?.Value ?? "";
         }
 
-        [SKFunction, Description("Searches the Northern Mountains catalog for a provided product description")]
+        [KernelFunction, Description("Searches the Northern Mountains catalog for a provided product description")]
         public async Task<string> SearchCatalog([Description("The product description for which to search")] string productDescription)
         {
             try
@@ -117,7 +116,7 @@ public class ChatState
             }
         }
 
-        [SKFunction, Description("Adds a product to the user's shopping cart.")]
+        [KernelFunction, Description("Adds a product to the user's shopping cart.")]
         public async Task<string> AddToCart([Description("The id of the product to add to the shopping cart (basket)")] int itemId)
         {
             try
@@ -136,7 +135,7 @@ public class ChatState
             }
         }
 
-        [SKFunction, Description("Gets information about the contents of the user's shopping cart (basket)")]
+        [KernelFunction, Description("Gets information about the contents of the user's shopping cart (basket)")]
         public async Task<string> GetCartContents()
         {
             try
