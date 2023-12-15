@@ -1,0 +1,28 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: EventBus
+spec:
+  minReadySeconds: 60
+  replicas: 1
+  selector:
+    matchLabels:
+      app: EventBus
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: EventBus
+    spec:
+      containers:
+      - name: EventBus
+        image: rabbitmq:3-management
+        imagePullPolicy: 
+        envFrom:
+        - configMapRef:
+            name: EventBus-env
+      terminationGracePeriodSeconds: 180

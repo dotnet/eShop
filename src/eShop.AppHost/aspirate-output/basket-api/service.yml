@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: basket-api
+spec:
+  type: ClusterIP
+  selector:
+    app: basket-api
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+

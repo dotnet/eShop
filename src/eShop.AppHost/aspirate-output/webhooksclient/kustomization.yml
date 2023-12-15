@@ -1,0 +1,18 @@
+resources:
+- deployment.yml
+- service.yml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: webhooksclient-env
+  literals:
+    - OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES=true
+    - OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES=true
+    - IdentityUrl=http://identity-api:8080
+    - CallBackUrl=http://webhooksclient:8080
+    - services__webhooks-api__0=http://webhooks-api:8080
+    - services__webhooks-api__1=https://webhooks-api:8443
+    - ASPNETCORE_URLS=http://+:8080
+

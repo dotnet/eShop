@@ -1,0 +1,26 @@
+resources:
+- deployment.yml
+- service.yml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: webapp-env
+  literals:
+    - OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES=true
+    - OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES=true
+    - IdentityUrl=http://identity-api:8080
+    - CallBackUrl=https://webapp:8443
+    - services__basket-api__0=http://basket-api:8080
+    - services__basket-api__1=https://basket-api:8443
+    - services__catalog-api__0=http://catalog-api:8080
+    - services__catalog-api__1=https://catalog-api:8443
+    - services__ordering-api__0=http://ordering-api:8080
+    - services__ordering-api__1=https://ordering-api:8443
+    - ASPNETCORE_URLS=http://+:8080
+
+secretGenerator:
+- name: webapp-secrets
+  envs:
+  - .webapp.secrets

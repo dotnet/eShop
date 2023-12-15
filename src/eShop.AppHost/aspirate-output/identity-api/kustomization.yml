@@ -1,0 +1,23 @@
+resources:
+- deployment.yml
+- service.yml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: identity-api-env
+  literals:
+    - OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES=true
+    - OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES=true
+    - BasketApiClient=http://basket-api:8080
+    - OrderingApiClient=http://ordering-api:8080
+    - WebhooksWebClient=http://webhooksclient:8080
+    - WebhooksApiClient=http://webhooks-api:8080
+    - WebAppClient=https://webapp:8443
+    - ASPNETCORE_URLS=http://+:8080
+
+secretGenerator:
+- name: identity-api-secrets
+  envs:
+  - .identity-api.secrets

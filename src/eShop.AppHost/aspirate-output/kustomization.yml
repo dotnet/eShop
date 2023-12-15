@@ -1,0 +1,19 @@
+resources:
+- redis
+- EventBus
+- postgres
+- identity-api
+- basket-api
+- catalog-api
+- ordering-api
+- order-processor
+- payment-processor
+- webhooks-api
+- mobile-bff
+- webhooksclient
+- webapp
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+

@@ -1,0 +1,14 @@
+resources:
+- deployment.yml
+- service.yml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: postgres-env
+  literals:
+    - POSTGRES_HOST_AUTH_METHOD=scram-sha-256
+    - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256 --auth-local=scram-sha-256
+    - POSTGRES_PASSWORD=Host=postgres;Port=5432;Username=postgres;Password=E$WpdL4X!p;
+

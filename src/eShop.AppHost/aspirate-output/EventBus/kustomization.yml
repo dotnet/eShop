@@ -1,0 +1,13 @@
+resources:
+- deployment.yml
+- service.yml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: EventBus-env
+  literals:
+    - RABBITMQ_DEFAULT_USER=guest
+    - RABBITMQ_DEFAULT_PASS=amqp://guest:WM6Bm+Ui^B@EventBus:15672
+
