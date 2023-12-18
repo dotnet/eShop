@@ -131,7 +131,7 @@
 
     <OnPlatform x:Key="MidMediumSize" x:TypeArguments="x:Double">
         <On Platform="iOS" Value="12" />
-        <On Platform="DefaultI" Value="14" />
+        <On Platform="Default" Value="14" />
     </OnPlatform>
 
     <OnPlatform x:Key="MediumSize" x:TypeArguments="x:Double">
