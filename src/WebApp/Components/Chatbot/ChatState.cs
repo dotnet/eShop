@@ -3,10 +3,9 @@ using System.Security.Claims;
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.AI.ChatCompletion;
 using eShop.WebAppComponents.Services;
-using Microsoft.SemanticKernel.AI;
-using Microsoft.SemanticKernel.Connectors.AI.OpenAI;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Microsoft.SemanticKernel.ChatCompletion;
 
 namespace eShop.WebApp.Chatbot;
 
@@ -18,7 +17,7 @@ public class ChatState
     private readonly NavigationManager _navigationManager;
     private readonly ILogger _logger;
     private readonly Kernel _kernel;
-    private readonly OpenAIPromptExecutionSettings _aiSettings = new() { FunctionCallBehavior = FunctionCallBehavior.AutoInvokeKernelFunctions };
+    private readonly OpenAIPromptExecutionSettings _aiSettings = new() { ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions };
 
     public ChatState(CatalogService catalogService, BasketState basketState, ClaimsPrincipal user, NavigationManager nav, ChatConfig chatConfig, ILoggerFactory loggerFactory)
     {
@@ -33,11 +32,10 @@ public class ChatState
             _logger.LogDebug("ChatModel: {model}", chatConfig.ChatModel);
         }
 
-        _kernel = new KernelBuilder()
-            .WithLoggerFactory(loggerFactory)
-            .WithOpenAIChatCompletion(chatConfig.ChatModel, chatConfig.ApiKey)
-            .WithPlugins(plugins => plugins.AddPluginFromObject(new CatalogInteractions(this)))
-            .Build();
+        IKernelBuilder builder = Kernel.CreateBuilder().AddOpenAIChatCompletion(chatConfig.ChatModel, chatConfig.ApiKey);
+        builder.Services.AddSingleton(loggerFactory);
+        builder.Plugins.AddFromObject(new CatalogInteractions(this));
+        _kernel = builder.Build();
 
         Messages = new ChatHistory("""
             You are an AI customer service agent for the online retailer Northern Mountains.
@@ -62,7 +60,7 @@ public class ChatState
         // Get and store the AI's response message
         try
         {
-            ChatMessageContent response = await _kernel.GetService<IChatCompletionService>().GetChatMessageContentAsync(Messages, _aiSettings, _kernel);
+            ChatMessageContent response = await _kernel.GetRequiredService<IChatCompletionService>().GetChatMessageContentAsync(Messages, _aiSettings, _kernel);
             if (!string.IsNullOrWhiteSpace(response.Content))
             {
                 Messages.Add(response);
