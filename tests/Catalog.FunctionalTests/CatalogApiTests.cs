@@ -262,4 +262,49 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         Assert.Equal(13, result.Count);
         Assert.NotNull(result);
     }
+
+    [Fact]
+    public async Task AddDeleteCatalogItem()
+    {
+        // Act - 1
+        var bodyContent = new CatalogItem {
+            Id = 10015,
+            Name = "TestCatalog1",
+            Description = "Test catalog description 1",
+            Price = 11000.08m,
+            PictureFileName = null,
+            PictureUri = null,
+            CatalogTypeId = 8,
+            CatalogType = null,
+            CatalogBrandId = 13,
+            CatalogBrand = null,
+            AvailableStock = 100,
+            RestockThreshold = 10,
+            MaxStockThreshold = 200,
+            OnReorder = false
+        };
+        var response = await _httpClient.PostAsJsonAsync("/api/v1/catalog/items", bodyContent);
+        response.EnsureSuccessStatusCode();
+
+        // Act - 2
+        response = await _httpClient.GetAsync("/api/v1/catalog/items/10015");
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync();
+        var addedItem = JsonSerializer.Deserialize<CatalogItem>(body, _jsonSerializerOptions);
+
+        // Assert - 1
+        Assert.Equal(bodyContent.Id, addedItem.Id);
+
+        //Act - 3
+        response = await _httpClient.DeleteAsync("/api/v1/catalog/items/10015");
+        response.EnsureSuccessStatusCode();
+
+        // Act - 4
+        var response1 = await _httpClient.GetAsync("/api/v1/catalog/items/10015");
+        var responseStatus = response1.StatusCode;
+
+        // Assert - 2
+        Assert.Equal("NoContent", response.StatusCode.ToString());
+        Assert.Equal("NotFound", responseStatus.ToString());
+    }
 }
