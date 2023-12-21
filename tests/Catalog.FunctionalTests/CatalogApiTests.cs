@@ -262,7 +262,4 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         Assert.Equal(13, result.Count);
         Assert.NotNull(result);
     }
-
-
-
 }
