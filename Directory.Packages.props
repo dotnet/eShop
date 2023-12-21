@@ -6,7 +6,7 @@
     <MicrosoftExtensionsVersion>8.0.0</MicrosoftExtensionsVersion>
     <EfVersion>8.0.0</EfVersion>
     <RuntimeVersion>8.0.0</RuntimeVersion>
-    <AspireVersion>8.0.0-preview.1.23557.2</AspireVersion>
+    <AspireVersion>8.0.0-preview.2.23619.3</AspireVersion>
     <GrpcVersion>2.59.0</GrpcVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -31,12 +31,12 @@
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="$(MicrosoftExtensionsVersion)" />
     <!-- Version together with EF -->
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0-rc.2" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EfVersion)" />
     <PackageVersion Include="NSubstitute" Version="5.1.0" />
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.15" />
-    <PackageVersion Include="Pgvector" Version="0.2.0-rc.2" />
-    <PackageVersion Include="Pgvector.EntityFrameworkCore" Version="0.2.0-rc.1" />
+    <PackageVersion Include="Pgvector" Version="0.2.0" />
+    <PackageVersion Include="Pgvector.EntityFrameworkCore" Version="0.2.0" />
     <!-- Version together with runtime -->
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(RuntimeVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="$(RuntimeVersion)" />
@@ -79,6 +79,6 @@
     <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
     <PackageVersion Include="xunit" Version="2.5.1" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.1" />
-    <PackageVersion Include="Yarp.ReverseProxy" Version="2.1.0-preview.1.23556.5" />
+    <PackageVersion Include="Yarp.ReverseProxy" Version="2.1.0" />
   </ItemGroup>
 </Project>
