@@ -264,7 +264,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     }
 
     [Fact]
-    public async Task AddDeleteCatalogItem()
+    public async Task AddCatalogItem()
     {
         // Act - 1
         var bodyContent = new CatalogItem {
@@ -295,15 +295,20 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         // Assert - 1
         Assert.Equal(bodyContent.Id, addedItem.Id);
 
-        //Act - 3
-        response = await _httpClient.DeleteAsync("/api/v1/catalog/items/10015");
+    }
+
+    [Fact]
+    public async Task DeleteCatalogItem()
+    {
+        //Act - 1
+        var response = await _httpClient.DeleteAsync("/api/v1/catalog/items/5");
         response.EnsureSuccessStatusCode();
 
-        // Act - 4
-        var response1 = await _httpClient.GetAsync("/api/v1/catalog/items/10015");
+        // Act - 2
+        var response1 = await _httpClient.GetAsync("/api/v1/catalog/items/5");
         var responseStatus = response1.StatusCode;
 
-        // Assert - 2
+        // Assert - 1
         Assert.Equal("NoContent", response.StatusCode.ToString());
         Assert.Equal("NotFound", responseStatus.ToString());
     }
