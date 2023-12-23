@@ -14,36 +14,38 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
         //Address value object persisted as owned entity type supported since EF Core 2.0
         orderConfiguration
             .OwnsOne(o => o.Address);
-        
+
         orderConfiguration
-            .Property(o=> o.BuyerId)
+            .Property(o => o.BuyerId)
             .HasColumnName("BuyerId");
 
         orderConfiguration
-            .Property("_orderDate")
+            .Property(o => o.OrderDate)
             .HasColumnName("OrderDate");
 
         orderConfiguration
-            .Property("_orderStatusId")
+            .Property(o => o.OrderStatusId)
             .HasColumnName("OrderStatusId");
 
         orderConfiguration
-            .Property("_paymentMethodId")
+            .Property(o => o.PaymentId)
             .HasColumnName("PaymentMethodId");
 
-        orderConfiguration.Property<string>("Description");
+        orderConfiguration
+            .Property(o => o.Description)
+            .HasColumnName("Description");
 
         orderConfiguration.HasOne<PaymentMethod>()
             .WithMany()
-            .HasForeignKey("_paymentMethodId")
+            .HasForeignKey(o => o.PaymentId)
             .OnDelete(DeleteBehavior.Restrict);
 
         orderConfiguration.HasOne<Buyer>()
             .WithMany()
-            .HasForeignKey(o=> o.BuyerId);
+            .HasForeignKey(o => o.BuyerId);
 
         orderConfiguration.HasOne(o => o.OrderStatus)
             .WithMany()
-            .HasForeignKey("_orderStatusId");
+            .HasForeignKey(o => o.OrderStatusId);
     }
 }

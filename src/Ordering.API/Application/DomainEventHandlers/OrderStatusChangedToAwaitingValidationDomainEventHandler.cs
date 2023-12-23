@@ -28,7 +28,7 @@ public class OrderStatusChangedToAwaitingValidationDomainEventHandler
         var buyer = await _buyerRepository.FindByIdAsync(order.BuyerId.Value);
 
         var orderStockList = domainEvent.OrderItems
-            .Select(orderItem => new OrderStockItem(orderItem.ProductId, orderItem.GetUnits()));
+            .Select(orderItem => new OrderStockItem(orderItem.ProductId, orderItem.Units));
 
         var integrationEvent = new OrderStatusChangedToAwaitingValidationIntegrationEvent(order.Id, order.OrderStatus.Name, buyer.Name, buyer.IdentityGuid, orderStockList);
         await _orderingIntegrationEventService.AddAndSaveEventAsync(integrationEvent);

@@ -27,7 +27,7 @@ public class OrderStatusChangedToPaidDomainEventHandler : INotificationHandler<O
         var buyer = await _buyerRepository.FindByIdAsync(order.BuyerId.Value);
 
         var orderStockList = domainEvent.OrderItems
-            .Select(orderItem => new OrderStockItem(orderItem.ProductId, orderItem.GetUnits()));
+            .Select(orderItem => new OrderStockItem(orderItem.ProductId, orderItem.Units));
 
         var integrationEvent = new OrderStatusChangedToPaidIntegrationEvent(
             domainEvent.OrderId,
