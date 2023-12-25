@@ -11,7 +11,7 @@ public class Order
     [Required]
     public Address Address { get; private set; }
 
-    public int? BuyerId { get;  set; }
+    public int? BuyerId { get; private set; }
 
     public Buyer Buyer { get; }
 
@@ -34,7 +34,7 @@ public class Order
    
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
-    public int? PaymentId { get; set; }
+    public int? PaymentId { get; private set; }
 
     public static Order NewDraft()
     {
@@ -92,6 +92,12 @@ public class Order
         }
     }
 
+    public void SetPaymentMethodVerified(int buyerId, int paymentId)
+    {
+        BuyerId = buyerId;
+        PaymentId = paymentId;
+    }
+    
     public void SetAwaitingValidationStatus()
     {
         if (OrderStatusId == OrderStatus.Submitted.Id)

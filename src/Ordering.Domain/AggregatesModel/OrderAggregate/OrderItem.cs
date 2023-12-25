@@ -5,7 +5,6 @@ namespace eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
 public class OrderItem
     : Entity
 {
-
     [Required]
     public string ProductName { get; }
     
@@ -21,7 +20,7 @@ public class OrderItem
 
     protected OrderItem() { }
 
-    public OrderItem(int productId, string productName, decimal unitPrice, decimal discount, string PictureUrl, int units = 1)
+    public OrderItem(int productId, string productName, decimal unitPrice, decimal discount, string pictureUrl, int units = 1)
     {
         if (units <= 0)
         {
@@ -39,7 +38,7 @@ public class OrderItem
         UnitPrice = unitPrice;
         Discount = discount;
         Units = units;
-        this.PictureUrl = PictureUrl;
+        PictureUrl = pictureUrl;
     }
     
     public void SetNewDiscount(decimal discount)
