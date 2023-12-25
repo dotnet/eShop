@@ -38,22 +38,18 @@ public class OrderQueries(OrderingContext context)
     public async Task<IEnumerable<OrderSummary>> GetOrdersFromUserAsync(string userId)
     {
         return await context.Orders
-            .Join(context.Buyers,
-                o => o.BuyerId,  
-                b => b.Id,       
-                (order, buyer) => new { order, buyer })
-            .Where(ob => ob.buyer.IdentityGuid == userId)  
-            .Select(ob => new OrderSummary
+            .Where(o => o.Buyer.IdentityGuid == userId)  
+            .Select(o => new OrderSummary
             {
-                ordernumber = ob.order.Id,
-                date = ob.order.OrderDate,
-                status = ob.order.OrderStatus.Name,
-                total =(double) ob.order.OrderItems.Sum(oi => oi.UnitPrice* oi.Units)
+                ordernumber = o.Id,
+                date = o.OrderDate,
+                status = o.OrderStatus.Name,
+                total =(double) o.OrderItems.Sum(oi => oi.UnitPrice* oi.Units)
             })
             .AsSplitQuery()
             .ToListAsync();
     } 
-
+    
     public async Task<IEnumerable<CardType>> GetCardTypesAsync() => 
         await context.CardTypes.Select(c=> new CardType { Id = c.Id, Name = c.Name }).ToListAsync();
 }

@@ -19,7 +19,7 @@ class OrderItemEntityTypeConfiguration
             .HasColumnName("Discount");
 
         orderItemConfiguration
-            .Property(o => o.ProductId)
+            .Property(o => o.ProductName)
             .HasColumnName("ProductName");
 
         orderItemConfiguration

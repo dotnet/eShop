@@ -40,7 +40,7 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
             .HasForeignKey(o => o.PaymentId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        orderConfiguration.HasOne<Buyer>()
+        orderConfiguration.HasOne(o => o.Buyer)
             .WithMany()
             .HasForeignKey(o => o.BuyerId);
 
