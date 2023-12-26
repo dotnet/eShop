@@ -16,24 +16,20 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
             .OwnsOne(o => o.Address);
 
         orderConfiguration
-            .Property(o => o.BuyerId)
-            .HasColumnName("BuyerId");
+            .Property(o => o.BuyerId);
+            
+        orderConfiguration
+            .Property(o => o.OrderDate);
 
         orderConfiguration
-            .Property(o => o.OrderDate)
-            .HasColumnName("OrderDate");
-
-        orderConfiguration
-            .Property(o => o.OrderStatusId)
-            .HasColumnName("OrderStatusId");
+            .Property(o => o.OrderStatusId);
 
         orderConfiguration
             .Property(o => o.PaymentId)
             .HasColumnName("PaymentMethodId");
 
         orderConfiguration
-            .Property(o => o.Description)
-            .HasColumnName("Description");
+            .Property(o => o.Description);
 
         orderConfiguration.HasOne<PaymentMethod>()
             .WithMany()

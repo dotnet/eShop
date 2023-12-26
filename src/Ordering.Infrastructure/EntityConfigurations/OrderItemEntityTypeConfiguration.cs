@@ -15,23 +15,18 @@ class OrderItemEntityTypeConfiguration
         orderItemConfiguration.Property<int>("OrderId");
 
         orderItemConfiguration
-            .Property(o => o.Discount)
-            .HasColumnName("Discount");
+            .Property(o => o.Discount);
 
         orderItemConfiguration
-            .Property(o => o.ProductName)
-            .HasColumnName("ProductName");
+            .Property(o => o.ProductName);
 
         orderItemConfiguration
-            .Property(o => o.UnitPrice)
-            .HasColumnName("UnitPrice");
+            .Property(o => o.UnitPrice);
 
         orderItemConfiguration
-            .Property(o => o.Units)
-            .HasColumnName("Units");
+            .Property(o => o.Units);
 
         orderItemConfiguration
-            .Property(o => o.PictureUrl)
-            .HasColumnName("PictureUrl");
+            .Property(o => o.PictureUrl);
     }
 }
