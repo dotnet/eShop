@@ -51,7 +51,7 @@
                     {
                         new Secret("secret".Sha256())
                     },
-                    RedirectUris = { configuration["XamarinCallback"] },
+                    RedirectUris = { configuration["XamarinCallback"] ?? string.Empty },
                     RequireConsent = false,
                     RequirePkce = true,
                     PostLogoutRedirectUris = { $"{configuration["XamarinCallback"]}/Account/Redirecting" },

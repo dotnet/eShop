@@ -87,7 +87,7 @@ public class ConsentController : Controller
         var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
         if (request == null) return result;
 
-        ConsentResponse grantedConsent = null;
+        ConsentResponse? grantedConsent = null;
 
         // user clicked 'no' - send back the standard 'access_denied' response
         if (model?.Button == "no")
@@ -135,19 +135,23 @@ public class ConsentController : Controller
             await _interaction.GrantConsentAsync(request, grantedConsent);
 
             // indicate that's it ok to redirect back to authorization endpoint
-            result.RedirectUri = model.ReturnUrl;
+            result.RedirectUri = model?.ReturnUrl ?? string.Empty;
             result.Client = request.Client;
         }
         else
         {
             // we need to redisplay the consent UI
-            result.ViewModel = await BuildViewModelAsync(model.ReturnUrl, model);
+            var consentViewModel = await BuildViewModelAsync(model?.ReturnUrl ?? string.Empty, model);
+            if (consentViewModel is not null)
+            {
+                result.ViewModel = consentViewModel;
+            }
         }
 
         return result;
     }
 
-    private async Task<ConsentViewModel> BuildViewModelAsync(string returnUrl, ConsentInputModel model = null)
+    private async Task<ConsentViewModel?> BuildViewModelAsync(string returnUrl, ConsentInputModel? model = null)
     {
         var request = await _interaction.GetAuthorizationContextAsync(returnUrl);
         if (request != null)
@@ -163,7 +167,7 @@ public class ConsentController : Controller
     }
 
     private ConsentViewModel CreateConsentViewModel(
-        ConsentInputModel model, string returnUrl,
+        ConsentInputModel? model, string returnUrl,
         AuthorizationRequest request)
     {
         var vm = new ConsentViewModel

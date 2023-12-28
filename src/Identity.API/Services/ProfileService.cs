@@ -14,6 +14,8 @@
             var subject = context.Subject ?? throw new ArgumentNullException(nameof(context.Subject));
 
             var subjectId = subject.Claims.Where(x => x.Type == "sub").FirstOrDefault()?.Value;
+            if (subjectId == null)
+                throw new ArgumentException("subject identifier cannot be null");
 
             var user = await _userManager.FindByIdAsync(subjectId);
             if (user == null)
@@ -28,6 +30,9 @@
             var subject = context.Subject ?? throw new ArgumentNullException(nameof(context.Subject));
 
             var subjectId = subject.Claims.Where(x => x.Type == "sub").FirstOrDefault()?.Value;
+            if (subjectId == null)
+                throw new ArgumentException("subject identifier cannot be null");
+
             var user = await _userManager.FindByIdAsync(subjectId);
 
             context.IsActive = false;
@@ -56,10 +61,14 @@
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtClaimTypes.Subject, user.Id),
-                new Claim(JwtClaimTypes.PreferredUserName, user.UserName),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
+                new Claim(JwtClaimTypes.Subject, user.Id)
             };
+
+            if (!string.IsNullOrWhiteSpace(user.UserName))
+            {
+                claims.Add(new Claim(JwtClaimTypes.PreferredUserName, user.UserName));
+                claims.Add(new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName));
+            }
 
             if (!string.IsNullOrWhiteSpace(user.Name))
                 claims.Add(new Claim("name", user.Name));
@@ -94,7 +103,7 @@
             if (!string.IsNullOrWhiteSpace(user.ZipCode))
                 claims.Add(new Claim("address_zip_code", user.ZipCode));
 
-            if (_userManager.SupportsUserEmail)
+            if (_userManager.SupportsUserEmail && !string.IsNullOrWhiteSpace(user.Email))
             {
                 claims.AddRange(new[]
                 {

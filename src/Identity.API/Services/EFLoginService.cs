@@ -11,7 +11,7 @@
             _signInManager = signInManager;
         }
 
-        public async Task<ApplicationUser> FindByUsername(string user)
+        public async Task<ApplicationUser?> FindByUsername(string user)
         {
             return await _userManager.FindByEmailAsync(user);
         }
@@ -26,7 +26,7 @@
             return _signInManager.SignInAsync(user, true);
         }
 
-        public Task SignInAsync(ApplicationUser user, AuthenticationProperties properties, string authenticationMethod = null)
+        public Task SignInAsync(ApplicationUser user, AuthenticationProperties properties, string? authenticationMethod = null)
         {
             return _signInManager.SignInAsync(user, properties, authenticationMethod);
         }

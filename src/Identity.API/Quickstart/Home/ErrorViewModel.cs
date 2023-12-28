@@ -7,6 +7,7 @@ public class ErrorViewModel
 {
     public ErrorViewModel()
     {
+        Error = new ErrorMessage();
     }
 
     public ErrorViewModel(string error)
