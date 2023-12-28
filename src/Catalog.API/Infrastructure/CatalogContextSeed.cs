@@ -25,35 +25,38 @@ public partial class CatalogContextSeed(
             var sourceJson = File.ReadAllText(sourcePath);
             var sourceItems = JsonSerializer.Deserialize<CatalogSourceEntry[]>(sourceJson);
 
-            context.CatalogBrands.RemoveRange(context.CatalogBrands);
-            await context.CatalogBrands.AddRangeAsync(sourceItems.Select(x => x.Brand).Distinct()
-                .Select(brandName => new CatalogBrand { Brand = brandName }));
-            logger.LogInformation("Seeded catalog with {NumBrands} brands", context.CatalogBrands.Count());
-
-            context.CatalogTypes.RemoveRange(context.CatalogTypes);
-            await context.CatalogTypes.AddRangeAsync(sourceItems.Select(x => x.Type).Distinct()
-                .Select(typeName => new CatalogType { Type = typeName }));
-            logger.LogInformation("Seeded catalog with {NumTypes} types", context.CatalogTypes.Count());
-
-            await context.SaveChangesAsync();
-
-            var brandIdsByName = await context.CatalogBrands.ToDictionaryAsync(x => x.Brand, x => x.Id);
-            var typeIdsByName = await context.CatalogTypes.ToDictionaryAsync(x => x.Type, x => x.Id);
-
-            await context.CatalogItems.AddRangeAsync(sourceItems.Select(source => new CatalogItem
+            if (sourceItems != null)
             {
-                Id = source.Id,
-                Name = source.Name,
-                Description = source.Description,
-                Price = source.Price,
-                CatalogBrandId = brandIdsByName[source.Brand],
-                CatalogTypeId = typeIdsByName[source.Type],
-                AvailableStock = 100,
-                MaxStockThreshold = 200,
-                RestockThreshold = 10,
-                PictureFileName = $"{source.Id}.webp",
-                Embedding = catalogAI.IsEnabled ? new Pgvector.Vector(source.Embedding) : null,
-            }));
+                context.CatalogBrands.RemoveRange(context.CatalogBrands);
+                await context.CatalogBrands.AddRangeAsync(sourceItems.Select(x => x.Brand).Distinct()
+                    .Select(brandName => new CatalogBrand { Brand = brandName }));
+                logger.LogInformation("Seeded catalog with {NumBrands} brands", context.CatalogBrands.Count());
+
+                context.CatalogTypes.RemoveRange(context.CatalogTypes);
+                await context.CatalogTypes.AddRangeAsync(sourceItems.Select(x => x.Type).Distinct()
+                    .Select(typeName => new CatalogType { Type = typeName }));
+                logger.LogInformation("Seeded catalog with {NumTypes} types", context.CatalogTypes.Count());
+
+                await context.SaveChangesAsync();
+
+                var brandIdsByName = await context.CatalogBrands.ToDictionaryAsync(x => x.Brand, x => x.Id);
+                var typeIdsByName = await context.CatalogTypes.ToDictionaryAsync(x => x.Type, x => x.Id);
+
+                await context.CatalogItems.AddRangeAsync(sourceItems.Select(source => new CatalogItem
+                {
+                    Id = source.Id,
+                    Name = source.Name,
+                    Description = source.Description,
+                    Price = source.Price,
+                    CatalogBrandId = brandIdsByName[source.Brand],
+                    CatalogTypeId = typeIdsByName[source.Type],
+                    AvailableStock = 100,
+                    MaxStockThreshold = 200,
+                    RestockThreshold = 10,
+                    PictureFileName = $"{source.Id}.webp",
+                    Embedding = catalogAI.IsEnabled ? new Pgvector.Vector(source.Embedding) : null,
+                }));
+            }
 
             logger.LogInformation("Seeded catalog with {NumItems} items", context.CatalogItems.Count());
             await context.SaveChangesAsync();
@@ -82,11 +85,11 @@ public partial class CatalogContextSeed(
     private class CatalogSourceEntry
     {
         public int Id { get; set; }
-        public string Type { get; set; }
-        public string Brand { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Type { get; set; } = null!;
+        public string Brand { get; set; } = null!;
+        public string Name { get; set; } = null!;
+        public string Description { get; set; } = null!;
         public decimal Price { get; set; }
-        public float[] Embedding { get; set; }
+        public float[] Embedding { get; set; } = null!;
     }
 }

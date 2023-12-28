@@ -147,7 +147,7 @@ public static class CatalogApi
         if (services.Logger.IsEnabled(LogLevel.Debug))
         {
             var itemsWithDistance = await services.Context.CatalogItems
-                .Select(c => new { Item = c, Distance = c.Embedding.CosineDistance(vector) })
+                .Select(c => new { Item = c, Distance = c.Embedding!.CosineDistance(vector!) })
                 .OrderBy(c => c.Distance)
                 .Skip(pageSize * pageIndex)
                 .Take(pageSize)
@@ -160,7 +160,7 @@ public static class CatalogApi
         else
         {
             itemsOnPage = await services.Context.CatalogItems
-                .OrderBy(c => c.Embedding.CosineDistance(vector))
+                .OrderBy(c => c.Embedding!.CosineDistance(vector!))
                 .Skip(pageSize * pageIndex)
                 .Take(pageSize)
                 .ToListAsync();

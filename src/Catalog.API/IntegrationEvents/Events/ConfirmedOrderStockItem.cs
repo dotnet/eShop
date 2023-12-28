@@ -1,3 +1,3 @@
 ﻿namespace eShop.Catalog.API.IntegrationEvents.Events;
 
-public record ConfirmedOrderStockItem(int ProductId, bool HasStock);
+public record ConfirmedOrderStockItem(int? ProductId, bool HasStock);

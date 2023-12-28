@@ -8,24 +8,23 @@ public class CatalogItem
 {
     public int Id { get; set; }
 
-    [Required]
-    public string Name { get; set; }
+    [Required] public string Name { get; set; } = null!;
 
-    public string Description { get; set; }
+    public string Description { get; set; } = null!;
 
     public decimal Price { get; set; }
 
-    public string PictureFileName { get; set; }
+    public string PictureFileName { get; set; } = null!;
 
-    public string PictureUri { get; set; }
+    public string PictureUri { get; set; } = null!;
 
     public int CatalogTypeId { get; set; }
 
-    public CatalogType CatalogType { get; set; }
+    public CatalogType? CatalogType { get; set; }
 
     public int CatalogBrandId { get; set; }
 
-    public CatalogBrand CatalogBrand { get; set; }
+    public CatalogBrand? CatalogBrand { get; set; }
 
     // Quantity in stock
     public int AvailableStock { get; set; }
@@ -39,7 +38,7 @@ public class CatalogItem
 
     /// <summary>Optional embedding for the catalog item's description.</summary>
     [JsonIgnore]
-    public Vector Embedding { get; set; }
+    public Vector? Embedding { get; set; }
 
     /// <summary>
     /// True if item is on reorder

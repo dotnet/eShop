@@ -37,7 +37,7 @@ public sealed class CatalogAI : ICatalogAI
     public bool IsEnabled { get; }
 
     /// <summary>Gets an embedding vector for the specified text.</summary>
-    public async ValueTask<Vector> GetEmbeddingAsync(string text)
+    public async ValueTask<Vector?> GetEmbeddingAsync(string text)
     {
         if (!IsEnabled)
         {
@@ -54,9 +54,9 @@ public sealed class CatalogAI : ICatalogAI
     }
 
     /// <summary>Gets an embedding vector for the specified catalog item.</summary>
-    public ValueTask<Vector> GetEmbeddingAsync(CatalogItem item) => IsEnabled ? 
+    public ValueTask<Vector?> GetEmbeddingAsync(CatalogItem item) => IsEnabled ? 
         GetEmbeddingAsync($"{item.Name} {item.Description}") :
-        ValueTask.FromResult<Vector>(null);
+        ValueTask.FromResult<Vector?>(null);
 
     /// <summary>Gets the AI client used for creating embeddings.</summary>
     private OpenAIClient GetAIClient() =>  !string.IsNullOrWhiteSpace(_aiKey) ? 

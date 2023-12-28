@@ -9,8 +9,8 @@ public class AIOptions
 public class OpenAIOptions
 {
     /// <summary>OpenAI API key for accessing embedding LLM.</summary>
-    public string APIKey { get; set; }
+    public string APIKey { get; set; } = null!;
 
     /// <summary>The name of the embedding model to use.</summary>
-    public string EmbeddingName { get; set; }
+    public string EmbeddingName { get; set; } = null!;
 }
