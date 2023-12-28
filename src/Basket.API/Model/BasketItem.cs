@@ -2,13 +2,13 @@
 
 public class BasketItem : IValidatableObject
 {
-    public string Id { get; set; }
+    public string Id { get; set; } = null!;
     public int ProductId { get; set; }
-    public string ProductName { get; set; }
+    public string ProductName { get; set; } = null!;
     public decimal UnitPrice { get; set; }
     public decimal OldUnitPrice { get; set; }
     public int Quantity { get; set; }
-    public string PictureUrl { get; set; }
+    public string PictureUrl { get; set; } = null!;
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

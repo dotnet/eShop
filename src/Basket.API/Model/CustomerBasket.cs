@@ -2,7 +2,7 @@
 
 public class CustomerBasket
 {
-    public string BuyerId { get; set; }
+    public string BuyerId { get; set; } = null!;
 
     public List<BasketItem> Items { get; set; } = [];
 
