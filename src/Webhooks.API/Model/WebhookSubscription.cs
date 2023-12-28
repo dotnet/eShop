@@ -7,8 +7,8 @@ public class WebhookSubscription
     public WebhookType Type { get; set; }
     public DateTime Date { get; set; }
     [Required]
-    public string DestUrl { get; set; }
-    public string Token { get; set; }
+    public string DestUrl { get; set; } = null!;
+    public string? Token { get; set; }
     [Required]
-    public string UserId { get; set; }
+    public string? UserId { get; set; }
 }
