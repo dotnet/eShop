@@ -2,6 +2,8 @@
 {
     public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
+        var services = builder.Services;
+        
         // Add the authentication services to DI
         builder.AddDefaultAuthentication();
 
@@ -10,22 +12,20 @@
         // The DbContext of type 'OrderingContext' cannot be pooled because it does not have a public constructor accepting a single parameter of type DbContextOptions or has more than one constructor.
         builder.AddNpgsqlDbContext<OrderingContext>("OrderingDB", settings => settings.DbContextPooling = false);
 
-        builder.Services.AddMigration<OrderingContext, OrderingContextSeed>();
+        services.AddMigration<OrderingContext, OrderingContextSeed>();
 
         // Add the integration services that consume the DbContext
-        builder.Services.AddTransient<IIntegrationEventLogService, IntegrationEventLogService<OrderingContext>>();
+        services.AddTransient<IIntegrationEventLogService, IntegrationEventLogService<OrderingContext>>();
 
-        builder.Services.AddTransient<IOrderingIntegrationEventService, OrderingIntegrationEventService>();
+        services.AddTransient<IOrderingIntegrationEventService, OrderingIntegrationEventService>();
 
         builder.AddRabbitMqEventBus("EventBus")
                .AddEventBusSubscriptions();
 
-        builder.Services.AddHttpContextAccessor();
-        builder.Services.AddTransient<IIdentityService, IdentityService>();
+        services.AddHttpContextAccessor();
+        services.AddTransient<IIdentityService, IdentityService>();
 
         // Configure mediatR
-        var services = builder.Services;
-
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssemblyContaining(typeof(Program));
@@ -45,7 +45,6 @@
         services.AddScoped<IBuyerRepository, BuyerRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IRequestManager, RequestManager>();
-
     }
 
     private static void AddEventBusSubscriptions(this IEventBusBuilder eventBus)
