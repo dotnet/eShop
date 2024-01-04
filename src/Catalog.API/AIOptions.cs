@@ -15,5 +15,6 @@ public class OpenAIOptions
     public string Endpoint { get; set; }
 
     /// <summary>The name of the embedding model to use.</summary>
+    /// <remarks>When using Azure OpenAI, this should be the "Deployment name" of the embedding model.</remarks>
     public string EmbeddingName { get; set; }
 }

@@ -96,11 +96,11 @@ public static class Extensions
             var kernelBuilder = builder.Services.AddKernel();
             if (!string.IsNullOrWhiteSpace(openAIOptions.Endpoint))
             {
-                kernelBuilder.AddAzureOpenAIChatCompletion(openAIOptions.ChatName, openAIOptions.Endpoint, openAIOptions.ApiKey);
+                kernelBuilder.AddAzureOpenAIChatCompletion(openAIOptions.ChatModel, openAIOptions.Endpoint, openAIOptions.ApiKey);
             }
             else
             {
-                kernelBuilder.AddOpenAIChatCompletion(openAIOptions.ChatName, openAIOptions.ApiKey);
+                kernelBuilder.AddOpenAIChatCompletion(openAIOptions.ChatModel, openAIOptions.ApiKey);
             }
         }
     }
