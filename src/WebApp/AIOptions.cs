@@ -1,4 +1,4 @@
-﻿namespace eShop.Catalog.API;
+﻿namespace eShop.WebApp;
 
 public class AIOptions
 {
@@ -9,11 +9,11 @@ public class AIOptions
 public class OpenAIOptions
 {
     /// <summary>OpenAI API key for accessing embedding LLM.</summary>
-    public string ApiKey { get; set; }
+    public string? ApiKey { get; set; }
 
     /// <summary>Optional endpoint for which OpenAI API to access.</summary>
-    public string Endpoint { get; set; }
+    public string? Endpoint { get; set; }
 
-    /// <summary>The name of the embedding model to use.</summary>
-    public string EmbeddingName { get; set; }
+    /// <summary>The name of the chat model to use.</summary>
+    public string ChatName { get; set; } = "gpt-3.5-turbo-16k";
 }

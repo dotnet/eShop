@@ -8,8 +8,8 @@
 @inject CatalogService CatalogService
 @inject BasketState BasketState
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IConfiguration Configuration
 @inject ILoggerFactory LoggerFactory
+@inject IServiceProvider ServiceProvider
 
 <div class="floating-pane">
     <a href="@Nav.GetUriWithQueryParameter("chat", (string?)null)" class="hide-chatbot" title="Close .NET Concierge"><span>✖</span></a>
@@ -53,10 +53,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (ChatConfig.TryReadFromConfig(Configuration, out var chatConfig))
+        var kernel = ServiceProvider.GetService<Kernel>();
+        if (kernel is not null)
         {
             AuthenticationState auth = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            chatState = new ChatState(CatalogService, BasketState, auth.User, Nav, chatConfig, LoggerFactory);
+            chatState = new ChatState(CatalogService, BasketState, auth.User, Nav, kernel, LoggerFactory);
         }
         else
         {
