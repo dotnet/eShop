@@ -50,3 +50,7 @@ The sample catalog data is defined in [catalog.json](https://github.com/dotnet/e
 ### Contributing
 
 For more information on contributing to this repo, please read [the contribution documentation](./CONTRIBUTING.md) and [the Code of Conduct](CODE-OF-CONDUCT.md).
+
+### eShop on Azure
+
+The eShop application is designed to run locally. For a version of this app deployable on Azure, please view [the eShop on Azure](https://github.com/Azure-Samples/eShopOnAzure) repo.
