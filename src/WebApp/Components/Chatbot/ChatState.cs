@@ -19,7 +19,7 @@ public class ChatState
     private readonly Kernel _kernel;
     private readonly OpenAIPromptExecutionSettings _aiSettings = new() { ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions };
 
-    public ChatState(CatalogService catalogService, BasketState basketState, ClaimsPrincipal user, NavigationManager nav, ChatConfig chatConfig, ILoggerFactory loggerFactory)
+    public ChatState(CatalogService catalogService, BasketState basketState, ClaimsPrincipal user, NavigationManager nav, Kernel kernel, ILoggerFactory loggerFactory)
     {
         _catalogService = catalogService;
         _basketState = basketState;
@@ -29,13 +29,12 @@ public class ChatState
 
         if (_logger.IsEnabled(LogLevel.Debug))
         {
-            _logger.LogDebug("ChatModel: {model}", chatConfig.ChatModel);
+            var completionService = kernel.GetRequiredService<IChatCompletionService>();
+            _logger.LogDebug("ChatName: {model}", completionService.Attributes["DeploymentName"]);
         }
 
-        IKernelBuilder builder = Kernel.CreateBuilder().AddOpenAIChatCompletion(chatConfig.ChatModel, chatConfig.ApiKey);
-        builder.Services.AddSingleton(loggerFactory);
-        builder.Plugins.AddFromObject(new CatalogInteractions(this));
-        _kernel = builder.Build();
+        _kernel = kernel;
+        _kernel.Plugins.AddFromObject(new CatalogInteractions(this));
 
         Messages = new ChatHistory("""
             You are an AI customer service agent for the online retailer Northern Mountains.

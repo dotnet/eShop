@@ -1,4 +1,5 @@
-﻿using Azure.AI.OpenAI;
+﻿using Azure;
+using Azure.AI.OpenAI;
 using Pgvector;
 
 namespace eShop.Catalog.API.Services;
@@ -7,6 +8,8 @@ public sealed class CatalogAI : ICatalogAI
 {
     /// <summary>OpenAI API key for accessing embedding LLM.</summary>
     private readonly string _aiKey;
+    /// <summary>Optional OpenAI API endpoint.</summary>
+    private readonly string _aiEndpoint;
     /// <summary>The name of the embedding model to use.</summary>
     private readonly string _aiEmbeddingModel;
 
@@ -19,7 +22,8 @@ public sealed class CatalogAI : ICatalogAI
     {
         var aiOptions = options.Value;
 
-        _aiKey = aiOptions.OpenAI.APIKey;
+        _aiKey = aiOptions.OpenAI.ApiKey;
+        _aiEndpoint = aiOptions.OpenAI.Endpoint;
         _aiEmbeddingModel = aiOptions.OpenAI.EmbeddingName ?? "text-embedding-ada-002";
         IsEnabled = !string.IsNullOrWhiteSpace(_aiKey);
 
@@ -54,12 +58,14 @@ public sealed class CatalogAI : ICatalogAI
     }
 
     /// <summary>Gets an embedding vector for the specified catalog item.</summary>
-    public ValueTask<Vector> GetEmbeddingAsync(CatalogItem item) => IsEnabled ? 
+    public ValueTask<Vector> GetEmbeddingAsync(CatalogItem item) => IsEnabled ?
         GetEmbeddingAsync($"{item.Name} {item.Description}") :
         ValueTask.FromResult<Vector>(null);
 
     /// <summary>Gets the AI client used for creating embeddings.</summary>
-    private OpenAIClient GetAIClient() =>  !string.IsNullOrWhiteSpace(_aiKey) ? 
-        new OpenAIClient(_aiKey) :
+    private OpenAIClient GetAIClient() => !string.IsNullOrWhiteSpace(_aiKey) ?
+        !string.IsNullOrWhiteSpace(_aiEndpoint) ?
+            new OpenAIClient(new Uri(_aiEndpoint), new AzureKeyCredential(_aiKey)) :
+            new OpenAIClient(_aiKey) :
         throw new InvalidOperationException("AI API key not configured");
 }
