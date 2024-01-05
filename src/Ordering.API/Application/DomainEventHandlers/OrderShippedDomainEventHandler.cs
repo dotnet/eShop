@@ -25,7 +25,7 @@ public class OrderShippedDomainEventHandler
         OrderingApiTrace.LogOrderStatusUpdated(_logger, domainEvent.Order.Id, nameof(OrderStatus.Shipped), OrderStatus.Shipped.Id);
 
         var order = await _orderRepository.GetAsync(domainEvent.Order.Id);
-        var buyer = await _buyerRepository.FindByIdAsync(order.GetBuyerId.Value);
+        var buyer = await _buyerRepository.FindByIdAsync(order.BuyerId.Value);
 
         var integrationEvent = new OrderStatusChangedToShippedIntegrationEvent(order.Id, order.OrderStatus.Name, buyer.Name, buyer.IdentityGuid);
         await _orderingIntegrationEventService.AddAndSaveEventAsync(integrationEvent);
