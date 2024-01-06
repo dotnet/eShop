@@ -19,6 +19,7 @@ namespace Ordering.Infrastructure.Migrations
                 nullable: false,
                 defaultValue: "");
 
+            // ensure "OrderStatus" column is populated before dropping the "orderstatus" table:
             migrationBuilder.Sql("""
                 UPDATE ordering.orders 
                 SET "OrderStatus" = s."Name"
@@ -70,6 +71,7 @@ namespace Ordering.Infrastructure.Migrations
                     table.PrimaryKey("PK_orderstatus", x => x.Id);
                 });
 
+            // ensure "orderstatus" table is seeded & "OrderStatusId" column is populated before dropping the "OrderStatus" column:
             migrationBuilder.Sql("""
                 INSERT INTO ordering.orderstatus("Id","Name") VALUES
                 (1, 'Submitted'),
