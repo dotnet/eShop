@@ -24,8 +24,9 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
             .HasColumnName("OrderDate");
 
         orderConfiguration
-            .Property("_orderStatusId")
-            .HasColumnName("OrderStatusId");
+            .Property(o => o.OrderStatus)
+            .HasConversion<string>()
+            .HasMaxLength(30);
 
         orderConfiguration
             .Property("_paymentMethodId")
@@ -41,9 +42,5 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
         orderConfiguration.HasOne<Buyer>()
             .WithMany()
             .HasForeignKey("_buyerId");
-
-        orderConfiguration.HasOne(o => o.OrderStatus)
-            .WithMany()
-            .HasForeignKey("_orderStatusId");
     }
 }

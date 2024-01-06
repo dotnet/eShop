@@ -26,8 +26,6 @@ public class OrderRepository
         {
             await _context.Entry(order)
                 .Collection(i => i.OrderItems).LoadAsync();
-            await _context.Entry(order)
-                .Reference(i => i.OrderStatus).LoadAsync();
         }
 
         return order;
