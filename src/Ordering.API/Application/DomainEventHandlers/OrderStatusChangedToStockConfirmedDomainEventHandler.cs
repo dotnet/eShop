@@ -22,7 +22,7 @@ public class OrderStatusChangedToStockConfirmedDomainEventHandler
 
     public async Task Handle(OrderStatusChangedToStockConfirmedDomainEvent domainEvent, CancellationToken cancellationToken)
     {
-        OrderingApiTrace.LogOrderStatusUpdated(_logger, domainEvent.OrderId, OrderStatus.StockConfirmed.ToString(), (int)OrderStatus.StockConfirmed);
+        OrderingApiTrace.LogOrderStatusUpdated(_logger, domainEvent.OrderId, OrderStatus.StockConfirmed);
 
         var order = await _orderRepository.GetAsync(domainEvent.OrderId);
         var buyer = await _buyerRepository.FindByIdAsync(order.GetBuyerId.Value);

@@ -21,7 +21,7 @@ public class OrderStatusChangedToPaidDomainEventHandler : INotificationHandler<O
 
     public async Task Handle(OrderStatusChangedToPaidDomainEvent domainEvent, CancellationToken cancellationToken)
     {
-        OrderingApiTrace.LogOrderStatusUpdated(_logger, domainEvent.OrderId, OrderStatus.Paid.ToString(), (int)OrderStatus.Paid);
+        OrderingApiTrace.LogOrderStatusUpdated(_logger, domainEvent.OrderId, OrderStatus.Paid);
 
         var order = await _orderRepository.GetAsync(domainEvent.OrderId);
         var buyer = await _buyerRepository.FindByIdAsync(order.GetBuyerId.Value);

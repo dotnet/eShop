@@ -22,7 +22,7 @@ public class OrderStatusChangedToAwaitingValidationDomainEventHandler
 
     public async Task Handle(OrderStatusChangedToAwaitingValidationDomainEvent domainEvent, CancellationToken cancellationToken)
     {
-        OrderingApiTrace.LogOrderStatusUpdated(_logger, domainEvent.OrderId, OrderStatus.AwaitingValidation.ToString(), (int)OrderStatus.AwaitingValidation);
+        OrderingApiTrace.LogOrderStatusUpdated(_logger, domainEvent.OrderId, OrderStatus.AwaitingValidation);
 
         var order = await _orderRepository.GetAsync(domainEvent.OrderId);
         var buyer = await _buyerRepository.FindByIdAsync(order.GetBuyerId.Value);

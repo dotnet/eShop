@@ -22,7 +22,7 @@ public partial class OrderCancelledDomainEventHandler
 
     public async Task Handle(OrderCancelledDomainEvent domainEvent, CancellationToken cancellationToken)
     {
-        OrderingApiTrace.LogOrderStatusUpdated(_logger, domainEvent.Order.Id, OrderStatus.Cancelled.ToString(), (int)OrderStatus.Cancelled);
+        OrderingApiTrace.LogOrderStatusUpdated(_logger, domainEvent.Order.Id, OrderStatus.Cancelled);
 
         var order = await _orderRepository.GetAsync(domainEvent.Order.Id);
         var buyer = await _buyerRepository.FindByIdAsync(order.GetBuyerId.Value);
