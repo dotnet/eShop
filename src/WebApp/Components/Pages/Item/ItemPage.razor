@@ -4,7 +4,8 @@
 @inject BasketState BasketState
 @inject NavigationManager Nav
 @inject IProductImageUrlProvider ProductImages
-
+@using Newtonsoft.Json
+@using System.Text
 @if (item is not null)
 {
     <PageTitle>@item.Name | Northern Mountains</PageTitle>
@@ -75,19 +76,30 @@ else if (notFound)
 
     private async Task AddToCartAsync()
     {
-        if (!isLoggedIn)
+        if(item is not null)
         {
-            Nav.NavigateTo(Pages.User.LogIn.Url(Nav));
-            return;
+            if (!isLoggedIn)
+            {
+                List<CatalogItem>? cartItems = new();
+
+                // Retrieve existing cart items from session
+                if (HttpContext!.Session.TryGetValue("ShoppingCart", out var cartData))
+                {
+                    cartItems = JsonConvert.DeserializeObject<List<CatalogItem>>(Encoding.UTF8.GetString(cartData));
+                }
+                cartItems?.Add(item);
+                HttpContext.Session.SetString("ShoppingCart", JsonConvert.SerializeObject(cartItems));
+                numInCart = cartItems!.Count;
+            }
+            else
+            {
+                await BasketState.AddAsync(item);
+                await UpdateNumInCartAsync();
+            }                  
         }
 
-        if (item is not null)
-        {
-            await BasketState.AddAsync(item);
-            await UpdateNumInCartAsync();
-        }
     }
-
+   
     private async Task UpdateNumInCartAsync()
     {
         var items = await BasketState.GetBasketItemsAsync();
