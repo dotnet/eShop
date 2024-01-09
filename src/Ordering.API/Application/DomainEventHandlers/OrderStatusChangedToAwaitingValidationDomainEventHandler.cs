@@ -30,7 +30,7 @@ public class OrderStatusChangedToAwaitingValidationDomainEventHandler
         var orderStockList = domainEvent.OrderItems
             .Select(orderItem => new OrderStockItem(orderItem.ProductId, orderItem.GetUnits()));
 
-        var integrationEvent = new OrderStatusChangedToAwaitingValidationIntegrationEvent(order.Id, order.OrderStatus.ToString(), buyer.Name, buyer.IdentityGuid, orderStockList);
+        var integrationEvent = new OrderStatusChangedToAwaitingValidationIntegrationEvent(order.Id, order.OrderStatus, buyer.Name, buyer.IdentityGuid, orderStockList);
         await _orderingIntegrationEventService.AddAndSaveEventAsync(integrationEvent);
     }
 }

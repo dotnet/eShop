@@ -3,13 +3,13 @@
 public record OrderStatusChangedToAwaitingValidationIntegrationEvent : IntegrationEvent
 {
     public int OrderId { get; }
-    public string OrderStatus { get; }
+    public OrderStatus OrderStatus { get; }
     public string BuyerName { get; }
     public string BuyerIdentityGuid { get; }
     public IEnumerable<OrderStockItem> OrderStockItems { get; }
 
     public OrderStatusChangedToAwaitingValidationIntegrationEvent(
-        int orderId, string orderStatus, string buyerName, string buyerIdentityGuid,
+        int orderId, OrderStatus orderStatus, string buyerName, string buyerIdentityGuid,
         IEnumerable<OrderStockItem> orderStockItems)
     {
         OrderId = orderId;

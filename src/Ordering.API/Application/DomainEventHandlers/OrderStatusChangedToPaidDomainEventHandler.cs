@@ -31,7 +31,7 @@ public class OrderStatusChangedToPaidDomainEventHandler : INotificationHandler<O
 
         var integrationEvent = new OrderStatusChangedToPaidIntegrationEvent(
             domainEvent.OrderId,
-            order.OrderStatus.ToString(),
+            order.OrderStatus,
             buyer.Name,
             buyer.IdentityGuid,
             orderStockList);
