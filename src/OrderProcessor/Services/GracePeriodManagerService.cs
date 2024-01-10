@@ -69,7 +69,7 @@ namespace eShop.OrderProcessor.Services
                 command.CommandText = """
                     SELECT "Id"
                     FROM ordering.orders
-                    WHERE CURRENT_TIMESTAMP - "OrderDate" >= @GracePeriodTime AND "OrderStatusId" = 1
+                    WHERE CURRENT_TIMESTAMP - "OrderDate" >= @GracePeriodTime AND "OrderStatus" = 'Submitted'
                     """;
                 command.Parameters.AddWithValue("GracePeriodTime", TimeSpan.FromMinutes(_options.GracePeriodTime));
 
