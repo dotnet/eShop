@@ -1,11 +1,14 @@
-﻿using eShop.WebApp;
+﻿using Azure.AI.OpenAI;
+using eShop.WebApp;
 using eShop.WebAppComponents.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Microsoft.SemanticKernel.TextGeneration;
 
 public static class Extensions
 {
@@ -91,17 +94,22 @@ public static class Extensions
     private static void AddAIServices(this IHostApplicationBuilder builder)
     {
         var openAIOptions = builder.Configuration.GetSection("AI").Get<AIOptions>()?.OpenAI;
-        if (!string.IsNullOrWhiteSpace(openAIOptions?.ApiKey))
+        var deploymentName = openAIOptions?.ChatModel;
+
+        if (!string.IsNullOrWhiteSpace(deploymentName))
         {
-            var kernelBuilder = builder.Services.AddKernel();
-            if (!string.IsNullOrWhiteSpace(openAIOptions.Endpoint))
+            builder.Services.AddKernel();
+            builder.AddAzureOpenAI("chatOpenAi");
+
+            // Note: SemanticKernel should expose an extension method AddAzureOpenAIChatCompletion() that does the following.
+            // Currently these methods only allow to register an OpenAIClient they construct.
+            Func<IServiceProvider, object?, AzureOpenAIChatCompletionService> implementationFactory = delegate (IServiceProvider serviceProvider, object? _)
             {
-                kernelBuilder.AddAzureOpenAIChatCompletion(openAIOptions.ChatModel, openAIOptions.Endpoint, openAIOptions.ApiKey);
-            }
-            else
-            {
-                kernelBuilder.AddOpenAIChatCompletion(openAIOptions.ChatModel, openAIOptions.ApiKey);
-            }
+                return new AzureOpenAIChatCompletionService(deploymentName, serviceProvider.GetRequiredService<OpenAIClient>(), null, serviceProvider.GetService<ILoggerFactory>());
+            };
+
+            builder.Services.AddKeyedSingleton(default(string), (Func<IServiceProvider, object, IChatCompletionService>)implementationFactory);
+            builder.Services.AddKeyedSingleton(default(string), (Func<IServiceProvider, object, ITextGenerationService>)implementationFactory);
         }
     }
 

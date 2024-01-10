@@ -14,6 +14,9 @@ var identityDb = postgres.AddDatabase("IdentityDB");
 var orderDb = postgres.AddDatabase("OrderingDB");
 var webhooksDb = postgres.AddDatabase("WebHooksDB");
 
+var catalogOpenAi = builder.AddOpenAI("catalogOpenAi");
+var chatOpenAi = builder.AddOpenAI("chatOpenAi");
+
 // Services
 var identityApi = builder.AddProject<Projects.Identity_API>("identity-api")
     .WithReference(identityDb);
@@ -25,7 +28,8 @@ var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
 
 var catalogApi = builder.AddProject<Projects.Catalog_API>("catalog-api")
     .WithReference(rabbitMq)
-    .WithReference(catalogDb);
+    .WithReference(catalogDb)
+    .WithReference(catalogOpenAi);
 
 var orderingApi = builder.AddProject<Projects.Ordering_API>("ordering-api")
     .WithReference(rabbitMq)
@@ -59,6 +63,7 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp")
     .WithReference(catalogApi)
     .WithReference(orderingApi)
     .WithReference(rabbitMq)
+    .WithReference(chatOpenAi)
     .WithEnvironment("IdentityUrl", identityApi.GetEndpoint("http"))
     .WithLaunchProfile("https");
 
