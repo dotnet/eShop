@@ -13,13 +13,12 @@ public sealed class CatalogAI : ICatalogAI
     /// <summary>Logger for use in AI operations.</summary>
     private readonly ILogger _logger;
 
-    public CatalogAI(IOptions<AIOptions> options, OpenAIClient openAIClient, IWebHostEnvironment environment, ILogger<CatalogAI> logger)
+    public CatalogAI(IOptions<AIOptions> options, IEnumerable<OpenAIClient> openAIClient, IWebHostEnvironment environment, ILogger<CatalogAI> logger)
     {
         var aiOptions = options.Value;
-
+        _openAIClient = openAIClient.FirstOrDefault();
         _aiEmbeddingModel = aiOptions.OpenAI.EmbeddingName ?? "text-embedding-ada-002";
-        IsEnabled = aiOptions.OpenAI.Enable;
-        _openAIClient = openAIClient;
+        IsEnabled = _openAIClient != null;
         _environment = environment;
         _logger = logger;
 
