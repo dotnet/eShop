@@ -10,11 +10,10 @@ public class OrderQueries(NpgsqlDataSource dataSource)
         var result = await connection.QueryAsync<dynamic>("""
             SELECT o."Id" AS ordernumber, o."OrderDate" AS date, o."Description" AS description, o."Address_City" AS city,
                 o."Address_Country" AS country, o."Address_State" AS state, o."Address_Street" AS street,
-                o."Address_ZipCode" AS zipcode, os."Name" AS status, oi."ProductName" AS productname, oi."Units" AS units,
+                o."Address_ZipCode" AS zipcode, o."OrderStatus" AS status, oi."ProductName" AS productname, oi."Units" AS units,
                 oi."UnitPrice" AS unitprice, oi."PictureUrl" AS pictureurl
             FROM ordering.Orders AS o
             LEFT JOIN ordering."orderItems" AS oi ON o."Id" = oi."OrderId"
-            LEFT JOIN ordering.orderstatus AS os ON o."OrderStatusId" = os."Id"
             WHERE o."Id" = @id
             """,
             new { id });
@@ -30,13 +29,12 @@ public class OrderQueries(NpgsqlDataSource dataSource)
         using var connection = dataSource.OpenConnection();
 
         return await connection.QueryAsync<OrderSummary>("""
-            SELECT o."Id" AS ordernumber, o."OrderDate" AS date, os."Name" AS status, SUM(oi."Units" * oi."UnitPrice") AS total
+            SELECT o."Id" AS ordernumber, o."OrderDate" AS date, o."OrderStatus" AS status, SUM(oi."Units" * oi."UnitPrice") AS total
             FROM ordering.orders AS o
             LEFT JOIN ordering."orderItems" AS oi ON o."Id" = oi."OrderId"
-            LEFT JOIN ordering.orderstatus AS os ON o."OrderStatusId" = os."Id"
             LEFT JOIN ordering.buyers AS ob ON o."BuyerId" = ob."Id"
             WHERE ob."IdentityGuid" = @userId
-            GROUP BY o."Id", o."OrderDate", os."Name"
+            GROUP BY o."Id", o."OrderDate", o."OrderStatus"
             ORDER BY o."Id"
             """,
             new { userId });
