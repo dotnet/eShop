@@ -5,7 +5,7 @@ builder.AddDefaultOpenApi();
 builder.AddApplicationServices();
 
 builder.Services.AddProblemDetails();
-builder.AddAzureOpenAI("catalogOpenAi");
+builder.AddAzureOpenAI("OpenAi");
 
 var app = builder.Build();
 

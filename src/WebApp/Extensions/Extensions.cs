@@ -1,11 +1,14 @@
-﻿using Azure.AI.OpenAI;
+﻿using System;
+using Azure.AI.OpenAI;
 using eShop.WebApp;
 using eShop.WebAppComponents.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.SemanticKernel.TextGeneration;
@@ -98,18 +101,12 @@ public static class Extensions
 
         if (!string.IsNullOrWhiteSpace(deploymentName))
         {
+            builder.AddAzureOpenAI("OpenAi");
+
+            // TODO: Use kernelBuilder.AddAzureOpenAIChatCompletion(deploymentName) when available on NuGet
+            // c.f. https://github.com/microsoft/semantic-kernel/pull/4555
             builder.Services.AddKernel();
-            builder.AddAzureOpenAI("chatOpenAi");
-
-            // Note: SemanticKernel should expose an extension method AddAzureOpenAIChatCompletion() that does the following.
-            // Currently these methods only allow to register an OpenAIClient they construct.
-            Func<IServiceProvider, object?, AzureOpenAIChatCompletionService> implementationFactory = delegate (IServiceProvider serviceProvider, object? _)
-            {
-                return new AzureOpenAIChatCompletionService(deploymentName, serviceProvider.GetRequiredService<OpenAIClient>(), null, serviceProvider.GetService<ILoggerFactory>());
-            };
-
-            builder.Services.AddKeyedSingleton(default(string), (Func<IServiceProvider, object, IChatCompletionService>)implementationFactory);
-            builder.Services.AddKeyedSingleton(default(string), (Func<IServiceProvider, object, ITextGenerationService>)implementationFactory);
+            builder.Services.AddSingleton<IChatCompletionService>((serviceProvider) => new AzureOpenAIChatCompletionService(deploymentName, serviceProvider.GetRequiredService<OpenAIClient>(), null, serviceProvider.GetService<ILoggerFactory>()));
         }
     }
 
