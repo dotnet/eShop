@@ -1,9 +1,11 @@
-﻿using eShop.WebAppComponents.Services;
+﻿using eShop.WebApp;
+using eShop.WebAppComponents.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.SemanticKernel;
 
 public static class Extensions
 {
@@ -22,6 +24,7 @@ public static class Extensions
         builder.Services.AddSingleton<BasketService>();
         builder.Services.AddSingleton<OrderStatusNotificationService>();
         builder.Services.AddSingleton<IProductImageUrlProvider, ProductImageUrlProvider>();
+        builder.AddAIServices();
 
         // HTTP and GRPC client registrations
         builder.Services.AddGrpcClient<Basket.BasketClient>(o => o.Address = new("http://basket-api"))
@@ -83,6 +86,23 @@ public static class Extensions
         // Blazor auth services
         services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
         services.AddCascadingAuthenticationState();
+    }
+
+    private static void AddAIServices(this IHostApplicationBuilder builder)
+    {
+        var openAIOptions = builder.Configuration.GetSection("AI").Get<AIOptions>()?.OpenAI;
+        if (!string.IsNullOrWhiteSpace(openAIOptions?.ApiKey))
+        {
+            var kernelBuilder = builder.Services.AddKernel();
+            if (!string.IsNullOrWhiteSpace(openAIOptions.Endpoint))
+            {
+                kernelBuilder.AddAzureOpenAIChatCompletion(openAIOptions.ChatModel, openAIOptions.Endpoint, openAIOptions.ApiKey);
+            }
+            else
+            {
+                kernelBuilder.AddOpenAIChatCompletion(openAIOptions.ChatModel, openAIOptions.ApiKey);
+            }
+        }
     }
 
     public static async Task<string?> GetBuyerIdAsync(this AuthenticationStateProvider authenticationStateProvider)

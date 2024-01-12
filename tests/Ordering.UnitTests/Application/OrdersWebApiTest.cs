@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using eShop.Ordering.API.Application.Queries;
 using Order = eShop.Ordering.API.Application.Queries.Order;
+using NSubstitute.ExceptionExtensions;
 
 public class OrdersWebApiTest
 {
@@ -116,6 +117,22 @@ public class OrdersWebApiTest
         // Assert
         var okResult = Assert.IsType<Ok<Order>>(result.Result);
         Assert.Same(fakeDynamicResult, okResult.Value);
+    }
+
+    [Fact]
+    public async Task Get_order_fails()
+    {
+        // Arrange
+        var fakeOrderId = 123;
+        _orderQueriesMock.GetOrderAsync(Arg.Any<int>())
+            .Throws(new KeyNotFoundException());
+
+        // Act
+        var orderServices = new OrderServices(_mediatorMock, _orderQueriesMock, _identityServiceMock, _loggerMock);
+        var result = await OrdersApi.GetOrderAsync(fakeOrderId, orderServices);
+
+        // Assert
+        Assert.IsType<NotFound>(result.Result);
     }
 
     [Fact]
