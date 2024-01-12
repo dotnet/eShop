@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Text;
 using System.Text.Json;
-using AutoFixture;
 using eShop.Ordering.API.Application.Commands;
 using eShop.Ordering.API.Application.Models;
 using eShop.Ordering.API.Application.Queries;
@@ -185,11 +184,8 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     [Fact]
     public async Task CreateOrderDraftSucceeds()
     {
-        Fixture fixture = new Fixture();
-        var payload = fixture.Build<CreateOrderDraftCommand>()
-            .FromFactory(() => new CreateOrderDraftCommand(fixture.Create<string>(), fixture.CreateMany<BasketItem>(3)))
-            .Create();
-        var content = new StringContent(JsonSerializer.Serialize(payload), UTF8Encoding.UTF8, "application/json")
+        var payload = FakeOrderDraftCommand();
+        var content = new StringContent(JsonSerializer.Serialize(FakeOrderDraftCommand()), UTF8Encoding.UTF8, "application/json")
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
@@ -200,7 +196,27 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(payload.Items.Count(), responseData.OrderItems.Count());
+        Assert.Equal(payload.Items.Sum(o => o.Quantity * o.UnitPrice), responseData.Total);
         AssertThatOrderItemsAreTheSameAsRequestPayloadItems(payload, responseData);
+    }
+
+    private CreateOrderDraftCommand FakeOrderDraftCommand()
+    {
+        return new CreateOrderDraftCommand(
+            BuyerId: Guid.NewGuid().ToString(),
+            new List<BasketItem>()
+            {
+                new BasketItem()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ProductId = 1,
+                    ProductName = "Test Product 1",
+                    UnitPrice = 10.2m,
+                    OldUnitPrice = 9.8m,
+                    Quantity = 2,
+                    PictureUrl = Guid.NewGuid().ToString(),
+                }
+            });
     }
 
     private static void AssertThatOrderItemsAreTheSameAsRequestPayloadItems(CreateOrderDraftCommand payload, OrderDraftDTO responseData)
