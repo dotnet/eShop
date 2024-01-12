@@ -79,7 +79,7 @@ else if (notFound)
         {
             if (!isLoggedIn)
             {
-                await BasketState.AddAsAnonymousUser(item,HttpContext!);
+                await BasketState.AddAsAnonymousUser(item);
                 await UpdateNumInCartAsAnonymousAsync();
             }
             else
@@ -93,7 +93,7 @@ else if (notFound)
 
     private async Task UpdateNumInCartAsAnonymousAsync()
     {
-        var items = await BasketState.GetBasketItemsAsAnonymous(HttpContext!);
+        var items = await BasketState.GetBasketItemsAsAnonymous();
         numInCart = items.FirstOrDefault(row => row.ProductId == ItemId)?.Quantity ?? 0;
     }
     private async Task UpdateNumInCartAsync()

@@ -11,12 +11,13 @@ public class BasketState(
     BasketService basketService,
     CatalogService catalogService,
     OrderingService orderingService,
-    AuthenticationStateProvider authenticationStateProvider)
+    AuthenticationStateProvider authenticationStateProvider, 
+    IHttpContextAccessor httpContextAccessor)
 {
     private Task<IReadOnlyCollection<BasketItem>>? _cachedBasket;
     private HashSet<BasketStateChangedSubscription> _changeSubscriptions = new();
-    private HttpContext? HttpContext { get; set; }
     Dictionary<int,int>? ProductIdToQuantity = new();
+    private readonly ISession session = httpContextAccessor.HttpContext!.Session;
     public Task DeleteBasketAsync()
         => basketService.DeleteBasketAsync();
 
@@ -24,9 +25,9 @@ public class BasketState(
         => (await GetUserAsync()).Identity?.IsAuthenticated == true
         ? await FetchBasketItemsAsync()
         : [];
-    public async Task<IReadOnlyCollection<BasketItem>> GetBasketItemsAsAnonymous(HttpContext HttpContext)
+    public async Task<IReadOnlyCollection<BasketItem>> GetBasketItemsAsAnonymous()
         => (await GetUserAsync()).Identity?.IsAuthenticated == false
-        ? await GetBasketItemsAsAnonymousAsync(HttpContext)
+        ? await GetBasketItemsAsAnonymousAsync()
         : [];
     public IDisposable NotifyOnChange(EventCallback callback)
     {
@@ -35,10 +36,10 @@ public class BasketState(
         return subscription;
     }
 
-    public async Task AddAsAnonymousUser(CatalogItem item,HttpContext HttpContext)
+    public async Task AddAsAnonymousUser(CatalogItem item)
     {
         // Retrieve existing cart items from session
-        if (HttpContext!.Session.TryGetValue("ShoppingCart", out var cartData))
+        if (session.TryGetValue("ShoppingCart", out var cartData))
         {
             ProductIdToQuantity = JsonSerializer.Deserialize<Dictionary<int, int>>(Encoding.UTF8.GetString(cartData));
         }
@@ -50,7 +51,7 @@ public class BasketState(
         {
             ProductIdToQuantity[item.Id]++;
         }
-        HttpContext.Session.SetString("ShoppingCart", JsonSerializer.Serialize(ProductIdToQuantity));
+        session.SetString("ShoppingCart", JsonSerializer.Serialize(ProductIdToQuantity));
         await NotifyChangeSubscribersAsync();
     }
 
@@ -137,12 +138,12 @@ public class BasketState(
 
     private async Task<ClaimsPrincipal> GetUserAsync()
         => (await authenticationStateProvider.GetAuthenticationStateAsync()).User;
-    private Task<IReadOnlyCollection<BasketItem>> GetBasketItemsAsAnonymousAsync(HttpContext HttpContext)
+    private Task<IReadOnlyCollection<BasketItem>> GetBasketItemsAsAnonymousAsync()
     {
         return _cachedBasket = FetchCoreAsync();
         async Task<IReadOnlyCollection<BasketItem>> FetchCoreAsync()
         {
-            if (HttpContext!.Session.TryGetValue("ShoppingCart", out var cartData))
+            if (session.TryGetValue("ShoppingCart", out var cartData))
             {
                 ProductIdToQuantity = JsonSerializer.Deserialize<Dictionary<int, int>>(Encoding.UTF8.GetString(cartData));
             }

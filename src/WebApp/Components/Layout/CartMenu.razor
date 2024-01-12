@@ -49,7 +49,7 @@
     {
         if (!HttpContext!.User.Identity!.IsAuthenticated)
         {
-            basketItems = await Basket.GetBasketItemsAsAnonymous(HttpContext!);
+            basketItems = await Basket.GetBasketItemsAsAnonymous();
         }
         else
         {
