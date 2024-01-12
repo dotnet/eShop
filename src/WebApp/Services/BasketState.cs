@@ -3,10 +3,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using eShop.WebAppComponents.Catalog;
 using eShop.WebAppComponents.Services;
-using Newtonsoft.Json;
 using System.Text;
-using System.ComponentModel;
-
+using System.Text.Json;
 namespace eShop.WebApp.Services;
 
 public class BasketState(
@@ -42,7 +40,7 @@ public class BasketState(
         // Retrieve existing cart items from session
         if (HttpContext!.Session.TryGetValue("ShoppingCart", out var cartData))
         {
-            ProductIdToQuantity = JsonConvert.DeserializeObject<Dictionary<int, int>>(Encoding.UTF8.GetString(cartData));
+            ProductIdToQuantity = JsonSerializer.Deserialize<Dictionary<int, int>>(Encoding.UTF8.GetString(cartData));
         }
         if (!ProductIdToQuantity!.ContainsKey(item.Id))
         {
@@ -52,7 +50,7 @@ public class BasketState(
         {
             ProductIdToQuantity[item.Id]++;
         }
-        HttpContext.Session.SetString("ShoppingCart", JsonConvert.SerializeObject(ProductIdToQuantity));
+        HttpContext.Session.SetString("ShoppingCart", JsonSerializer.Serialize(ProductIdToQuantity));
         await NotifyChangeSubscribersAsync();
     }
 
@@ -146,7 +144,7 @@ public class BasketState(
         {
             if (HttpContext!.Session.TryGetValue("ShoppingCart", out var cartData))
             {
-                ProductIdToQuantity = JsonConvert.DeserializeObject<Dictionary<int, int>>(Encoding.UTF8.GetString(cartData));
+                ProductIdToQuantity = JsonSerializer.Deserialize<Dictionary<int, int>>(Encoding.UTF8.GetString(cartData));
             }
             if (ProductIdToQuantity?.Count == 0)
             {
