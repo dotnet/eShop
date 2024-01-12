@@ -3,7 +3,6 @@
 @inject BasketState Basket
 @inject IProductImageUrlProvider ProductImages
 @attribute [StreamRendering]
-@attribute [Authorize]
 
 <PageTitle>Shopping Bag | Northern Mountains</PageTitle>
 <SectionContent SectionName="page-header-title">Shopping bag</SectionContent>
@@ -91,9 +90,19 @@
     [SupplyParameterFromForm]
     public int? UpdateQuantityValue { get; set; }
 
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        basketItems = await Basket.GetBasketItemsAsync();
+        if (!HttpContext!.User.Identity!.IsAuthenticated)
+        {
+            basketItems = await Basket.GetBasketItemsAsAnonymous();
+        }
+        else
+        {
+            basketItems = await Basket.GetBasketItemsAsync();
+        }
     }
 
     private decimal? TotalPrice => basketItems?.Sum(i => i.Quantity * i.UnitPrice);
