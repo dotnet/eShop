@@ -11,7 +11,7 @@ public class BasketState(
     BasketService basketService,
     CatalogService catalogService,
     OrderingService orderingService,
-    AuthenticationStateProvider authenticationStateProvider, 
+    AuthenticationStateProvider authenticationStateProvider,
     IHttpContextAccessor httpContextAccessor)
 {
     private Task<IReadOnlyCollection<BasketItem>>? _cachedBasket;
@@ -22,9 +22,15 @@ public class BasketState(
         => basketService.DeleteBasketAsync();
 
     public async Task<IReadOnlyCollection<BasketItem>> GetBasketItemsAsync()
-        => (await GetUserAsync()).Identity?.IsAuthenticated == true
-        ? await FetchBasketItemsAsync()
-        : [];
+    {
+        if ((await GetUserAsync()).Identity?.IsAuthenticated == true)
+        {
+            await MoveItemFromSessionToRedis();
+
+            return await FetchBasketItemsAsync();
+        }
+        return [];
+    }
     public async Task<IReadOnlyCollection<BasketItem>> GetBasketItemsAsAnonymous()
         => (await GetUserAsync()).Identity?.IsAuthenticated == false
         ? await GetBasketItemsAsAnonymousAsync()
@@ -124,7 +130,7 @@ public class BasketState(
             ZipCode: checkoutInfo.ZipCode!,
             CardNumber: checkoutInfo.CardNumber!,
             CardHolderName: checkoutInfo.CardHolderName!,
-            CardExpiration: checkoutInfo.CardExpiration!.Value, 
+            CardExpiration: checkoutInfo.CardExpiration!.Value,
             CardSecurityNumber: checkoutInfo.CardSecurityNumber!,
             CardTypeId: checkoutInfo.CardTypeId,
             Buyer: buyerId,
@@ -203,6 +209,22 @@ public class BasketState(
             }
 
             return basketItems;
+        }
+    }
+
+    private async Task MoveItemFromSessionToRedis()
+    {
+        //User just logged in, let's empty session cart and put in Redis
+        if (session.TryGetValue("ShoppingCart", out var cartData))
+        {
+            ProductIdToQuantity = JsonSerializer.Deserialize<Dictionary<int, int>>(Encoding.UTF8.GetString(cartData));
+
+            if (ProductIdToQuantity?.Count != 0)
+            {
+                var basketQuantity = basketService.MapToBasket(ProductIdToQuantity!);
+                await basketService.UpdateBasketAsync(basketQuantity);
+            }
+            session.Remove("ShoppingCart");
         }
     }
 
