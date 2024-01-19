@@ -16,9 +16,7 @@ public class Order
     public Buyer Buyer { get; }
 
     public OrderStatus OrderStatus { get; private set; }
-
-    public int OrderStatusId { get; private set; }
-
+    
     public string Description { get; private set; }
 
     // Draft orders have this set to true. Currently we don't check anywhere the draft status of an Order, but we could do it if needed

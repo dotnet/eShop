@@ -7,7 +7,6 @@ public class OrderQueries(OrderingContext context)
     {
         var order = await context.Orders
             .Include(o => o.OrderItems)
-            .Include(o => o.OrderStatus)
             .FirstOrDefaultAsync(o => o.Id == id);
       
         if (order is null)
@@ -23,7 +22,7 @@ public class OrderQueries(OrderingContext context)
             state = order.Address.State,
             street = order.Address.Street,
             zipcode = order.Address.ZipCode,
-            status = order.OrderStatus.Name,
+            status = order.OrderStatus.ToString(),
             total = order.GetTotal(),
             orderitems = order.OrderItems.Select(oi => new Orderitem
             {
@@ -43,10 +42,9 @@ public class OrderQueries(OrderingContext context)
             {
                 ordernumber = o.Id,
                 date = o.OrderDate,
-                status = o.OrderStatus.Name,
+                status = o.OrderStatus.ToString(),
                 total =(double) o.OrderItems.Sum(oi => oi.UnitPrice* oi.Units)
             })
-            .AsSplitQuery()
             .ToListAsync();
     } 
     
