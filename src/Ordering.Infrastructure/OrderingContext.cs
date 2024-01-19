@@ -14,7 +14,6 @@ public class OrderingContext : DbContext, IUnitOfWork
     public DbSet<PaymentMethod> Payments { get; set; }
     public DbSet<Buyer> Buyers { get; set; }
     public DbSet<CardType> CardTypes { get; set; }
-    public DbSet<OrderStatus> OrderStatus { get; set; }
 
     private readonly IMediator _mediator;
     private IDbContextTransaction _currentTransaction;
@@ -41,7 +40,6 @@ public class OrderingContext : DbContext, IUnitOfWork
         modelBuilder.ApplyConfiguration(new OrderEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new OrderItemEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new CardTypeEntityTypeConfiguration());
-        modelBuilder.ApplyConfiguration(new OrderStatusEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new BuyerEntityTypeConfiguration());
         modelBuilder.UseIntegrationEventLogs();
     }

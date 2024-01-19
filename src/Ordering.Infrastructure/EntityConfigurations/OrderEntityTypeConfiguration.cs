@@ -22,7 +22,9 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
             .Property(o => o.OrderDate);
 
         orderConfiguration
-            .Property(o => o.OrderStatusId);
+            .Property(o => o.OrderStatus)
+            .HasConversion<string>()
+            .HasMaxLength(30);
 
         orderConfiguration
             .Property(o => o.PaymentId)
@@ -39,9 +41,5 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
         orderConfiguration.HasOne(o => o.Buyer)
             .WithMany()
             .HasForeignKey(o => o.BuyerId);
-
-        orderConfiguration.HasOne(o => o.OrderStatus)
-            .WithMany()
-            .HasForeignKey(o => o.OrderStatusId);
     }
 }

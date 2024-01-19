@@ -56,7 +56,7 @@ public class Order
     {
         BuyerId = buyerId;
         PaymentId = paymentMethodId;
-        OrderStatusId = OrderStatus.Submitted.Id;
+        OrderStatus = OrderStatus.Submitted;
         OrderDate = DateTime.UtcNow;
         Address = address;
 
@@ -100,65 +100,65 @@ public class Order
     
     public void SetAwaitingValidationStatus()
     {
-        if (OrderStatusId == OrderStatus.Submitted.Id)
+        if (OrderStatus == OrderStatus.Submitted)
         {
             AddDomainEvent(new OrderStatusChangedToAwaitingValidationDomainEvent(Id, _orderItems));
-            OrderStatusId = OrderStatus.AwaitingValidation.Id;
+            OrderStatus = OrderStatus.AwaitingValidation;
         }
     }
 
     public void SetStockConfirmedStatus()
     {
-        if (OrderStatusId == OrderStatus.AwaitingValidation.Id)
+        if (OrderStatus == OrderStatus.AwaitingValidation)
         {
             AddDomainEvent(new OrderStatusChangedToStockConfirmedDomainEvent(Id));
 
-            OrderStatusId = OrderStatus.StockConfirmed.Id;
+            OrderStatus = OrderStatus.StockConfirmed;
             Description = "All the items were confirmed with available stock.";
         }
     }
 
     public void SetPaidStatus()
     {
-        if (OrderStatusId == OrderStatus.StockConfirmed.Id)
+        if (OrderStatus == OrderStatus.StockConfirmed)
         {
             AddDomainEvent(new OrderStatusChangedToPaidDomainEvent(Id, OrderItems));
 
-            OrderStatusId = OrderStatus.Paid.Id;
+            OrderStatus = OrderStatus.Paid;
             Description = "The payment was performed at a simulated \"American Bank checking bank account ending on XX35071\"";
         }
     }
 
     public void SetShippedStatus()
     {
-        if (OrderStatusId != OrderStatus.Paid.Id)
+        if (OrderStatus != OrderStatus.Paid)
         {
             StatusChangeException(OrderStatus.Shipped);
         }
 
-        OrderStatusId = OrderStatus.Shipped.Id;
+        OrderStatus = OrderStatus.Shipped;
         Description = "The order was shipped.";
         AddDomainEvent(new OrderShippedDomainEvent(this));
     }
 
     public void SetCancelledStatus()
     {
-        if (OrderStatusId == OrderStatus.Paid.Id ||
-            OrderStatusId == OrderStatus.Shipped.Id)
+        if (OrderStatus == OrderStatus.Paid ||
+            OrderStatus == OrderStatus.Shipped)
         {
             StatusChangeException(OrderStatus.Cancelled);
         }
 
-        OrderStatusId = OrderStatus.Cancelled.Id;
+        OrderStatus = OrderStatus.Cancelled;
         Description = $"The order was cancelled.";
         AddDomainEvent(new OrderCancelledDomainEvent(this));
     }
 
     public void SetCancelledStatusWhenStockIsRejected(IEnumerable<int> orderStockRejectedItems)
     {
-        if (OrderStatusId == OrderStatus.AwaitingValidation.Id)
+        if (OrderStatus == OrderStatus.AwaitingValidation)
         {
-            OrderStatusId = OrderStatus.Cancelled.Id;
+            OrderStatus = OrderStatus.Cancelled;
 
             var itemsStockRejectedProductNames = OrderItems
                 .Where(c => orderStockRejectedItems.Contains(c.ProductId))
@@ -181,7 +181,7 @@ public class Order
 
     private void StatusChangeException(OrderStatus orderStatusToChange)
     {
-        throw new OrderingDomainException($"Is not possible to change the order status from {OrderStatus.Name} to {orderStatusToChange.Name}.");
+        throw new OrderingDomainException($"Is not possible to change the order status from {OrderStatus} to {orderStatusToChange}.");
     }
 
     public decimal GetTotal() => _orderItems.Sum(o => o.Units * o.UnitPrice);
