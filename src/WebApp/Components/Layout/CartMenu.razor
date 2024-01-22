@@ -47,13 +47,9 @@
 
     private async Task UpdateBasketItemsAsync()
     {
-        if (!HttpContext!.User.Identity!.IsAuthenticated)
-        {
-            basketItems = await Basket.GetBasketItemsAsAnonymous();
-        }
-        else
-        {
-            basketItems = await Basket.GetBasketItemsAsync();
-        }
+        basketItems = (HttpContext?.User?.Identity?.IsAuthenticated ?? false)
+      ? await Basket.GetBasketItemsAsync()
+      : await Basket.GetBasketItemsAsAnonymous();
+
     }
 }
