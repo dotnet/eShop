@@ -16,12 +16,6 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
             .OwnsOne(o => o.Address);
 
         orderConfiguration
-            .Property(o => o.BuyerId);
-            
-        orderConfiguration
-            .Property(o => o.OrderDate);
-
-        orderConfiguration
             .Property(o => o.OrderStatus)
             .HasConversion<string>()
             .HasMaxLength(30);
@@ -29,9 +23,6 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
         orderConfiguration
             .Property(o => o.PaymentId)
             .HasColumnName("PaymentMethodId");
-
-        orderConfiguration
-            .Property(o => o.Description);
 
         orderConfiguration.HasOne<PaymentMethod>()
             .WithMany()

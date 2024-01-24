@@ -13,20 +13,5 @@ class OrderItemEntityTypeConfiguration
             .UseHiLo("orderitemseq");
 
         orderItemConfiguration.Property<int>("OrderId");
-
-        orderItemConfiguration
-            .Property(o => o.Discount);
-
-        orderItemConfiguration
-            .Property(o => o.ProductName);
-
-        orderItemConfiguration
-            .Property(o => o.UnitPrice);
-
-        orderItemConfiguration
-            .Property(o => o.Units);
-
-        orderItemConfiguration
-            .Property(o => o.PictureUrl);
     }
 }
