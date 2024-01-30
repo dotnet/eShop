@@ -1,9 +1,9 @@
 ﻿namespace eShop.Ordering.UnitTests.Application;
 
-using Microsoft.AspNetCore.Http.HttpResults;
 using eShop.Ordering.API.Application.Queries;
-using Order = eShop.Ordering.API.Application.Queries.Order;
+using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute.ExceptionExtensions;
+using Order = eShop.Ordering.API.Application.Queries.Order;
 
 public class OrdersWebApiTest
 {

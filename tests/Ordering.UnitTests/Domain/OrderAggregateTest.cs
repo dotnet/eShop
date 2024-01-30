@@ -1,7 +1,6 @@
 ﻿namespace eShop.Ordering.UnitTests.Domain;
 
 using eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
-using eShop.Ordering.UnitTests.Domain;
 
 public class OrderAggregateTest
 {
