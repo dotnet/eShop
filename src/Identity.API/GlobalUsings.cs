@@ -14,6 +14,12 @@ global using Duende.IdentityServer.Models;
 global using Duende.IdentityServer.Services;
 global using Duende.IdentityServer.Stores;
 global using Duende.IdentityServer.Validation;
+global using eShop.Identity.API;
+global using eShop.Identity.API.Configuration;
+global using eShop.Identity.API.Data;
+global using eShop.Identity.API.Models;
+global using eShop.Identity.API.Services;
+global using eShop.ServiceDefaults;
 global using IdentityModel;
 global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Authorization;
@@ -27,20 +33,12 @@ global using Microsoft.AspNetCore.Mvc.Filters;
 global using Microsoft.AspNetCore.Mvc.Rendering;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Infrastructure;
-global using Microsoft.EntityFrameworkCore.Metadata;
 global using Microsoft.EntityFrameworkCore.Migrations;
-global using eShop.Identity.API;
-global using eShop.Identity.API.Configuration;
-global using eShop.Identity.API.Data;
-global using eShop.Identity.API.Models;
-global using eShop.Identity.API.Services;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
-global using Polly;
-global using eShop.ServiceDefaults;
 
 
 
