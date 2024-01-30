@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspire.Dashboard" />
     <PackageReference Include="Aspire.Hosting" />
   </ItemGroup>
 
