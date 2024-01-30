@@ -1,7 +1,7 @@
-using System.Security.Claims;
-using eShop.Basket.API.Repositories;
+﻿using System.Security.Claims;
 using eShop.Basket.API.Grpc;
 using eShop.Basket.API.Model;
+using eShop.Basket.API.Repositories;
 using eShop.Basket.UnitTests.Helpers;
 using Microsoft.Extensions.Logging.Abstractions;
 using BasketItem = eShop.Basket.API.Model.BasketItem;
