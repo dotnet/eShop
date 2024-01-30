@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel;
 using System.Security.Claims;
 using System.Text.Json;
+using eShop.WebAppComponents.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.SemanticKernel;
-using eShop.WebAppComponents.Services;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 
 namespace eShop.WebApp.Chatbot;
 

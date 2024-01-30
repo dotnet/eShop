@@ -1,6 +1,4 @@
-﻿using eShop.EventBus.Abstractions;
-
-namespace eShop.WebApp.Services.OrderStatus.IntegrationEvents;
+﻿namespace eShop.WebApp.Services.OrderStatus.IntegrationEvents;
 
 public class OrderStatusChangedToAwaitingValidationIntegrationEventHandler(
     OrderStatusNotificationService orderStatusNotificationService,
