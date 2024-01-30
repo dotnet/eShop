@@ -1,7 +1,7 @@
 ﻿using eShop.EventBus.Abstractions;
+using eShop.OrderProcessor.Events;
 using Microsoft.Extensions.Options;
 using Npgsql;
-using eShop.OrderProcessor.Events;
 
 namespace eShop.OrderProcessor.Services
 {
