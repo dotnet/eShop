@@ -1,0 +1,36 @@
+﻿.eshop-footer {
+  margin-top: 3.5rem;
+  background-color: #000;
+  width: 100%;
+}
+
+.eshop-footer-content {
+  max-width: 120rem;
+  margin: auto;
+}
+
+.eshop-footer-row {
+  padding: 3.5rem 10rem;
+  color: white;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.eshop-footer .logo-footer {
+  color: white;
+  margin-right: auto;
+}
+
+
+@media only screen and (max-width: 480px) { 
+  .eshop-footer-row {
+    padding: 3.5rem 1rem;
+  }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+  .eshop-footer-row {
+    padding: 3.5rem 3rem;
+  }
+}

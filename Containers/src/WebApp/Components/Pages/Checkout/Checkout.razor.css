@@ -1,0 +1,83 @@
+﻿.checkout {
+    padding: 0 10rem;
+}
+
+.checkout h2 {
+    color: #000;
+    font-size: 1.25rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 140%;
+    border-bottom: 1px solid #D2D2D2;
+    width: 100%;
+    padding-bottom: 0.5rem;
+}
+
+.checkout .form-buttons {
+    display: flex;
+    padding: 1.5rem 0;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
+    border-top: 1px solid #000;
+}
+
+.checkout label {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    color: #444;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+}
+
+.checkout ::deep input {
+    border: 1px solid #000;
+    background: #FFF;
+    color: #000;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+    width: calc(100% - 1rem);
+    padding: 0.5rem;
+}
+
+.form-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    align-self: stretch;
+}
+
+.form-group .form-group-item {
+    flex: 1 0 0;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.form .form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    align-self: stretch;
+}
+
+@media only screen and (max-width: 480px) { 
+    .checkout {
+        padding: 0 1rem;
+    }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+    .checkout {
+        padding: 0 3rem;
+    }
+}

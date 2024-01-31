@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentPageBase
+    x:Class="eShop.ClientApp.Views.ProfileView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:templates="clr-namespace:eShop.ClientApp.Views.Templates"
+    xmlns:viewModelBase="clr-namespace:eShop.ClientApp.ViewModels.Base"
+    xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
+    xmlns:views="clr-namespace:eShop.ClientApp.Views"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Title="MY PROFILE"
+    x:DataType="viewmodels:ProfileViewModel">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <Style x:Key="LoginButtonStyle" TargetType="{x:Type Label}">
+                <Setter Property="FontFamily" Value="Montserrat-Regular" />
+                <Setter Property="TextColor" Value="{StaticResource WhiteColor}" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+
+            <Style x:Key="MyOrdersLabelStyle" TargetType="{x:Type Label}">
+                <Setter Property="FontFamily" Value="Montserrat-Regular" />
+                <Setter Property="FontSize" Value="{StaticResource MediumSize}" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="Margin" Value="0,12" />
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="LOGOUT" Command="{Binding LogoutCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <!--  ORDERS  -->
+    <Grid RowDefinitions="*,Auto">
+        <Grid IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}">
+            <Label
+                HorizontalOptions="Center"
+                IsVisible="{Binding Orders.Count, Mode=OneWay, Converter={StaticResource DoesNotHaveCountConverter}}"
+                Text="NO ORDERS"
+                VerticalOptions="Center" />
+        </Grid>
+        <CollectionView
+            SelectedItem="{Binding SelectedOrder, Mode=TwoWay}"
+            ItemsSource="{Binding Orders}"
+            ItemSizingStrategy="MeasureAllItems"
+            SelectionMode="Single"
+            SelectionChangedCommand="{Binding OrderDetailCommand}"
+            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}">
+            <CollectionView.Header>
+                <Label
+                    Style="{StaticResource MyOrdersLabelStyle}"
+                    Text="MY ORDERS" />
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <templates:OrderTemplate />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</views:ContentPageBase>

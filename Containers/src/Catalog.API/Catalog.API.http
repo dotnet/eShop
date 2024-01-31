@@ -1,0 +1,10 @@
+﻿@Catalog.API_HostAddress = http://localhost:5222
+
+
+GET {{Catalog.API_HostAddress}}/api/v1/catalog/items
+
+###
+
+GET {{Catalog.API_HostAddress}}/api/v1/catalog/items/type/1/brand/2
+
+###

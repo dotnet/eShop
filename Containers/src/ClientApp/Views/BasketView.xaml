@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentPageBase
+    x:Class="eShop.ClientApp.Views.BasketView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:templates="clr-namespace:eShop.ClientApp.Views.Templates"
+    xmlns:viewModelBase="clr-namespace:eShop.ClientApp.ViewModels.Base"
+    xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
+    xmlns:views="clr-namespace:eShop.ClientApp.Views"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Title="CART"
+    x:DataType="viewmodels:BasketViewModel">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <Style x:Key="CartTotalStyle" TargetType="{x:Type Label}">
+                <Setter Property="FontFamily" Value="Montserrat-Regular" />
+                <Setter Property="FontSize" Value="{StaticResource LargerSize}" />
+                <Setter Property="HorizontalOptions" Value="End" />
+            </Style>
+
+            <Style x:Key="CheckoutButtonStyle" TargetType="{x:Type Label}">
+                <Setter Property="FontFamily" Value="Montserrat-Regular" />
+                <Setter Property="TextColor" Value="{StaticResource WhiteColor}" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+
+            <Style x:Key="ShoppingCartStyle" TargetType="{x:Type Label}">
+                <Setter Property="FontFamily" Value="Montserrat-Regular" />
+                <Setter Property="FontSize" Value="{StaticResource MediumSize}" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="Margin" Value="0, 12" />
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <!--  SHOPPING CART  -->
+        <Grid IsVisible="{Binding BasketItems.Count,Converter={StaticResource HasCountConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="60" />
+            </Grid.RowDefinitions>
+            <!--  CART ITEMS  -->
+            <CollectionView
+                ItemsSource="{Binding BasketItems}"
+                SelectionChangedCommand="{Binding AddCommand}"
+                SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}"
+                Grid.Row="0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <templates:BasketItemTemplate />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.Footer>
+                    <!--  TOTAL  -->
+                    <HorizontalStackLayout Padding="8" Grid.Row="0">
+                        <Label
+                            Style="{StaticResource CartTotalStyle}"
+                            Text="TOTAL"
+                            TextColor="{AppThemeBinding Dark={StaticResource DarkFontColor}, Light={StaticResource LightFontColor}}"
+                            HorizontalOptions="EndAndExpand"
+                            VerticalOptions="CenterAndExpand" />
+                        <Label
+                            Style="{StaticResource CartTotalStyle}"
+                            Text="{Binding Total, StringFormat='${0:N}'}"
+                            TextColor="{StaticResource GreenColor}"
+                            HorizontalOptions="End"
+                            VerticalOptions="CenterAndExpand" />
+                    </HorizontalStackLayout>
+                </CollectionView.Footer>
+            </CollectionView>
+            <!--  CHECKOUT  -->
+            <Grid
+                Grid.Row="1"
+                Padding="0"
+                BackgroundColor="{StaticResource LightGreenColor}"
+                ColumnSpacing="0"
+                RowSpacing="0">
+                <Label Style="{StaticResource CheckoutButtonStyle}" Text="[ CHECKOUT ]" />
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CheckoutCommand}" NumberOfTapsRequired="1" />
+                </Grid.GestureRecognizers>
+            </Grid>
+        </Grid>
+        <!--  EMPTY SHOPPING CART  -->
+        <Grid IsVisible="{Binding BasketItems.Count, Converter={StaticResource DoesNotHaveCountConverter}}">
+            <Label
+                HorizontalOptions="Center"
+                Text="EMPTY SHOPPING CART"
+                VerticalOptions="Center" />
+        </Grid>
+    </Grid>
+</views:ContentPageBase>

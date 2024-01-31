@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ContainerBaseImage>mobileshoppingagg</ContainerBaseImage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Yarp.ReverseProxy" />
+    <PackageReference Include="Microsoft.Extensions.ServiceDiscovery.Yarp" />
+    <PackageReference Include="AspNetCore.HealthChecks.Uris" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\eShop.ServiceDefaults\eShop.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+</Project>

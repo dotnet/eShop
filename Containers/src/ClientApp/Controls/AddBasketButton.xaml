@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Grid
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+    xmlns:effects="clr-namespace:eShop.ClientApp.Effects"
+    x:Class="eShop.ClientApp.Controls.AddBasketButton">
+        <Ellipse  
+                Fill="#000"
+                StrokeThickness="0"
+                HeightRequest="48"
+                WidthRequest="48"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"/>
+        <Image 
+                Aspect="AspectFit"
+                Source="{StaticResource AddIconLightImageSource}"
+                HeightRequest="24"
+                WidthRequest="24"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"  />
+</Grid>

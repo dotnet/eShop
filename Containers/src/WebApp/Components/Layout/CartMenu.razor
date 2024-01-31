@@ -1,0 +1,52 @@
+﻿@using System.Net
+@attribute [StreamRendering]
+@inject BasketState Basket
+@inject LogOutService LogOutService
+@inject NavigationManager NavigationManager
+@implements IDisposable
+
+<a aria-label="cart" href="cart">
+    <img role="presentation" src="icons/cart.svg" />
+    @if (basketItems?.Count > 0)
+    {
+        <span class="cart-badge">@TotalQuantity</span>
+    }
+</a>
+
+@code {
+    IDisposable? basketStateSubscription;
+    private IReadOnlyCollection<BasketItem>? basketItems;
+
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+
+    private int? TotalQuantity => basketItems?.Sum(i => i.Quantity);
+
+    protected override async Task OnInitializedAsync()
+    {
+        // The basket contents may change during the lifetime of this component (e.g., when an item is
+        // added during the current request). If this EventCallback is invoked, it will cause this
+        // component to re-render with the updated data.
+        basketStateSubscription = Basket.NotifyOnChange(
+            EventCallback.Factory.Create(this, UpdateBasketItemsAsync));
+
+        try
+        {
+            await UpdateBasketItemsAsync();
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            await LogOutService.LogOutAsync(HttpContext!);
+        }
+    }
+
+    public void Dispose()
+    {
+        basketStateSubscription?.Dispose();
+    }
+
+    private async Task UpdateBasketItemsAsync()
+    {
+        basketItems = await Basket.GetBasketItemsAsync();
+    }
+}

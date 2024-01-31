@@ -1,0 +1,22 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Components.Authorization
+
+<PageTitle>Order management</PageTitle>
+
+<h2>Registered webhooks</h2>
+
+<AuthorizeView>
+    <Authorized>
+        <RegisteredHooks />
+        <a class="action" href="add-webhook">Add webhook registration</a>
+    </Authorized>
+    <NotAuthorized>
+        <div class="grid-placeholder">
+            Log in to view or edit webhook registrations
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+
+<h2>Webhook messages received (orders paid)</h2>
+
+<ReceivedMessages />

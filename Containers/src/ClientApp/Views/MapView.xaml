@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentPageBase xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:maps="http://schemas.microsoft.com/dotnet/2021/maui/maps"
+             xmlns:sensors="clr-namespace:Microsoft.Maui.Devices.Sensors;assembly=Microsoft.Maui.Essentials"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:views="clr-namespace:eShop.ClientApp.Views"
+             xmlns:vm="clr-namespace:eShop.ClientApp.ViewModels"
+             x:Class="eShop.ClientApp.Views.MapView"
+             x:DataType="vm:MapViewModel"
+             Title="Microsoft Visitor Center">
+    <maps:Map
+        IsScrollEnabled="False"
+        IsZoomEnabled="False"
+        ItemsSource="{Binding Stores, Mode=OneWay}">
+        <x:Arguments>
+            <maps:MapSpan>
+                <x:Arguments>
+                    <sensors:Location>
+                        <x:Arguments>
+                            <x:Double>47.6423109</x:Double>
+                            <x:Double>-122.1368406</x:Double>
+                        </x:Arguments>
+                    </sensors:Location>
+                    <x:Double>0.01</x:Double>
+                    <x:Double>0.01</x:Double>
+                </x:Arguments>
+            </maps:MapSpan>
+        </x:Arguments>
+        <maps:Map.ItemTemplate>
+            <DataTemplate>
+                <maps:Pin
+                    x:DataType="vm:Store"
+                    Location="{Binding Location}"
+                    Address="{Binding Address}"
+                    Label="{Binding Description}"
+                    MarkerClicked="Pin_MarkerClicked" />
+            </DataTemplate>
+        </maps:Map.ItemTemplate>
+    </maps:Map>
+</views:ContentPageBase>

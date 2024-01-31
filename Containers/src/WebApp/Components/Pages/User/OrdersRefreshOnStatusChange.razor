@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@rendermode InteractiveServer
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject OrderStatusNotificationService OrderStatusNotificationService
+@inject NavigationManager Nav
+@implements IDisposable
+@code {
+    private IDisposable? orderStatusChangedSubscription;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var buyerId = await AuthenticationStateProvider.GetBuyerIdAsync();
+            if (!string.IsNullOrEmpty(buyerId))
+            {
+                orderStatusChangedSubscription = OrderStatusNotificationService.SubscribeToOrderStatusNotifications(
+                    buyerId, () => InvokeAsync(HandleOrderStatusChanged));
+            }
+        }
+    }
+
+    private void HandleOrderStatusChanged()
+    {
+        try
+        {
+            Nav.Refresh();
+        }
+        catch (Exception ex)
+        {
+            // If there's an exception, we want to handle it on this circuit,
+            // and not throw it to the upstream caller
+            _ = DispatchExceptionAsync(ex);
+        }
+    }
+
+    public void Dispose()
+    {
+        orderStatusChangedSubscription?.Dispose();
+    }
+}

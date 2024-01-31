@@ -1,0 +1,27 @@
+﻿@inject WebhooksClient WebhooksClient
+
+@if (webhooks is null)
+{
+    <div class="grid-placeholder">Loading...</div>
+}
+else if (webhooks.Any())
+{
+    <QuickGrid Items="@webhooks">
+        <PropertyColumn Sortable="@true" IsDefaultSortColumn="true" InitialSortDirection="@SortDirection.Descending" Title="Date" Property="@(hook => hook.Date)" />
+        <PropertyColumn Sortable="@true" Title="Destination" Property="@(hook => hook.DestUrl)" />
+        <PropertyColumn Sortable="@true" Title="Token" Property="@(hook => hook.Token)" />
+    </QuickGrid>
+}
+else
+{
+    <div class="grid-placeholder">None registered</div>
+}
+
+@code {
+    IQueryable<WebhookResponse>? webhooks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        webhooks = (await WebhooksClient.LoadWebhooks()).AsQueryable();
+    }
+}

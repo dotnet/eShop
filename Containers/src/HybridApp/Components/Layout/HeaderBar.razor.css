@@ -1,0 +1,68 @@
+﻿.eshop-header {
+    position: relative;
+    max-width: 120rem;
+    margin: auto;
+}
+
+.eshop-header.home .eshop-header-container {
+    height: 38rem;
+    margin-bottom: 0;
+}
+
+.eshop-header .eshop-header-container {
+    height: 15rem;
+    margin-bottom: 4rem;
+}
+
+.eshop-header-hero {
+    overflow: hidden;
+    position: absolute;
+    max-width: 100%;
+    left: 0;
+    top: 0;
+}
+
+.eshop-header-container {
+    position: relative;
+    margin: auto;
+    margin: 0 10rem;
+}
+
+.eshop-header-intro {
+    position: absolute;
+    max-width: 48rem;
+    bottom: 3rem;
+    white-space: nowrap;
+}
+
+.eshop-header-intro h1 {
+    color: #000;
+    font-size: 3.5rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 100%;
+    margin: 0;
+}
+
+.eshop-header-intro p {
+    color: #000;
+    font-size: 2rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 125%;
+    margin: 0;
+}
+
+.eshop-header .logo-header {
+    color: black;
+    margin-right: auto;
+}
+
+.eshop-header-navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 1.25rem;
+    gap: 1.5rem;
+}
