@@ -15,21 +15,14 @@ services:
   identity.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=80
-      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_URLS=http://0.0.0.0:80
       - applicationUrl="http://identity.api:80"
+      - UseCustomizationData=True
       - ConnectionStrings__IdentityDB=Host=identity.api.db;Port=5432;Database=identity;Username=postgres;Password=123#@!qweEWQ
-      - DOTNET_LAUNCH_PROFILE=http
-      - DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION=true
-      - LOGGING__CONSOLE__FORMATTERNAME-simple
-      - LOGGING__CONSOLE__FORMATTERNAME=yyyy-MM-ddTHH:mm:ss.fffffff 
-      - DOCKER_HOST_IP=localhost
-      - sslPort=443
-      - useSSL=true
-      - dotnetRunMessages=true
+      - IdentityServer__PublicOrigin=http://identity.api:80
     ports:
-      - 8080:80
-      - 8181:81
+      - 5105:80
+      - 8081:81
     volumes:
       - identity.api.data:/home/app:rw
       - identity.api.keys.data:/app:rw
