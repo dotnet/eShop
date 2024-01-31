@@ -1,0 +1,76 @@
+﻿.orders {
+    padding: 0 10rem;
+}
+
+.orders-item {
+    display: flex;
+    padding-bottom: 0;
+    align-items: center;
+    gap: 1.75rem;
+    align-self: stretch;
+}
+
+.orders-item > div {
+    flex: 1 0 0;
+}
+
+.orders-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid #D2D2D2;
+}
+
+.orders-header {
+    color: #000;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 1.5rem;
+    padding-top: 0;
+    padding-bottom: 0.5rem;
+}
+
+.total-header {
+    text-align: right;
+}
+
+.order-total {
+    color: #000;
+    text-align: right;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 150%;
+}
+
+.order-status .status {
+    border-radius: 1.25rem;
+    border: 1px solid #A3A3A3;
+    color: #A3A3A3;
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.25rem;
+    padding: 0.5rem 1rem;
+}
+
+.order-status .status.cancelled {
+    color: #FF4E4E;
+    border: 1px solid #FF4E4E;
+}
+
+.order-status .status.paid {
+    color: #2A9E01;
+    border: 1px solid #2A9E01;
+}
+
+@media only screen and (max-width: 480px) { 
+    .orders {
+        padding: 0 1rem;
+    }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+    .orders {
+        padding: 0 3rem;
+    }    
+}

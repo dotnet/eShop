@@ -1,0 +1,20 @@
+﻿@page "/user/login"
+@inject NavigationManager Nav
+@attribute [Authorize]
+@code {
+    [SupplyParameterFromQuery]
+    public string? ReturnUrl { get; set; }
+
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var returnUrl = ReturnUrl ?? "/";
+        var url = new Uri(returnUrl, UriKind.RelativeOrAbsolute);
+        Nav.NavigateTo(url.IsAbsoluteUri ? "/" : returnUrl);
+    }
+
+    public static string Url(NavigationManager nav)
+        => $"user/login?returnUrl={Uri.EscapeDataString(nav.ToBaseRelativePath(nav.Uri))}";
+}

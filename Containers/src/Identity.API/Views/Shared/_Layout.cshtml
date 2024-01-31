@@ -1,0 +1,51 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+
+    <title>Identity | Northern Mountains</title>
+
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.png" />
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class='eshop-banner'>
+        <img role="presentation" src="/images/banner.png" />
+    </div>
+    <div class="eshop-header">
+        <div class="eshop-header-container">
+            <nav class="eshop-header-navbar">
+                <a href="@Configuration["WebAppClient"]" class='logo logo-header'>
+                    <img alt="Northern Mountains" src='/images/logo-header.svg' />
+                </a>
+            </nav>
+      </div>
+    </div>
+
+    <div class="content">
+        @RenderBody()
+    </div>
+
+    <footer class='eshop-footer'>
+        <div class='eshop-footer-content'>
+            <div class='eshop-footer-row'>
+                <img role="presentation" src='/images/logo-footer.svg' class='logo logo-footer' />
+                <p>© Northern Mountains</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.slim.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

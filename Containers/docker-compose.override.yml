@@ -1,0 +1,54 @@
+version: '3.4'
+
+services:
+  identity.api.db:
+    image: ankane/pgvector:latest
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD="trust"
+      #- POSTGRES_INITDB_ARGS="--auth-host=scram-sha-256 --auth-local=scram-sha-256"
+      - POSTGRES_PASSWORD=123#@!qweEWQ
+    ports:
+      - "5432:5432"
+    volumes:
+      - identity.api.db.data:/var/lib/postgresql/data:rw
+  
+  identity.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - applicationUrl="http://identity.api:80"
+      - UseCustomizationData=True
+      - ConnectionStrings__IdentityDB=Host=identity.api.db;Port=5432;Database=identity;Username=postgres;Password=123#@!qweEWQ
+      - IdentityServer__PublicOrigin=http://identity.api:80
+    ports:
+      - 5105:80
+      - 8081:81
+    volumes:
+      - identity.api.data:/home/app:rw
+      - identity.api.keys.data:/app:rw
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - identity.api.certificates.data:/home/app/.aspnet/https:ro
+    depends_on:
+      - identity.api.db
+
+networks:
+  eshop-vnet:
+    name: eshop-vnet
+    driver: host
+
+volumes:
+  identity.api.data:
+    name: identity.api.data
+    driver: local
+  
+  identity.api.keys.data:
+    name: identity.api.keys.data
+    driver: local
+
+  identity.api.certificates.data:
+    name: identity.api.certificates.data
+    driver: local
+
+  identity.api.db.data:
+    name: identity.api.db.data
+    driver: local
