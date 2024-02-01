@@ -5,12 +5,11 @@
     <AspnetVersion>8.0.1</AspnetVersion>
     <MicrosoftExtensionsVersion>8.1.0</MicrosoftExtensionsVersion>
     <EfVersion>8.0.0</EfVersion>
-    <AspireVersion>8.0.0-preview.3.24074.13</AspireVersion>
+    <AspireVersion>8.0.0-preview.3.24081.11</AspireVersion>
     <GrpcVersion>2.59.0</GrpcVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Version together with Aspire -->
-    <PackageVersion Include="Aspire.Dashboard" Version="8.0.0-preview.3.24073.5" />
     <PackageVersion Include="Aspire.Hosting" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Npgsql" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(AspireVersion)" />
