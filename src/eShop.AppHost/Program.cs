@@ -1,7 +1,7 @@
 ﻿var builder = DistributedApplication.CreateBuilder(args);
 
 var redis = builder.AddRedisContainer("redis");
-var rabbitMq = builder.AddRabbitMQContainer("EventBus");
+var rabbitMq = builder.AddRabbitMQContainer("event-bus");
 var postgres = builder.AddPostgresContainer("postgres")
     .WithAnnotation(new ContainerImageAnnotation
     {
@@ -9,10 +9,10 @@ var postgres = builder.AddPostgresContainer("postgres")
         Tag = "latest"
     });
 
-var catalogDb = postgres.AddDatabase("CatalogDB");
-var identityDb = postgres.AddDatabase("IdentityDB");
-var orderDb = postgres.AddDatabase("OrderingDB");
-var webhooksDb = postgres.AddDatabase("WebHooksDB");
+var catalogDb = postgres.AddDatabase("catalog-db");
+var identityDb = postgres.AddDatabase("identity-db");
+var orderDb = postgres.AddDatabase("ordering-db");
+var webhooksDb = postgres.AddDatabase("webhooks-db");
 
 // Services
 var identityApi = builder.AddProject<Projects.Identity_API>("identity-api")
