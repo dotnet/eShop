@@ -25,8 +25,7 @@ var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
 
 var catalogApi = builder.AddProject<Projects.Catalog_API>("catalog-api")
     .WithReference(rabbitMq)
-    .WithReference(catalogDb)
-    .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Production");
+    .WithReference(catalogDb);
 
 var orderingApi = builder.AddProject<Projects.Ordering_API>("ordering-api")
     .WithReference(rabbitMq)

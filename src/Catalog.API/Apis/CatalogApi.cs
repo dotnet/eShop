@@ -47,8 +47,6 @@ public static class CatalogApi
             .Take(pageSize)
             .ToListAsync();
 
-        itemsOnPage = ChangeUriPlaceholder(services.Options.Value, itemsOnPage);
-
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
@@ -57,7 +55,6 @@ public static class CatalogApi
         int[] ids)
     {
         var items = await services.Context.CatalogItems.Where(item => ids.Contains(item.Id)).ToListAsync();
-        items = ChangeUriPlaceholder(services.Options.Value, items);
         return TypedResults.Ok(items);
     }
 
@@ -77,7 +74,6 @@ public static class CatalogApi
             return TypedResults.NotFound();
         }
 
-        item.PictureUri = services.Options.Value.PicBaseUrl.Replace("[0]", item.Id.ToString());
         return TypedResults.Ok(item);
     }
 
@@ -98,8 +94,6 @@ public static class CatalogApi
             .Skip(pageSize * pageIndex)
             .Take(pageSize)
             .ToListAsync();
-
-        itemsOnPage = ChangeUriPlaceholder(services.Options.Value, itemsOnPage);
 
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
@@ -166,8 +160,6 @@ public static class CatalogApi
                 .ToListAsync();
         }
 
-        itemsOnPage = ChangeUriPlaceholder(services.Options.Value, itemsOnPage);
-
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
@@ -195,7 +187,6 @@ public static class CatalogApi
             .Take(pageSize)
             .ToListAsync();
 
-        itemsOnPage = ChangeUriPlaceholder(services.Options.Value, itemsOnPage);
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
@@ -222,7 +213,6 @@ public static class CatalogApi
             .Take(pageSize)
             .ToListAsync();
 
-        itemsOnPage = ChangeUriPlaceholder(services.Options.Value, itemsOnPage);
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
@@ -303,16 +293,6 @@ public static class CatalogApi
         services.Context.CatalogItems.Remove(item);
         await services.Context.SaveChangesAsync();
         return TypedResults.NoContent();
-    }
-
-    private static List<CatalogItem> ChangeUriPlaceholder(CatalogOptions options, List<CatalogItem> items)
-    {
-        foreach (var item in items)
-        {
-            item.PictureUri = options.PicBaseUrl.Replace("[0]", item.Id.ToString());
-        }
-
-        return items;
     }
 
     private static string GetImageMimeTypeFromImageFileExtension(string extension) => extension switch
