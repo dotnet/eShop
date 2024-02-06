@@ -1,7 +1,7 @@
 ﻿var builder = DistributedApplication.CreateBuilder(args);
 
 var redis = builder.AddRedisContainer("redis");
-var rabbitMq = builder.AddRabbitMQContainer("event-bus");
+var rabbitMq = builder.AddRabbitMQContainer("eventbus");
 var postgres = builder.AddPostgresContainer("postgres")
     .WithAnnotation(new ContainerImageAnnotation
     {
@@ -9,10 +9,10 @@ var postgres = builder.AddPostgresContainer("postgres")
         Tag = "latest"
     });
 
-var catalogDb = postgres.AddDatabase("catalog-db");
-var identityDb = postgres.AddDatabase("identity-db");
-var orderDb = postgres.AddDatabase("ordering-db");
-var webhooksDb = postgres.AddDatabase("webhooks-db");
+var catalogDb = postgres.AddDatabase("catalogdb");
+var identityDb = postgres.AddDatabase("identitydb");
+var orderDb = postgres.AddDatabase("orderingdb");
+var webhooksDb = postgres.AddDatabase("webhooksdb");
 
 // Services
 var identityApi = builder.AddProject<Projects.Identity_API>("identity-api")
@@ -25,7 +25,8 @@ var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
 
 var catalogApi = builder.AddProject<Projects.Catalog_API>("catalog-api")
     .WithReference(rabbitMq)
-    .WithReference(catalogDb);
+    .WithReference(catalogDb)
+    .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Production");
 
 var orderingApi = builder.AddProject<Projects.Ordering_API>("ordering-api")
     .WithReference(rabbitMq)
