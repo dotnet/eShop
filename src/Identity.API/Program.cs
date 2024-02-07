@@ -24,13 +24,17 @@ builder.Services.AddIdentityServer(options =>
     options.Events.RaiseInformationEvents = true;
     options.Events.RaiseFailureEvents = true;
     options.Events.RaiseSuccessEvents = true;
+
+    // TODO: Remove this line in production.
+    options.KeyManagement.Enabled = false;
 })
 .AddInMemoryIdentityResources(Config.GetResources())
 .AddInMemoryApiScopes(Config.GetApiScopes())
 .AddInMemoryApiResources(Config.GetApis())
 .AddInMemoryClients(Config.GetClients(builder.Configuration))
 .AddAspNetIdentity<ApplicationUser>()
-.AddDeveloperSigningCredential(); // Not recommended for production - you need to store your key material somewhere secure
+// TODO: Not recommended for production - you need to store your key material somewhere secure
+.AddDeveloperSigningCredential();
 
 builder.Services.AddTransient<IProfileService, ProfileService>();
 builder.Services.AddTransient<ILoginService<ApplicationUser>, EFLoginService>();
