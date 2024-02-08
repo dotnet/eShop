@@ -5,21 +5,19 @@ namespace eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
 public class Order
     : Entity, IAggregateRoot
 {
-    // DDD Patterns comment
-    // Using private fields, allowed since EF Core 1.1, is a much better encapsulation
-    // aligned with DDD Aggregates and Domain Entities (Instead of properties and property collections)
-    private DateTime _orderDate;
+    public DateTime OrderDate { get; private set; }
 
     // Address is a Value Object pattern example persisted as EF Core 2.0 owned entity
     [Required]
     public Address Address { get; private set; }
 
-    public int? GetBuyerId => _buyerId;
-    private int? _buyerId;
+    public int? BuyerId { get; private set; }
+
+    public Buyer Buyer { get; }
 
     public OrderStatus OrderStatus { get; private set; }
-
-    private string _description;
+    
+    public string Description { get; private set; }
 
     // Draft orders have this set to true. Currently we don't check anywhere the draft status of an Order, but we could do it if needed
 #pragma warning disable CS0414 // The field 'Order._isDraft' is assigned but its value is never used
@@ -31,9 +29,10 @@ public class Order
     // so OrderItems cannot be added from "outside the AggregateRoot" directly to the collection,
     // but only through the method OrderAggregateRoot.AddOrderItem() which includes behavior.
     private readonly List<OrderItem> _orderItems;
-    public IReadOnlyCollection<OrderItem> OrderItems => _orderItems;
+   
+    public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
-    private int? _paymentMethodId;
+    public int? PaymentId { get; private set; }
 
     public static Order NewDraft()
     {
@@ -53,10 +52,10 @@ public class Order
     public Order(string userId, string userName, Address address, int cardTypeId, string cardNumber, string cardSecurityNumber,
             string cardHolderName, DateTime cardExpiration, int? buyerId = null, int? paymentMethodId = null) : this()
     {
-        _buyerId = buyerId;
-        _paymentMethodId = paymentMethodId;
+        BuyerId = buyerId;
+        PaymentId = paymentMethodId;
         OrderStatus = OrderStatus.Submitted;
-        _orderDate = DateTime.UtcNow;
+        OrderDate = DateTime.UtcNow;
         Address = address;
 
         // Add the OrderStarterDomainEvent to the domain events collection 
@@ -71,14 +70,12 @@ public class Order
     // in order to maintain consistency between the whole Aggregate. 
     public void AddOrderItem(int productId, string productName, decimal unitPrice, decimal discount, string pictureUrl, int units = 1)
     {
-        var existingOrderForProduct = _orderItems.Where(o => o.ProductId == productId)
-            .SingleOrDefault();
+        var existingOrderForProduct = _orderItems.SingleOrDefault(o => o.ProductId == productId);
 
         if (existingOrderForProduct != null)
         {
             //if previous line exist modify it with higher discount  and units..
-
-            if (discount > existingOrderForProduct.GetCurrentDiscount())
+            if (discount > existingOrderForProduct.Discount)
             {
                 existingOrderForProduct.SetNewDiscount(discount);
             }
@@ -88,22 +85,17 @@ public class Order
         else
         {
             //add validated new order item
-
             var orderItem = new OrderItem(productId, productName, unitPrice, discount, pictureUrl, units);
             _orderItems.Add(orderItem);
         }
     }
 
-    public void SetPaymentId(int id)
+    public void SetPaymentMethodVerified(int buyerId, int paymentId)
     {
-        _paymentMethodId = id;
+        BuyerId = buyerId;
+        PaymentId = paymentId;
     }
-
-    public void SetBuyerId(int id)
-    {
-        _buyerId = id;
-    }
-
+    
     public void SetAwaitingValidationStatus()
     {
         if (OrderStatus == OrderStatus.Submitted)
@@ -120,7 +112,7 @@ public class Order
             AddDomainEvent(new OrderStatusChangedToStockConfirmedDomainEvent(Id));
 
             OrderStatus = OrderStatus.StockConfirmed;
-            _description = "All the items were confirmed with available stock.";
+            Description = "All the items were confirmed with available stock.";
         }
     }
 
@@ -131,7 +123,7 @@ public class Order
             AddDomainEvent(new OrderStatusChangedToPaidDomainEvent(Id, OrderItems));
 
             OrderStatus = OrderStatus.Paid;
-            _description = "The payment was performed at a simulated \"American Bank checking bank account ending on XX35071\"";
+            Description = "The payment was performed at a simulated \"American Bank checking bank account ending on XX35071\"";
         }
     }
 
@@ -143,7 +135,7 @@ public class Order
         }
 
         OrderStatus = OrderStatus.Shipped;
-        _description = "The order was shipped.";
+        Description = "The order was shipped.";
         AddDomainEvent(new OrderShippedDomainEvent(this));
     }
 
@@ -156,7 +148,7 @@ public class Order
         }
 
         OrderStatus = OrderStatus.Cancelled;
-        _description = $"The order was cancelled.";
+        Description = $"The order was cancelled.";
         AddDomainEvent(new OrderCancelledDomainEvent(this));
     }
 
@@ -168,10 +160,10 @@ public class Order
 
             var itemsStockRejectedProductNames = OrderItems
                 .Where(c => orderStockRejectedItems.Contains(c.ProductId))
-                .Select(c => c.GetOrderItemProductName());
+                .Select(c => c.ProductName);
 
             var itemsStockRejectedDescription = string.Join(", ", itemsStockRejectedProductNames);
-            _description = $"The product items don't have stock: ({itemsStockRejectedDescription}).";
+            Description = $"The product items don't have stock: ({itemsStockRejectedDescription}).";
         }
     }
 
@@ -190,8 +182,5 @@ public class Order
         throw new OrderingDomainException($"Is not possible to change the order status from {OrderStatus} to {orderStatusToChange}.");
     }
 
-    public decimal GetTotal()
-    {
-        return _orderItems.Sum(o => o.GetUnits() * o.GetUnitPrice());
-    }
+    public decimal GetTotal() => _orderItems.Sum(o => o.Units * o.UnitPrice);
 }

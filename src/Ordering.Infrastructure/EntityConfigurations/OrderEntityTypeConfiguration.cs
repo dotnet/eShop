@@ -16,31 +16,21 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
             .OwnsOne(o => o.Address);
 
         orderConfiguration
-            .Property("_buyerId")
-            .HasColumnName("BuyerId");
-
-        orderConfiguration
-            .Property("_orderDate")
-            .HasColumnName("OrderDate");
-
-        orderConfiguration
             .Property(o => o.OrderStatus)
             .HasConversion<string>()
             .HasMaxLength(30);
 
         orderConfiguration
-            .Property("_paymentMethodId")
+            .Property(o => o.PaymentId)
             .HasColumnName("PaymentMethodId");
-
-        orderConfiguration.Property<string>("Description");
 
         orderConfiguration.HasOne<PaymentMethod>()
             .WithMany()
-            .HasForeignKey("_paymentMethodId")
+            .HasForeignKey(o => o.PaymentId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        orderConfiguration.HasOne<Buyer>()
+        orderConfiguration.HasOne(o => o.Buyer)
             .WithMany()
-            .HasForeignKey("_buyerId");
+            .HasForeignKey(o => o.BuyerId);
     }
 }
