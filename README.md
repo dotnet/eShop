@@ -60,7 +60,7 @@ azd auth login
 ```sh
 azd init
 ```
-During init:
+- During init:
   - Select `Use code in the current directory`. Azd will automatically detect the Dotnet Aspire project.
   - Confirm `.Net (Aspire)` and continue.
   - Select which services to expose to the Internet (exposing `webapp` is enough to test the sample).
