@@ -51,13 +51,13 @@ The sample catalog data is defined in [catalog.json](https://github.com/dotnet/e
 
 You can use the [Azure Developer CLI](https://aka.ms/azd) to run this project on Azure with only a few commands. Follow the next instructions:
 
-1. Install [azd](https://aka.ms/azure-dev/install).
-2. Log in `azd` (if you haven't done it before) to your Azure account:
-```
+- Install [azd](https://aka.ms/azure-dev/install).
+- Log in `azd` (if you haven't done it before) to your Azure account:
+```sh
 azd auth login
 ```
-3. Initialize `azd` from the root of the repo.
-```
+- Initialize `azd` from the root of the repo.
+```sh
 azd init
 ```
 During init:
@@ -66,8 +66,8 @@ During init:
   - Select which services to expose to the Internet (exposing `webapp` is enough to test the sample).
   - Finalize the initialization by giving a name to your environment.
 
-4. Create Azure resources and deploy the sample by running:
-```
+- Create Azure resources and deploy the sample by running:
+```sh
 azd up
 ```
 Notes:
