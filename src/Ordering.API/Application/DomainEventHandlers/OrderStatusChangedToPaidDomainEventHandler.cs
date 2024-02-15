@@ -21,17 +21,17 @@ public class OrderStatusChangedToPaidDomainEventHandler : INotificationHandler<O
 
     public async Task Handle(OrderStatusChangedToPaidDomainEvent domainEvent, CancellationToken cancellationToken)
     {
-        OrderingApiTrace.LogOrderStatusUpdated(_logger, domainEvent.OrderId, nameof(OrderStatus.Paid), OrderStatus.Paid.Id);
+        OrderingApiTrace.LogOrderStatusUpdated(_logger, domainEvent.OrderId, OrderStatus.Paid);
 
         var order = await _orderRepository.GetAsync(domainEvent.OrderId);
-        var buyer = await _buyerRepository.FindByIdAsync(order.GetBuyerId.Value);
+        var buyer = await _buyerRepository.FindByIdAsync(order.BuyerId.Value);
 
         var orderStockList = domainEvent.OrderItems
-            .Select(orderItem => new OrderStockItem(orderItem.ProductId, orderItem.GetUnits()));
+            .Select(orderItem => new OrderStockItem(orderItem.ProductId, orderItem.Units));
 
         var integrationEvent = new OrderStatusChangedToPaidIntegrationEvent(
             domainEvent.OrderId,
-            order.OrderStatus.Name,
+            order.OrderStatus,
             buyer.Name,
             buyer.IdentityGuid,
             orderStockList);

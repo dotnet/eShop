@@ -38,7 +38,7 @@ else
                    $@order.Total.ToString("0.00")
                 </div>
                 <div class="order-status">
-                    <span class="status @order.Status">
+                    <span class="status @order.Status.ToLower()">
                         @order.Status
                     </span>
                 </div>

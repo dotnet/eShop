@@ -22,15 +22,15 @@ public class OrderStatusChangedToAwaitingValidationDomainEventHandler
 
     public async Task Handle(OrderStatusChangedToAwaitingValidationDomainEvent domainEvent, CancellationToken cancellationToken)
     {
-        OrderingApiTrace.LogOrderStatusUpdated(_logger, domainEvent.OrderId, nameof(OrderStatus.AwaitingValidation), OrderStatus.AwaitingValidation.Id);
+        OrderingApiTrace.LogOrderStatusUpdated(_logger, domainEvent.OrderId, OrderStatus.AwaitingValidation);
 
         var order = await _orderRepository.GetAsync(domainEvent.OrderId);
-        var buyer = await _buyerRepository.FindByIdAsync(order.GetBuyerId.Value);
+        var buyer = await _buyerRepository.FindByIdAsync(order.BuyerId.Value);
 
         var orderStockList = domainEvent.OrderItems
-            .Select(orderItem => new OrderStockItem(orderItem.ProductId, orderItem.GetUnits()));
+            .Select(orderItem => new OrderStockItem(orderItem.ProductId, orderItem.Units));
 
-        var integrationEvent = new OrderStatusChangedToAwaitingValidationIntegrationEvent(order.Id, order.OrderStatus.Name, buyer.Name, buyer.IdentityGuid, orderStockList);
+        var integrationEvent = new OrderStatusChangedToAwaitingValidationIntegrationEvent(order.Id, order.OrderStatus, buyer.Name, buyer.IdentityGuid, orderStockList);
         await _orderingIntegrationEventService.AddAndSaveEventAsync(integrationEvent);
     }
 }

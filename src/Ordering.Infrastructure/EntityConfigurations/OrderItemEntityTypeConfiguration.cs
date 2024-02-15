@@ -13,25 +13,5 @@ class OrderItemEntityTypeConfiguration
             .UseHiLo("orderitemseq");
 
         orderItemConfiguration.Property<int>("OrderId");
-
-        orderItemConfiguration
-            .Property("_discount")
-            .HasColumnName("Discount");
-
-        orderItemConfiguration
-            .Property("_productName")
-            .HasColumnName("ProductName");
-
-        orderItemConfiguration
-            .Property("_unitPrice")
-            .HasColumnName("UnitPrice");
-
-        orderItemConfiguration
-            .Property("_units")
-            .HasColumnName("Units");
-
-        orderItemConfiguration
-            .Property("_pictureUrl")
-            .HasColumnName("PictureUrl");
     }
 }
