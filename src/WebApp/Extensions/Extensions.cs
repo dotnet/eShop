@@ -1,13 +1,17 @@
-﻿using Azure.AI.OpenAI;
+﻿using System;
+using Azure.AI.OpenAI;
 using eShop.WebApp;
 using eShop.WebAppComponents.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Microsoft.SemanticKernel.TextGeneration;
 
 public static class Extensions
 {
@@ -95,14 +99,10 @@ public static class Extensions
         var openAIOptions = builder.Configuration.GetSection("AI").Get<AIOptions>()?.OpenAI;
         var deploymentName = openAIOptions?.ChatModel;
 
-        if (!string.IsNullOrWhiteSpace(deploymentName))
+        if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("OpenAi")) && !string.IsNullOrWhiteSpace(deploymentName))
         {
             builder.AddAzureOpenAI("OpenAi");
-
-            // TODO: Use kernelBuilder.AddAzureOpenAIChatCompletion(deploymentName) when available on NuGet
-            // c.f. https://github.com/microsoft/semantic-kernel/pull/4555
-            builder.Services.AddKernel();
-            builder.Services.AddSingleton<IChatCompletionService>((serviceProvider) => new AzureOpenAIChatCompletionService(deploymentName, serviceProvider.GetRequiredService<OpenAIClient>(), null, serviceProvider.GetService<ILoggerFactory>()));
+            builder.Services.AddAzureOpenAIChatCompletion(deploymentName);
         }
     }
 
