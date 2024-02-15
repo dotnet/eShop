@@ -31,6 +31,9 @@
     <ProjectReference Include="..\eShop.ServiceDefaults\eShop.ServiceDefaults.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Pics\*.webp" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 
   <ItemGroup>
     <InternalsVisibleTo Include="Catalog.FunctionalTests" />

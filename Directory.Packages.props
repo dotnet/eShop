@@ -2,11 +2,10 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    <AspnetVersion>8.0.0</AspnetVersion>
-    <MicrosoftExtensionsVersion>8.0.0</MicrosoftExtensionsVersion>
+    <AspnetVersion>8.0.1</AspnetVersion>
+    <MicrosoftExtensionsVersion>8.1.0</MicrosoftExtensionsVersion>
     <EfVersion>8.0.0</EfVersion>
-    <RuntimeVersion>8.0.0</RuntimeVersion>
-    <AspireVersion>8.0.0-preview.2.23619.3</AspireVersion>
+    <AspireVersion>8.0.0-preview.3.24105.21</AspireVersion>
     <GrpcVersion>2.59.0</GrpcVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -38,9 +37,9 @@
     <PackageVersion Include="Pgvector" Version="0.2.0" />
     <PackageVersion Include="Pgvector.EntityFrameworkCore" Version="0.2.0" />
     <!-- Version together with runtime -->
-    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(RuntimeVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="$(RuntimeVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(RuntimeVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     <!-- Xabaril packages -->
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="7.0.0" />
     <!-- AI -->
@@ -50,7 +49,6 @@
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.7.0-alpha.1" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.7.0-alpha.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.6.0-beta.2" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.EventCounters" Version="1.5.1-alpha.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.6.0-beta.2" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.6.0-beta.2" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.5.1" />

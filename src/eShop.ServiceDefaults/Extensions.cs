@@ -49,10 +49,10 @@ public static partial class Extensions
 
     public static IHostApplicationBuilder ConfigureOpenTelemetry(this IHostApplicationBuilder builder)
     {
-        builder.Logging.AddOpenTelemetry(o =>
+        builder.Logging.AddOpenTelemetry(logging =>
         {
-            o.IncludeFormattedMessage = true;
-            o.IncludeScopes = true;
+            logging.IncludeFormattedMessage = true;
+            logging.IncludeScopes = true;
         });
 
         builder.Services.AddOpenTelemetry()
@@ -65,10 +65,12 @@ public static partial class Extensions
             {
                 if (builder.Environment.IsDevelopment())
                 {
+                    // We want to view all traces in development
                     tracing.SetSampler(new AlwaysOnSampler());
                 }
 
                 tracing.AddAspNetCoreInstrumentation()
+                       .AddGrpcClientInstrumentation()
                        .AddHttpClientInstrumentation();
             });
 
@@ -123,7 +125,7 @@ public static partial class Extensions
         app.MapHealthChecks("/health");
 
         // Only health checks tagged with the "live" tag must pass for app to be considered alive
-        app.MapHealthChecks("/liveness", new HealthCheckOptions
+        app.MapHealthChecks("/alive", new HealthCheckOptions
         {
             Predicate = r => r.Tags.Contains("live")
         });
