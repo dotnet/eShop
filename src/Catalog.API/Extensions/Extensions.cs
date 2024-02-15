@@ -30,6 +30,11 @@ public static class Extensions
         builder.Services.AddOptions<AIOptions>()
             .BindConfiguration("AI");
 
+        if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("OpenAi")))
+        {
+            builder.AddAzureOpenAI("OpenAi");
+        }
+
         builder.Services.AddSingleton<ICatalogAI, CatalogAI>();
     }
 }
