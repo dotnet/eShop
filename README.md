@@ -1,4 +1,4 @@
- # eShop Reference Application - "Northern Mountains"
+# eShop Reference Application - "Northern Mountains"
 
 A reference .NET application implementing an eCommerce web site using a services-based architecture.
 
