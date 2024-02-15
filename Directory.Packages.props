@@ -75,7 +75,7 @@
     <PackageVersion Include="Polly" Version="8.2.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
-    <PackageVersion Include="xunit" Version="2.5.1" />
+    <PackageVersion Include="xunit" Version="2.6.6" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.1" />
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.1.0" />
   </ItemGroup>
