@@ -59,7 +59,7 @@
     <PackageVersion Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.3.5" />
     <PackageVersion Include="Duende.IdentityServer.Storage" Version="6.3.5" />
     <!-- VS Test -->
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <!-- Scaffolding -->
     <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0-rc.1.23461.3" />
     <!-- Grpc -->
