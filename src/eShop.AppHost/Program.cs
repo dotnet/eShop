@@ -18,7 +18,7 @@ var identityDb = postgres.AddDatabase("identitydb");
 var orderDb = postgres.AddDatabase("orderingdb");
 var webhooksDb = postgres.AddDatabase("webhooksdb");
 
-var openAi = builder.AddAzureOpenAI("OpenAi");
+var openAi = builder.AddAzureOpenAI("openai");
 
 // Services
 var identityApi = builder.AddProject<Projects.Identity_API>("identity-api")

@@ -99,9 +99,9 @@ public static class Extensions
         var openAIOptions = builder.Configuration.GetSection("AI").Get<AIOptions>()?.OpenAI;
         var deploymentName = openAIOptions?.ChatModel;
 
-        if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("OpenAi")) && !string.IsNullOrWhiteSpace(deploymentName))
+        if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("openai")) && !string.IsNullOrWhiteSpace(deploymentName))
         {
-            builder.AddAzureOpenAI("OpenAi");
+            builder.AddAzureOpenAI("openai");
             builder.Services.AddAzureOpenAIChatCompletion(deploymentName);
         }
     }
