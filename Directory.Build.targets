@@ -16,10 +16,6 @@
     <ItemGroup>
       <!-- https://github.com/rabbitmq/rabbitmq-dotnet-client/issues/1410 is tracking fixing the one EventSource warning in RabbitMQ. -->
       <IlcArg Include="--singlewarnassembly:RabbitMQ.Client" />
-
-      <!-- https://github.com/dotnet/runtime/issues/94117 will fix the warnings coming from the ConfigBinder source generator in these assemblies. -->
-      <IlcArg Include="--singlewarnassembly:Aspire.RabbitMQ.Client" />
-      <IlcArg Include="--singlewarnassembly:Aspire.StackExchange.Redis" />
     </ItemGroup>
   </Target>
 

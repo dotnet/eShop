@@ -10,7 +10,7 @@
         // Pooling is disabled because of the following error:
         // Unhandled exception. System.InvalidOperationException:
         // The DbContext of type 'OrderingContext' cannot be pooled because it does not have a public constructor accepting a single parameter of type DbContextOptions or has more than one constructor.
-        builder.AddNpgsqlDbContext<OrderingContext>("OrderingDB", settings => settings.DbContextPooling = false);
+        builder.AddNpgsqlDbContext<OrderingContext>("orderingdb", settings => settings.DbContextPooling = false);
 
         services.AddMigration<OrderingContext, OrderingContextSeed>();
 
@@ -19,7 +19,7 @@
 
         services.AddTransient<IOrderingIntegrationEventService, OrderingIntegrationEventService>();
 
-        builder.AddRabbitMqEventBus("EventBus")
+        builder.AddRabbitMqEventBus("eventbus")
                .AddEventBusSubscriptions();
 
         services.AddHttpContextAccessor();

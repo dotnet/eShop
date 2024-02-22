@@ -25,7 +25,7 @@ public partial class OrderCancelledDomainEventHandler
         OrderingApiTrace.LogOrderStatusUpdated(_logger, domainEvent.Order.Id, OrderStatus.Cancelled);
 
         var order = await _orderRepository.GetAsync(domainEvent.Order.Id);
-        var buyer = await _buyerRepository.FindByIdAsync(order.GetBuyerId.Value);
+        var buyer = await _buyerRepository.FindByIdAsync(order.BuyerId.Value);
 
         var integrationEvent = new OrderStatusChangedToCancelledIntegrationEvent(order.Id, order.OrderStatus, buyer.Name, buyer.IdentityGuid);
         await _orderingIntegrationEventService.AddAndSaveEventAsync(integrationEvent);

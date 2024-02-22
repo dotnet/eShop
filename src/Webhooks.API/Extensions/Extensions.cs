@@ -4,10 +4,10 @@
     {
         builder.AddDefaultAuthentication();
 
-        builder.AddRabbitMqEventBus("EventBus")
+        builder.AddRabbitMqEventBus("eventbus")
                .AddEventBusSubscriptions();
 
-        builder.AddNpgsqlDbContext<WebhooksContext>("WebHooksDB");
+        builder.AddNpgsqlDbContext<WebhooksContext>("webhooksdb");
 
         builder.Services.AddMigration<WebhooksContext>();
 

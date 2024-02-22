@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Catalog.API\Catalog.API.csproj" />
+    <ProjectReference Include="..\..\src\Catalog.API\Catalog.API.csproj" IsAspireProjectResource="false" />
   </ItemGroup>
 
 </Project>

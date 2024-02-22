@@ -1,7 +1,11 @@
-﻿var builder = DistributedApplication.CreateBuilder(args);
+﻿using eShop.AppHost;
+
+var builder = DistributedApplication.CreateBuilder(args);
+
+builder.AddForwardedHeaders();
 
 var redis = builder.AddRedisContainer("redis");
-var rabbitMq = builder.AddRabbitMQContainer("EventBus");
+var rabbitMq = builder.AddRabbitMQContainer("eventbus");
 var postgres = builder.AddPostgresContainer("postgres")
     .WithAnnotation(new ContainerImageAnnotation
     {
@@ -9,28 +13,34 @@ var postgres = builder.AddPostgresContainer("postgres")
         Tag = "latest"
     });
 
-var catalogDb = postgres.AddDatabase("CatalogDB");
-var identityDb = postgres.AddDatabase("IdentityDB");
-var orderDb = postgres.AddDatabase("OrderingDB");
-var webhooksDb = postgres.AddDatabase("WebHooksDB");
+var catalogDb = postgres.AddDatabase("catalogdb");
+var identityDb = postgres.AddDatabase("identitydb");
+var orderDb = postgres.AddDatabase("orderingdb");
+var webhooksDb = postgres.AddDatabase("webhooksdb");
+
+var openAi = builder.AddAzureOpenAI("openai");
 
 // Services
 var identityApi = builder.AddProject<Projects.Identity_API>("identity-api")
-    .WithReference(identityDb);
+    .WithReference(identityDb)
+    .WithLaunchProfile("https");
+
+var idpHttps = identityApi.GetEndpoint("https");
 
 var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
     .WithReference(redis)
     .WithReference(rabbitMq)
-    .WithEnvironment("Identity__Url", identityApi.GetEndpoint("http"));
+    .WithEnvironment("Identity__Url", idpHttps);
 
 var catalogApi = builder.AddProject<Projects.Catalog_API>("catalog-api")
     .WithReference(rabbitMq)
-    .WithReference(catalogDb);
+    .WithReference(catalogDb)
+    .WithReference(openAi, optional: true);
 
 var orderingApi = builder.AddProject<Projects.Ordering_API>("ordering-api")
     .WithReference(rabbitMq)
     .WithReference(orderDb)
-    .WithEnvironment("Identity__Url", identityApi.GetEndpoint("http"));
+    .WithEnvironment("Identity__Url", idpHttps);
 
 builder.AddProject<Projects.OrderProcessor>("order-processor")
     .WithReference(rabbitMq)
@@ -42,7 +52,7 @@ builder.AddProject<Projects.PaymentProcessor>("payment-processor")
 var webHooksApi = builder.AddProject<Projects.Webhooks_API>("webhooks-api")
     .WithReference(rabbitMq)
     .WithReference(webhooksDb)
-    .WithEnvironment("Identity__Url", identityApi.GetEndpoint("http"));
+    .WithEnvironment("Identity__Url", idpHttps);
 
 // Reverse proxies
 builder.AddProject<Projects.Mobile_Bff_Shopping>("mobile-bff")
@@ -52,14 +62,15 @@ builder.AddProject<Projects.Mobile_Bff_Shopping>("mobile-bff")
 // Apps
 var webhooksClient = builder.AddProject<Projects.WebhookClient>("webhooksclient")
     .WithReference(webHooksApi)
-    .WithEnvironment("IdentityUrl", identityApi.GetEndpoint("http"));
+    .WithEnvironment("IdentityUrl", idpHttps);
 
 var webApp = builder.AddProject<Projects.WebApp>("webapp")
     .WithReference(basketApi)
     .WithReference(catalogApi)
     .WithReference(orderingApi)
     .WithReference(rabbitMq)
-    .WithEnvironment("IdentityUrl", identityApi.GetEndpoint("http"))
+    .WithReference(openAi, optional: true)
+    .WithEnvironment("IdentityUrl", idpHttps)
     .WithLaunchProfile("https");
 
 // Wire up the callback urls (self referencing)
