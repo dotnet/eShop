@@ -54,11 +54,11 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.7.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.7.0" />
     <!-- IdentityServer -->
-    <PackageVersion Include="Duende.IdentityServer" Version="6.3.5" />
+    <PackageVersion Include="Duende.IdentityServer" Version="7.0.1" />
     <PackageVersion Include="Duende.IdentityServer.AspNetIdentity" Version="6.3.5" />
-    <PackageVersion Include="Duende.IdentityServer.EntityFramework" Version="6.3.5" />
-    <PackageVersion Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.3.5" />
-    <PackageVersion Include="Duende.IdentityServer.Storage" Version="6.3.5" />
+    <PackageVersion Include="Duende.IdentityServer.EntityFramework" Version="7.0.1" />
+    <PackageVersion Include="Duende.IdentityServer.EntityFramework.Storage" Version="7.0.1" />
+    <PackageVersion Include="Duende.IdentityServer.Storage" Version="7.0.1" />
     <!-- VS Test -->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <!-- Scaffolding -->
