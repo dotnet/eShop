@@ -6,7 +6,7 @@
     <MicrosoftExtensionsVersion>8.2.0</MicrosoftExtensionsVersion>
     <EfVersion>8.0.0</EfVersion>
     <AspireVersion>8.0.0-preview.3.24105.21</AspireVersion>
-    <GrpcVersion>2.59.0</GrpcVersion>
+    <GrpcVersion>2.61.0</GrpcVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Version together with Aspire -->
