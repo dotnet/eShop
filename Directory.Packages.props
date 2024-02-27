@@ -6,7 +6,7 @@
     <MicrosoftExtensionsVersion>8.2.0</MicrosoftExtensionsVersion>
     <EfVersion>8.0.2</EfVersion>
     <AspireVersion>8.0.0-preview.3.24105.21</AspireVersion>
-    <GrpcVersion>2.59.0</GrpcVersion>
+    <GrpcVersion>2.61.0</GrpcVersion>
     <DuendeVersion>7.0.1</DuendeVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -67,7 +67,7 @@
     <!-- Grpc -->
     <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcVersion)" />
     <PackageVersion Include="Grpc.AspNetCore.Server.ClientFactory" Version="$(GrpcVersion)" />
-    <PackageVersion Include="Grpc.Tools" Version="2.59.0" PrivateAssets="All" />
+    <PackageVersion Include="Grpc.Tools" Version="$(GrpcVersion)" PrivateAssets="All" />
     <!-- Miscellaneous -->
     <PackageVersion Include="Automapper" Version="12.0.1" />
     <PackageVersion Include="Dapper" Version="2.1.28" />
