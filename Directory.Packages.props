@@ -43,7 +43,7 @@
     <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     <!-- Xabaril packages -->
-    <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="7.0.0" />
+    <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="8.0.0" />
     <!-- AI -->
     <PackageVersion Include="Microsoft.SemanticKernel" Version="1.4.0" />
     <!-- Open Telemetry -->
