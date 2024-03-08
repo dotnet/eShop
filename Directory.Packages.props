@@ -4,9 +4,10 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
     <AspnetVersion>8.0.2</AspnetVersion>
     <MicrosoftExtensionsVersion>8.2.0</MicrosoftExtensionsVersion>
-    <EfVersion>8.0.0</EfVersion>
+    <EfVersion>8.0.2</EfVersion>
     <AspireVersion>8.0.0-preview.3.24105.21</AspireVersion>
-    <GrpcVersion>2.59.0</GrpcVersion>
+    <GrpcVersion>2.61.0</GrpcVersion>
+    <DuendeVersion>7.0.1</DuendeVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Version together with Aspire -->
@@ -32,7 +33,7 @@
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="$(MicrosoftExtensionsVersion)" />
     <!-- Version together with EF -->
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EfVersion)" />
     <PackageVersion Include="NSubstitute" Version="5.1.0" />
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.15" />
@@ -43,22 +44,22 @@
     <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     <!-- Xabaril packages -->
-    <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="7.0.0" />
+    <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="8.0.0" />
     <!-- AI -->
     <PackageVersion Include="Microsoft.SemanticKernel" Version="1.4.0" />
     <!-- Open Telemetry -->
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.7.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.7.0-alpha.1" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.7.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.7.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.6.0-beta.3" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.7.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.7.0" />
     <!-- IdentityServer -->
-    <PackageVersion Include="Duende.IdentityServer" Version="6.3.5" />
-    <PackageVersion Include="Duende.IdentityServer.AspNetIdentity" Version="6.3.5" />
-    <PackageVersion Include="Duende.IdentityServer.EntityFramework" Version="6.3.5" />
-    <PackageVersion Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.3.5" />
-    <PackageVersion Include="Duende.IdentityServer.Storage" Version="6.3.5" />
+    <PackageVersion Include="Duende.IdentityServer" Version="$(DuendeVersion)" />
+    <PackageVersion Include="Duende.IdentityServer.AspNetIdentity" Version="$(DuendeVersion)" />
+    <PackageVersion Include="Duende.IdentityServer.EntityFramework" Version="$(DuendeVersion)" />
+    <PackageVersion Include="Duende.IdentityServer.EntityFramework.Storage" Version="$(DuendeVersion)" />
+    <PackageVersion Include="Duende.IdentityServer.Storage" Version="$(DuendeVersion)" />
     <!-- VS Test -->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <!-- Scaffolding -->
@@ -66,14 +67,14 @@
     <!-- Grpc -->
     <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcVersion)" />
     <PackageVersion Include="Grpc.AspNetCore.Server.ClientFactory" Version="$(GrpcVersion)" />
-    <PackageVersion Include="Grpc.Tools" Version="2.59.0" PrivateAssets="All" />
+    <PackageVersion Include="Grpc.Tools" Version="$(GrpcVersion)" PrivateAssets="All" />
     <!-- Miscellaneous -->
-    <PackageVersion Include="Automapper" Version="12.0.1" />
-    <PackageVersion Include="Dapper" Version="2.0.151" />
+    <PackageVersion Include="Automapper" Version="13.0.1" />
+    <PackageVersion Include="Dapper" Version="2.1.28" />
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageVersion Include="MediatR" Version="12.2.0" />
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
-    <PackageVersion Include="Polly" Version="8.2.0" />
+    <PackageVersion Include="Polly" Version="8.3.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
     <PackageVersion Include="xunit" Version="2.6.6" />
