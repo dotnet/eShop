@@ -7,7 +7,7 @@ namespace eShop.HybridApp;
 public static class MauiProgram
 {
     // NOTE: Must have a trailing slash on base URLs to ensure the full BaseAddress URL is used to resolve relative URLs
-    private static string MobileBffHost = "http://localhost:61632";
+    private static string MobileBffHost = "http://localhost:11632";
     internal static string MobileBffCatalogBaseUrl = $"{MobileBffHost}/catalog-api/";
 
     public static MauiApp CreateMauiApp()
