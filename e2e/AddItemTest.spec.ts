@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('Add itrm to the cart', async ({ page }) => {
+test('Add item to the cart', async ({ page }) => {
   await page.goto('https://localhost:19888/');
   await page.getByRole('heading', { name: 'Resources' }).click();
   await expect(page.getByRole('heading', { name: 'Resources' })).toBeVisible();

@@ -3,7 +3,6 @@ import { test, expect } from '@playwright/test';
 test('Remove item from cart', async ({ page }) => {
   await page.goto('https://localhost:19888/');
   await page.getByRole('heading', { name: 'Resources' }).click();
-  await page.getByRole('heading', { name: 'Resources' }).click();
   const page1Promise = page.waitForEvent('popup');
   await page.getByRole('link', { name: 'https://localhost:7298' }).click();
   const page1 = await page1Promise;
@@ -26,9 +25,6 @@ test('Remove item from cart', async ({ page }) => {
   
   const cartVal = await page1.getByLabel('product quantity').count();
   await expect(cartVal).toBeGreaterThan(0);
-
-  console.log(cartVal);
-  console.log("product added");
   
   await page1.getByLabel('product quantity').fill('0');
 
