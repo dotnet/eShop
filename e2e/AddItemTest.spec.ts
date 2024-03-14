@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import 'dotenv/config';
 
 test('Add item to the cart', async ({ page }) => {
   await page.goto('https://localhost:19888/');
@@ -13,8 +14,8 @@ test('Add item to the cart', async ({ page }) => {
   await page1.getByLabel('Sign in').click();
   await expect(page1.getByRole('heading', { name: 'Login' })).toBeVisible();
 
-  await page1.getByPlaceholder('Username').fill('bob');
-  await page1.getByPlaceholder('Password').fill('Pass123$');
+  await page1.getByPlaceholder('Username').fill(process.env.USERNAME1);
+  await page1.getByPlaceholder('Password').fill(process.env.PASSWORD);
   await page1.getByRole('button', { name: 'Login' }).click();
   await page1.getByRole('link', { name: 'Adventurer GPS Watch' }).click();
   await page1.getByRole('button', { name: 'Add to shopping bag' }).click();

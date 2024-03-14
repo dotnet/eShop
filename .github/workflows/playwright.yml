@@ -25,3 +25,6 @@ jobs:
         name: playwright-report
         path: playwright-report/
         retention-days: 30
+      env:
+        USERNAME1: bob
+        PASSWORD: Pass123$
