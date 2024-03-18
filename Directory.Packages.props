@@ -42,7 +42,7 @@
     <!-- Version together with runtime -->
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
     <!-- Xabaril packages -->
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="8.0.0" />
     <!-- AI -->
