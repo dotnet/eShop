@@ -4,14 +4,11 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 builder.AddForwardedHeaders();
 
-var redis = builder.AddRedisContainer("redis");
-var rabbitMq = builder.AddRabbitMQContainer("eventbus");
-var postgres = builder.AddPostgresContainer("postgres")
-    .WithAnnotation(new ContainerImageAnnotation
-    {
-        Image = "ankane/pgvector",
-        Tag = "latest"
-    });
+var redis = builder.AddRedis("redis");
+var rabbitMq = builder.AddRabbitMQ("eventbus");
+var postgres = builder.AddPostgres("postgres")
+    .WithImage("ankane/pgvector")
+    .WithImageTag("latest");
 
 var catalogDb = postgres.AddDatabase("catalogdb");
 var identityDb = postgres.AddDatabase("identitydb");
