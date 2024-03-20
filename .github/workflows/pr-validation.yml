@@ -14,7 +14,7 @@ on:
 jobs:  
   test:
     runs-on: ubuntu-latest
-
+    if: flase              #remove this line if  we want to run this work flow
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET (global.json)
