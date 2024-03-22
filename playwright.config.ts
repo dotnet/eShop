@@ -1,5 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 require("dotenv").config({ path: "./.env" });
+import path from 'path';
+
+export const STORAGE_STATE = path.join(__dirname, 'playwright/.auth/user.json');
 
 /**
  * Read environment variables from file.
@@ -34,19 +37,31 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: 'setup',
+      testMatch: '**/*.setup.ts',
     },
-
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
+      name: 'e2e tests logged in',
+      testMatch: ['**/AddItemTest.spec.ts', '**/RemoveItemTest.spec.ts'],
+      dependencies: ['setup'],
+      use: {
+        storageState: STORAGE_STATE,
+      },
+    }
+    // {
+    //   name: 'chromium',
+    //   use: { ...devices['Desktop Chrome'] },
+    // },
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    // {
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
+    // },
+
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
 
     /* Test against mobile viewports. */
     // {

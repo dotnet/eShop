@@ -2,21 +2,14 @@ import { test, expect } from '@playwright/test';
 import 'dotenv/config';
 
 test('Add item to the cart', async ({ page }) => {
-  await page.goto('https://localhost:19888/');
-  await page.getByRole('heading', { name: 'Resources' }).click();
-  await expect(page.getByRole('heading', { name: 'Resources' })).toBeVisible();
+   await page.goto('https://localhost:19888/');
+   
+   await expect(page.getByRole('heading', { name: 'Resources' })).toBeVisible();
 
-  const page1Promise = page.waitForEvent('popup');
-  await page.getByRole('link', { name: 'https://localhost:7298' }).click();
-  const page1 = await page1Promise;
-  await expect(page1.getByRole('heading', { name: 'Ready for a new adventure?' })).toBeVisible();
-  
-  await page1.getByLabel('Sign in').click();
-  await expect(page1.getByRole('heading', { name: 'Login' })).toBeVisible();
-
-  await page1.getByPlaceholder('Username').fill(process.env.USERNAME1);
-  await page1.getByPlaceholder('Password').fill(process.env.PASSWORD);
-  await page1.getByRole('button', { name: 'Login' }).click();
+   const page1Promise = page.waitForEvent('popup');
+   await page.getByRole('link', { name: 'https://localhost:7298' }).click();
+   const page1 = await page1Promise;
+   await expect(page1.getByRole('heading', { name: 'Ready for a new adventure?' })).toBeVisible();  
   await page1.getByRole('link', { name: 'Adventurer GPS Watch' }).click();
   await page1.getByRole('button', { name: 'Add to shopping bag' }).click();
   await page1.getByRole('link', { name: 'shopping bag' }).click();
