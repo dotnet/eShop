@@ -59,14 +59,14 @@ public class BasketMockService : IBasketService
         }
     }
 
-    public Task CheckoutAsync(BasketCheckout basketCheckout, string token)
+    public Task CheckoutAsync(OrderCheckout orderCheckout, string token)
     {
         if (string.IsNullOrEmpty(token))
         {
             return Task.FromResult(0);
         }
 
-        if (basketCheckout != null)
+        if (orderCheckout != null)
         {
             MockCustomBasket.Items.Clear();
         }

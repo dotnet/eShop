@@ -14,16 +14,17 @@ public class MockSettingsService : ISettingsService
     const string IdLatitude = "latitude";
     const string IdLongitude = "longitude";
     const string IdAllowGpsLocation = "allow_gps_location";
-    readonly string AccessTokenDefault = "default_access_token";
-    readonly string IdTokenDefault = string.Empty;
-    readonly bool UseMocksDefault = true;
-    readonly bool UseFakeLocationDefault = false;
-    readonly bool AllowGpsLocationDefault = false;
-    readonly double FakeLatitudeDefault = 47.604610d;
-    readonly double FakeLongitudeDefault = -122.315752d;
-    readonly string UrlIdentityDefault = "https://13.88.8.119";
-    readonly string UrlGatewayMarketingDefault = "https://13.88.8.119";
-    readonly string UrlGatewayShoppingDefault = "https://13.88.8.119";
+    
+    const string AccessTokenDefault = "default_access_token";
+    private const string IdTokenDefault = "";
+    const bool UseMocksDefault = true;
+    const bool UseFakeLocationDefault = false;
+    const bool AllowGpsLocationDefault = false;
+    const double FakeLatitudeDefault = 47.604610d;
+    const double FakeLongitudeDefault = -122.315752d;
+    const string UrlIdentityDefault = "https://13.88.8.119";
+    const string UrlGatewayMarketingDefault = "https://13.88.8.119";
+    const string UrlGatewayShoppingDefault = "https://13.88.8.119";
 
     public string AuthAccessToken
     {
@@ -41,6 +42,48 @@ public class MockSettingsService : ISettingsService
     {
         get => GetValueOrDefault(IdUseMocks, UseMocksDefault);
         set => AddOrUpdateValue(IdUseMocks, value);
+    }
+
+    public string DefaultEndpoint
+    {
+        get => GetValueOrDefault(nameof(DefaultEndpoint), string.Empty);
+        set => AddOrUpdateValue(nameof(DefaultEndpoint), value);
+    }
+    
+    public string RegistrationEndpoint
+    {
+        get => GetValueOrDefault(nameof(RegistrationEndpoint), string.Empty);
+        set => AddOrUpdateValue(nameof(RegistrationEndpoint), value);
+    }
+    
+    public string AuthorizeEndpoint
+    {
+        get => GetValueOrDefault(nameof(AuthorizeEndpoint), string.Empty);
+        set => AddOrUpdateValue(nameof(AuthorizeEndpoint), value);
+    }
+    
+    public string UserInfoEndpoint
+    {
+        get => GetValueOrDefault(nameof(UserInfoEndpoint), string.Empty);
+        set => AddOrUpdateValue(nameof(UserInfoEndpoint), value);
+    }
+    
+    public string ClientId
+    {
+        get => GetValueOrDefault(nameof(ClientId), string.Empty);
+        set => AddOrUpdateValue(nameof(ClientId), value);
+    }
+    
+    public string ClientSecret
+    {
+        get => GetValueOrDefault(nameof(ClientSecret), string.Empty);
+        set => AddOrUpdateValue(nameof(ClientSecret), value);
+    }
+    
+    public string CallbackUri
+    {
+        get => GetValueOrDefault(nameof(CallbackUri), string.Empty);
+        set => AddOrUpdateValue(nameof(CallbackUri), value);
     }
 
     public string IdentityEndpointBase
@@ -85,12 +128,12 @@ public class MockSettingsService : ISettingsService
         set => AddOrUpdateValue(IdAllowGpsLocation, value);
     }
 
-    public Task AddOrUpdateValue(string key, bool value) => AddOrUpdateValueInternal(key, value);
-    public Task AddOrUpdateValue(string key, string value) => AddOrUpdateValueInternal(key, value);
+    public void AddOrUpdateValue(string key, bool value) => AddOrUpdateValueInternal(key, value);
+    public void AddOrUpdateValue(string key, string value) => AddOrUpdateValueInternal(key, value);
     public bool GetValueOrDefault(string key, bool defaultValue) => GetValueOrDefaultInternal(key, defaultValue);
     public string GetValueOrDefault(string key, string defaultValue) => GetValueOrDefaultInternal(key, defaultValue);
 
-    Task AddOrUpdateValueInternal<T>(string key, T value)
+    void AddOrUpdateValueInternal<T>(string key, T value)
     {
         if (value is null)
         {
@@ -100,8 +143,6 @@ public class MockSettingsService : ISettingsService
         {
             _settings[key] = value;
         }
-
-        return Task.Delay(10);
     }
 
     T GetValueOrDefaultInternal<T>(string key, T defaultValue = default!) =>

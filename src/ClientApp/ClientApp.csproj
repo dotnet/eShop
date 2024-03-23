@@ -60,6 +60,13 @@
 	</ItemGroup>
   
 	<ItemGroup>
+		<PackageReference Include="Google.Protobuf" Version="3.26.0" />
+		<PackageReference Include="Grpc.Net.Client" Version="2.61.0" />
+		<PackageReference Include="Grpc.Tools" Version="2.62.0">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="IdentityModel.OidcClient" Version="5.2.1" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.7" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.7" />
 		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="8.0.7" />
@@ -69,6 +76,12 @@
 		<PackageReference Include="IdentityModel" Version="6.2.0" />
 		<PackageReference Include="PCLCrypto" Version="2.1.40-alpha" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+	</ItemGroup>
+  
+	<ItemGroup>
+	  <Protobuf Include="Services\Basket\Protos\basket.proto" GrpcServices="Client">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Protobuf>
 	</ItemGroup>
   
 	<!-- Build Properties must be defined within these property groups to ensure successful publishing

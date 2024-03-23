@@ -176,10 +176,10 @@
             </Entry>
 
             <Label
-                Text="Gateway Shopping Url"
+                Text="Gateway Catalog Url"
                 Style="{StaticResource HeaderLabelStyle}"/>
             <Entry
-                Text="{Binding GatewayShoppingEndpoint, Mode=TwoWay}">
+                Text="{Binding GatewayCatalogEndpoint, Mode=TwoWay}">
                 <Entry.Style>
                     <OnPlatform x:TypeArguments="Style">
                         <On Platform="iOS, Android" Value="{StaticResource SettingsEntryStyle}" />
@@ -187,12 +187,25 @@
                     </OnPlatform>
                 </Entry.Style>
             </Entry>
-
+            
             <Label
-                Text="Gateway Marketing Url"
+                Text="Gateway Orders Url"
                 Style="{StaticResource HeaderLabelStyle}"/>
             <Entry
-                Text="{Binding GatewayMarketingEndpoint, Mode=TwoWay}">
+                Text="{Binding GatewayOrdersEndpoint, Mode=TwoWay}">
+                <Entry.Style>
+                    <OnPlatform x:TypeArguments="Style">
+                        <On Platform="iOS, Android" Value="{StaticResource SettingsEntryStyle}" />
+                        <On Platform="WinUI" Value="{StaticResource SettingsWinUIEntryStyle}" />
+                    </OnPlatform>
+                </Entry.Style>
+            </Entry>
+            
+            <Label
+                Text="Gateway Basket Url"
+                Style="{StaticResource HeaderLabelStyle}"/>
+            <Entry
+                Text="{Binding GatewayBasketEndpoint, Mode=TwoWay}">
                 <Entry.Style>
                     <OnPlatform x:TypeArguments="Style">
                         <On Platform="iOS, Android" Value="{StaticResource SettingsEntryStyle}" />

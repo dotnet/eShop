@@ -102,7 +102,7 @@
                 <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource OrderContentStyle}" Text="{Binding Order.OrderNumber}" />
 
                 <Label Grid.Row="3" Grid.Column="0" Style="{StaticResource TitleStyle}" Text="TOTAL" />
-                <Label Grid.Row="4" Grid.Column="0" Style="{StaticResource OrderContentStyle}" Text="{Binding Order.Total, StringFormat='${0:N}'}" />
+                <Label Grid.Row="4" Grid.Column="0" Style="{StaticResource OrderContentStyle}" Text="{Binding Order.Total, StringFormat='${0:N2}'}" />
 
                 <Label Grid.Row="0" Grid.Column="1" Style="{StaticResource TitleStyle}" Text="DATE" />
                 <Label Grid.Row="1" Grid.Column="1" Style="{StaticResource OrderContentStyle}" Text="{Binding Order.OrderDate, StringFormat={StaticResource DateTimeFormat}}" />
@@ -141,7 +141,7 @@
                         Text="TOTAL"/>
                     <Label
                         Style="{StaticResource OrderTotalStyle}"
-                        Text="{Binding Order.Total, StringFormat='${0:N}'}"
+                        Text="{Binding Order.Total, StringFormat='${0:N2}'}"
                         TextColor="{StaticResource GreenColor}" />
                 </VerticalStackLayout>
             </CollectionView.Footer>

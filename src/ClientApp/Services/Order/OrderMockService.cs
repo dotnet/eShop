@@ -52,7 +52,7 @@ public class OrderMockService : IOrderService
         new OrderItem { OrderId = Guid.NewGuid(), ProductId = Common.Common.MockCatalogItemId03, Discount = 0, ProductName = ".NET Bot Black Sweatshirt (M)", Quantity = 2, UnitPrice = 19.95M, PictureUrl = "fake_product_03.png" }
     };
 
-    private static readonly BasketCheckout MockBasketCheckout = new()
+    private static readonly OrderCheckout MockOrderCheckout = new()
     {
         CardExpiration = DateTime.UtcNow,
         CardHolderName = "FakeCardHolderName",
@@ -96,9 +96,9 @@ public class OrderMockService : IOrderService
         }
     }
 
-    public BasketCheckout MapOrderToBasket(Models.Orders.Order order)
+    public OrderCheckout MapOrderToBasket(Models.Orders.Order order)
     {
-        return MockBasketCheckout;
+        return MockOrderCheckout;
     }
 
     public Task<bool> CancelOrderAsync(int orderId, string token)

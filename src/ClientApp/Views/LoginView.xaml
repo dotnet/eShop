@@ -310,21 +310,6 @@
                         NumberOfTapsRequired="1" />
 				</Grid.GestureRecognizers>
 			</Grid>
-			<!-- WEBVIEW -->
-			<WebView
-                Source="{Binding LoginUrl}"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Grid.Row="0"
-                Grid.RowSpan="2"
-                IsVisible="{Binding IsLogin}">
-				<WebView.Behaviors>
-					<mct:EventToCommandBehavior
-                        EventName="Navigating"
-                        EventArgsConverter="{StaticResource WebNavigatingEventArgsConverter}"
-                        Command="{Binding NavigateCommand}" />
-				</WebView.Behaviors>
-			</WebView>
 		</Grid>
 		<!-- INDICATOR -->
         <ActivityIndicator

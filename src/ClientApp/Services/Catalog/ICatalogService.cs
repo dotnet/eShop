@@ -8,4 +8,6 @@ public interface ICatalogService
     Task<IEnumerable<CatalogItem>> FilterAsync(int catalogBrandId, int catalogTypeId);
     Task<IEnumerable<CatalogType>> GetCatalogTypeAsync();
     Task<IEnumerable<CatalogItem>> GetCatalogAsync();
+    
+    Task<CatalogItem> GetCatalogItemAsync(int catalogItemId);
 }

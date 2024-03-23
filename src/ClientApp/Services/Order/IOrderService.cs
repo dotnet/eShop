@@ -8,5 +8,5 @@ public interface IOrderService
     Task<IEnumerable<Models.Orders.Order>> GetOrdersAsync(string token);
     Task<Models.Orders.Order> GetOrderAsync(int orderId, string token);
     Task<bool> CancelOrderAsync(int orderId, string token);
-    BasketCheckout MapOrderToBasket(Models.Orders.Order order);
+    OrderCheckout MapOrderToBasket(Models.Orders.Order order);
 }

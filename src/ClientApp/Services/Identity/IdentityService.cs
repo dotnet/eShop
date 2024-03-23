@@ -1,77 +1,106 @@
-﻿using System.Net;
-using System.Text;
-using eShop.ClientApp.Helpers;
-using eShop.ClientApp.Models.Token;
-using eShop.ClientApp.Services.RequestProvider;
-using IdentityModel;
-using PCLCrypto;
-using static PCLCrypto.WinRTCrypto;
+﻿using eShop.ClientApp.Models.User;
+using eShop.ClientApp.Services.Settings;
+using IdentityModel.OidcClient;
 
 namespace eShop.ClientApp.Services.Identity;
 
 public class IdentityService : IIdentityService
 {
-    private readonly IRequestProvider _requestProvider;
-    private string _codeVerifier;
+    private readonly IdentityModel.OidcClient.Browser.IBrowser _browser;
+    private readonly ISettingsService _settingsService;
 
-    public IdentityService(IRequestProvider requestProvider)
+    public IdentityService(IdentityModel.OidcClient.Browser.IBrowser browser, ISettingsService settingsService)
     {
-        _requestProvider = requestProvider;
+        _browser = browser;
+        _settingsService = settingsService;
     }
 
-    public string CreateAuthorizationRequest()
+
+    public async Task<bool> SignInAsync()
     {
-        // Create URI to authorization endpoint
-        var authorizeRequest = new AuthorizeRequest(GlobalSetting.Instance.AuthorizeEndpoint);
-
-        // Dictionary with values for the authorize request
-        Dictionary<string, string> dic = new ()
+        try
         {
-            { "client_id", GlobalSetting.Instance.ClientId },
-            { "client_secret", GlobalSetting.Instance.ClientSecret },
-            { "response_type", "code id_token" },
-            { "scope", "openid profile basket orders offline_access" },
-            { "redirect_uri", GlobalSetting.Instance.Callback },
-            { "nonce", Guid.NewGuid().ToString("N") },
-            { "code_challenge", CreateCodeChallenge() },
-            { "code_challenge_method", "S256" }
-        };
+            var client = GetClient();
 
-        // Add CSRF token to protect against cross-site request forgery attacks.
-        var currentCSRFToken = Guid.NewGuid().ToString("N");
-        dic.Add("state", currentCSRFToken);
+            var response = await client.LoginAsync(new LoginRequest { });
 
-        var authorizeUri = authorizeRequest.Create(dic);
-        return authorizeUri;
-    }
+            if (!response.IsError)
+            {
+                _settingsService.AuthAccessToken = response.AccessToken;
+                _settingsService.AuthRefreshToken = response.RefreshToken;
+            }
 
-    public string CreateLogoutRequest(string token)
-    {
-        if (string.IsNullOrEmpty(token))
-        {
-            return string.Empty;
+            return !response.IsError;
         }
-
-        var settings = GlobalSetting.Instance;
-        var (endpoint, callback) =
-            (settings.LogoutEndpoint, settings.LogoutCallback);
-
-        return $"{endpoint}?id_token_hint={token}&post_logout_redirect_uri={callback}";
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
-    public async Task<UserToken> GetTokenAsync(string code)
+    public async Task<bool> SignOutAsync()
     {
-        string data = string.Format("grant_type=authorization_code&code={0}&redirect_uri={1}&code_verifier={2}", code, WebUtility.UrlEncode(GlobalSetting.Instance.Callback), _codeVerifier);
-        var token = await _requestProvider.PostAsync<UserToken>(GlobalSetting.Instance.TokenEndpoint, data, GlobalSetting.Instance.ClientId, GlobalSetting.Instance.ClientSecret);
-        return token;
+        var client = GetClient();
+        var response = await client.LogoutAsync(new LogoutRequest { });
+
+        return !response.IsError;
     }
 
-    private string CreateCodeChallenge()
+    public async Task<UserInfo> GetUserInfoAsync(string authToken)
     {
-        _codeVerifier = RandomNumberGenerator.CreateUniqueId();
-        var sha256 = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithm.Sha256);
-        var challengeBuffer = sha256.HashData(CryptographicBuffer.CreateFromByteArray(Encoding.UTF8.GetBytes(_codeVerifier)));
-        CryptographicBuffer.CopyToByteArray(challengeBuffer, out byte[] challengeBytes);
-        return Base64Url.Encode(challengeBytes);
+        var client = GetClient();
+        
+        var refreshedToken = await client.RefreshTokenAsync(_settingsService.AuthRefreshToken);
+
+        if (!refreshedToken.IsError)
+        {
+            _settingsService.AuthAccessToken = authToken = refreshedToken.AccessToken;
+            _settingsService.AuthRefreshToken = refreshedToken.RefreshToken;
+        }
+        
+        var userInfoWithClaims = await client.GetUserInfoAsync(authToken).ConfigureAwait(false);
+        UserInfo userInfo =
+            new()
+            {
+                UserId = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "sub")?.Value,
+                Email = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "email")?.Value,
+                PhoneNumber = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "phone_number")?.Value,
+                
+                Street = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "address_street")?.Value,
+                Address = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "address_city")?.Value,
+                State = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "address_state")?.Value,
+                ZipCode = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "address_zip_code")?.Value,
+                Country = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "address_country")?.Value,
+                
+                PreferredUsername = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "preferred_username")?.Value,
+                Name = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "name")?.Value,
+                LastName = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "last_name")?.Value,
+                
+                CardNumber = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "card_number")?.Value,
+                CardHolder = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "card_holder")?.Value,
+                CardSecurityNumber = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "card_security_number")?.Value,
+                
+                PhoneNumberVerified = bool.Parse(userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "phone_number_verified")?.Value),
+                EmailVerified = bool.Parse(userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "email_verified")?.Value),
+            };
+
+        return userInfo;
+    }
+
+
+    private OidcClient GetClient()
+    {
+        return new OidcClient(
+            new()
+            {
+                Authority = _settingsService.IdentityEndpointBase, //"http://localhost:5223/" ,
+                ClientId = _settingsService.ClientId, // "maui", // GlobalSetting.Instance.ClientId"",
+                ClientSecret = _settingsService.ClientSecret, // "secret", // GlobalSetting.Instance.ClientSecret,
+                Scope = "openid profile basket orders offline_access",
+                RedirectUri = _settingsService.CallbackUri, // "maui://authcallback", // "GlobalSetting.Instance.Callback",
+                Browser = _browser,
+                // RefreshDiscoveryDocumentForLogin = false,
+            });
     }
 }

@@ -139,7 +139,7 @@ public partial class App : Application
             Latitude = double.Parse(_settingsService.Latitude, CultureInfo.InvariantCulture),
             Longitude = double.Parse(_settingsService.Longitude, CultureInfo.InvariantCulture)
         };
-
+        
         await _locationService.UpdateUserLocation(location, _settingsService.AuthAccessToken);
     }
 

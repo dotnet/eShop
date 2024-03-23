@@ -43,7 +43,7 @@ public partial class CheckoutViewModel : ViewModelBase
                 var basketItems = _appEnvironmentService.BasketService.LocalBasketItems;
 
                 var authToken = _settingsService.AuthAccessToken;
-                var userInfo = await _appEnvironmentService.UserService.GetUserInfoAsync(authToken);
+                var userInfo = await _appEnvironmentService.IdentityService.GetUserInfoAsync(authToken);
 
                 // Create Shipping Address
                 ShippingAddress = new Address
@@ -70,7 +70,8 @@ public partial class CheckoutViewModel : ViewModelBase
                 // Create new Order
                 Order = new Order
                 {
-                    BuyerId = userInfo.UserId,
+                    UserId = userInfo.UserId,
+                    UserName = userInfo.PreferredUsername,
                     OrderItems = orderItems,
                     OrderStatus = OrderStatus.Submitted,
                     OrderDate = DateTime.Now,
@@ -109,19 +110,13 @@ public partial class CheckoutViewModel : ViewModelBase
             var basket = _appEnvironmentService.OrderService.MapOrderToBasket(Order);
             basket.RequestId = Guid.NewGuid();
 
-            // Create basket checkout
-            await _appEnvironmentService.BasketService.CheckoutAsync(basket, authToken);
-
-            if (_settingsService.UseMocks)
-            {
-                await _appEnvironmentService.OrderService.CreateOrderAsync(Order, authToken);
-            }
-
+            await _appEnvironmentService.OrderService.CreateOrderAsync(Order, authToken);
+            
             // Clean Basket
             await _appEnvironmentService.BasketService.ClearBasketAsync(ShippingAddress.Id.ToString(), authToken);
 
             // Reset Basket badge
-            _basketViewModel.ClearBasketItems();
+            await _basketViewModel.ClearBasketItems();
 
             // Navigate to Orders
             await NavigationService.NavigateToAsync("//Main/Catalog");
@@ -129,8 +124,9 @@ public partial class CheckoutViewModel : ViewModelBase
             // Show Dialog
             await _dialogService.ShowAlertAsync("Order sent successfully!", "Checkout", "Ok");
         }
-        catch
+        catch (Exception ex)
         {
+            Console.WriteLine(ex);
             await _dialogService.ShowAlertAsync("An error ocurred. Please, try again.", "Oops!", "Ok");
         }
     }

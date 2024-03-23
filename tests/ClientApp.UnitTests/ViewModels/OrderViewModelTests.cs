@@ -40,7 +40,7 @@ public class OrderViewModelTests
     {
         var orderViewModel = new OrderDetailViewModel(_appEnvironmentService, _navigationService, _settingsService);
 
-        var order = await _appEnvironmentService.OrderService.GetOrderAsync(1, GlobalSetting.Instance.AuthToken);
+        var order = await _appEnvironmentService.OrderService.GetOrderAsync(1, _settingsService.AuthAccessToken);
 
         orderViewModel.OrderNumber = order.OrderNumber;
         await orderViewModel.InitializeAsync();
@@ -62,7 +62,7 @@ public class OrderViewModelTests
                 invoked = true;
             }
         };
-        var order = await _appEnvironmentService.OrderService.GetOrderAsync(1, GlobalSetting.Instance.AuthToken);
+        var order = await _appEnvironmentService.OrderService.GetOrderAsync(1, _settingsService.AuthAccessToken);
         orderViewModel.OrderNumber = order.OrderNumber;
         await orderViewModel.InitializeAsync();
 

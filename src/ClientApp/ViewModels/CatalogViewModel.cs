@@ -3,6 +3,7 @@ using eShop.ClientApp.Models.Basket;
 using eShop.ClientApp.Models.Catalog;
 using eShop.ClientApp.Services;
 using eShop.ClientApp.Services.AppEnvironment;
+using eShop.ClientApp.Services.Identity;
 using eShop.ClientApp.Services.Settings;
 using eShop.ClientApp.ViewModels.Base;
 
@@ -12,6 +13,7 @@ public partial class CatalogViewModel : ViewModelBase
 {
     private readonly IAppEnvironmentService _appEnvironmentService;
     private readonly ISettingsService _settingsService;
+    private readonly IIdentityService _identityService;
 
     private readonly ObservableCollectionEx<CatalogItem> _products = new();
     private readonly ObservableCollectionEx<CatalogBrand> _brands = new();
@@ -45,11 +47,13 @@ public partial class CatalogViewModel : ViewModelBase
 
     public CatalogViewModel(
         IAppEnvironmentService appEnvironmentService,
-        INavigationService navigationService, ISettingsService settingsService)
+        INavigationService navigationService, ISettingsService settingsService,
+        IIdentityService identityService)
         : base(navigationService)
     {
         _appEnvironmentService = appEnvironmentService;
         _settingsService = settingsService;
+        _identityService = identityService;
 
         _products = new ObservableCollectionEx<CatalogItem>();
         _brands = new ObservableCollectionEx<CatalogBrand>();
@@ -70,8 +74,9 @@ public partial class CatalogViewModel : ViewModelBase
                 var brands = await _appEnvironmentService.CatalogService.GetCatalogBrandAsync();
                 var types = await _appEnvironmentService.CatalogService.GetCatalogTypeAsync();
 
+                var identity = await _identityService.GetUserInfoAsync(_settingsService.AuthAccessToken);
                 var authToken = _settingsService.AuthAccessToken;
-                var userInfo = await _appEnvironmentService.UserService.GetUserInfoAsync(authToken);
+                var userInfo = await _appEnvironmentService.IdentityService.GetUserInfoAsync(authToken);
 
                 var basket = await _appEnvironmentService.BasketService.GetBasketAsync(userInfo.UserId, authToken);
 
@@ -92,10 +97,15 @@ public partial class CatalogViewModel : ViewModelBase
         }
 
         var authToken = _settingsService.AuthAccessToken;
-        var userInfo = await _appEnvironmentService.UserService.GetUserInfoAsync(authToken);
+        var userInfo = await _appEnvironmentService.IdentityService.GetUserInfoAsync(authToken);
         var basket = await _appEnvironmentService.BasketService.GetBasketAsync(userInfo.UserId, authToken);
-        if (basket != null)
+        if (basket is not null)
         {
+            if (basket.Items is null)
+            {
+                basket.Items = new List<BasketItem>();
+            }
+
             basket.Items.Add(
                 new BasketItem
                 {
