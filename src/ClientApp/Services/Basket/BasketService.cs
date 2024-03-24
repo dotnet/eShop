@@ -90,7 +90,20 @@ public class BasketService : IBasketService, IDisposable
         
         var result = await GetBasketClient().UpdateBasketAsync(updateBasketRequest, CreateAuthenticationHeaders(authToken)).ConfigureAwait(false);
         
-        //TODO: Map result
+        
+        foreach (var item in result.Items)
+        {
+            var matchedProduct = customerBasket.Items.FirstOrDefault(x => x.ProductId == item.ProductId);
+
+            if (matchedProduct is not null)
+            {
+                matchedProduct.Quantity = item.Quantity;
+                continue;
+            }
+
+            customerBasket.Items.Add(new BasketItem { ProductId = item.ProductId, Quantity = item.Quantity });
+        }
+        
         return customerBasket;
     }
 
