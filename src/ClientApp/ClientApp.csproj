@@ -95,4 +95,8 @@
 		<UseHardenedRuntime>true</UseHardenedRuntime>
 	</PropertyGroup>
 
+  <PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
+    <CodesignEntitlements>Platforms\iOS\Entitlements.plist</CodesignEntitlements>
+  </PropertyGroup>
+
 </Project>

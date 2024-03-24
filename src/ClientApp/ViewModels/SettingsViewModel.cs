@@ -151,9 +151,7 @@ public class SettingsViewModel : ViewModelBase
         get => _allowGpsLocation;
         set => SetProperty(ref _allowGpsLocation, value);
     }
-
-    public bool UserIsLogged => !string.IsNullOrEmpty(_settingsService.AuthAccessToken);
-
+    
     public ICommand ToggleMockServicesCommand { get; }
 
     public ICommand ToggleFakeLocationCommand { get; }
@@ -226,13 +224,6 @@ public class SettingsViewModel : ViewModelBase
 
         OnPropertyChanged(nameof(TitleUseAzureServices));
         OnPropertyChanged(nameof(DescriptionUseAzureServices));
-
-        //TODO: We should re-evaluate this workflow
-        if (UseAzureServices)
-        {
-            _settingsService.AuthAccessToken = string.Empty;
-            _settingsService.AuthIdToken = string.Empty;
-        }
     }
 
     private void ToggleFakeLocation()
@@ -251,10 +242,8 @@ public class SettingsViewModel : ViewModelBase
                 Latitude = _latitude,
                 Longitude = _longitude
             };
-
-            var authToken = _settingsService.AuthAccessToken;
-
-            await _locationService.UpdateUserLocation(locationRequest, authToken);
+            
+            await _locationService.UpdateUserLocation(locationRequest);
         }
     }
 

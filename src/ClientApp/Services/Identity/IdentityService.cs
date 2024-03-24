@@ -1,4 +1,5 @@
-﻿using eShop.ClientApp.Models.User;
+﻿using eShop.ClientApp.Models.Token;
+using eShop.ClientApp.Models.User;
 using eShop.ClientApp.Services.Settings;
 using IdentityModel.OidcClient;
 
@@ -15,52 +16,55 @@ public class IdentityService : IIdentityService
         _settingsService = settingsService;
     }
 
-
     public async Task<bool> SignInAsync()
     {
-        try
+        var response = await GetClient().LoginAsync(new LoginRequest { }).ConfigureAwait(false);
+
+        if (response.IsError)
         {
-            var client = GetClient();
-
-            var response = await client.LoginAsync(new LoginRequest { });
-
-            if (!response.IsError)
-            {
-                _settingsService.AuthAccessToken = response.AccessToken;
-                _settingsService.AuthRefreshToken = response.RefreshToken;
-            }
-
-            return !response.IsError;
+            return false;
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
 
-    public async Task<bool> SignOutAsync()
-    {
-        var client = GetClient();
-        var response = await client.LogoutAsync(new LogoutRequest { });
+        await _settingsService
+            .SetUserTokenAsync(
+                new()
+                {
+                    AccessToken = response.AccessToken,
+                    IdToken = response.IdentityToken,
+                    RefreshToken = response.RefreshToken,
+                    ExpiresAt = response.AccessTokenExpiration,
+                })
+            .ConfigureAwait(false);
 
         return !response.IsError;
     }
 
-    public async Task<UserInfo> GetUserInfoAsync(string authToken)
+    public async Task<bool> SignOutAsync()
     {
-        var client = GetClient();
-        
-        var refreshedToken = await client.RefreshTokenAsync(_settingsService.AuthRefreshToken);
+        var response = await GetClient().LogoutAsync(new LogoutRequest { }).ConfigureAwait(false);
 
-        if (!refreshedToken.IsError)
+        if (response.IsError)
         {
-            _settingsService.AuthAccessToken = authToken = refreshedToken.AccessToken;
-            _settingsService.AuthRefreshToken = refreshedToken.RefreshToken;
+            return false;
+        }
+
+        await _settingsService.SetUserTokenAsync(default);
+
+        return !response.IsError;
+    }
+
+    public async Task<UserInfo> GetUserInfoAsync()
+    {
+        var authToken = await GetAuthTokenAsync().ConfigureAwait(false);
+
+        if (string.IsNullOrEmpty(authToken))
+        {
+            return UserInfo.Default;
         }
         
-        var userInfoWithClaims = await client.GetUserInfoAsync(authToken).ConfigureAwait(false);
-        UserInfo userInfo =
+        var userInfoWithClaims = await GetClient().GetUserInfoAsync(authToken).ConfigureAwait(false);
+        
+        return
             new()
             {
                 UserId = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "sub")?.Value,
@@ -81,26 +85,59 @@ public class IdentityService : IIdentityService
                 CardHolder = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "card_holder")?.Value,
                 CardSecurityNumber = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "card_security_number")?.Value,
                 
-                PhoneNumberVerified = bool.Parse(userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "phone_number_verified")?.Value),
-                EmailVerified = bool.Parse(userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "email_verified")?.Value),
+                PhoneNumberVerified = bool.Parse(userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "phone_number_verified")?.Value ?? "false"),
+                EmailVerified = bool.Parse(userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "email_verified")?.Value ?? "false"),
             };
-
-        return userInfo;
     }
+    
+    public async Task<string> GetAuthTokenAsync()
+    {
+        var userToken = await _settingsService.GetUserTokenAsync().ConfigureAwait(false);
 
+        if (userToken is null) 
+        {
+            return string.Empty;
+        }
 
+        if (DateTimeOffset.Now.Subtract(userToken.ExpiresAt).TotalMinutes > 5)
+        {
+            return userToken.AccessToken;
+        }
+        
+        var response = await GetClient().RefreshTokenAsync(userToken.RefreshToken).ConfigureAwait(false);
+        
+        if (response.IsError)
+        {
+            return string.Empty;
+        }
+
+        await _settingsService
+            .SetUserTokenAsync(
+                new()
+                {
+                    AccessToken = response.AccessToken,
+                    IdToken = response.IdentityToken,
+                    RefreshToken = response.RefreshToken,
+                    ExpiresAt = response.AccessTokenExpiration,
+                })
+            .ConfigureAwait(false);
+
+        return response.AccessToken;
+
+    }
+    
     private OidcClient GetClient()
     {
         return new OidcClient(
             new()
             {
-                Authority = _settingsService.IdentityEndpointBase, //"http://localhost:5223/" ,
-                ClientId = _settingsService.ClientId, // "maui", // GlobalSetting.Instance.ClientId"",
-                ClientSecret = _settingsService.ClientSecret, // "secret", // GlobalSetting.Instance.ClientSecret,
+                Authority = _settingsService.IdentityEndpointBase,
+                ClientId = _settingsService.ClientId,
+                ClientSecret = _settingsService.ClientSecret,
                 Scope = "openid profile basket orders offline_access",
-                RedirectUri = _settingsService.CallbackUri, // "maui://authcallback", // "GlobalSetting.Instance.Callback",
+                RedirectUri = _settingsService.CallbackUri,
+                PostLogoutRedirectUri = _settingsService.CallbackUri,
                 Browser = _browser,
-                // RefreshDiscoveryDocumentForLogin = false,
             });
     }
 }

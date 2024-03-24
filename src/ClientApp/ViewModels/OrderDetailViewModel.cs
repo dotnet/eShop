@@ -39,8 +39,7 @@ public partial class OrderDetailViewModel : ViewModelBase
             async () =>
             {
                 // Get order detail info
-                var authToken = _settingsService.AuthAccessToken;
-                Order = await _appEnvironmentService.OrderService.GetOrderAsync(OrderNumber, authToken);
+                Order = await _appEnvironmentService.OrderService.GetOrderAsync(OrderNumber);
                 IsSubmittedOrder = Order.OrderStatus == OrderStatus.Submitted;
                 OrderStatusText = Order.OrderStatus.ToString().ToUpper();
             });
@@ -49,9 +48,7 @@ public partial class OrderDetailViewModel : ViewModelBase
     [RelayCommand]
     private async Task ToggleCancelOrderAsync()
     {
-        var authToken = _settingsService.AuthAccessToken;
-
-        var result = await _appEnvironmentService.OrderService.CancelOrderAsync(Order.OrderNumber, authToken);
+        var result = await _appEnvironmentService.OrderService.CancelOrderAsync(Order.OrderNumber);
 
         if (result)
         {
@@ -59,7 +56,7 @@ public partial class OrderDetailViewModel : ViewModelBase
         }
         else
         {
-            Order = await _appEnvironmentService.OrderService.GetOrderAsync(Order.OrderNumber, authToken);
+            Order = await _appEnvironmentService.OrderService.GetOrderAsync(Order.OrderNumber);
             OrderStatusText = Order.OrderStatus.ToString().ToUpper();
         }
 

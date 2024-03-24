@@ -5,9 +5,11 @@ namespace eShop.ClientApp.Services.Identity;
 
 public interface IIdentityService
 {
-    public Task<bool> SignInAsync();
+    Task<bool> SignInAsync();
 
-    public Task<bool> SignOutAsync();
+    Task<bool> SignOutAsync();
     
-    Task<UserInfo> GetUserInfoAsync(string authToken);
+    Task<UserInfo> GetUserInfoAsync();
+
+    Task<string> GetAuthTokenAsync();
 }

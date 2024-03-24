@@ -1,12 +1,13 @@
-﻿namespace eShop.ClientApp.Services.Settings;
+﻿#nullable enable
+using eShop.ClientApp.Models.Token;
+
+namespace eShop.ClientApp.Services.Settings;
 
 public interface ISettingsService
 {
-    string AuthAccessToken { get; set; }
+    Task<UserToken?> GetUserTokenAsync();
     
-    string AuthRefreshToken { get; set; }
-    
-    string AuthIdToken { get; set; }
+    Task SetUserTokenAsync(UserToken? userToken);
     
     bool UseMocks { get; set; }
     

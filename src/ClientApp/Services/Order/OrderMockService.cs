@@ -65,35 +65,28 @@ public class OrderMockService : IOrderService
         Street = "FakeStreet"
     };
 
-    public async Task<IEnumerable<Models.Orders.Order>> GetOrdersAsync(string token)
+    public async Task<IEnumerable<Models.Orders.Order>> GetOrdersAsync()
     {
         await Task.Delay(10);
 
-        return !string.IsNullOrEmpty(token)
-            ? MockOrders
+        return MockOrders
                 .OrderByDescending(o => o.OrderNumber)
-                .ToArray()
-            : Enumerable.Empty<Models.Orders.Order>();
+                .ToArray();
     }
 
-    public async Task<Models.Orders.Order> GetOrderAsync(int orderId, string token)
+    public async Task<Models.Orders.Order> GetOrderAsync(int orderId)
     {
         await Task.Delay(10);
 
-        return !string.IsNullOrEmpty(token)
-            ? MockOrders
-                .FirstOrDefault(o => o.OrderNumber.Equals(orderId))
-            : new Models.Orders.Order();
+        return MockOrders
+                .FirstOrDefault(o => o.OrderNumber.Equals(orderId));
     }
 
-    public async Task CreateOrderAsync(Models.Orders.Order newOrder, string token)
+    public async Task CreateOrderAsync(Models.Orders.Order newOrder)
     {
         await Task.Delay(10);
-
-        if (!string.IsNullOrEmpty(token))
-        {
-            MockOrders.Add(newOrder);
-        }
+        
+        MockOrders.Add(newOrder);
     }
 
     public OrderCheckout MapOrderToBasket(Models.Orders.Order order)
@@ -101,7 +94,7 @@ public class OrderMockService : IOrderService
         return MockOrderCheckout;
     }
 
-    public Task<bool> CancelOrderAsync(int orderId, string token)
+    public Task<bool> CancelOrderAsync(int orderId)
     {
         return Task.FromResult(true);
     }

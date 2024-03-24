@@ -41,9 +41,8 @@ public partial class CheckoutViewModel : ViewModelBase
             async () =>
             {
                 var basketItems = _appEnvironmentService.BasketService.LocalBasketItems;
-
-                var authToken = _settingsService.AuthAccessToken;
-                var userInfo = await _appEnvironmentService.IdentityService.GetUserInfoAsync(authToken);
+                
+                var userInfo = await _appEnvironmentService.IdentityService.GetUserInfoAsync();
 
                 // Create Shipping Address
                 ShippingAddress = new Address
@@ -91,7 +90,7 @@ public partial class CheckoutViewModel : ViewModelBase
                 if (_settingsService.UseMocks)
                 {
                     // Get number of orders
-                    var orders = await _appEnvironmentService.OrderService.GetOrdersAsync(authToken);
+                    var orders = await _appEnvironmentService.OrderService.GetOrdersAsync();
 
                     // Create the OrderNumber
                     Order.OrderNumber = orders.Count() + 1;
@@ -105,15 +104,13 @@ public partial class CheckoutViewModel : ViewModelBase
     {
         try
         {
-            var authToken = _settingsService.AuthAccessToken;
-
             var basket = _appEnvironmentService.OrderService.MapOrderToBasket(Order);
             basket.RequestId = Guid.NewGuid();
 
-            await _appEnvironmentService.OrderService.CreateOrderAsync(Order, authToken);
+            await _appEnvironmentService.OrderService.CreateOrderAsync(Order);
             
             // Clean Basket
-            await _appEnvironmentService.BasketService.ClearBasketAsync(ShippingAddress.Id.ToString(), authToken);
+            await _appEnvironmentService.BasketService.ClearBasketAsync();
 
             // Reset Basket badge
             await _basketViewModel.ClearBasketItems();

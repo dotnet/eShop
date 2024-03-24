@@ -1,4 +1,7 @@
 using System.Globalization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using eShop.ClientApp.Models.Token;
 
 namespace eShop.ClientApp.Services.Settings;
 
@@ -6,9 +9,7 @@ public class SettingsService : ISettingsService
 {
     #region Setting Constants
 
-    private const string AccessToken = "access_token";
-    private const string RefreshToken = "refresh_token";
-    private const string IdToken = "id_token";
+    private const string UserAccessToken = "user_token";
     private const string IdUseMocks = "use_mocks";
     private const string IdIdentityBase = "url_base";
     private const string DefaultClientId = "maui";
@@ -22,9 +23,6 @@ public class SettingsService : ISettingsService
     private const string IdLatitude = "latitude";
     private const string IdLongitude = "longitude";
     private const string IdAllowGpsLocation = "allow_gps_location";
-    private readonly string AccessTokenDefault = string.Empty;
-    private readonly string RefreshTokenDefault = string.Empty;
-    private readonly string IdTokenDefault = string.Empty;
     private readonly bool UseMocksDefault = true;
     private readonly bool UseFakeLocationDefault = false;
     private readonly bool AllowGpsLocationDefault = false;
@@ -33,23 +31,16 @@ public class SettingsService : ISettingsService
     #endregion
 
     #region Settings Properties
-
-    public string AuthAccessToken
+    public async Task SetUserTokenAsync(UserToken userToken)
     {
-        get => Preferences.Get(AccessToken, AccessTokenDefault);
-        set => Preferences.Set(AccessToken, value);
+        await SecureStorage.SetAsync(UserAccessToken, userToken is not null ? JsonSerializer.Serialize(userToken) : string.Empty).ConfigureAwait(false);
     }
 
-    public string AuthRefreshToken
+    public async Task<UserToken> GetUserTokenAsync()
     {
-        get => Preferences.Get(RefreshToken, RefreshTokenDefault);
-        set => Preferences.Set(RefreshToken, value);
-    }
-    
-    public string AuthIdToken
-    {
-        get => Preferences.Get(IdToken, IdTokenDefault);
-        set => Preferences.Set(IdToken, value);
+        var userToken = await SecureStorage.GetAsync(UserAccessToken).ConfigureAwait(false);
+
+        return string.IsNullOrEmpty(userToken) ? default : JsonSerializer.Deserialize<UserToken>(userToken);
     }
 
     public bool UseMocks

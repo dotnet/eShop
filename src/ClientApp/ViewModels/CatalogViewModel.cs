@@ -12,8 +12,6 @@ namespace eShop.ClientApp.ViewModels;
 public partial class CatalogViewModel : ViewModelBase
 {
     private readonly IAppEnvironmentService _appEnvironmentService;
-    private readonly ISettingsService _settingsService;
-    private readonly IIdentityService _identityService;
 
     private readonly ObservableCollectionEx<CatalogItem> _products = new();
     private readonly ObservableCollectionEx<CatalogBrand> _brands = new();
@@ -47,13 +45,10 @@ public partial class CatalogViewModel : ViewModelBase
 
     public CatalogViewModel(
         IAppEnvironmentService appEnvironmentService,
-        INavigationService navigationService, ISettingsService settingsService,
-        IIdentityService identityService)
+        INavigationService navigationService)
         : base(navigationService)
     {
         _appEnvironmentService = appEnvironmentService;
-        _settingsService = settingsService;
-        _identityService = identityService;
 
         _products = new ObservableCollectionEx<CatalogItem>();
         _brands = new ObservableCollectionEx<CatalogBrand>();
@@ -73,18 +68,14 @@ public partial class CatalogViewModel : ViewModelBase
                 var products = await _appEnvironmentService.CatalogService.GetCatalogAsync();
                 var brands = await _appEnvironmentService.CatalogService.GetCatalogBrandAsync();
                 var types = await _appEnvironmentService.CatalogService.GetCatalogTypeAsync();
-
-                var identity = await _identityService.GetUserInfoAsync(_settingsService.AuthAccessToken);
-                var authToken = _settingsService.AuthAccessToken;
-                var userInfo = await _appEnvironmentService.IdentityService.GetUserInfoAsync(authToken);
-
-                var basket = await _appEnvironmentService.BasketService.GetBasketAsync(userInfo.UserId, authToken);
+                var basket = await _appEnvironmentService.BasketService.GetBasketAsync();
 
                 BadgeCount = basket?.Items?.Count ?? 0;
 
                 _products.ReloadData(products);
                 _brands.ReloadData(brands);
                 _types.ReloadData(types);
+                
             });
     }
 
@@ -95,10 +86,8 @@ public partial class CatalogViewModel : ViewModelBase
         {
             return;
         }
-
-        var authToken = _settingsService.AuthAccessToken;
-        var userInfo = await _appEnvironmentService.IdentityService.GetUserInfoAsync(authToken);
-        var basket = await _appEnvironmentService.BasketService.GetBasketAsync(userInfo.UserId, authToken);
+        
+        var basket = await _appEnvironmentService.BasketService.GetBasketAsync();
         if (basket is not null)
         {
             if (basket.Items is null)
@@ -116,7 +105,7 @@ public partial class CatalogViewModel : ViewModelBase
                     Quantity = 1
                 });
 
-            await _appEnvironmentService.BasketService.UpdateBasketAsync(basket, authToken);
+            await _appEnvironmentService.BasketService.UpdateBasketAsync(basket);
             BadgeCount = basket.Items.Count;
 
             WeakReferenceMessenger.Default

@@ -51,4 +51,6 @@ public class UserInfo
 
     [JsonPropertyName("phone_number_verified")]
     public bool PhoneNumberVerified { get; set; }
+
+    public static UserInfo Default { get; } = new();
 }

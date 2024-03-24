@@ -33,7 +33,6 @@ public partial class App : Application
 
         MainPage = new AppShell(navigationService);
 
-
         Application.Current.UserAppTheme = AppTheme.Light;
     }
 
@@ -58,7 +57,8 @@ public partial class App : Application
         {
             await GetGpsLocation();
         }
-        if (!_settingsService.UseMocks && !string.IsNullOrEmpty(_settingsService.AuthAccessToken))
+        
+        if (!_settingsService.UseMocks)
         {
             await SendCurrentLocation();
         }
@@ -140,7 +140,7 @@ public partial class App : Application
             Longitude = double.Parse(_settingsService.Longitude, CultureInfo.InvariantCulture)
         };
         
-        await _locationService.UpdateUserLocation(location, _settingsService.AuthAccessToken);
+        await _locationService.UpdateUserLocation(location);
     }
 
     public static void HandleAppActions(AppAction appAction)

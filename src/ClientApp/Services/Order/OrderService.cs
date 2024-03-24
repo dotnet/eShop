@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using eShop.ClientApp.Helpers;
 using eShop.ClientApp.Models.Basket;
 using eShop.ClientApp.Models.Orders;
+using eShop.ClientApp.Services.Identity;
 using eShop.ClientApp.Services.RequestProvider;
 using eShop.ClientApp.Services.Settings;
 
@@ -11,43 +12,66 @@ namespace eShop.ClientApp.Services.Order;
 
 public class OrderService : IOrderService
 {
+    private readonly IIdentityService _identityService;
     private readonly ISettingsService _settingsService;
     private readonly IRequestProvider _requestProvider;
 
     private const string ApiUrlBase = "/api/v1/orders";
 
-    public OrderService(ISettingsService settingsService, IRequestProvider requestProvider)
+    public OrderService(IIdentityService identityService, ISettingsService settingsService, IRequestProvider requestProvider)
     {
+        _identityService = identityService;
         _settingsService = settingsService;
         _requestProvider = requestProvider;
     }
     
-    public async Task CreateOrderAsync(Models.Orders.Order newOrder, string token)
+    public async Task CreateOrderAsync(Models.Orders.Order newOrder)
     {
+        var authToken = await _identityService.GetAuthTokenAsync().ConfigureAwait(false);
+
+        if (string.IsNullOrEmpty(authToken))
+        {
+            return;
+        }
+        
         var uri = UriHelper.CombineUri(_settingsService.GatewayOrdersEndpointBase, ApiUrlBase);
 
-        var success = await _requestProvider.PostAsync(uri, newOrder, token, "x-requestid").ConfigureAwait(false);
+        var success = await _requestProvider.PostAsync(uri, newOrder, authToken, "x-requestid").ConfigureAwait(false);
     }
     
-    public async Task<IEnumerable<Models.Orders.Order>> GetOrdersAsync(string token)
+    public async Task<IEnumerable<Models.Orders.Order>> GetOrdersAsync()
     {
+        var authToken = await _identityService.GetAuthTokenAsync().ConfigureAwait(false);
+
+        if (string.IsNullOrEmpty(authToken))
+        {
+            return Enumerable.Empty<Models.Orders.Order>();
+        }
+        
         var uri = UriHelper.CombineUri(_settingsService.GatewayOrdersEndpointBase, ApiUrlBase);
 
         var orders =
-            await _requestProvider.GetAsync<IEnumerable<Models.Orders.Order>>(uri, token).ConfigureAwait(false);
+            await _requestProvider.GetAsync<IEnumerable<Models.Orders.Order>>(uri, authToken).ConfigureAwait(false);
 
         return orders ?? Enumerable.Empty<Models.Orders.Order>();
 
     }
 
-    public async Task<Models.Orders.Order> GetOrderAsync(int orderId, string token)
+    public async Task<Models.Orders.Order> GetOrderAsync(int orderId)
     {
+        var authToken = await _identityService.GetAuthTokenAsync().ConfigureAwait(false);
+
+        if (string.IsNullOrEmpty(authToken))
+        {
+            return new();
+        }
+        
         try
         {
             var uri = UriHelper.CombineUri(_settingsService.GatewayOrdersEndpointBase, $"{ApiUrlBase}/{orderId}");
 
             Models.Orders.Order order =
-                await _requestProvider.GetAsync<Models.Orders.Order>(uri, token).ConfigureAwait(false);
+                await _requestProvider.GetAsync<Models.Orders.Order>(uri, authToken).ConfigureAwait(false);
 
             return order;
         }
@@ -57,8 +81,15 @@ public class OrderService : IOrderService
         }
     }
 
-    public async Task<bool> CancelOrderAsync(int orderId, string token)
+    public async Task<bool> CancelOrderAsync(int orderId)
     {
+        var authToken = await _identityService.GetAuthTokenAsync().ConfigureAwait(false);
+
+        if (string.IsNullOrEmpty(authToken))
+        {
+            return false;
+        }
+        
         var uri = UriHelper.CombineUri(_settingsService.GatewayOrdersEndpointBase, $"{ApiUrlBase}/cancel");
 
         var cancelOrderCommand = new CancelOrderCommand(orderId);
@@ -67,7 +98,7 @@ public class OrderService : IOrderService
 
         try
         {
-            await _requestProvider.PutAsync(uri, cancelOrderCommand, token, header).ConfigureAwait(false);
+            await _requestProvider.PutAsync(uri, cancelOrderCommand, authToken, header).ConfigureAwait(false);
         }
         //If the status of the order has changed before to click cancel button, we will get
         //a BadRequest HttpStatus

@@ -29,18 +29,15 @@ public partial class BasketViewModel : ViewModelBase
 
     public override async Task InitializeAsync()
     {
-        var authToken = _settingsService.AuthAccessToken;
-        var userInfo = await _appEnvironmentService.IdentityService.GetUserInfoAsync(authToken);
-
         // Update Basket
-        var basket = await _appEnvironmentService.BasketService.GetBasketAsync(userInfo.UserId, authToken);
+        var basket = await _appEnvironmentService.BasketService.GetBasketAsync();
 
         if ((basket?.Items?.Count ?? 0) > 0)
         {
             await _basketItems.ReloadDataAsync(
                 async innerList =>
                 {
-                    foreach (var basketItem in basket.Items)
+                    foreach (var basketItem in basket.Items.ToArray())
                     {
                         var catalogItem = await _appEnvironmentService.CatalogService.GetCatalogItemAsync(basketItem.ProductId);
                         basketItem.PictureUrl = catalogItem.PictureUri;
@@ -61,15 +58,13 @@ public partial class BasketViewModel : ViewModelBase
     private async Task AddBasketItemAsync(BasketItem item, IList<BasketItem> basketItems)
     {
         basketItems.Add(item);
-
-        var authToken = _settingsService.AuthAccessToken;
-        var userInfo = await _appEnvironmentService.IdentityService.GetUserInfoAsync(authToken);
-        var basket = await _appEnvironmentService.BasketService.GetBasketAsync(userInfo.UserId, authToken);
+        
+        var basket = await _appEnvironmentService.BasketService.GetBasketAsync();
         
         if (basket != null)
         {
             basket.Items.Add(item);
-            await _appEnvironmentService.BasketService.UpdateBasketAsync(basket, authToken);
+            await _appEnvironmentService.BasketService.UpdateBasketAsync(basket);
         }
 
         ReCalculateTotal();
@@ -79,14 +74,12 @@ public partial class BasketViewModel : ViewModelBase
     private async Task DeleteAsync(BasketItem item)
     {
         _basketItems.Remove(item);
-
-        var authToken = _settingsService.AuthAccessToken;
-        var userInfo = await _appEnvironmentService.IdentityService.GetUserInfoAsync(authToken);
-        var basket = await _appEnvironmentService.BasketService.GetBasketAsync(userInfo.UserId, authToken);
+        
+        var basket = await _appEnvironmentService.BasketService.GetBasketAsync();
         if (basket != null)
         {
             basket.Items.Remove(item);
-            await _appEnvironmentService.BasketService.UpdateBasketAsync(basket, authToken);
+            await _appEnvironmentService.BasketService.UpdateBasketAsync(basket);
         }
 
         ReCalculateTotal();
@@ -95,9 +88,8 @@ public partial class BasketViewModel : ViewModelBase
     public async Task ClearBasketItems()
     {
         _basketItems.Clear();
-        var authToken = _settingsService.AuthAccessToken;
-        var userInfo = await _appEnvironmentService.IdentityService.GetUserInfoAsync(authToken);
-        await _appEnvironmentService.BasketService.ClearBasketAsync(userInfo.UserId, authToken);
+        
+        await _appEnvironmentService.BasketService.ClearBasketAsync();
 
         ReCalculateTotal();
     }
