@@ -67,7 +67,7 @@ public class ToggleButton : ContentView
         set => SetValue(UnCheckedImageProperty, value);
     }
 
-    public ICommand ToogleCommand =>
+    public ICommand ToggleCommand =>
         _toggleCommand ??= new Command(() =>
         {
             Checked = !Checked;
@@ -86,7 +86,7 @@ public class ToggleButton : ContentView
 
         GestureRecognizers.Add(new TapGestureRecognizer
         {
-            Command = ToogleCommand
+            Command = ToggleCommand
         });
 
         _toggleImage.Source = UnCheckedImage;

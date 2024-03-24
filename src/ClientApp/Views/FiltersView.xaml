@@ -1,38 +1,43 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
-    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
-    x:Class="eShop.ClientApp.Views.FiltersView"
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
     BackgroundColor="#01FFFFFF"
     Shell.PresentationMode="ModalAnimated"
-    x:DataType="viewmodels:CatalogViewModel">
+    x:Class="eShop.ClientApp.Views.FiltersView"
+    x:DataType="viewmodels:CatalogViewModel"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <Grid VerticalOptions="Center" ColumnDefinitions="*, 2*, *">
-        <Border Grid.Row="0" Grid.Column="1"
-            Background="{AppThemeBinding Light={StaticResource LightBackgroundColor}, Dark={StaticResource DarkBackgroundColor}}">
+    <Grid ColumnDefinitions="*, 2*, *" VerticalOptions="Center">
+        <Border
+            Background="{AppThemeBinding Light={StaticResource LightBackgroundColor},
+                                         Dark={StaticResource DarkBackgroundColor}}"
+            Grid.Column="1"
+            Grid.Row="0">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="8" />
             </Border.StrokeShape>
             <VerticalStackLayout
-                Padding="8" Spacing="8"
-
-                BackgroundColor="{AppThemeBinding Light={StaticResource LightBackgroundColor}, Dark={StaticResource DarkBackgroundColor}}">
-                <!-- BRAND -->
-                <Picker Title="BRAND"
-                        ItemsSource="{Binding Brands}"
-                        ItemDisplayBinding="{Binding Brand}"
-                        SelectedItem="{Binding Brand, Mode=TwoWay}"
-                        ios:Picker.UpdateMode="WhenFinished">
-                </Picker>
-                <!-- TYPE -->
-                <Picker Title="TYPE"
-                        ItemsSource="{Binding Types}"
-                        ItemDisplayBinding="{Binding Type}"
-                        SelectedItem="{Binding Type, Mode=TwoWay}"
-                        ios:Picker.UpdateMode="WhenFinished">
-                </Picker>
-                <Button Text="Apply" Command="{Binding FilterCommand}">
+                BackgroundColor="{AppThemeBinding Light={StaticResource LightBackgroundColor},
+                                                  Dark={StaticResource DarkBackgroundColor}}"
+                Padding="8"
+                Spacing="8">
+                <!--  BRAND  -->
+                <Picker
+                    ItemDisplayBinding="{Binding Brand}"
+                    ItemsSource="{Binding Brands}"
+                    SelectedItem="{Binding SelectedBrand, Mode=TwoWay}"
+                    Title="BRAND"
+                    ios:Picker.UpdateMode="WhenFinished" />
+                <!--  TYPE  -->
+                <Picker
+                    ItemDisplayBinding="{Binding Type}"
+                    ItemsSource="{Binding Types}"
+                    SelectedItem="{Binding SelectedType, Mode=TwoWay}"
+                    Title="TYPE"
+                    ios:Picker.UpdateMode="WhenFinished" />
+                <Button Command="{Binding FilterCommand}" Text="Apply">
                     <VisualStateManager.VisualStateGroups>
                         <VisualStateGroup x:Name="CommonStates">
                             <VisualState x:Name="Normal">
@@ -48,7 +53,7 @@
                         </VisualStateGroup>
                     </VisualStateManager.VisualStateGroups>
                 </Button>
-                <Button Text="Clear" IsEnabled="{Binding IsFilter, Mode=OneWay}" Command="{Binding ClearFilterCommand}">
+                <Button Command="{Binding ClearFilterCommand}" Text="Clear">
                     <VisualStateManager.VisualStateGroups>
                         <VisualStateGroup x:Name="CommonStates">
                             <VisualState x:Name="Normal">

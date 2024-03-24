@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using eShop.ClientApp.BasketGrpcClient;
 using eShop.ClientApp.Services.RequestProvider;
@@ -88,8 +88,20 @@ public class BasketService : IBasketService, IDisposable
                             Quantity = x.Quantity,
                         }));
         
-        var result = await GetBasketClient().UpdateBasketAsync(updateBasketRequest, CreateAuthenticationHeaders(authToken)).ConfigureAwait(false);
-        
+        var result = await GetBasketClient().UpdateBasketAsync(updateBasketRequest, CreateAuthenticationHeaders(token)).ConfigureAwait(false);
+
+        foreach (var item in result.Items)
+        {
+            var matchedProduct = customerBasket.Items.FirstOrDefault(x => x.ProductId == item.ProductId);
+
+            if (matchedProduct is not null)
+            {
+                matchedProduct.Quantity = item.Quantity;
+                continue;
+            }
+
+            customerBasket.Items.Add(new BasketItem { ProductId = item.ProductId, Quantity = item.Quantity });
+        }
         
         foreach (var item in result.Items)
         {
