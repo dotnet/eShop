@@ -1,4 +1,6 @@
-﻿using eShop.ClientApp.Models.User;
+using System;
+using eShop.ClientApp.Models.User;
+using eShop.ClientApp.Services.Settings;
 
 namespace eShop.ClientApp.Services.Identity;
 

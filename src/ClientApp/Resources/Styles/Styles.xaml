@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true" ?>
-<ResourceDictionary 
+<ResourceDictionary
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:eShop.ClientApp.Converters"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
-    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <x:Double x:Key="BaseButtonBorderRadius">6</x:Double>
     <x:Double x:Key="BaseButtonBorderWidth">0</x:Double>
@@ -24,95 +24,107 @@
     <x:String x:Key="ToggleOnIcon">&#xf205;</x:String>
 
     <FontImageSource
-     x:Key="SettingsIconImageSource"
-     FontFamily="FontAwesome-Solid"
-     Glyph="{StaticResource SettingsIcon}" />
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource SettingsIcon}"
+        x:Key="SettingsIconImageSource" />
     <FontImageSource
-     x:Key="SettingsIconLightImageSource"
-     FontFamily="FontAwesome-Solid"
-     Glyph="{StaticResource SettingsIcon}"
-     Color="{StaticResource WhiteColor}" />
+        Color="{StaticResource WhiteColor}"
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource SettingsIcon}"
+        x:Key="SettingsIconLightImageSource" />
 
     <FontImageSource
-     x:Key="CatalogIconImageSource"
-     FontAutoScalingEnabled="True"
-     Size="22"
-     Color="{AppThemeBinding Dark={StaticResource DarkFontColor}, Light={StaticResource LightFontColor}}"
-     FontFamily="FontAwesome-Solid"
-     Glyph="{StaticResource CatalogIcon}"/>
-    <FontImageSource
-     x:Key="MapIconImageSource"
-     FontAutoScalingEnabled="True"
-     Size="22"
-     Color="{AppThemeBinding Dark={StaticResource DarkFontColor}, Light={StaticResource LightFontColor}}"
-     FontFamily="FontAwesome-Solid"
-     Glyph="{StaticResource MapIcon}"/>
-    <FontImageSource
-     x:Key="ProfileIconImageSource"
-     FontAutoScalingEnabled="True"
-     Size="22"
-     Color="{AppThemeBinding Dark={StaticResource DarkFontColor}, Light={StaticResource LightFontColor}}"
-     FontFamily="FontAwesome-Solid"
-     Glyph="{StaticResource ProfileIcon}" />
-    <FontImageSource
-     x:Key="BasketIconImageSource"
-     FontFamily="FontAwesome-Solid"
-     Glyph="{StaticResource BasketIcon}" />
+        Color="{StaticResource BlackColor}"
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource SettingsIcon}"
+        x:Key="SettingsIconDarkImageSource" />
 
     <FontImageSource
-     x:Key="BasketIconForTitleImageSource"
-     FontFamily="FontAwesome-Solid"
-     Glyph="{StaticResource BasketIcon}"
-     Size="24"
-     Color="{AppThemeBinding Dark={StaticResource DarkFontColor}, Light={StaticResource LightFontColor}}"/>
+        Color="{AppThemeBinding Dark={StaticResource DarkFontColor},
+                                Light={StaticResource LightFontColor}}"
+        FontAutoScalingEnabled="True"
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource CatalogIcon}"
+        Size="22"
+        x:Key="CatalogIconImageSource" />
     <FontImageSource
-     x:Key="CampaignIconImageSource"
-     FontFamily="FontAwesome-Solid"
-     Glyph="{StaticResource CampaignIcon}" />
+        Color="{AppThemeBinding Dark={StaticResource DarkFontColor},
+                                Light={StaticResource LightFontColor}}"
+        FontAutoScalingEnabled="True"
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource MapIcon}"
+        Size="22"
+        x:Key="MapIconImageSource" />
     <FontImageSource
-     x:Key="FilterIconImageSource"
-     FontFamily="FontAwesome-Solid"
-     Glyph="{StaticResource FilterIcon}" />
+        Color="{AppThemeBinding Dark={StaticResource DarkFontColor},
+                                Light={StaticResource LightFontColor}}"
+        FontAutoScalingEnabled="True"
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource ProfileIcon}"
+        Size="22"
+        x:Key="ProfileIconImageSource" />
     <FontImageSource
-     x:Key="FilterHighlightIconImageSource"
-     FontFamily="FontAwesome-Solid"
-     Glyph="{StaticResource FilterIcon}"
-     Color="{StaticResource AccentColor}"/>
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource BasketIcon}"
+        x:Key="BasketIconImageSource" />
+
     <FontImageSource
-     x:Key="FilterIconForTitleImageSource"
-     FontFamily="FontAwesome-Solid"
-     Glyph="{StaticResource FilterIcon}"
-     Size="22"
-     Color="{AppThemeBinding Dark={StaticResource DarkFontColor}, Light={StaticResource LightFontColor}}"/>
+        Color="{AppThemeBinding Dark={StaticResource DarkFontColor},
+                                Light={StaticResource LightFontColor}}"
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource BasketIcon}"
+        Size="24"
+        x:Key="BasketIconForTitleImageSource" />
     <FontImageSource
-     x:Key="SettingsIconForTitleImageSource"
-     FontFamily="FontAwesome-Solid"
-     Glyph="{StaticResource SettingsIcon}"
-     Size="22"
-     Color="{AppThemeBinding Dark={StaticResource DarkFontColor}, Light={StaticResource LightFontColor}}"/>
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource CampaignIcon}"
+        x:Key="CampaignIconImageSource" />
     <FontImageSource
-     x:Key="AddIconImageSource"
-     FontFamily="FontAwesome-Solid"
-     Glyph="{StaticResource AddIcon}" />
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource FilterIcon}"
+        x:Key="FilterIconImageSource" />
     <FontImageSource
-     x:Key="AddIconLightImageSource"
-     FontFamily="FontAwesome-Solid"
-     Glyph="{StaticResource AddIcon}"
-     Color="{StaticResource WhiteColor}" />
+        Color="{StaticResource AccentColor}"
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource FilterIcon}"
+        x:Key="FilterHighlightIconImageSource" />
     <FontImageSource
-     x:Key="CircleIconImageSource"
-     FontFamily="FontAwesome-Solid"
-     Glyph="{StaticResource CircleIcon}" />
+        Color="{AppThemeBinding Dark={StaticResource DarkFontColor},
+                                Light={StaticResource LightFontColor}}"
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource FilterIcon}"
+        Size="22"
+        x:Key="FilterIconForTitleImageSource" />
     <FontImageSource
-     x:Key="ToggleOffImageSource"
-     FontFamily="FontAwesome-Solid"
-     Glyph="{StaticResource ToggleOffIcon}"
-     Color="{StaticResource DisabledColor}" />
+        Color="{AppThemeBinding Dark={StaticResource DarkFontColor},
+                                Light={StaticResource LightFontColor}}"
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource SettingsIcon}"
+        Size="22"
+        x:Key="SettingsIconForTitleImageSource" />
     <FontImageSource
-     x:Key="ToggleOnImageSource"
-     FontFamily="FontAwesome-Solid"
-     Glyph="{StaticResource ToggleOnIcon}"
-     Color="{StaticResource AccentColor}" />
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource AddIcon}"
+        x:Key="AddIconImageSource" />
+    <FontImageSource
+        Color="{StaticResource WhiteColor}"
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource AddIcon}"
+        x:Key="AddIconLightImageSource" />
+    <FontImageSource
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource CircleIcon}"
+        x:Key="CircleIconImageSource" />
+    <FontImageSource
+        Color="{StaticResource DisabledColor}"
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource ToggleOffIcon}"
+        x:Key="ToggleOffImageSource" />
+    <FontImageSource
+        Color="{StaticResource AccentColor}"
+        FontFamily="FontAwesome-Solid"
+        Glyph="{StaticResource ToggleOnIcon}"
+        x:Key="ToggleOnImageSource" />
 
     <OnPlatform x:Key="BaseButtonFontSize" x:TypeArguments="x:Double">
         <On Platform="iOS" Value="18" />
@@ -172,10 +184,10 @@
     <!--  CONVERTERS  -->
     <mct:IntToBoolConverter x:Key="CountToBoolConverter" />
     <mct:InvertedBoolConverter x:Key="InverseBoolConverter" />
-    <mct:TextCaseConverter x:Key="ToUpperConverter" Type="Upper" />
+    <mct:TextCaseConverter Type="Upper" x:Key="ToUpperConverter" />
     <mct:IsStringNullOrEmptyConverter x:Key="StringNullOrEmptyBoolConverter" />
     <mct:ItemTappedEventArgsConverter x:Key="ItemTappedEventArgsConverter" />
-    <mct:IsListNullOrEmptyConverter  x:Key="ListIsNullOrEmptyConverter" />
+    <mct:IsListNullOrEmptyConverter x:Key="ListIsNullOrEmptyConverter" />
     <mct:IsListNotNullOrEmptyConverter x:Key="ListIsNotNullOrEmptyConverter" />
     <converters:DoesNotHaveCountConverter x:Key="DoesNotHaveCountConverter" />
     <converters:HasCountConverter x:Key="HasCountConverter" />
@@ -184,35 +196,35 @@
     <x:String x:Key="DateTimeFormat">{0:MMMM dd yyyy}</x:String>
 
     <!--  EXPLICIT STYLES  -->
-    <Style x:Key="ValidationErrorLabelStyle" TargetType="{x:Type Label}">
+    <Style TargetType="{x:Type Label}" x:Key="ValidationErrorLabelStyle">
         <Setter Property="TextColor" Value="{StaticResource ErrorColor}" />
         <Setter Property="FontSize" Value="{StaticResource LittleSize}" />
     </Style>
 
-    <Style x:Key="EntryStyle" TargetType="{x:Type Entry}">
+    <Style TargetType="{x:Type Entry}" x:Key="EntryStyle">
         <Setter Property="FontFamily" Value="PlusJakartaSans-Regular" />
         <Setter Property="FontSize" Value="{StaticResource LargeSize}" />
         <Setter Property="HorizontalOptions" Value="FillAndExpand" />
         <Setter Property="FontAttributes" Value="Bold" />
         <Setter Property="Opacity" Value="0.6" />
         <Style.Triggers>
-            <Trigger TargetType="Entry" Property="IsFocused" Value="True">
+            <Trigger Property="IsFocused" TargetType="Entry" Value="True">
                 <Setter Property="Opacity" Value="1" />
             </Trigger>
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="MediumSizeFontStyle" TargetType="{x:Type Label}">
+    <Style TargetType="{x:Type Label}" x:Key="MediumSizeFontStyle">
         <Setter Property="FontFamily" Value="PlusJakartaSans-Regular" />
         <Setter Property="FontSize" Value="{StaticResource MediumSize}" />
     </Style>
 
-    <Style x:Key="LittleSizeFontStyle" TargetType="{x:Type Label}">
+    <Style TargetType="{x:Type Label}" x:Key="LittleSizeFontStyle">
         <Setter Property="FontFamily" Value="PlusJakartaSans-Regular" />
         <Setter Property="FontSize" Value="{StaticResource LittleSize}" />
     </Style>
 
-    <Style x:Key="WinUIEntryStyle" TargetType="{x:Type Entry}">
+    <Style TargetType="{x:Type Entry}" x:Key="WinUIEntryStyle">
         <Setter Property="FontFamily" Value="PlusJakartaSans-Regular" />
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource BlackColor}, Dark=White}" />
         <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource BlackColor}, Dark=White}" />
@@ -222,7 +234,7 @@
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="Opacity" Value="0.6" />
         <Style.Triggers>
-            <Trigger TargetType="Entry" Property="IsFocused" Value="True">
+            <Trigger Property="IsFocused" TargetType="Entry" Value="True">
                 <Setter Property="Opacity" Value="1" />
             </Trigger>
         </Style.Triggers>
@@ -230,9 +242,9 @@
 
     <!--  IMPLICIT STYLES  -->
     <Style
-     ApplyToDerivedTypes="True"
-     CanCascade="True"
-     TargetType="Button">
+        ApplyToDerivedTypes="True"
+        CanCascade="True"
+        TargetType="Button">
         <Setter Property="FontSize" Value="{StaticResource BaseButtonFontSize}" />
         <Setter Property="FontAttributes" Value="{StaticResource BaseButtonFontAttributes}" />
         <Setter Property="CornerRadius" Value="{StaticResource BaseButtonBorderRadius}" />
@@ -243,49 +255,57 @@
     </Style>
 
     <Style
-     ApplyToDerivedTypes="True"
-     CanCascade="True"
-     TargetType="Label">
+        CanCascade="True"
+        TargetType="Button"
+        x:Key="TransparentButtonStyle">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource DarkFontColor}, Light={StaticResource LightFontColor}}" />
+    </Style>
+
+    <Style
+        ApplyToDerivedTypes="True"
+        CanCascade="True"
+        TargetType="Label">
         <Setter Property="FontSize" Value="{StaticResource BaseFontSize}" />
         <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource DarkFontColor}, Light={StaticResource LightFontColor}}" />
     </Style>
 
     <Style
-     ApplyToDerivedTypes="True"
-     CanCascade="True"
-     TargetType="Entry">
+        ApplyToDerivedTypes="True"
+        CanCascade="True"
+        TargetType="Entry">
         <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource DarkFontColor}, Light={StaticResource LightFontColor}}" />
         <Setter Property="PlaceholderColor" Value="{AppThemeBinding Dark={StaticResource DarkFontColor}, Light={StaticResource LightFontColor}}" />
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Dark={StaticResource DarkBackgroundColor}, Light={StaticResource LightBackgroundColor}}" />
     </Style>
 
     <Style
-     ApplyToDerivedTypes="True"
-     CanCascade="True"
-     TargetType="ImageCell">
+        ApplyToDerivedTypes="True"
+        CanCascade="True"
+        TargetType="ImageCell">
         <Setter Property="TextColor" Value="{StaticResource InverseTextColor}" />
         <Setter Property="DetailColor" Value="{StaticResource AccentColor}" />
     </Style>
 
     <Style
-     ApplyToDerivedTypes="True"
-     CanCascade="True"
-     TargetType="TextCell">
+        ApplyToDerivedTypes="True"
+        CanCascade="True"
+        TargetType="TextCell">
         <Setter Property="TextColor" Value="{StaticResource InverseTextColor}" />
         <Setter Property="DetailColor" Value="{StaticResource AccentColor}" />
     </Style>
 
     <Style
-     ApplyToDerivedTypes="True"
-     CanCascade="True"
-     TargetType="CollectionView">
+        ApplyToDerivedTypes="True"
+        CanCascade="True"
+        TargetType="CollectionView">
         <Setter Property="BackgroundColor" Value="{StaticResource ThemeListViewBackgroundColor}" />
     </Style>
 
     <Style
-     ApplyToDerivedTypes="True"
-     CanCascade="True"
-     TargetType="ActivityIndicator">
+        ApplyToDerivedTypes="True"
+        CanCascade="True"
+        TargetType="ActivityIndicator">
         <Setter Property="Color" Value="{StaticResource ActivityIndicatorColor}" />
     </Style>
 

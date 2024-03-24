@@ -1,38 +1,38 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <ContentView
+    HeightRequest="260"
     x:Class="eShop.ClientApp.Views.Templates.ProductTemplate"
+    x:DataType="models:CatalogItem"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:eShop.ClientApp.Controls"
     xmlns:models="clr-namespace:eShop.ClientApp.Models.Catalog"
-    x:DataType="models:CatalogItem"
-    HeightRequest="260">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <ContentView.Resources>
         <ResourceDictionary>
 
-            <Style x:Key="ProductNameStyle" TargetType="{x:Type Label}">
+            <Style TargetType="{x:Type Label}" x:Key="ProductNameStyle">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
-                <Setter Property="FontSize" Value="{StaticResource LargeSize}" />
+                <Setter Property="FontSize" Value="{StaticResource MediumSize}" />
                 <Setter Property="HorizontalOptions" Value="Center" />
                 <Setter Property="Margin" Value="0, 12, 0, 6" />
             </Style>
 
-            <Style x:Key="ProductPriceStyle" TargetType="{x:Type Label}">
+            <Style TargetType="{x:Type Label}" x:Key="ProductPriceStyle">
                 <Setter Property="FontAttributes" Value="Bold" />
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
-                <Setter Property="FontSize" Value="{StaticResource BigSize}" />
+                <Setter Property="FontSize" Value="{StaticResource MidMediumSize}" />
                 <Setter Property="HorizontalOptions" Value="Center" />
                 <Setter Property="Margin" Value="0, 6, 0, 12" />
             </Style>
 
-            <Style x:Key="AddButtonStyle" TargetType="{x:Type Grid}">
+            <Style TargetType="{x:Type Grid}" x:Key="AddButtonStyle">
                 <Setter Property="HeightRequest" Value="42" />
                 <Setter Property="WidthRequest" Value="42" />
                 <Setter Property="HorizontalOptions" Value="Center" />
                 <Setter Property="VerticalOptions" Value="End" />
             </Style>
 
-            <Style x:Key="AddImageStyle" TargetType="{x:Type Image}">
+            <Style TargetType="{x:Type Image}" x:Key="AddImageStyle">
                 <Setter Property="HeightRequest" Value="24" />
                 <Setter Property="WidthRequest" Value="24" />
             </Style>
@@ -41,37 +41,62 @@
     </ContentView.Resources>
     <ContentView.Content>
         <Grid Margin="0" Padding="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="150" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="32" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <!--  IMAGE  -->
-            <Border Grid.Row="0" StrokeThickness="2" BackgroundColor="Gray" StrokeShape="RoundRectangle 8,8,8,8" HeightRequest="150" WidthRequest="150" Margin="16">
-                <Image
-                    Aspect="AspectFill"
-                    Source="{Binding PictureUri, Mode=OneTime, TargetNullValue='logo_header.png'}" />
+            <Border
+                BackgroundColor="Gray"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Grid.Row="0"
+                HeightRequest="150"
+                Margin="16"
+                StrokeShape="RoundRectangle 8,8,8,8"
+                StrokeThickness="1"
+                VerticalOptions="Start"
+                WidthRequest="150">
+                <Image Aspect="AspectFill" Source="{Binding PictureUri, Mode=OneTime, TargetNullValue='logo_header.png'}" />
             </Border>
 
             <Grid
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
                 Grid.Row="0"
                 HorizontalOptions="End"
-                VerticalOptions="End"
-                Style="{StaticResource AddButtonStyle}">
+                Style="{StaticResource AddButtonStyle}"
+                VerticalOptions="End">
                 <controls:AddBasketButton />
             </Grid>
             <!--  NAME  -->
             <Label
+                Grid.Column="0"
                 Grid.Row="1"
                 Style="{StaticResource ProductNameStyle}"
                 Text="{Binding Name, Mode=OneTime, Converter={StaticResource ToUpperConverter}}"
-                VerticalTextAlignment="Start" />
+                VerticalTextAlignment="Center" />
             <!--  PRICE  -->
             <Label
-                Grid.Row="2"
+                Grid.Column="1"
+                Grid.Row="1"
+                MaxLines="1"
                 Style="{StaticResource ProductPriceStyle}"
                 Text="{Binding Price, Mode=OneTime, StringFormat='${0:N2}'}"
-                VerticalTextAlignment="Start" />
+                VerticalTextAlignment="Center" />
         </Grid>
     </ContentView.Content>
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup Name="CommonStates">
+            <VisualState Name="Selected">
+                <VisualState.Setters>
+                    <Setter Property="BackgroundColor" Value="Transparent" />
+                </VisualState.Setters>
+            </VisualState>
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
 </ContentView>
