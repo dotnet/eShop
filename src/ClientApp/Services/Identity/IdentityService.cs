@@ -99,7 +99,7 @@ public class IdentityService : IIdentityService
             return string.Empty;
         }
 
-        if (DateTimeOffset.Now.Subtract(userToken.ExpiresAt).TotalMinutes > 5)
+        if (userToken.ExpiresAt.Subtract(DateTimeOffset.Now).TotalMinutes > 5)
         {
             return userToken.AccessToken;
         }
