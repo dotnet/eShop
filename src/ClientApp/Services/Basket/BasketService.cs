@@ -88,7 +88,7 @@ public class BasketService : IBasketService, IDisposable
                             Quantity = x.Quantity,
                         }));
         
-        var result = await GetBasketClient().UpdateBasketAsync(updateBasketRequest, CreateAuthenticationHeaders(token)).ConfigureAwait(false);
+        var result = await GetBasketClient().UpdateBasketAsync(updateBasketRequest, CreateAuthenticationHeaders(authToken)).ConfigureAwait(false);
 
         foreach (var item in result.Items)
         {
