@@ -1,0 +1,36 @@
+name: eShop Pull Request Validation
+
+on:
+  pull_request:
+    branches:
+      - '**'
+    paths:
+      - 'src/ClientApp/**'
+      - 'test/ClientApp.UnitTests/**'
+    paths-ignore:
+      - '**.md'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/ClientApp/**'
+      - 'test/ClientApp.UnitTests/**'
+    paths-ignore:
+      - '**.md'
+
+
+jobs:  
+  test:
+    runs-on: windows-latest    
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET (global.json)
+        uses: actions/setup-dotnet@v3
+      - name: Update Workloads
+        run: dotnet workload update
+      - name: Install Workloads
+        run: dotnet workload install maui
+      - name: Build 
+        run: dotnet build src/ClientApp/ClientApp.csproj
+      - name: Test
+        run: dotnet test tests/ClientApp.UnitTests/ClientApp.UnitTests.csproj

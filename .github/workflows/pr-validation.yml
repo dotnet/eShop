@@ -4,12 +4,15 @@ on:
   pull_request:
     paths-ignore:
       - '**.md'
+      - 'src/ClientApp/**'
+      - 'test/ClientApp.UnitTests/**'
   push:
     branches:
       - main
     paths-ignore:
       - '**.md'
-
+      - 'src/ClientApp/**'
+      - 'test/ClientApp.UnitTests/**'
 
 jobs:  
   test:
