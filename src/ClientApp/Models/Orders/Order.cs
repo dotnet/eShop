@@ -22,7 +22,7 @@ public class Order
     public DateTime OrderDate { get; set; }
 
     [JsonPropertyName("status")]
-    public OrderStatus OrderStatus { get; set; }
+    public string OrderStatus { get; set; }
 
     [JsonPropertyName("city")]
     public string ShippingCity { get; set; }

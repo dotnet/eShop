@@ -50,11 +50,10 @@ public class BasketService : IBasketService, IDisposable
             var basketResponse = await GetBasketClient().GetBasketAsync(new GetBasketRequest (), CreateAuthenticationHeaders(authToken));
             if (basketResponse.IsInitialized() && basketResponse.Items.Any())
             {
-                basket.Items =
-                    basketResponse.Items
-                        .Select(x =>
-                            new BasketItem {ProductId = x.ProductId, Quantity = x.Quantity,})
-                        .ToList();
+                foreach (var item in basketResponse.Items)
+                {
+                    basket.AddItemToBasket(new BasketItem {ProductId = item.ProductId, Quantity = item.Quantity,});
+                }
             }
         }
         catch (Exception exception)
@@ -90,30 +89,14 @@ public class BasketService : IBasketService, IDisposable
         
         var result = await GetBasketClient().UpdateBasketAsync(updateBasketRequest, CreateAuthenticationHeaders(authToken)).ConfigureAwait(false);
 
-        foreach (var item in result.Items)
+        if (result.Items.Count > 0)
         {
-            var matchedProduct = customerBasket.Items.FirstOrDefault(x => x.ProductId == item.ProductId);
-
-            if (matchedProduct is not null)
-            {
-                matchedProduct.Quantity = item.Quantity;
-                continue;
-            }
-
-            customerBasket.Items.Add(new BasketItem { ProductId = item.ProductId, Quantity = item.Quantity });
+            customerBasket.ClearBasket();
         }
         
         foreach (var item in result.Items)
         {
-            var matchedProduct = customerBasket.Items.FirstOrDefault(x => x.ProductId == item.ProductId);
-
-            if (matchedProduct is not null)
-            {
-                matchedProduct.Quantity = item.Quantity;
-                continue;
-            }
-
-            customerBasket.Items.Add(new BasketItem { ProductId = item.ProductId, Quantity = item.Quantity });
+            customerBasket.AddItemToBasket(new BasketItem { ProductId = item.ProductId, Quantity = item.Quantity });
         }
         
         return customerBasket;

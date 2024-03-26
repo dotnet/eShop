@@ -100,6 +100,7 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<LoginViewModel>();
         mauiAppBuilder.Services.AddSingleton<BasketViewModel>();
         mauiAppBuilder.Services.AddSingleton<CatalogViewModel>();
+        mauiAppBuilder.Services.AddSingleton<CatalogItemViewModel>();
         mauiAppBuilder.Services.AddSingleton<MapViewModel>();
         mauiAppBuilder.Services.AddSingleton<ProfileViewModel>();
 
@@ -112,6 +113,8 @@ public static class MauiProgram
 
     public static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
     {
+        mauiAppBuilder.Services.AddSingleton<CatalogItemView>();
+        
         mauiAppBuilder.Services.AddTransient<BasketView>();
         mauiAppBuilder.Services.AddTransient<CatalogView>();
         mauiAppBuilder.Services.AddTransient<CheckoutView>();

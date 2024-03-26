@@ -63,15 +63,80 @@
             Aspect="AspectFit"
             Grid.RowSpan="2"
             Margin="0,60,0,0"
-            Opacity=".25"
             Source="header_home.png"
-            VerticalOptions="Start" />
+            VerticalOptions="Start"
+            x:Name="HeaderImage" />
+
+        <!--  CATALOG  -->
+        <CollectionView
+            Grid.Row="1"
+            ItemSizingStrategy="MeasureFirstItem"
+            ItemsSource="{Binding Products, Mode=OneTime}"
+            Scrolled="Products_OnScrolled"
+            SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+            SelectionChangedCommand="{Binding ViewCatalogItemCommand, Mode=OneTime}"
+            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}"
+            SelectionMode="Single"
+            VerticalScrollBarVisibility="Never"
+            x:Name="Products">
+            <CollectionView.Header>
+                <Grid
+                    MinimumHeightRequest="200"
+                    Padding="8"
+                    RowDefinitions="*,Auto,Auto"
+                    RowSpacing="4">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="{StaticResource ExtraBigSize}"
+                        Grid.Row="1"
+                        Text="Ready for a new adventure?" />
+                    <Label
+                        FontSize="{StaticResource MediumSize}"
+                        Grid.Row="2"
+                        Text="Start the season with the latest in clothing and equipment." />
+                </Grid>
+            </CollectionView.Header>
+            <CollectionView.EmptyView>
+                <Label
+                    HorizontalOptions="Center"
+                    Text="NO PRODUCTS FOUND"
+                    VerticalOptions="Center" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="{OnIdiom 2, Desktop=4}" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <templates:ProductTemplate />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <views:BadgeView
+            BadgeColor="{AppThemeBinding Light={StaticResource DarkBackgroundColor},
+                                         Dark={StaticResource LightBackgroundColor}}"
+            Grid.Row="1"
+            HorizontalOptions="End"
+            Margin="16"
+            Text="{Binding BadgeCount, Mode=OneWay}"
+            TextColor="{AppThemeBinding Light={StaticResource DarkForegroundColor},
+                                        Dark={StaticResource LightForegroundColor}}"
+            VerticalOptions="End"
+            x:Name="badge">
+            <Button
+                BackgroundColor="{StaticResource LightGrayColor}"
+                Command="{Binding ViewBasketCommand, Mode=OneTime}"
+                CornerRadius="8"
+                HeightRequest="56"
+                ImageSource="{DynamicResource BasketIconForTitleImageSource}"
+                Padding="8"
+                WidthRequest="56" />
+        </views:BadgeView>
 
         <mct:Expander
             Grid.Row="1"
             IsExpanded="{Binding IsFiltering, Mode=OneWay}"
-            VerticalOptions="Fill"
-            ZIndex="100">
+            VerticalOptions="Start">
             <mct:Expander.Shadow>
                 <Shadow
                     Brush="Black"
@@ -118,7 +183,7 @@
                                     <Label HorizontalOptions="Fill" Text="Loading" />
                                 </BindableLayout.EmptyView>
                             </FlexLayout>
-                            <Label FontAttributes="Bold" Style="{StaticResource MediumSizeFontStyle}">Brands</Label>
+                            <Label FontAttributes="Bold" Style="{StaticResource MediumSizeFontStyle}">Types</Label>
                             <FlexLayout
                                 AlignContent="Start"
                                 AlignItems="Start"
@@ -164,42 +229,7 @@
             </mct:Expander.Content>
         </mct:Expander>
 
-        <!--  CATALOG  -->
-        <CollectionView
-            Grid.Row="1"
-            HorizontalOptions="CenterAndExpand"
-            IsVisible="{Binding Products.Count, Converter={StaticResource HasCountConverter}}"
-            ItemsSource="{Binding Products, Mode=OneTime}"
-            SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
-            SelectionChangedCommand="{Binding AddCatalogItemCommand}"
-            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}"
-            SelectionMode="Single"
-            VerticalScrollBarVisibility="Never"
-            x:Name="Products">
-            <CollectionView.Header>
-                <VerticalStackLayout Padding="8" Spacing="4">
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="{StaticResource ExtraBigSize}"
-                        Text="Ready for a new adventure?" />
-                    <Label FontSize="{StaticResource MediumSize}" Text="Start the season with the latest in clothing and equipment." />
-                </VerticalStackLayout>
-            </CollectionView.Header>
-            <CollectionView.EmptyView>
-                <Label
-                    HorizontalOptions="Center"
-                    Text="NO PRODUCTS FOUND"
-                    VerticalOptions="Center" />
-            </CollectionView.EmptyView>
-            <CollectionView.ItemsLayout>
-                <GridItemsLayout Orientation="Vertical" Span="{OnIdiom 2, Desktop=4}" />
-            </CollectionView.ItemsLayout>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <templates:ProductTemplate />
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+
         <!--  INDICATOR  -->
         <ActivityIndicator
             Color="{StaticResource BlackColor}"
@@ -208,26 +238,5 @@
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
             VerticalOptions="Center" />
-
-        <views:BadgeView
-            BadgeColor="{AppThemeBinding Light={StaticResource DarkBackgroundColor},
-                                         Dark={StaticResource LightBackgroundColor}}"
-            Grid.Row="1"
-            HorizontalOptions="End"
-            Margin="16"
-            Text="{Binding BadgeCount, Mode=OneWay}"
-            TextColor="{AppThemeBinding Light={StaticResource DarkForegroundColor},
-                                        Dark={StaticResource LightForegroundColor}}"
-            VerticalOptions="End"
-            x:Name="badge">
-            <Button
-                BackgroundColor="{StaticResource LightGrayColor}"
-                Command="{Binding ViewBasketCommand, Mode=OneTime}"
-                CornerRadius="8"
-                HeightRequest="56"
-                ImageSource="{DynamicResource BasketIconForTitleImageSource}"
-                Padding="8"
-                WidthRequest="56" />
-        </views:BadgeView>
     </Grid>
 </views:ContentPageBase>

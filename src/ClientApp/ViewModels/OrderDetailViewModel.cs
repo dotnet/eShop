@@ -40,8 +40,8 @@ public partial class OrderDetailViewModel : ViewModelBase
             {
                 // Get order detail info
                 Order = await _appEnvironmentService.OrderService.GetOrderAsync(OrderNumber);
-                IsSubmittedOrder = Order.OrderStatus == OrderStatus.Submitted;
-                OrderStatusText = Order.OrderStatus.ToString().ToUpper();
+                IsSubmittedOrder = Order.OrderStatus.Equals("Submitted", StringComparison.OrdinalIgnoreCase);
+                OrderStatusText = Order.OrderStatus;
             });
     }
 
@@ -52,12 +52,12 @@ public partial class OrderDetailViewModel : ViewModelBase
 
         if (result)
         {
-            OrderStatusText = OrderStatus.Cancelled.ToString().ToUpper();
+            OrderStatusText = "Cancelled";
         }
         else
         {
             Order = await _appEnvironmentService.OrderService.GetOrderAsync(Order.OrderNumber);
-            OrderStatusText = Order.OrderStatus.ToString().ToUpper();
+            OrderStatusText = Order.OrderStatus;
         }
 
         IsSubmittedOrder = false;

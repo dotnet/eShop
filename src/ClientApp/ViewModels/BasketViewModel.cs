@@ -63,7 +63,7 @@ public partial class BasketViewModel : ViewModelBase
         
         if (basket != null)
         {
-            basket.Items.Add(item);
+            basket.AddItemToBasket(item);
             await _appEnvironmentService.BasketService.UpdateBasketAsync(basket);
         }
 
@@ -78,7 +78,7 @@ public partial class BasketViewModel : ViewModelBase
         var basket = await _appEnvironmentService.BasketService.GetBasketAsync();
         if (basket != null)
         {
-            basket.Items.Remove(item);
+            basket.RemoveItemFromBasket(item);
             await _appEnvironmentService.BasketService.UpdateBasketAsync(basket);
         }
 

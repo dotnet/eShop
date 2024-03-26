@@ -64,15 +64,6 @@
                 <Image Aspect="AspectFill" Source="{Binding PictureUri, Mode=OneTime, TargetNullValue='logo_header.png'}" />
             </Border>
 
-            <Grid
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Grid.Row="0"
-                HorizontalOptions="End"
-                Style="{StaticResource AddButtonStyle}"
-                VerticalOptions="End">
-                <controls:AddBasketButton />
-            </Grid>
             <!--  NAME  -->
             <Label
                 Grid.Column="0"

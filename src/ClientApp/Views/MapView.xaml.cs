@@ -2,7 +2,7 @@
 
 namespace eShop.ClientApp.Views;
 
-public partial class MapView : ContentPageBase
+public partial class MapView
 {
     public MapView(MapViewModel viewModel)
     {

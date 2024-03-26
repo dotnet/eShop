@@ -192,7 +192,6 @@
     <converters:DoesNotHaveCountConverter x:Key="DoesNotHaveCountConverter" />
     <converters:HasCountConverter x:Key="HasCountConverter" />
     <converters:ItemsToHeightConverter x:Key="ItemsToHeightConverter" />
-    <converters:OrderStatusToStringConverter x:Key="OrderStatusToStringConverter" />
     <x:String x:Key="DateTimeFormat">{0:MMMM dd yyyy}</x:String>
 
     <!--  EXPLICIT STYLES  -->
@@ -212,6 +211,11 @@
                 <Setter Property="Opacity" Value="1" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type Label}" x:Key="LargeSizeFontStyle">
+        <Setter Property="FontFamily" Value="PlusJakartaSans-Regular" />
+        <Setter Property="FontSize" Value="{StaticResource LargerSize}" />
     </Style>
 
     <Style TargetType="{x:Type Label}" x:Key="MediumSizeFontStyle">
