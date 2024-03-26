@@ -125,11 +125,11 @@ public class OrdersWebApiTest
         // Arrange
         var fakeOrderId = 123;
         _orderQueriesMock.GetOrderAsync(Arg.Any<int>())
-            .Returns(Task<Order>.FromException(new KeyNotFoundException()));
+            .Returns(Task.FromException(new Exception()));
 
         // Act
         var orderServices = new OrderServices(_mediatorMock, _orderQueriesMock, _identityServiceMock, _loggerMock);
-        var result = await OrdersApi.GetOrderAsync(fakeOrderId, orderServices);
+        var result = await OrdersApi.GetOrderAsync(fakeOrderId, orderServi`ces);
 
         // Assert
         Assert.IsType<NotFound>(result.Result);
