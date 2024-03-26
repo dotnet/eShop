@@ -25,7 +25,7 @@ public sealed class CatalogApiFixture : WebApplicationFactory<Program>, IAsyncLi
         {
             config.AddInMemoryCollection(new Dictionary<string, string>
             {
-                { $"ConnectionStrings:{Postgres.Resource.Name}", Postgres.Resource.GetConnectionString() },
+                { $"ConnectionStrings:{Postgres.Resource.Name}", Postgres.Resource.ConnectionStringExpression.ValueExpression },
                 });
         });
         return base.CreateHost(builder);
