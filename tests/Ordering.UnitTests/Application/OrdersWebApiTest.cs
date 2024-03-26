@@ -124,8 +124,10 @@ public class OrdersWebApiTest
     {
         // Arrange
         var fakeOrderId = 123;
+#pragma warning disable NS5003
         _orderQueriesMock.GetOrderAsync(Arg.Any<int>())
             .Throws(new KeyNotFoundException());
+#pragma warning restore NS5003
 
         // Act
         var orderServices = new OrderServices(_mediatorMock, _orderQueriesMock, _identityServiceMock, _loggerMock);
