@@ -18,7 +18,7 @@ public static class RabbitMqDependencyInjectionExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.AddRabbitMQ(connectionName, configureConnectionFactory: factory =>
+        builder.AddRabbitMQClient(connectionName, configureConnectionFactory: factory =>
         {
             ((ConnectionFactory)factory).DispatchConsumersAsync = true;
         });

@@ -27,8 +27,8 @@ public sealed class OrderingApiFixture : WebApplicationFactory<Program>, IAsyncL
         {
             config.AddInMemoryCollection(new Dictionary<string, string>
             {
-                { $"ConnectionStrings:{Postgres.Resource.Name}", Postgres.Resource.GetConnectionString() },
-                { "Identity:Url", IdentityApi.Resource.Annotations.OfType<AllocatedEndpointAnnotation>().Single().UriString }
+                { $"ConnectionStrings:{Postgres.Resource.Name}", Postgres.Resource.ConnectionStringExpression.ValueExpression },
+                { "Identity:Url", IdentityApi.Resource.Annotations.OfType<EndpointAnnotation>().Single().AllocatedEndpoint.UriString }
             });
         });
         builder.ConfigureServices(services =>

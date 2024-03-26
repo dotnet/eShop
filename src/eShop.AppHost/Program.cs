@@ -15,12 +15,11 @@ var identityDb = postgres.AddDatabase("identitydb");
 var orderDb = postgres.AddDatabase("orderingdb");
 var webhooksDb = postgres.AddDatabase("webhooksdb");
 
-var openAi = builder.AddAzureOpenAI("openai");
+var openAi = builder.AddConnectionString("openai");
 
 // Services
-var identityApi = builder.AddProject<Projects.Identity_API>("identity-api")
-    .WithReference(identityDb)
-    .WithLaunchProfile("https");
+var identityApi = builder.AddProject<Projects.Identity_API>("identity-api", "https")
+    .WithReference(identityDb);
 
 var idpHttps = identityApi.GetEndpoint("https");
 
@@ -61,14 +60,13 @@ var webhooksClient = builder.AddProject<Projects.WebhookClient>("webhooksclient"
     .WithReference(webHooksApi)
     .WithEnvironment("IdentityUrl", idpHttps);
 
-var webApp = builder.AddProject<Projects.WebApp>("webapp")
+var webApp = builder.AddProject<Projects.WebApp>("webapp", "https")
     .WithReference(basketApi)
     .WithReference(catalogApi)
     .WithReference(orderingApi)
     .WithReference(rabbitMq)
     .WithReference(openAi, optional: true)
-    .WithEnvironment("IdentityUrl", idpHttps)
-    .WithLaunchProfile("https");
+    .WithEnvironment("IdentityUrl", idpHttps);
 
 // Wire up the callback urls (self referencing)
 webApp.WithEnvironment("CallBackUrl", webApp.GetEndpoint("https"));

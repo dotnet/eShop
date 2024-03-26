@@ -11,7 +11,7 @@ public static class Extensions
     {
         builder.AddDefaultAuthentication();
 
-        builder.AddRedis("redis");
+        builder.AddRedisClient("redis");
 
         builder.Services.AddSingleton<IBasketRepository, RedisBasketRepository>();
 
