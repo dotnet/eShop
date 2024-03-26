@@ -50,6 +50,29 @@ public static class CatalogApi
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
+    public static async Task<Ok<PaginatedItems<CatalogItem>>> GetRecentlyViewedItems(
+        [AsParameters] PaginationRequest paginationRequest,
+        [AsParameters] CatalogServices services,
+        string userId)
+    {
+        var pageSize = paginationRequest.PageSize;
+        var pageIndex = paginationRequest.PageIndex;
+
+        // Assuming you have a UserCatalogViews table that stores the user's viewed items
+        var root = services.Context.UserCatalogViews
+            .Where(view => view.UserId == userId)
+            .OrderByDescending(view => view.ViewedAt)
+            .Select(view => view.CatalogItem);
+
+        var totalItems = await root.LongCountAsync();
+
+        var itemsOnPage = await root
+            .Skip(pageSize * pageIndex)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
+    }
     public static async Task<Ok<List<CatalogItem>>> GetItemsByIds(
         [AsParameters] CatalogServices services,
         int[] ids)
