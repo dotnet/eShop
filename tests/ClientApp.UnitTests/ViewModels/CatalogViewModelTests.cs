@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using eShop.ClientApp.Models.Catalog;
 using eShop.ClientApp.Services.Identity;
 
@@ -60,7 +60,7 @@ public class CatalogViewModelTests
     public void BrandPropertyIsNullWhenViewModelInstantiatedTest()
     {
         var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
-        Assert.Null(catalogViewModel.Brand);
+        Assert.Null(catalogViewModel.SelectedBrand);
     }
 
     [Fact]
@@ -74,14 +74,14 @@ public class CatalogViewModelTests
     public void TypePropertyIsNullWhenViewModelInstantiatedTest()
     {
         var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
-        Assert.Null(catalogViewModel.Type);
+        Assert.Null(catalogViewModel.SelectedType);
     }
 
     [Fact]
     public void IsFilterPropertyIsFalseWhenViewModelInstantiatedTest()
     {
         var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
-        Assert.False(catalogViewModel.IsFilter);
+        Assert.False(catalogViewModel.IsFiltering);
     }
 
     [Fact]
@@ -141,8 +141,8 @@ public class CatalogViewModelTests
         await catalogViewModel.InitializeAsync();
         await catalogViewModel.ClearFilterCommand.ExecuteUntilComplete(null);
 
-        Assert.Null(catalogViewModel.Brand);
-        Assert.Null(catalogViewModel.Type);
+        Assert.Null(catalogViewModel.SelectedBrand);
+        Assert.Null(catalogViewModel.SelectedType);
         Assert.NotNull(catalogViewModel.Products);
     }
 }
