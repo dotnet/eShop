@@ -1,9 +1,8 @@
 import { test as setup, expect } from '@playwright/test';
-import 'dotenv/config';
 import { STORAGE_STATE } from '../playwright.config';
 
 setup('Login', async ({ page }) => {
-    await page.goto('https://localhost:19888/');
+    await page.goto('/');
     await page.getByRole('heading', { name: 'Resources' }).click();
     const page1Promise = page.waitForEvent('popup');
     await page.getByRole('link', { name: 'https://localhost:7298' }).click();

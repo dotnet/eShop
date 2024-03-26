@@ -2,7 +2,6 @@
   "name": "eshop",
   "version": "1.0.0",
   "description": "A reference .NET application implementing an eCommerce web site using a services-based architecture.",
-  "main": "index.js",
   "directories": {
     "test": "tests"
   },

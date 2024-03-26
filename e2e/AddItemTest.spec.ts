@@ -1,8 +1,7 @@
 import { test, expect } from '@playwright/test';
-import 'dotenv/config';
 
 test('Add item to the cart', async ({ page }) => {
-   await page.goto('https://localhost:19888/');
+   await page.goto('/');
    
    await expect(page.getByRole('heading', { name: 'Resources' })).toBeVisible();
 
@@ -17,7 +16,6 @@ test('Add item to the cart', async ({ page }) => {
  
   await page1.getByText('Total').nth(1).click();
   await page1.getByLabel('product quantity').getByText('1');
-  const cartVal = await page1.getByLabel('product quantity').count();
-  await expect(cartVal).toBeGreaterThan(0);
-
+  
+  await expect.poll(() => page1.getByLabel('product quantity').count()).toBeGreaterThan(0);
 });
