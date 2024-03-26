@@ -129,7 +129,7 @@ public class OrdersWebApiTest
 
         // Act
         var orderServices = new OrderServices(_mediatorMock, _orderQueriesMock, _identityServiceMock, _loggerMock);
-        var result = await OrdersApi.GetOrderAsync(fakeOrderId, orderServi`ces);
+        var result = await OrdersApi.GetOrderAsync(fakeOrderId, orderServices);
 
         // Assert
         Assert.IsType<NotFound>(result.Result);
