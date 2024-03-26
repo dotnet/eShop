@@ -5,8 +5,6 @@ builder.AddApplicationServices();
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
-
 app.MapDefaultEndpoints();
 
 const string CatalogApiPrefix = "/api/v1/catalog/";
