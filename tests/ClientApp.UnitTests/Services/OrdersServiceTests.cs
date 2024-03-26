@@ -13,7 +13,7 @@ public class OrdersServiceTests
     public async Task GetFakeOrderTest()
     {
         var ordersMockService = new OrderMockService();
-        var order = await ordersMockService.GetOrderAsync(1, _settingsService.AuthAccessToken);
+        var order = await ordersMockService.GetOrderAsync(1);
 
         Assert.NotNull(order);
     }
@@ -22,7 +22,7 @@ public class OrdersServiceTests
     public async Task GetFakeOrdersTest()
     {
         var ordersMockService = new OrderMockService();
-        var result = await ordersMockService.GetOrdersAsync(_settingsService.AuthAccessToken);
+        var result = await ordersMockService.GetOrdersAsync();
 
         Assert.NotEmpty(result);
     }

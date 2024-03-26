@@ -1,6 +1,3 @@
-using System.Diagnostics;
-using CoreImage;
-
 namespace eShop.ClientApp.Views;
 
 public partial class LoginView
