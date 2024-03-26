@@ -1,4 +1,4 @@
-name: Playwright Tests
+name: Playwright Tests for eShop
 on:
   push:
     branches: [ main ]
