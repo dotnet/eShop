@@ -1,50 +1,48 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <views:ContentPageBase
+    Title="CHECKOUT"
     x:Class="eShop.ClientApp.Views.CheckoutView"
+    x:DataType="viewmodels:CheckoutViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:templates="clr-namespace:eShop.ClientApp.Views.Templates"
     xmlns:viewModelBase="clr-namespace:eShop.ClientApp.ViewModels.Base"
     xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
     xmlns:views="clr-namespace:eShop.ClientApp.Views"
-    Title="CHECKOUT"
-    x:DataType="viewmodels:CheckoutViewModel">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <ContentPage.Resources>
         <ResourceDictionary>
 
-            <Style x:Key="OrderTitleStyle" TargetType="{x:Type Label}">
+            <Style TargetType="{x:Type Label}" x:Key="OrderTitleStyle">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="FontSize" Value="{StaticResource MediumSize}" />
                 <Setter Property="TextColor" Value="Gray" />
             </Style>
 
-            <Style
-                x:Key="OrderContentStyle"
-                TargetType="{x:Type Label}">
+            <Style TargetType="{x:Type Label}" x:Key="OrderContentStyle">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="FontSize" Value="{StaticResource MediumSize}" />
             </Style>
 
             <Style
-                x:Key="ShippingAddressStyle"
                 BasedOn="{StaticResource OrderTitleStyle}"
-                TargetType="{x:Type Label}">
+                TargetType="{x:Type Label}"
+                x:Key="ShippingAddressStyle">
                 <Setter Property="FontSize" Value="{StaticResource LargeSize}" />
             </Style>
 
             <Style
-                x:Key="AddressStyle"
                 BasedOn="{StaticResource OrderContentStyle}"
-                TargetType="{x:Type Label}">
+                TargetType="{x:Type Label}"
+                x:Key="AddressStyle">
                 <Setter Property="FontSize" Value="{StaticResource LittleSize}" />
             </Style>
 
-            <Style x:Key="OrderTotalStyle" TargetType="{x:Type Label}">
+            <Style TargetType="{x:Type Label}" x:Key="OrderTotalStyle">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="FontSize" Value="{StaticResource LargerSize}" />
             </Style>
 
-            <Style x:Key="CheckoutButtonStyle" TargetType="{x:Type Label}">
+            <Style TargetType="{x:Type Label}" x:Key="CheckoutButtonStyle">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="TextColor" Value="{StaticResource WhiteColor}" />
                 <Setter Property="HorizontalOptions" Value="Center" />
@@ -57,7 +55,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="60" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <!--  ORDER INFO  -->
         <Grid Grid.Row="0" Padding="8">
@@ -76,25 +74,62 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource OrderTitleStyle}" Text="ORDER NUMBER" />
-            <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource OrderContentStyle}" Text="{Binding Order.OrderNumber}" />
+            <Label
+                Grid.Column="0"
+                Grid.Row="0"
+                Style="{StaticResource OrderTitleStyle}"
+                Text="ORDER NUMBER" />
+            <Label
+                Grid.Column="0"
+                Grid.Row="1"
+                Style="{StaticResource OrderContentStyle}"
+                Text="{Binding Order.OrderNumber}" />
 
-            <Label Grid.Row="3" Grid.Column="0" Style="{StaticResource OrderTitleStyle}" Text="TOTAL" />
-            <Label Grid.Row="4" Grid.Column="0" Style="{StaticResource OrderContentStyle}" Text="{Binding Order.Total, StringFormat='${0:N2}'}" />
+            <Label
+                Grid.Column="0"
+                Grid.Row="3"
+                Style="{StaticResource OrderTitleStyle}"
+                Text="TOTAL" />
+            <Label
+                Grid.Column="0"
+                Grid.Row="4"
+                Style="{StaticResource OrderContentStyle}"
+                Text="{Binding Order.Total, StringFormat='${0:N2}'}" />
 
-            <Label Grid.Row="0" Grid.Column="1" Style="{StaticResource OrderTitleStyle}" Text="DATE" />
-            <Label Grid.Row="1" Grid.Column="1" Style="{StaticResource OrderContentStyle}" Text="{Binding Order.OrderDate, StringFormat={StaticResource DateTimeFormat}}" />
+            <Label
+                Grid.Column="1"
+                Grid.Row="0"
+                Style="{StaticResource OrderTitleStyle}"
+                Text="DATE" />
+            <Label
+                Grid.Column="1"
+                Grid.Row="1"
+                Style="{StaticResource OrderContentStyle}"
+                Text="{Binding Order.OrderDate, StringFormat={StaticResource DateTimeFormat}}" />
 
-            <Label Grid.Row="3" Grid.Column="1" Style="{StaticResource OrderTitleStyle}" Text="STATUS" />
-            <Label Grid.Row="4" Grid.Column="1"  Style="{StaticResource OrderContentStyle}" Text="{Binding Order.OrderStatus, Converter={StaticResource OrderStatusToStringConverter}}" />
+            <Label
+                Grid.Column="1"
+                Grid.Row="3"
+                Style="{StaticResource OrderTitleStyle}"
+                Text="STATUS" />
+            <Label
+                Grid.Column="1"
+                Grid.Row="4"
+                Style="{StaticResource OrderContentStyle}"
+                Text="{Binding Order.OrderStatus}" />
 
             <!--  SHIPPING ADDRESS  -->
             <Label
-                Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Grid.Row="6"
                 Style="{StaticResource ShippingAddressStyle}"
                 Text="SHIPPING ADDRESS" />
 
-            <VerticalStackLayout Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2">
+            <VerticalStackLayout
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Grid.Row="7">
                 <Label Style="{StaticResource AddressStyle}" Text="{Binding ShippingAddress.Street}" />
                 <Label Style="{StaticResource AddressStyle}" Text="{Binding ShippingAddress.ZipCode}" />
                 <Label Style="{StaticResource AddressStyle}" Text="{Binding ShippingAddress.State}" />
@@ -104,55 +139,44 @@
         <!--  ORDER ITEMS  -->
         <CollectionView
             Grid.Row="1"
-            ItemsSource="{Binding Order.OrderItems}"
-            ItemSizingStrategy="MeasureAllItems">
+            ItemSizingStrategy="MeasureAllItems"
+            ItemsSource="{Binding Order.OrderItems}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <templates:OrderItemTemplate />
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-            <CollectionView.Footer>
-                <!--  TOTAL  -->
-                <StackLayout Grid.Row="1" Padding="8" HorizontalOptions="End">
-                    <Label
-                        Grid.Row="0"
-                        Style="{StaticResource OrderTotalStyle}"
-                        Text="TOTAL"/>
-                    <Label
-                        Grid.Row="1"
-                        Style="{StaticResource OrderTotalStyle}"
-                        Text="{Binding Order.Total, StringFormat='${0:N2}'}"
-                        TextColor="{StaticResource GreenColor}" />
-                </StackLayout>
-            </CollectionView.Footer>
         </CollectionView>
         <!--  CHECKOUT  -->
         <Grid
+            BackgroundColor="{StaticResource LightGrayColor}"
+            ColumnDefinitions="*"
             Grid.Row="2"
-            Padding="0"
-            BackgroundColor="{StaticResource LightGreenColor}"
-            ColumnSpacing="0"
-            RowSpacing="0">
-            <Label Style="{StaticResource CheckoutButtonStyle}" Text="[ PLACE ORDER ]" />
-            <Grid.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding CheckoutCommand}" NumberOfTapsRequired="1" />
-            </Grid.GestureRecognizers>
+            Padding="16"
+            RowDefinitions="auto">
+            <Button
+                BackgroundColor="Black"
+                Command="{Binding CheckoutCommand}"
+                CornerRadius="4"
+                Grid.Column="0"
+                Grid.Row="0"
+                Text="Place order" />
         </Grid>
         <!--  INDICATOR  -->
         <ActivityIndicator
+            Color="{StaticResource LightGreenColor}"
             Grid.Row="0"
             Grid.RowSpan="2"
             HorizontalOptions="Center"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
-            VerticalOptions="Center"
-            Color="{StaticResource LightGreenColor}">
+            VerticalOptions="Center">
             <ActivityIndicator.WidthRequest>
                 <OnPlatform x:TypeArguments="x:Double">
                     <On Platform="iOS, Android" Value="100" />
                     <On Platform="WinUI" Value="400" />
                 </OnPlatform>
             </ActivityIndicator.WidthRequest>
-        </ActivityIndicator>        
+        </ActivityIndicator>
     </Grid>
 </views:ContentPageBase>

@@ -38,7 +38,7 @@ public abstract partial class ViewModelBase : ObservableObject, IViewModelBase
         return Task.CompletedTask;
     }
 
-    public async Task IsBusyFor(Func<Task> unitOfWork)
+    protected async Task IsBusyFor(Func<Task> unitOfWork)
     {
         Interlocked.Increment(ref _isBusy);
         OnPropertyChanged(nameof(IsBusy));

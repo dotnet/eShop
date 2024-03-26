@@ -57,6 +57,14 @@ public partial class CatalogViewModel : ViewModelBase
         _products = new ObservableCollectionEx<CatalogItem>();
         _brands = new ObservableCollectionEx<CatalogBrandSelectionViewModel>();
         _types = new ObservableCollectionEx<CatalogTypeSelectionViewModel>();
+        
+        WeakReferenceMessenger.Default
+            .Register<CatalogViewModel, Messages.AddProductMessage>(
+                this,
+                (_, message) =>
+                {
+                    BadgeCount = message.Value;
+                });
     }
 
     public override async Task InitializeAsync()
@@ -74,7 +82,7 @@ public partial class CatalogViewModel : ViewModelBase
                 var types = await _appEnvironmentService.CatalogService.GetCatalogTypeAsync();
                 var basket = await _appEnvironmentService.BasketService.GetBasketAsync();
 
-                BadgeCount = basket?.Items?.Count ?? 0;
+                BadgeCount = basket.ItemCount;
 
                 _products.ReloadData(products);
                 _brands.ReloadData(brands.Select(x => new CatalogBrandSelectionViewModel{ Value = x }));
@@ -83,39 +91,21 @@ public partial class CatalogViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task AddCatalogItemAsync(CatalogItem catalogItem)
+    private async Task ViewCatalogItemAsync(CatalogItem catalogItem)
     {
+        SelectedProduct = null;
+        
         if (catalogItem is null)
         {
             return;
         }
-        
-        var basket = await _appEnvironmentService.BasketService.GetBasketAsync();
-        if (basket is not null)
-        {
-            if (basket.Items is null)
+
+        await NavigationService.NavigateToAsync(
+            "ViewCatalogItem", 
+            new Dictionary<string, object>
             {
-                basket.Items = new List<BasketItem>();
-            }
-
-            basket.Items.Add(
-                new BasketItem
-                {
-                    ProductId = catalogItem.Id,
-                    ProductName = catalogItem.Name,
-                    PictureUrl = catalogItem.PictureUri,
-                    UnitPrice = catalogItem.Price,
-                    Quantity = 1
-                });
-
-            await _appEnvironmentService.BasketService.UpdateBasketAsync(basket);
-            BadgeCount = basket.Items.Count;
-
-            WeakReferenceMessenger.Default
-                .Send(new Messages.AddProductMessage(BadgeCount));
-        }
-
-        SelectedProduct = null;
+                ["CatalogItem"] = catalogItem,
+            });
     }
     
     [RelayCommand]

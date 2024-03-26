@@ -69,10 +69,12 @@ public partial class CheckoutViewModel : ViewModelBase
                 // Create new Order
                 Order = new Order
                 {
+                    //TODO: Get a better order number generator
+                    OrderNumber = (int)DateTimeOffset.Now.TimeOfDay.TotalMilliseconds,
                     UserId = userInfo.UserId,
                     UserName = userInfo.PreferredUsername,
                     OrderItems = orderItems,
-                    OrderStatus = OrderStatus.Submitted,
+                    OrderStatus = "Submitted",
                     OrderDate = DateTime.Now,
                     CardHolderName = paymentInfo.CardHolderName,
                     CardNumber = paymentInfo.CardNumber,

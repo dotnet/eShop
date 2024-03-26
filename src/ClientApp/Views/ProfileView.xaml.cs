@@ -1,6 +1,6 @@
 ﻿namespace eShop.ClientApp.Views;
 
-public partial class ProfileView : ContentPageBase
+public partial class ProfileView
 {
     private readonly ProfileViewModel _viewModel;
 
