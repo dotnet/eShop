@@ -7,18 +7,15 @@ public sealed class CatalogApiFixture : WebApplicationFactory<Program>, IAsyncLi
 {
     private readonly IHost _app;
 
-    public IResourceBuilder<PostgresContainerResource> Postgres { get; private set; }
+    public IResourceBuilder<PostgresServerResource> Postgres { get; private set; }
 
     public CatalogApiFixture()
     {
         var options = new DistributedApplicationOptions { AssemblyName = typeof(CatalogApiFixture).Assembly.FullName, DisableDashboard = true };
         var appBuilder = DistributedApplication.CreateBuilder(options);
-        Postgres = appBuilder.AddPostgresContainer("CatalogDB")
-            .WithAnnotation(new ContainerImageAnnotation
-            {
-                Image = "ankane/pgvector",
-                Tag = "latest"
-            });
+        Postgres = appBuilder.AddPostgres("CatalogDB")
+            .WithImage("ankane/pgvector")
+            .WithImageTag("latest");
         _app = appBuilder.Build();
     }
 

@@ -1,7 +1,7 @@
 ﻿.floating-pane {
     position: fixed;
     width: 25rem;
-    height: 40rem;
+    height: 35rem;
     right: 3rem;
     bottom: 3rem;
     border: 1px solid silver;
