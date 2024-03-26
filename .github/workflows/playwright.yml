@@ -1,13 +1,13 @@
 name: Playwright Tests
 on:
   push:
-    branches: [ main ]
+    branches: [ mxschmitt/fix-e2e-tests ]
   pull_request:
     branches: [ main ]
 jobs:
   test:
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-dotnet@v4
