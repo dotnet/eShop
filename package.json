@@ -1,0 +1,17 @@
+{
+  "name": "eshop",
+  "version": "1.0.0",
+  "description": "A reference .NET application implementing an eCommerce web site using a services-based architecture.",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.42.1",
+    "@types/node": "^20.11.25",
+    "dotenv": "^16.4.5"
+  }
+}

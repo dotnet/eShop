@@ -4,7 +4,7 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
     <AspnetVersion>8.0.3</AspnetVersion>
     <MicrosoftExtensionsVersion>8.3.0</MicrosoftExtensionsVersion>
-    <EfVersion>8.0.2</EfVersion>
+    <EfVersion>8.0.3</EfVersion>
     <AspireVersion>8.0.0-preview.4.24156.9</AspireVersion>
     <GrpcVersion>2.61.0</GrpcVersion>
     <DuendeVersion>7.0.1</DuendeVersion>
@@ -36,7 +36,7 @@
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EfVersion)" />
     <PackageVersion Include="NSubstitute" Version="5.1.0" />
-    <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.15" />
+    <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
     <PackageVersion Include="Pgvector" Version="0.2.0" />
     <PackageVersion Include="Pgvector.EntityFrameworkCore" Version="0.2.0" />
     <!-- Version together with runtime -->
@@ -46,7 +46,7 @@
     <!-- Xabaril packages -->
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="8.0.0" />
     <!-- AI -->
-    <PackageVersion Include="Microsoft.SemanticKernel" Version="1.6.2" />
+    <PackageVersion Include="Microsoft.SemanticKernel" Version="1.6.3" />
     <!-- Open Telemetry -->
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.7.0" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.7.0" />
