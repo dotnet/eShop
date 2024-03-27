@@ -4,10 +4,27 @@ namespace eShop.ClientApp.Animations.Base;
 
 public abstract class AnimationBase : BindableObject
 {
-    private bool _isRunning = false;
-
-    public static readonly BindableProperty TargetProperty = BindableProperty.Create(nameof(Target), typeof(VisualElement), typeof(AnimationBase), null,
+    public static readonly BindableProperty TargetProperty = BindableProperty.Create(nameof(Target),
+        typeof(VisualElement), typeof(AnimationBase),
         propertyChanged: (bindable, oldValue, newValue) => ((AnimationBase)bindable).Target = (VisualElement)newValue);
+
+    public static readonly BindableProperty DurationProperty = BindableProperty.Create(nameof(Duration), typeof(string),
+        typeof(AnimationBase), "1000",
+        propertyChanged: (bindable, oldValue, newValue) => ((AnimationBase)bindable).Duration = (string)newValue);
+
+    public static readonly BindableProperty EasingProperty = BindableProperty.Create(nameof(Easing), typeof(EasingType),
+        typeof(AnimationBase), EasingType.Linear,
+        propertyChanged: (bindable, oldValue, newValue) => ((AnimationBase)bindable).Easing = (EasingType)newValue);
+
+    public static readonly BindableProperty RepeatForeverProperty = BindableProperty.Create(nameof(RepeatForever),
+        typeof(bool), typeof(AnimationBase), false,
+        propertyChanged: (bindable, oldValue, newValue) => ((AnimationBase)bindable).RepeatForever = (bool)newValue);
+
+    public static readonly BindableProperty DelayProperty = BindableProperty.Create(nameof(Delay), typeof(int),
+        typeof(AnimationBase), 0,
+        propertyChanged: (bindable, oldValue, newValue) => ((AnimationBase)bindable).Delay = (int)newValue);
+
+    private bool _isRunning;
 
     public VisualElement Target
     {
@@ -15,17 +32,11 @@ public abstract class AnimationBase : BindableObject
         set => SetValue(TargetProperty, value);
     }
 
-    public static readonly BindableProperty DurationProperty = BindableProperty.Create(nameof(Duration), typeof(string), typeof(AnimationBase), "1000",
-        propertyChanged: (bindable, oldValue, newValue) => ((AnimationBase)bindable).Duration = (string)newValue);
-
     public string Duration
     {
         get => (string)GetValue(DurationProperty);
         set => SetValue(DurationProperty, value);
     }
-
-    public static readonly BindableProperty EasingProperty = BindableProperty.Create(nameof(Easing), typeof(EasingType), typeof(AnimationBase), EasingType.Linear,
-        propertyChanged: (bindable, oldValue, newValue) => ((AnimationBase)bindable).Easing = (EasingType)newValue);
 
     public EasingType Easing
     {
@@ -33,17 +44,11 @@ public abstract class AnimationBase : BindableObject
         set => SetValue(EasingProperty, value);
     }
 
-    public static readonly BindableProperty RepeatForeverProperty = BindableProperty.Create(nameof(RepeatForever), typeof(bool), typeof(AnimationBase), false,
-        propertyChanged: (bindable, oldValue, newValue) => ((AnimationBase)bindable).RepeatForever = (bool)newValue);
-
     public bool RepeatForever
     {
         get => (bool)GetValue(RepeatForeverProperty);
         set => SetValue(RepeatForeverProperty, value);
     }
-
-    public static readonly BindableProperty DelayProperty = BindableProperty.Create(nameof(Delay), typeof(int), typeof(AnimationBase), 0,
-        propertyChanged: (bindable, oldValue, newValue) => ((AnimationBase)bindable).Delay = (int)newValue);
 
     public int Delay
     {

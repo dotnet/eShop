@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using eShop.ClientApp.Messages;
 using eShop.ClientApp.Models.Basket;
 using eShop.ClientApp.Models.Catalog;
 using eShop.ClientApp.Services;
@@ -10,22 +11,22 @@ namespace eShop.ClientApp.ViewModels;
 public partial class CatalogItemViewModel : ViewModelBase
 {
     private readonly IAppEnvironmentService _appEnvironmentService;
-    
-    [ObservableProperty] 
-    private CatalogItem _catalogItem;
-    
-    public CatalogItemViewModel(IAppEnvironmentService appEnvironmentService, INavigationService navigationService) : base(navigationService)
+
+    [ObservableProperty] private CatalogItem _catalogItem;
+
+    public CatalogItemViewModel(IAppEnvironmentService appEnvironmentService, INavigationService navigationService) :
+        base(navigationService)
     {
         _appEnvironmentService = appEnvironmentService;
     }
-    
+
     public override void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         base.ApplyQueryAttributes(query);
 
         CatalogItem = query.ValueAs<CatalogItem>("CatalogItem");
     }
-    
+
     [RelayCommand]
     private async Task AddCatalogItemAsync()
     {
@@ -33,7 +34,7 @@ public partial class CatalogItemViewModel : ViewModelBase
         {
             return;
         }
-        
+
         var basket = await _appEnvironmentService.BasketService.GetBasketAsync();
         if (basket is not null)
         {
@@ -50,8 +51,8 @@ public partial class CatalogItemViewModel : ViewModelBase
             var basketUpdate = await _appEnvironmentService.BasketService.UpdateBasketAsync(basket);
 
             WeakReferenceMessenger.Default
-                .Send(new Messages.AddProductMessage(basketUpdate.ItemCount));
-            
+                .Send(new AddProductMessage(basketUpdate.ItemCount));
+
             await NavigationService.PopAsync();
         }
     }

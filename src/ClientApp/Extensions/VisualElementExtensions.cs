@@ -6,7 +6,8 @@ namespace eShop.ClientApp;
 public static class VisualElementExtensions
 {
     /// <summary>
-    /// Extends VisualElement with a new ColorTo method which provides a higher level approach for animating an elements color.
+    ///     Extends VisualElement with a new ColorTo method which provides a higher level approach for animating an elements
+    ///     color.
     /// </summary>
     /// <returns>A task containing the animation result boolean.</returns>
     /// <param name="element">VisualElement to process.</param>
@@ -16,7 +17,8 @@ public static class VisualElementExtensions
     /// <param name="length">The number of milliseconds over which to interpolate the animation.</param>
     /// <param name="easing">The easing function to use to transition in, out, or in and out of the animation.</param>
     /// <typeparam name="TElement">The 1st type parameter.</typeparam>
-    public static Task<bool> ColorTo<TElement>(this TElement element, Expression<Func<TElement, Color>> start, Color end, uint rate = 16, uint length = 250, Easing easing = null)
+    public static Task<bool> ColorTo<TElement>(this TElement element, Expression<Func<TElement, Color>> start,
+        Color end, uint rate = 16, uint length = 250, Easing easing = null)
         where TElement : IAnimatable
     {
         if (element is null)
@@ -35,7 +37,8 @@ public static class VisualElementExtensions
 
         var elementStartingColor = (Color)property.GetValue(element);
 
-        var transitionAnimation = new Animation(d => property.SetValue(element, elementStartingColor.Lerp(end, (float)d)), 0d, 1d, easing);
+        var transitionAnimation =
+            new Animation(d => property.SetValue(element, elementStartingColor.Lerp(end, (float)d)), 0d, 1d, easing);
 
         try
         {
@@ -51,7 +54,7 @@ public static class VisualElementExtensions
     }
 
     /// <summary>
-    /// Extends VisualElement with a new SizeTo method which provides a higher level approach for animating transitions.
+    ///     Extends VisualElement with a new SizeTo method which provides a higher level approach for animating transitions.
     /// </summary>
     /// <returns>A task containing the animation result boolean.</returns>
     /// <param name="element">The VisualElement to perform animation on.</param>
@@ -61,7 +64,8 @@ public static class VisualElementExtensions
     /// <param name="length">The number of milliseconds over which to interpolate the animation.</param>
     /// <param name="easing">The easing function to use to transition in, out, or in and out of the animation.</param>
     /// <typeparam name="TElement">The 1st type parameter.</typeparam>
-    public static Task<bool> TransitionTo<TElement>(this TElement element, Expression<Func<TElement, double>> start, double end, uint rate = 16, uint length = 250, Easing easing = null)
+    public static Task<bool> TransitionTo<TElement>(this TElement element, Expression<Func<TElement, double>> start,
+        double end, uint rate = 16, uint length = 250, Easing easing = null)
         where TElement : IAnimatable
     {
         if (element is null)
@@ -80,7 +84,8 @@ public static class VisualElementExtensions
 
         var elementStartingPosition = (double)property.GetValue(element);
 
-        var transitionAnimation = new Animation(d => property.SetValue(element, d), elementStartingPosition, end, easing);
+        var transitionAnimation =
+            new Animation(d => property.SetValue(element, d), elementStartingPosition, end, easing);
 
         try
         {
@@ -96,7 +101,7 @@ public static class VisualElementExtensions
     }
 
     /// <summary>
-    /// Extends VisualElement with a new SizeTo method which provides a higher level approach for animating transitions.
+    ///     Extends VisualElement with a new SizeTo method which provides a higher level approach for animating transitions.
     /// </summary>
     /// <returns>A task containing the animation result boolean.</returns>
     /// <param name="element">The VisualElement to perform animation on.</param>
@@ -106,7 +111,8 @@ public static class VisualElementExtensions
     /// <param name="length">The number of milliseconds over which to interpolate the animation.</param>
     /// <param name="easing">The easing function to use to transition in, out, or in and out of the animation.</param>
     /// <typeparam name="TElement">The 1st type parameter.</typeparam>
-    public static Task<bool> TransitionTo<TElement>(this TElement element, Expression<Func<TElement, float>> start, float end, uint rate = 16, uint length = 250, Easing easing = null)
+    public static Task<bool> TransitionTo<TElement>(this TElement element, Expression<Func<TElement, float>> start,
+        float end, uint rate = 16, uint length = 250, Easing easing = null)
         where TElement : IAnimatable
     {
         if (element is null)
@@ -125,7 +131,8 @@ public static class VisualElementExtensions
 
         var elementStartingPosition = (float)property.GetValue(element);
 
-        var transitionAnimation = new Animation(d => property.SetValue(element, d), elementStartingPosition, end, easing);
+        var transitionAnimation =
+            new Animation(d => property.SetValue(element, d), elementStartingPosition, end, easing);
 
         try
         {
@@ -141,7 +148,7 @@ public static class VisualElementExtensions
     }
 
     /// <summary>
-    /// Extends VisualElement with a new SizeTo method which provides a higher level approach for animating transitions.
+    ///     Extends VisualElement with a new SizeTo method which provides a higher level approach for animating transitions.
     /// </summary>
     /// <returns>A task containing the animation result boolean.</returns>
     /// <param name="element">The VisualElement to perform animation on.</param>
@@ -151,7 +158,8 @@ public static class VisualElementExtensions
     /// <param name="length">The number of milliseconds over which to interpolate the animation.</param>
     /// <param name="easing">The easing function to use to transition in, out, or in and out of the animation.</param>
     /// <typeparam name="TElement">The 1st type parameter.</typeparam>
-    public static Task<bool> TransitionTo<TElement>(this TElement element, Expression<Func<TElement, int>> start, int end, uint rate = 16, uint length = 250, Easing easing = null)
+    public static Task<bool> TransitionTo<TElement>(this TElement element, Expression<Func<TElement, int>> start,
+        int end, uint rate = 16, uint length = 250, Easing easing = null)
         where TElement : IAnimatable
     {
         if (element is null)
@@ -170,7 +178,8 @@ public static class VisualElementExtensions
 
         var elementStartingPosition = (int)property.GetValue(element);
 
-        var transitionAnimation = new Animation(d => property.SetValue(element, (int)d), elementStartingPosition, end, easing);
+        var transitionAnimation =
+            new Animation(d => property.SetValue(element, (int)d), elementStartingPosition, end, easing);
 
         try
         {
@@ -185,7 +194,8 @@ public static class VisualElementExtensions
         return tcs.Task;
     }
 
-    public static Task<bool> TransitionTo<TElement>(this TElement element, Expression<Func<TElement, uint>> start, uint end, uint rate = 16, uint length = 250, Easing easing = null)
+    public static Task<bool> TransitionTo<TElement>(this TElement element, Expression<Func<TElement, uint>> start,
+        uint end, uint rate = 16, uint length = 250, Easing easing = null)
         where TElement : IAnimatable
     {
         if (element is null)
@@ -204,7 +214,8 @@ public static class VisualElementExtensions
 
         var elementStartingPosition = (uint)property.GetValue(element);
 
-        var transitionAnimation = new Animation(d => property.SetValue(element, (uint)d), elementStartingPosition, end, easing);
+        var transitionAnimation =
+            new Animation(d => property.SetValue(element, (uint)d), elementStartingPosition, end, easing);
 
         try
         {
@@ -219,7 +230,9 @@ public static class VisualElementExtensions
         return tcs.Task;
     }
 
-    public static Task<bool> TransitionTo<TElement>(this TElement element, string animationName, Action<double> callback, Func<double> start, double end, uint rate = 16, uint length = 250, Easing easing = null)
+    public static Task<bool> TransitionTo<TElement>(this TElement element, string animationName,
+        Action<double> callback, Func<double> start, double end, uint rate = 16, uint length = 250,
+        Easing easing = null)
         where TElement : IAnimatable
     {
         if (element is null)
@@ -246,8 +259,9 @@ public static class VisualElementExtensions
         return tcs.Task;
     }
 
-    public static Task<bool> TransitionTo<TElement>(this TElement element, string animationName, Action<float> callback, Func<float> start, float end, uint rate = 16, uint length = 250, Easing easing = null)
-            where TElement : IAnimatable
+    public static Task<bool> TransitionTo<TElement>(this TElement element, string animationName, Action<float> callback,
+        Func<float> start, float end, uint rate = 16, uint length = 250, Easing easing = null)
+        where TElement : IAnimatable
     {
         if (element is null)
         {
@@ -258,7 +272,8 @@ public static class VisualElementExtensions
 
         var tcs = new TaskCompletionSource<bool>();
 
-        var transitionAnimation = new Animation(x => callback((float)x), start?.Invoke() ?? default(float), end, easing);
+        var transitionAnimation =
+            new Animation(x => callback((float)x), start?.Invoke() ?? default(float), end, easing);
 
         try
         {
@@ -273,7 +288,8 @@ public static class VisualElementExtensions
         return tcs.Task;
     }
 
-    public static Task<bool> TransitionTo<TElement>(this TElement element, string animationName, Action<double> callback, double start, double end, uint rate = 16, uint length = 250, Easing easing = null)
+    public static Task<bool> TransitionTo<TElement>(this TElement element, string animationName,
+        Action<double> callback, double start, double end, uint rate = 16, uint length = 250, Easing easing = null)
         where TElement : IAnimatable
     {
         if (element is null)
@@ -300,7 +316,8 @@ public static class VisualElementExtensions
         return tcs.Task;
     }
 
-    public static Task<bool> TransitionTo<TElement>(this TElement element, string animationName, Action<int> callback, Func<int> start, int end, uint rate = 16, uint length = 250, Easing easing = null)
+    public static Task<bool> TransitionTo<TElement>(this TElement element, string animationName, Action<int> callback,
+        Func<int> start, int end, uint rate = 16, uint length = 250, Easing easing = null)
         where TElement : IAnimatable
     {
         if (element is null)
@@ -326,9 +343,9 @@ public static class VisualElementExtensions
 
         return tcs.Task;
     }
-    
+
     /// <summary>
-    /// Lerp the specified color, to and amount.
+    ///     Lerp the specified color, to and amount.
     /// </summary>
     /// <returns>The lerp.</returns>
     /// <param name="color">Color to calculate from.</param>
@@ -343,9 +360,9 @@ public static class VisualElementExtensions
                 color.Blue.Lerp(to.Blue, amount),
                 color.Alpha.Lerp(to.Alpha, amount));
     }
-    
+
     /// <summary>
-    /// Lerp the specified start, end and amount.
+    ///     Lerp the specified start, end and amount.
     /// </summary>
     /// <returns>The lerp.</returns>
     /// <param name="start">Start.</param>
@@ -353,29 +370,29 @@ public static class VisualElementExtensions
     /// <param name="amount">Amount.</param>
     public static double Lerp(this double start, double end, double amount)
     {
-        double difference = end - start;
-        double adjusted = difference * amount;
+        var difference = end - start;
+        var adjusted = difference * amount;
         return start + adjusted;
     }
 
     public static float Lerp(this float start, float end, float amount)
     {
-        float difference = end - start;
-        float adjusted = difference * amount;
+        var difference = end - start;
+        var adjusted = difference * amount;
         return start + adjusted;
     }
 
     public static int Lerp(this int start, int end, double amount)
     {
-        int difference = end - start;
-        int adjusted = (int)(difference * amount);
+        var difference = end - start;
+        var adjusted = (int)(difference * amount);
         return start + adjusted;
     }
 
     public static byte Lerp(this byte start, byte end, double amount)
     {
-        int difference = end - start;
-        int adjusted = (int)(difference * amount);
+        var difference = end - start;
+        var adjusted = (int)(difference * amount);
 
         return (byte)(start + adjusted);
     }

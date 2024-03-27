@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+
 <views:ContentPageBase
     x:Class="eShop.ClientApp.Views.CatalogView"
     x:DataType="viewmodels:CatalogViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:animations="clr-namespace:eShop.ClientApp.Animations"
     xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-    xmlns:models="clr-namespace:eShop.ClientApp.Models.Catalog"
     xmlns:templates="clr-namespace:eShop.ClientApp.Views.Templates"
     xmlns:triggers="clr-namespace:eShop.ClientApp.Triggers"
     xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
@@ -34,12 +34,6 @@
     </Shell.TitleView>
     <ContentPage.Resources>
         <ResourceDictionary>
-
-            <Style TargetType="{x:Type Label}" x:Key="FilterLabelStyle">
-                <Setter Property="TextColor" Value="{StaticResource WhiteColor}" />
-                <Setter Property="HorizontalOptions" Value="Center" />
-                <Setter Property="VerticalOptions" Value="Center" />
-            </Style>
 
             <animations:StoryBoard Target="{x:Reference Products}" x:Key="ProductsAnimation">
                 <animations:FadeInAnimation

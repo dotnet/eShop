@@ -9,14 +9,8 @@ namespace eShop.ClientApp.ViewModels;
 public partial class BasketViewModel : ViewModelBase
 {
     private readonly IAppEnvironmentService _appEnvironmentService;
+    private readonly ObservableCollectionEx<BasketItem> _basketItems = new();
     private readonly ISettingsService _settingsService;
-    private readonly ObservableCollectionEx<BasketItem> _basketItems = new ();
-
-    public int BadgeCount => _basketItems?.Sum(basketItem => basketItem.Quantity) ?? 0;
-
-    public decimal Total => _basketItems?.Sum(basketItem => basketItem.Quantity * basketItem.UnitPrice) ?? 0m;
-
-    public IReadOnlyList<BasketItem> BasketItems => _basketItems;
 
     public BasketViewModel(
         IAppEnvironmentService appEnvironmentService,
@@ -26,6 +20,12 @@ public partial class BasketViewModel : ViewModelBase
         _appEnvironmentService = appEnvironmentService;
         _settingsService = settingsService;
     }
+
+    public int BadgeCount => _basketItems?.Sum(basketItem => basketItem.Quantity) ?? 0;
+
+    public decimal Total => _basketItems?.Sum(basketItem => basketItem.Quantity * basketItem.UnitPrice) ?? 0m;
+
+    public IReadOnlyList<BasketItem> BasketItems => _basketItems;
 
     public override async Task InitializeAsync()
     {
@@ -39,7 +39,8 @@ public partial class BasketViewModel : ViewModelBase
                 {
                     foreach (var basketItem in basket.Items.ToArray())
                     {
-                        var catalogItem = await _appEnvironmentService.CatalogService.GetCatalogItemAsync(basketItem.ProductId);
+                        var catalogItem =
+                            await _appEnvironmentService.CatalogService.GetCatalogItemAsync(basketItem.ProductId);
                         basketItem.PictureUrl = catalogItem.PictureUri;
                         basketItem.ProductName = catalogItem.Name;
                         basketItem.UnitPrice = catalogItem.Price;
@@ -58,9 +59,9 @@ public partial class BasketViewModel : ViewModelBase
     private async Task AddBasketItemAsync(BasketItem item, IList<BasketItem> basketItems)
     {
         basketItems.Add(item);
-        
+
         var basket = await _appEnvironmentService.BasketService.GetBasketAsync();
-        
+
         if (basket != null)
         {
             basket.AddItemToBasket(item);
@@ -74,7 +75,7 @@ public partial class BasketViewModel : ViewModelBase
     private async Task DeleteAsync(BasketItem item)
     {
         _basketItems.Remove(item);
-        
+
         var basket = await _appEnvironmentService.BasketService.GetBasketAsync();
         if (basket != null)
         {
@@ -88,7 +89,7 @@ public partial class BasketViewModel : ViewModelBase
     public async Task ClearBasketItems()
     {
         _basketItems.Clear();
-        
+
         await _appEnvironmentService.BasketService.ClearBasketAsync();
 
         ReCalculateTotal();

@@ -12,15 +12,16 @@ using eShop.ClientApp.Services.RequestProvider;
 using eShop.ClientApp.Services.Settings;
 using eShop.ClientApp.Services.Theme;
 using eShop.ClientApp.Views;
-using IdentityModel.OidcClient;
 using Microsoft.Extensions.Logging;
+using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
 namespace eShop.ClientApp;
 
 public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
-        => MauiApp
+    {
+        return MauiApp
             .CreateBuilder()
             .UseMauiApp<App>()
             .ConfigureEffects(
@@ -52,6 +53,7 @@ public static class MauiProgram
             .RegisterViewModels()
             .RegisterViews()
             .Build();
+    }
 
     public static MauiAppBuilder RegisterAppServices(this MauiAppBuilder mauiAppBuilder)
     {
@@ -85,7 +87,7 @@ public static class MauiProgram
                 return aes;
             });
 
-        mauiAppBuilder.Services.AddTransient<IdentityModel.OidcClient.Browser.IBrowser, MauiAuthenticationBrowser>();
+        mauiAppBuilder.Services.AddTransient<IBrowser, MauiAuthenticationBrowser>();
 
 #if DEBUG
         mauiAppBuilder.Logging.AddDebug();
@@ -114,7 +116,7 @@ public static class MauiProgram
     public static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
     {
         mauiAppBuilder.Services.AddSingleton<CatalogItemView>();
-        
+
         mauiAppBuilder.Services.AddTransient<BasketView>();
         mauiAppBuilder.Services.AddTransient<CatalogView>();
         mauiAppBuilder.Services.AddTransient<CheckoutView>();

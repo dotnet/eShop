@@ -5,8 +5,7 @@ namespace eShop.ClientApp.ViewModels;
 
 public partial class MapViewModel : ViewModelBase
 {
-    [ObservableProperty]
-    private IEnumerable<Store> _stores;
+    [ObservableProperty] private IEnumerable<Store> _stores;
 
     public MapViewModel(INavigationService navigationService)
         : base(navigationService)
@@ -22,8 +21,8 @@ public partial class MapViewModel : ViewModelBase
                 {
                     Address = "Building 92, Redmond, WA",
                     Description = "Microsoft Visitor Center",
-                    Location = new Location(47.6423109, -122.1368406),
-                },
+                    Location = new Location(47.6423109, -122.1368406)
+                }
             };
 
         return Task.CompletedTask;
@@ -36,4 +35,3 @@ public record Store
     public string Address { get; set; }
     public string Description { get; set; }
 }
-

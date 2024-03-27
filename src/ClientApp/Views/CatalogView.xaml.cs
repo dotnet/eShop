@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using eShop.ClientApp.Messages;
 
 namespace eShop.ClientApp.Views;
 
@@ -16,7 +17,7 @@ public partial class CatalogView
         base.OnAppearing();
 
         WeakReferenceMessenger.Default
-            .Register<CatalogView, Messages.AddProductMessage>(
+            .Register<CatalogView, AddProductMessage>(
                 this,
                 async (recipient, message) =>
                 {
@@ -33,7 +34,7 @@ public partial class CatalogView
     {
         base.OnDisappearing();
 
-        WeakReferenceMessenger.Default.Unregister<Messages.AddProductMessage>(this);
+        WeakReferenceMessenger.Default.Unregister<AddProductMessage>(this);
     }
 
     private void Products_OnScrolled(object sender, ItemsViewScrolledEventArgs e)
@@ -42,7 +43,7 @@ public partial class CatalogView
         {
             return;
         }
-        
+
         if (e.VerticalOffset > 200)
         {
             HeaderImage.Opacity = 0d;

@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+
 <views:ContentPageBase
     Title="{Binding Order.OrderNumber, StringFormat='ORDER {0}'}"
     x:Class="eShop.ClientApp.Views.OrderDetailView"
@@ -7,7 +8,6 @@
     xmlns:animations="clr-namespace:eShop.ClientApp.Animations"
     xmlns:templates="clr-namespace:eShop.ClientApp.Views.Templates"
     xmlns:triggers="clr-namespace:eShop.ClientApp.Triggers"
-    xmlns:viewModelBase="clr-namespace:eShop.ClientApp.ViewModels.Base"
     xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
     xmlns:views="clr-namespace:eShop.ClientApp.Views"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">

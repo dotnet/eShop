@@ -8,11 +8,11 @@ namespace eShop.ClientApp.Services.AppEnvironment;
 public interface IAppEnvironmentService
 {
     IBasketService BasketService { get; }
-    
+
     ICatalogService CatalogService { get; }
-    
+
     IOrderService OrderService { get; }
-    
+
     IIdentityService IdentityService { get; }
 
     void UpdateDependencies(bool useMockServices);

@@ -1,13 +1,11 @@
-using System;
 using eShop.ClientApp.Models.User;
-using eShop.ClientApp.Services.Settings;
 
 namespace eShop.ClientApp.Services.Identity;
 
 public class IdentityMockService : IIdentityService
 {
     private bool _signedIn;
-    
+
     public Task<bool> SignInAsync()
     {
         _signedIn = true;
@@ -26,7 +24,7 @@ public class IdentityMockService : IIdentityService
         {
             return Task.FromResult(UserInfo.Default);
         }
-        
+
         return Task.FromResult(new UserInfo
         {
             UserId = Guid.NewGuid().ToString(),
@@ -44,7 +42,7 @@ public class IdentityMockService : IIdentityService
             Email = "sample.user@example.com",
             EmailVerified = true,
             PhoneNumber = "1234567890",
-            PhoneNumberVerified = true,
+            PhoneNumberVerified = true
         });
     }
 
@@ -54,7 +52,7 @@ public class IdentityMockService : IIdentityService
         {
             return Task.FromResult(string.Empty);
         }
-        
+
         return Task.FromResult(Guid.NewGuid().ToString());
     }
 }

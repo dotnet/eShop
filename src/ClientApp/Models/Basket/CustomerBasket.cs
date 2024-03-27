@@ -7,7 +7,7 @@ public class CustomerBasket
     public IReadOnlyList<BasketItem> Items => _items;
 
     public int ItemCount => _items.Sum(x => x.Quantity);
-    
+
     public void AddItemToBasket(BasketItem basketItem)
     {
         foreach (var item in _items)
@@ -21,10 +21,10 @@ public class CustomerBasket
 
         _items.Add(basketItem);
     }
-    
+
     public void RemoveItemFromBasket(BasketItem basketItem)
     {
-        for (int i = _items.Count - 1; i >= 0; i--)
+        for (var i = _items.Count - 1; i >= 0; i--)
         {
             if (_items[i].ProductId == basketItem.ProductId)
             {

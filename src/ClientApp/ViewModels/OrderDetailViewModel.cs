@@ -9,20 +9,16 @@ namespace eShop.ClientApp.ViewModels;
 [QueryProperty(nameof(OrderNumber), "OrderNumber")]
 public partial class OrderDetailViewModel : ViewModelBase
 {
-    private readonly ISettingsService _settingsService;
     private readonly IAppEnvironmentService _appEnvironmentService;
+    private readonly ISettingsService _settingsService;
 
-    [ObservableProperty]
-    private Order _order;
+    [ObservableProperty] private bool _isSubmittedOrder;
 
-    [ObservableProperty]
-    private bool _isSubmittedOrder;
+    [ObservableProperty] private Order _order;
 
-    [ObservableProperty]
-    private string _orderStatusText;
+    [ObservableProperty] private int _orderNumber;
 
-    [ObservableProperty]
-    private int _orderNumber;
+    [ObservableProperty] private string _orderStatusText;
 
     public OrderDetailViewModel(
         IAppEnvironmentService appEnvironmentService,
