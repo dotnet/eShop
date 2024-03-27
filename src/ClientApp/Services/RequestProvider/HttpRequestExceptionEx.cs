@@ -1,19 +1,21 @@
-﻿namespace eShop.ClientApp.Services.RequestProvider;
+﻿using System.Net;
+
+namespace eShop.ClientApp.Services.RequestProvider;
 
 public class HttpRequestExceptionEx : HttpRequestException
 {
-    public System.Net.HttpStatusCode HttpCode { get; }
-
-    public HttpRequestExceptionEx(System.Net.HttpStatusCode code) : this(code, null, null)
+    public HttpRequestExceptionEx(HttpStatusCode code) : this(code, null, null)
     {
     }
 
-    public HttpRequestExceptionEx(System.Net.HttpStatusCode code, string message) : this(code, message, null)
+    public HttpRequestExceptionEx(HttpStatusCode code, string message) : this(code, message, null)
     {
     }
 
-    public HttpRequestExceptionEx(System.Net.HttpStatusCode code, string message, Exception inner) : base(message, inner)
+    public HttpRequestExceptionEx(HttpStatusCode code, string message, Exception inner) : base(message, inner)
     {
         HttpCode = code;
     }
+
+    public HttpStatusCode HttpCode { get; }
 }

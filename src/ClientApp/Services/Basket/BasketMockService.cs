@@ -4,13 +4,11 @@ namespace eShop.ClientApp.Services.Basket;
 
 public class BasketMockService : IBasketService
 {
-    public IEnumerable<BasketItem> LocalBasketItems { get; set; }
-
     private CustomerBasket _mockCustomBasket;
 
     public BasketMockService()
     {
-        _mockCustomBasket = new() {BuyerId = "9245fe4a-d402-451c-b9ed-9c1a04247482",};
+        _mockCustomBasket = new CustomerBasket {BuyerId = "9245fe4a-d402-451c-b9ed-9c1a04247482"};
         _mockCustomBasket.AddItemToBasket(new BasketItem
         {
             Id = "1",
@@ -30,20 +28,21 @@ public class BasketMockService : IBasketService
             Quantity = 1,
             UnitPrice = 17.00M
         });
-
     }
+
+    public IEnumerable<BasketItem> LocalBasketItems { get; set; }
 
     public async Task<CustomerBasket> GetBasketAsync()
     {
         await Task.Delay(10);
-        
+
         return _mockCustomBasket;
     }
 
     public async Task<CustomerBasket> UpdateBasketAsync(CustomerBasket customerBasket)
     {
         await Task.Delay(10);
-        
+
         _mockCustomBasket = customerBasket;
 
         return _mockCustomBasket;

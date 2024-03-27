@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+
 <views:ContentPageBase
     BackgroundColor="{StaticResource LightGrayColor}"
     Shell.FlyoutBehavior="Disabled"
@@ -9,11 +10,8 @@
     x:DataType="viewmodels:LoginViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:animations="clr-namespace:eShop.ClientApp.Animations"
-    xmlns:converters="clr-namespace:eShop.ClientApp.Converters"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
-    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:triggers="clr-namespace:eShop.ClientApp.Triggers"
-    xmlns:viewModelBase="clr-namespace:eShop.ClientApp.ViewModels.Base"
     xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
     xmlns:views="clr-namespace:eShop.ClientApp.Views"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
@@ -24,13 +22,6 @@
     </ContentPage.Title>
     <ContentPage.Resources>
         <ResourceDictionary>
-
-            <Style TargetType="{x:Type Grid}" x:Key="LoginPanelStyle">
-                <Setter Property="HeightRequest" Value="60" />
-                <Setter Property="BackgroundColor" Value="{StaticResource LightGreenColor}" />
-                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
-                <Setter Property="VerticalOptions" Value="FillAndExpand" />
-            </Style>
 
             <animations:StoryBoard Target="{x:Reference LoginPanel}" x:Key="LoginAnimation">
                 <animations:FadeInAnimation Direction="Up" Duration="1500" />

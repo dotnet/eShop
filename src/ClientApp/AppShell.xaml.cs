@@ -11,7 +11,7 @@ public partial class AppShell : Shell
     {
         _navigationService = navigationService;
 
-        AppShell.InitializeRouting();
+        InitializeRouting();
         InitializeComponent();
     }
 

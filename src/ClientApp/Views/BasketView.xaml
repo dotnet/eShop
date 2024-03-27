@@ -1,39 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+
 <views:ContentPageBase
     Title="CART"
     x:Class="eShop.ClientApp.Views.BasketView"
     x:DataType="viewmodels:BasketViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:templates="clr-namespace:eShop.ClientApp.Views.Templates"
-    xmlns:viewModelBase="clr-namespace:eShop.ClientApp.ViewModels.Base"
     xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
     xmlns:views="clr-namespace:eShop.ClientApp.Views"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <ContentPage.Resources>
-        <ResourceDictionary>
-
-            <Style TargetType="{x:Type Label}" x:Key="CartTotalStyle">
-                <Setter Property="FontFamily" Value="Montserrat-Regular" />
-                <Setter Property="FontSize" Value="{StaticResource LargerSize}" />
-                <Setter Property="HorizontalOptions" Value="End" />
-            </Style>
-
-            <Style TargetType="{x:Type Label}" x:Key="CheckoutButtonStyle">
-                <Setter Property="FontFamily" Value="Montserrat-Regular" />
-                <Setter Property="TextColor" Value="{StaticResource WhiteColor}" />
-                <Setter Property="HorizontalOptions" Value="Center" />
-                <Setter Property="VerticalOptions" Value="Center" />
-            </Style>
-
-            <Style TargetType="{x:Type Label}" x:Key="ShoppingCartStyle">
-                <Setter Property="FontFamily" Value="Montserrat-Regular" />
-                <Setter Property="FontSize" Value="{StaticResource MediumSize}" />
-                <Setter Property="HorizontalOptions" Value="Center" />
-                <Setter Property="Margin" Value="0, 12" />
-            </Style>
-
-        </ResourceDictionary>
+        <ResourceDictionary />
     </ContentPage.Resources>
     <Grid RowDefinitions="*,Auto">
         <!--  CART ITEMS  -->

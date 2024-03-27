@@ -22,7 +22,7 @@ public class BasketItem : BindableObject
         set
         {
             _quantity = value;
-            OnPropertyChanged(nameof(Quantity));
+            OnPropertyChanged();
         }
     }
 
@@ -30,6 +30,8 @@ public class BasketItem : BindableObject
 
     public decimal Total => Quantity * UnitPrice;
 
-    public override string ToString() =>
-        $"Product Id: {ProductId}, Quantity: {Quantity}";
+    public override string ToString()
+    {
+        return $"Product Id: {ProductId}, Quantity: {Quantity}";
+    }
 }

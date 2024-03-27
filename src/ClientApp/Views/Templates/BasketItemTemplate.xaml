@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
+
 <SwipeView
     HeightRequest="88"
     Padding="4"
@@ -14,12 +15,6 @@
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="FontSize" Value="{StaticResource MidMediumSize}" />
                 <Setter Property="HorizontalOptions" Value="Start" />
-            </Style>
-
-            <Style TargetType="{x:Type Label}" x:Key="OrderItemQuantityStyle">
-                <Setter Property="FontFamily" Value="Montserrat-Regular" />
-                <Setter Property="FontSize" Value="{StaticResource MidMediumSize}" />
-                <Setter Property="HorizontalOptions" Value="End" />
             </Style>
 
             <Style TargetType="{x:Type Label}" x:Key="OrderTotalStyle">

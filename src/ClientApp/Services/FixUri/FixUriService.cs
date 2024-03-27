@@ -27,11 +27,13 @@ public class FixUriService : IFixUriService
 
         try
         {
-            if (!_settingsService.UseMocks && _settingsService.GatewayCatalogEndpointBase != _settingsService.DefaultEndpoint)
+            if (!_settingsService.UseMocks &&
+                _settingsService.GatewayCatalogEndpointBase != _settingsService.DefaultEndpoint)
             {
                 foreach (var catalogItem in catalogItems)
                 {
-                    catalogItem.PictureUri = Path.Combine(_settingsService.GatewayCatalogEndpointBase, $"api/v1/catalog/items/{catalogItem.Id}/pic");
+                    catalogItem.PictureUri = Path.Combine(_settingsService.GatewayCatalogEndpointBase,
+                        $"api/v1/catalog/items/{catalogItem.Id}/pic");
                 }
             }
         }
@@ -54,8 +56,8 @@ public class FixUriService : IFixUriService
             {
                 foreach (var basketItem in basketItems)
                 {
-                    MatchCollection serverResult = IpRegex.Matches(basketItem.PictureUrl);
-                    MatchCollection localResult = IpRegex.Matches(_settingsService.IdentityEndpointBase);
+                    var serverResult = IpRegex.Matches(basketItem.PictureUrl);
+                    var localResult = IpRegex.Matches(_settingsService.IdentityEndpointBase);
 
                     if (serverResult.Count != -1 && localResult.Count != -1)
                     {
@@ -85,8 +87,8 @@ public class FixUriService : IFixUriService
             {
                 foreach (var campaignItem in campaignItems)
                 {
-                    MatchCollection serverResult = IpRegex.Matches(campaignItem.PictureUri);
-                    MatchCollection localResult = IpRegex.Matches(_settingsService.IdentityEndpointBase);
+                    var serverResult = IpRegex.Matches(campaignItem.PictureUri);
+                    var localResult = IpRegex.Matches(_settingsService.IdentityEndpointBase);
 
                     if (serverResult.Count != -1 && localResult.Count != -1)
                     {
