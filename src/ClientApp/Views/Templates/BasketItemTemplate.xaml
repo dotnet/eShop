@@ -3,6 +3,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"     
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:eShop.ClientApp.ViewModels"
+    xmlns:models="clr-namespace:eShop.ClientApp.Models.Basket"
+    x:DataType="models:BasketItem"
     x:Class="eShop.ClientApp.Views.Templates.BasketItemTemplate"
     HeightRequest="88">
     <SwipeView.Resources>
