@@ -3,31 +3,62 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using eShop.WebAppComponents.Catalog;
 using eShop.WebAppComponents.Services;
-
+using System.Text;
+using System.Text.Json;
 namespace eShop.WebApp.Services;
 
 public class BasketState(
     BasketService basketService,
     CatalogService catalogService,
     OrderingService orderingService,
-    AuthenticationStateProvider authenticationStateProvider)
+    AuthenticationStateProvider authenticationStateProvider,
+    IHttpContextAccessor httpContextAccessor)
 {
     private Task<IReadOnlyCollection<BasketItem>>? _cachedBasket;
     private HashSet<BasketStateChangedSubscription> _changeSubscriptions = new();
-
+    Dictionary<int,int>? ProductIdToQuantity = new();
+    private readonly ISession session = httpContextAccessor.HttpContext!.Session;
     public Task DeleteBasketAsync()
         => basketService.DeleteBasketAsync();
 
     public async Task<IReadOnlyCollection<BasketItem>> GetBasketItemsAsync()
-        => (await GetUserAsync()).Identity?.IsAuthenticated == true
-        ? await FetchBasketItemsAsync()
-        : [];
+    {
+        if ((await GetUserAsync()).Identity?.IsAuthenticated == true)
+        {
+            await MoveItemFromSessionToRedis();
 
+            return await FetchBasketItemsAsync();
+        }
+        return [];
+    }
+    public async Task<IReadOnlyCollection<BasketItem>> GetBasketItemsAsAnonymous()
+        => (await GetUserAsync()).Identity?.IsAuthenticated == false
+        ? await GetBasketItemsAsAnonymousAsync()
+        : [];
     public IDisposable NotifyOnChange(EventCallback callback)
     {
         var subscription = new BasketStateChangedSubscription(this, callback);
         _changeSubscriptions.Add(subscription);
         return subscription;
+    }
+
+    public async Task AddAsAnonymousUser(CatalogItem item)
+    {
+        // Retrieve existing cart items from session
+        if (session.TryGetValue("ShoppingCart", out var cartData))
+        {
+            ProductIdToQuantity = JsonSerializer.Deserialize<Dictionary<int, int>>(Encoding.UTF8.GetString(cartData));
+        }
+        if (!ProductIdToQuantity!.ContainsKey(item.Id))
+        {
+            ProductIdToQuantity[item.Id] = 1;
+        }
+        else
+        {
+            ProductIdToQuantity[item.Id]++;
+        }
+        session.SetString("ShoppingCart", JsonSerializer.Serialize(ProductIdToQuantity));
+        await NotifyChangeSubscribersAsync();
     }
 
     public async Task AddAsync(CatalogItem item)
@@ -99,7 +130,7 @@ public class BasketState(
             ZipCode: checkoutInfo.ZipCode!,
             CardNumber: checkoutInfo.CardNumber!,
             CardHolderName: checkoutInfo.CardHolderName!,
-            CardExpiration: checkoutInfo.CardExpiration!.Value, 
+            CardExpiration: checkoutInfo.CardExpiration!.Value,
             CardSecurityNumber: checkoutInfo.CardSecurityNumber!,
             CardTypeId: checkoutInfo.CardTypeId,
             Buyer: buyerId,
@@ -113,7 +144,40 @@ public class BasketState(
 
     private async Task<ClaimsPrincipal> GetUserAsync()
         => (await authenticationStateProvider.GetAuthenticationStateAsync()).User;
+    private Task<IReadOnlyCollection<BasketItem>> GetBasketItemsAsAnonymousAsync()
+    {
+        return _cachedBasket = FetchCoreAsync();
+        async Task<IReadOnlyCollection<BasketItem>> FetchCoreAsync()
+        {
+            if (session.TryGetValue("ShoppingCart", out var cartData))
+            {
+                ProductIdToQuantity = JsonSerializer.Deserialize<Dictionary<int, int>>(Encoding.UTF8.GetString(cartData));
+            }
+            if (ProductIdToQuantity?.Count == 0)
+            {
+                return [];
+            }
 
+            // Get details for the items in the basket
+            var basketItems = new List<BasketItem>();
+            var productIds = ProductIdToQuantity != null ? ProductIdToQuantity.Select(row => row.Key) : new List<int>();
+            var catalogItems = (await catalogService.GetCatalogItems(productIds)).ToDictionary(k => k.Id, v => v);
+            foreach (var item in ProductIdToQuantity!)
+            {
+                var catalogItem = catalogItems[item.Key];
+                var orderItem = new BasketItem
+                {
+                    Id = Guid.NewGuid().ToString(), // TODO: this value is meaningless, use ProductId instead.
+                    ProductId = catalogItem.Id,
+                    ProductName = catalogItem.Name,
+                    UnitPrice = catalogItem.Price,
+                    Quantity = item.Value,
+                };
+                basketItems.Add(orderItem);
+            }
+            return basketItems;
+        }
+    }
     private Task<IReadOnlyCollection<BasketItem>> FetchBasketItemsAsync()
     {
         return _cachedBasket ??= FetchCoreAsync();
@@ -145,6 +209,22 @@ public class BasketState(
             }
 
             return basketItems;
+        }
+    }
+
+    private async Task MoveItemFromSessionToRedis()
+    {
+        //User just logged in, let's empty session cart and put in Redis
+        if (session.TryGetValue("ShoppingCart", out var cartData))
+        {
+            ProductIdToQuantity = JsonSerializer.Deserialize<Dictionary<int, int>>(Encoding.UTF8.GetString(cartData));
+
+            if (ProductIdToQuantity?.Count != 0)
+            {
+                var basketQuantity = basketService.MapToBasket(ProductIdToQuantity!);
+                await basketService.UpdateBasketAsync(basketQuantity);
+            }
+            session.Remove("ShoppingCart");
         }
     }
 
