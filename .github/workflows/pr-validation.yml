@@ -4,12 +4,17 @@ on:
   pull_request:
     paths-ignore:
       - '**.md'
+      - 'src/ClientApp/**'
+      - 'test/ClientApp.UnitTests/**'
+      - '.github/workflows/pr-validation-maui.yml'
   push:
     branches:
       - main
     paths-ignore:
       - '**.md'
-
+      - 'src/ClientApp/**'
+      - 'test/ClientApp.UnitTests/**'
+      - '.github/workflows/pr-validation-maui.yml'
 
 jobs:  
   test:
