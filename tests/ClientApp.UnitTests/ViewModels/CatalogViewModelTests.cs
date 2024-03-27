@@ -60,7 +60,7 @@ public class CatalogViewModelTests
     public void BrandPropertyIsNullWhenViewModelInstantiatedTest()
     {
         var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
-        Assert.Null(catalogViewModel.SelectedBrand);
+        Assert.Null(catalogViewModel.Brand);
     }
 
     [Fact]
@@ -74,14 +74,14 @@ public class CatalogViewModelTests
     public void TypePropertyIsNullWhenViewModelInstantiatedTest()
     {
         var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
-        Assert.Null(catalogViewModel.SelectedType);
+        Assert.Null(catalogViewModel.Type);
     }
 
     [Fact]
     public void IsFilterPropertyIsFalseWhenViewModelInstantiatedTest()
     {
         var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
-        Assert.False(catalogViewModel.IsFiltering);
+        Assert.False(catalogViewModel.IsFilter);
     }
 
     [Fact]
@@ -141,8 +141,8 @@ public class CatalogViewModelTests
         await catalogViewModel.InitializeAsync();
         await catalogViewModel.ClearFilterCommand.ExecuteUntilComplete(null);
 
-        Assert.Null(catalogViewModel.SelectedBrand);
-        Assert.Null(catalogViewModel.SelectedType);
+        Assert.Null(catalogViewModel.Brand);
+        Assert.Null(catalogViewModel.Type);
         Assert.NotNull(catalogViewModel.Products);
     }
 }
