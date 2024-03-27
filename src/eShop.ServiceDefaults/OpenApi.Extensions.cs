@@ -22,37 +22,40 @@ public static partial class Extensions
         }
 
         app.UseSwagger();
-        app.UseSwaggerUI(setup =>
+        if (app.Environment.IsDevelopment())
         {
-            /// {
-            ///   "OpenApi": {
-            ///     "Endpoint: {
-            ///         "Name": 
-            ///     },
-            ///     "Auth": {
-            ///         "ClientId": ..,
-            ///         "AppName": ..
-            ///     }
-            ///   }
-            /// }
-
-            var pathBase = configuration["PATH_BASE"];
-            var authSection = openApiSection.GetSection("Auth");
-            var endpointSection = openApiSection.GetRequiredSection("Endpoint");
-
-            var swaggerUrl = endpointSection["Url"] ?? $"{(!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty)}/swagger/v1/swagger.json";
-
-            setup.SwaggerEndpoint(swaggerUrl, endpointSection.GetRequiredValue("Name"));
-
-            if (authSection.Exists())
+            app.UseSwaggerUI(setup =>
             {
-                setup.OAuthClientId(authSection.GetRequiredValue("ClientId"));
-                setup.OAuthAppName(authSection.GetRequiredValue("AppName"));
-            }
-        });
+                /// {
+                ///   "OpenApi": {
+                ///     "Endpoint: {
+                ///         "Name": 
+                ///     },
+                ///     "Auth": {
+                ///         "ClientId": ..,
+                ///         "AppName": ..
+                ///     }
+                ///   }
+                /// }
 
-        // Add a redirect from the root of the app to the swagger endpoint
-        app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
+                var pathBase = configuration["PATH_BASE"];
+                var authSection = openApiSection.GetSection("Auth");
+                var endpointSection = openApiSection.GetRequiredSection("Endpoint");
+
+                var swaggerUrl = endpointSection["Url"] ?? $"{(!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty)}/swagger/v1/swagger.json";
+
+                setup.SwaggerEndpoint(swaggerUrl, endpointSection.GetRequiredValue("Name"));
+
+                if (authSection.Exists())
+                {
+                    setup.OAuthClientId(authSection.GetRequiredValue("ClientId"));
+                    setup.OAuthAppName(authSection.GetRequiredValue("AppName"));
+                }
+            });
+
+            // Add a redirect from the root of the app to the swagger endpoint
+            app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
+        }
 
         return app;
     }
