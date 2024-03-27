@@ -1,30 +1,33 @@
-﻿namespace eShop.ClientApp.UnitTests.Mocks;
+﻿using eShop.ClientApp.Models.Token;
+
+namespace eShop.ClientApp.UnitTests.Mocks;
 
 public class MockSettingsService : ISettingsService
 {
-    readonly IDictionary<string, object> _settings = new Dictionary<string, object>();
-
-    const string AccessToken = "access_token";
-    const string IdToken = "id_token";
-    const string IdUseMocks = "use_mocks";
-    const string IdIdentityBase = "url_base";
-    const string IdGatewayMarketingBase = "url_marketing";
-    const string IdGatewayShoppingBase = "url_shopping";
-    const string IdUseFakeLocation = "use_fake_location";
-    const string IdLatitude = "latitude";
-    const string IdLongitude = "longitude";
-    const string IdAllowGpsLocation = "allow_gps_location";
+    private const string AccessToken = "access_token";
+    private const string IdToken = "id_token";
+    private const string IdUseMocks = "use_mocks";
+    private const string IdIdentityBase = "url_base";
+    private const string IdGatewayMarketingBase = "url_marketing";
+    private const string IdGatewayShoppingBase = "url_shopping";
+    private const string IdUseFakeLocation = "use_fake_location";
+    private const string IdLatitude = "latitude";
+    private const string IdLongitude = "longitude";
+    private const string IdAllowGpsLocation = "allow_gps_location";
     
-    const string AccessTokenDefault = "default_access_token";
+    private const string AccessTokenDefault = "default_access_token";
     private const string IdTokenDefault = "";
-    const bool UseMocksDefault = true;
-    const bool UseFakeLocationDefault = false;
-    const bool AllowGpsLocationDefault = false;
-    const double FakeLatitudeDefault = 47.604610d;
-    const double FakeLongitudeDefault = -122.315752d;
-    const string UrlIdentityDefault = "https://13.88.8.119";
-    const string UrlGatewayMarketingDefault = "https://13.88.8.119";
-    const string UrlGatewayShoppingDefault = "https://13.88.8.119";
+    private const bool UseMocksDefault = true;
+    private const bool UseFakeLocationDefault = false;
+    private const bool AllowGpsLocationDefault = false;
+    private const double FakeLatitudeDefault = 47.604610d;
+    private const double FakeLongitudeDefault = -122.315752d;
+    private const string UrlIdentityDefault = "https://13.88.8.119";
+    private const string UrlGatewayMarketingDefault = "https://13.88.8.119";
+    private const string UrlGatewayShoppingDefault = "https://13.88.8.119";
+    
+    private readonly IDictionary<string, object> _settings = new Dictionary<string, object>();
+    private UserToken? _userToken;
 
     public string AuthAccessToken
     {
@@ -36,6 +39,18 @@ public class MockSettingsService : ISettingsService
     {
         get => GetValueOrDefault(IdToken, IdTokenDefault);
         set => AddOrUpdateValue(IdToken, value);
+    }
+
+    public Task<UserToken?> GetUserTokenAsync()
+    {
+        return Task.FromResult(_userToken);
+    }
+
+    public Task SetUserTokenAsync(UserToken? userToken)
+    {
+        _userToken = userToken;
+
+        return Task.CompletedTask;
     }
 
     public bool UseMocks
@@ -90,6 +105,24 @@ public class MockSettingsService : ISettingsService
     {
         get => GetValueOrDefault(IdIdentityBase, UrlIdentityDefault);
         set => AddOrUpdateValue(IdIdentityBase, value);
+    }
+
+    public string GatewayCatalogEndpointBase
+    {
+        get => GetValueOrDefault(nameof(GatewayCatalogEndpointBase), string.Empty);
+        set => AddOrUpdateValue(nameof(GatewayCatalogEndpointBase), value);
+    }
+    
+    public string GatewayOrdersEndpointBase
+    {
+        get => GetValueOrDefault(nameof(GatewayOrdersEndpointBase), string.Empty);
+        set => AddOrUpdateValue(nameof(GatewayOrdersEndpointBase), value);
+    }
+    
+    public string GatewayBasketEndpointBase
+    {
+        get => GetValueOrDefault(nameof(GatewayBasketEndpointBase), string.Empty);
+        set => AddOrUpdateValue(nameof(GatewayBasketEndpointBase), value);
     }
 
     public string GatewayShoppingEndpointBase

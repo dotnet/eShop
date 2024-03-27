@@ -1,5 +1,3 @@
-﻿using System.Diagnostics;
-
 namespace eShop.ClientApp.Views;
 
 public partial class LoginView : ContentPageBase

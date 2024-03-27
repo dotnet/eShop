@@ -1,105 +1,93 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using eShop.ClientApp.Models.Catalog;
+using eShop.ClientApp.Services.Identity;
 
 namespace eShop.ClientApp.UnitTests;
 
 public class CatalogViewModelTests
 {
-    private readonly IDialogService _dialogService;
     private readonly INavigationService _navigationService;
-    private readonly ISettingsService _settingsService;
     private readonly IAppEnvironmentService _appEnvironmentService;
 
     public CatalogViewModelTests()
     {
-        _dialogService = new MockDialogService();
         _navigationService = new MockNavigationService();
-        _settingsService = new MockSettingsService();
 
         var mockBasketService = new BasketMockService();
-        var mockCampaignService = new CampaignMockService();
         var mockCatalogService = new CatalogMockService();
         var mockOrderService = new OrderMockService();
-        var mockUserService = new UserMockService();
+        var mockIdentityService = new IdentityMockService();
 
         _appEnvironmentService =
             new AppEnvironmentService(
                 mockBasketService, mockBasketService,
-                mockCampaignService, mockCampaignService,
                 mockCatalogService, mockCatalogService,
                 mockOrderService, mockOrderService,
-                mockUserService, mockUserService);
+                mockIdentityService, mockIdentityService);
 
         _appEnvironmentService.UpdateDependencies(true);
     }
-
-    [Fact]
-    public void AddCatalogItemCommandIsNotNullTest()
-    {
-        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService, _settingsService);
-        Assert.NotNull(catalogViewModel.AddCatalogItemCommand);
-    }
-
+    
     [Fact]
     public void FilterCommandIsNotNullTest()
     {
-        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService, _settingsService);
+        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
         Assert.NotNull(catalogViewModel.FilterCommand);
     }
 
     [Fact]
     public void ClearFilterCommandIsNotNullTest()
     {
-        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService, _settingsService);
+        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
         Assert.NotNull(catalogViewModel.ClearFilterCommand);
     }
 
     [Fact]
     public void ProductsPropertyIsEmptyWhenViewModelInstantiatedTest()
     {
-        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService, _settingsService);
+        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
         Assert.Empty(catalogViewModel.Products);
     }
 
     [Fact]
     public void BrandsPropertyIsEmptyWhenViewModelInstantiatedTest()
     {
-        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService, _settingsService);
+        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
         Assert.Empty(catalogViewModel.Brands);
     }
 
     [Fact]
     public void BrandPropertyIsNullWhenViewModelInstantiatedTest()
     {
-        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService, _settingsService);
-        Assert.Null(catalogViewModel.Brand);
+        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
+        Assert.Null(catalogViewModel.SelectedBrand);
     }
 
     [Fact]
     public void TypesPropertyIsEmptyWhenViewModelInstantiatedTest()
     {
-        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService, _settingsService);
+        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
         Assert.Empty(catalogViewModel.Types);
     }
 
     [Fact]
     public void TypePropertyIsNullWhenViewModelInstantiatedTest()
     {
-        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService, _settingsService);
-        Assert.Null(catalogViewModel.Type);
+        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
+        Assert.Null(catalogViewModel.SelectedType);
     }
 
     [Fact]
     public void IsFilterPropertyIsFalseWhenViewModelInstantiatedTest()
     {
-        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService, _settingsService);
-        Assert.False(catalogViewModel.IsFilter);
+        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
+        Assert.False(catalogViewModel.IsFiltering);
     }
 
     [Fact]
     public async Task ProductsPropertyIsNotNullAfterViewModelInitializationTest()
     {
-        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService, _settingsService);
+        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
 
         await catalogViewModel.InitializeAsync();
 
@@ -109,7 +97,7 @@ public class CatalogViewModelTests
     [Fact]
     public async Task BrandsPropertyIsNotNullAfterViewModelInitializationTest()
     {
-        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService, _settingsService);
+        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
 
         await catalogViewModel.InitializeAsync();
 
@@ -119,7 +107,7 @@ public class CatalogViewModelTests
     [Fact]
     public async Task TypesPropertyIsNotNullAfterViewModelInitializationTest()
     {
-        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService, _settingsService);
+        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
 
         await catalogViewModel.InitializeAsync();
 
@@ -131,7 +119,7 @@ public class CatalogViewModelTests
     {
         bool invoked = false;
 
-        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService, _settingsService);
+        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
 
         catalogViewModel.PropertyChanged += (_, e) =>
         {
@@ -146,42 +134,15 @@ public class CatalogViewModelTests
     }
 
     [Fact]
-    public async Task AddCatalogItemCommandSendsAddProductMessageTest()
-    {
-        bool messageReceived = false;
-
-        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService, _settingsService);
-
-        WeakReferenceMessenger.Default
-            .Register<Messages.AddProductMessage>(
-                this,
-                (r, m) =>
-                {
-                    messageReceived = true;
-                });
-
-        await catalogViewModel.AddCatalogItemCommand
-            .ExecuteUntilComplete(
-                new CatalogItem
-                {
-                    Id = "id",
-                    Name = "test",
-                    Price = 1.23m,
-                });
-
-        Assert.True(messageReceived);
-    }
-
-    [Fact]
     public async Task ClearFilterCommandResetsPropertiesTest()
     {
-        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService, _settingsService);
+        var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
 
         await catalogViewModel.InitializeAsync();
         await catalogViewModel.ClearFilterCommand.ExecuteUntilComplete(null);
 
-        Assert.Null(catalogViewModel.Brand);
-        Assert.Null(catalogViewModel.Type);
+        Assert.Null(catalogViewModel.SelectedBrand);
+        Assert.Null(catalogViewModel.SelectedType);
         Assert.NotNull(catalogViewModel.Products);
     }
 }
