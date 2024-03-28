@@ -40,8 +40,18 @@ builder.Services.AddTransient<IProfileService, ProfileService>();
 builder.Services.AddTransient<ILoginService<ApplicationUser>, EFLoginService>();
 builder.Services.AddTransient<IRedirectService, RedirectService>();
 
-var app = builder.Build();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Default",
+        policyBuilder => policyBuilder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+// Not recommended for production - you need to configure CORS to match your requirements
+// See https://docs.asp.net/en/latest/security/cors.html#how-to-enable-cors
 
+var app = builder.Build();
+app.UseCors("Default");
 app.MapDefaultEndpoints();
 
 app.UseStaticFiles();
