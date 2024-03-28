@@ -7,15 +7,27 @@
     <IsAspireHost>true</IsAspireHost>
     <IsPackable>false</IsPackable>
     <UserSecretsId>b99dbce4-17d4-41d2-858a-2b0529d60bb8</UserSecretsId>
+    <UseAzureOpenAI>false</UseAzureOpenAI>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting" />
     <PackageReference Include="Aspire.Hosting.AppHost" />
     <PackageReference Include="Aspire.Hosting.RabbitMQ" />
+    <PackageReference Include="Aspire.Hosting.Redis" />
     <PackageReference Include="Aspire.Hosting.PostgreSQL" />
-    <PackageReference Include="Aspire.Hosting.Azure" />
   </ItemGroup>
+
+  <Choose>
+    <When Condition="'$(UseAzureOpenAI)' == 'true'">
+      <PropertyGroup>
+          <DefineConstants>$(DefineConstants);USE_AZURE_OPENAI</DefineConstants>
+      </PropertyGroup>
+
+      <ItemGroup>
+        <PackageReference Include="Aspire.Hosting.Azure.CognitiveServices" />
+      </ItemGroup>
+    </When>
+  </Choose>
 
   <ItemGroup>
     <ProjectReference Include="..\Mobile.Bff.Shopping\Mobile.Bff.Shopping.csproj" />

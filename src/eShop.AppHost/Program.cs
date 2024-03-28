@@ -15,8 +15,6 @@ var identityDb = postgres.AddDatabase("identitydb");
 var orderDb = postgres.AddDatabase("orderingdb");
 var webhooksDb = postgres.AddDatabase("webhooksdb");
 
-var openAi = builder.AddConnectionString("openai");
-
 // Services
 var identityApi = builder.AddProject<Projects.Identity_API>("identity-api", "https")
     .WithReference(identityDb);
@@ -30,8 +28,7 @@ var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
 
 var catalogApi = builder.AddProject<Projects.Catalog_API>("catalog-api")
     .WithReference(rabbitMq)
-    .WithReference(catalogDb)
-    .WithReference(openAi, optional: true);
+    .WithReference(catalogDb);
 
 var orderingApi = builder.AddProject<Projects.Ordering_API>("ordering-api")
     .WithReference(rabbitMq)
@@ -65,8 +62,28 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", "https")
     .WithReference(catalogApi)
     .WithReference(orderingApi)
     .WithReference(rabbitMq)
-    .WithReference(openAi, optional: true)
     .WithEnvironment("IdentityUrl", idpHttps);
+
+#if USE_AZURE_OPENAI
+
+builder.AddAzureProvisioning();
+
+const string chatModelName = "gpt-35-turbo-16k";
+const string textEmbeddingName = "text-embedding-ada-002";
+
+var openAi = builder.AddAzureOpenAI("openai")
+    .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-35-turbo", "0613"))
+    .AddDeployment(new AzureOpenAIDeployment(textEmbeddingName, "text-embedding-ada-002", "2"));
+
+catalogApi
+    .WithReference(openAi)
+    .WithEnvironment("AI__OPENAI__CHATMODEL", chatModelName);
+
+webApp
+    .WithReference(openAi)
+    .WithEnvironment("AI__OPENAI__EMBEDDINGNAME", textEmbeddingName);
+
+#endif
 
 // Wire up the callback urls (self referencing)
 webApp.WithEnvironment("CallBackUrl", webApp.GetEndpoint("https"));

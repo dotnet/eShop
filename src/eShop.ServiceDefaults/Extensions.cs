@@ -25,7 +25,7 @@ public static partial class Extensions
             http.AddStandardResilienceHandler();
 
             // Turn on service discovery by default
-            http.UseServiceDiscovery();
+            http.AddServiceDiscovery();
         });
 
         return builder;
@@ -58,8 +58,9 @@ public static partial class Extensions
         builder.Services.AddOpenTelemetry()
             .WithMetrics(metrics =>
             {
-                metrics.AddRuntimeInstrumentation()
-                       .AddBuiltInMeters();
+                metrics.AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddRuntimeInstrumentation();
             })
             .WithTracing(tracing =>
             {
@@ -70,8 +71,8 @@ public static partial class Extensions
                 }
 
                 tracing.AddAspNetCoreInstrumentation()
-                       .AddGrpcClientInstrumentation()
-                       .AddHttpClientInstrumentation();
+                    .AddGrpcClientInstrumentation()
+                    .AddHttpClientInstrumentation();
             });
 
         builder.AddOpenTelemetryExporters();
@@ -90,22 +91,8 @@ public static partial class Extensions
             builder.Services.ConfigureOpenTelemetryTracerProvider(tracing => tracing.AddOtlpExporter());
         }
 
-        // Configure alternative exporters
-        builder.Services.AddOpenTelemetry()
-                        .WithMetrics(metrics =>
-                        {
-                            // Uncomment the following line to enable the Prometheus endpoint
-                            //metrics.AddPrometheusExporter();
-                        });
-
         return builder;
     }
-
-    private static MeterProviderBuilder AddBuiltInMeters(this MeterProviderBuilder meterProviderBuilder) =>
-        meterProviderBuilder.AddMeter(
-            "Microsoft.AspNetCore.Hosting",
-            "Microsoft.AspNetCore.Server.Kestrel",
-            "System.Net.Http");
 
     public static IHostApplicationBuilder AddDefaultHealthChecks(this IHostApplicationBuilder builder)
     {
@@ -121,14 +108,19 @@ public static partial class Extensions
         // Uncomment the following line to enable the Prometheus endpoint (requires the OpenTelemetry.Exporter.Prometheus.AspNetCore package)
         // app.MapPrometheusScrapingEndpoint();
 
-        // All health checks must pass for app to be considered ready to accept traffic after starting
-        app.MapHealthChecks("/health");
-
-        // Only health checks tagged with the "live" tag must pass for app to be considered alive
-        app.MapHealthChecks("/alive", new HealthCheckOptions
+        // Adding health checks endpoints to applications in non-development environments has security implications.
+        // See https://aka.ms/dotnet/aspire/healthchecks for details before enabling these endpoints in non-development environments.
+        if (app.Environment.IsDevelopment())
         {
-            Predicate = r => r.Tags.Contains("live")
-        });
+            // All health checks must pass for app to be considered ready to accept traffic after starting
+            app.MapHealthChecks("/health");
+
+            // Only health checks tagged with the "live" tag must pass for app to be considered alive
+            app.MapHealthChecks("/alive", new HealthCheckOptions
+            {
+                Predicate = r => r.Tags.Contains("live")
+            });
+        }
 
         return app;
     }
