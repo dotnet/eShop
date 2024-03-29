@@ -4,17 +4,21 @@ on:
   pull_request:
     paths-ignore:
       - '**.md'
+      - 'src/ClientApp/**'
+      - 'test/ClientApp.UnitTests/**'
+      - '.github/workflows/pr-validation-maui.yml'
   push:
     branches:
       - main
     paths-ignore:
       - '**.md'
-
+      - 'src/ClientApp/**'
+      - 'test/ClientApp.UnitTests/**'
+      - '.github/workflows/pr-validation-maui.yml'
 
 jobs:  
   test:
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-latest    
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET (global.json)

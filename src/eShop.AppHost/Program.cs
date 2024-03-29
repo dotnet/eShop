@@ -17,10 +17,10 @@ var orderDb = postgres.AddDatabase("orderingdb");
 var webhooksDb = postgres.AddDatabase("webhooksdb");
 
 // Services
-var identityApi = builder.AddProject<Projects.Identity_API>("identity-api", "https")
+var identityApi = builder.AddProject<Projects.Identity_API>("identity-api", "http")
     .WithReference(identityDb);
 
-var idpHttps = identityApi.GetEndpoint("https");
+var idpHttps = identityApi.GetEndpoint("http");
 
 var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
     .WithReference(redis)
@@ -58,7 +58,7 @@ var webhooksClient = builder.AddProject<Projects.WebhookClient>("webhooksclient"
     .WithReference(webHooksApi)
     .WithEnvironment("IdentityUrl", idpHttps);
 
-var webApp = builder.AddProject<Projects.WebApp>("webapp", "https")
+var webApp = builder.AddProject<Projects.WebApp>("webapp", "http")
     .WithReference(basketApi)
     .WithReference(catalogApi)
     .WithReference(orderingApi)
@@ -106,14 +106,14 @@ if (useOpenAI)
 }
 
 // Wire up the callback urls (self referencing)
-webApp.WithEnvironment("CallBackUrl", webApp.GetEndpoint("https"));
-webhooksClient.WithEnvironment("CallBackUrl", webhooksClient.GetEndpoint("https"));
+webApp.WithEnvironment("CallBackUrl", webApp.GetEndpoint("http"));
+webhooksClient.WithEnvironment("CallBackUrl", webhooksClient.GetEndpoint("http"));
 
 // Identity has a reference to all of the apps for callback urls, this is a cyclic reference
 identityApi.WithEnvironment("BasketApiClient", basketApi.GetEndpoint("http"))
            .WithEnvironment("OrderingApiClient", orderingApi.GetEndpoint("http"))
            .WithEnvironment("WebhooksApiClient", webHooksApi.GetEndpoint("http"))
-           .WithEnvironment("WebhooksWebClient", webhooksClient.GetEndpoint("https"))
-           .WithEnvironment("WebAppClient", webApp.GetEndpoint("https"));
+           .WithEnvironment("WebhooksWebClient", webhooksClient.GetEndpoint("http"))
+           .WithEnvironment("WebAppClient", webApp.GetEndpoint("http"));
 
 builder.Build().Run();
