@@ -101,6 +101,7 @@ public static class Extensions
 
         if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("openai")) && !string.IsNullOrWhiteSpace(deploymentName))
         {
+            builder.Services.AddKernel();
             builder.AddAzureOpenAIClient("openai");
             builder.Services.AddAzureOpenAIChatCompletion(deploymentName);
         }

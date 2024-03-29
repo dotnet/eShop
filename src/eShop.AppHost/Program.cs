@@ -1,4 +1,5 @@
 ﻿using eShop.AppHost;
+using Microsoft.Extensions.Configuration;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -66,22 +67,40 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", "https")
 
 #if USE_AZURE_OPENAI
 
-builder.AddAzureProvisioning();
+const string openAIName = "openai";
 
-const string chatModelName = "gpt-35-turbo-16k";
-const string textEmbeddingName = "text-embedding-ada-002";
+// to configure an existing OpenAI connection, set it in the ApHost's user secrets
+IResourceBuilder<IResourceWithConnectionString> openAI;
+string textEmbeddingName = "text-embedding-ada-002";
+string chatModelName = "gpt-35-turbo-16k";
+if (builder.Configuration.GetConnectionString(openAIName) is not null)
+{
+    openAI = builder.AddConnectionString(openAIName);
+    if (builder.Configuration["AI:OpenAI:EmbeddingName"] is string embedName)
+    {
+        textEmbeddingName = embedName;
+    }
+    if (builder.Configuration["AI:OpenAI:ChatModel"] is string chatName)
+    {
+        chatModelName = chatName;
+    }
+}
+else
+{
+    builder.AddAzureProvisioning();
 
-var openAi = builder.AddAzureOpenAI("openai")
-    .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-35-turbo", "0613"))
-    .AddDeployment(new AzureOpenAIDeployment(textEmbeddingName, "text-embedding-ada-002", "2"));
+    openAI = builder.AddAzureOpenAI(openAIName)
+        .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-35-turbo", "0613"))
+        .AddDeployment(new AzureOpenAIDeployment(textEmbeddingName, "text-embedding-ada-002", "2"));
+}
 
 catalogApi
-    .WithReference(openAi)
-    .WithEnvironment("AI__OPENAI__CHATMODEL", chatModelName);
+    .WithReference(openAI)
+    .WithEnvironment("AI__OPENAI__EMBEDDINGNAME", textEmbeddingName);
 
 webApp
-    .WithReference(openAi)
-    .WithEnvironment("AI__OPENAI__EMBEDDINGNAME", textEmbeddingName);
+    .WithReference(openAI)
+    .WithEnvironment("AI__OPENAI__CHATMODEL", chatModelName);
 
 #endif
 
