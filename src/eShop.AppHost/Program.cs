@@ -65,44 +65,45 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", "https")
     .WithReference(rabbitMq)
     .WithEnvironment("IdentityUrl", idpHttps);
 
-#if USE_AZURE_OPENAI
-
-const string openAIName = "openai";
-
-// to configure an existing OpenAI connection, set it in the ApHost's user secrets
-IResourceBuilder<IResourceWithConnectionString> openAI;
-string textEmbeddingName = "text-embedding-ada-002";
-string chatModelName = "gpt-35-turbo-16k";
-if (builder.Configuration.GetConnectionString(openAIName) is not null)
+// set to true if you want to use OpenAI
+bool useOpenAI = false;
+if (useOpenAI)
 {
-    openAI = builder.AddConnectionString(openAIName);
-    if (builder.Configuration["AI:OpenAI:EmbeddingName"] is string embedName)
+    const string openAIName = "openai";
+    const string textEmbeddingName = "text-embedding-ada-002";
+    const string chatModelName = "gpt-35-turbo-16k";
+
+    // to use an existing OpenAI resource, add the following to the AppHost user secrets:
+    // "ConnectionStrings": {
+    //   "openai": "Key=<API Key>" (to use https://api.openai.com/)
+    //     -or-
+    //   "openai": "Endpoint=https://<name>.openai.azure.com/" (to use Azure OpenAI)
+    // }
+    IResourceBuilder<IResourceWithConnectionString> openAI;
+    if (builder.Configuration.GetConnectionString(openAIName) is not null)
     {
-        textEmbeddingName = embedName;
+        openAI = builder.AddConnectionString(openAIName);
     }
-    if (builder.Configuration["AI:OpenAI:ChatModel"] is string chatName)
+    else
     {
-        chatModelName = chatName;
+        // to use Azure provisioning, add the following to the AppHost user secrets:
+        // "Azure": {
+        //   "SubscriptionId": "<your subscription ID>"
+        //   "Location": "<location>"
+        // }
+        openAI = builder.AddAzureOpenAI(openAIName)
+            .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-35-turbo", "0613"))
+            .AddDeployment(new AzureOpenAIDeployment(textEmbeddingName, "text-embedding-ada-002", "2"));
     }
+
+    catalogApi
+        .WithReference(openAI)
+        .WithEnvironment("AI__OPENAI__EMBEDDINGNAME", textEmbeddingName);
+
+    webApp
+        .WithReference(openAI)
+        .WithEnvironment("AI__OPENAI__CHATMODEL", chatModelName); ;
 }
-else
-{
-    builder.AddAzureProvisioning();
-
-    openAI = builder.AddAzureOpenAI(openAIName)
-        .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-35-turbo", "0613"))
-        .AddDeployment(new AzureOpenAIDeployment(textEmbeddingName, "text-embedding-ada-002", "2"));
-}
-
-catalogApi
-    .WithReference(openAI)
-    .WithEnvironment("AI__OPENAI__EMBEDDINGNAME", textEmbeddingName);
-
-webApp
-    .WithReference(openAI)
-    .WithEnvironment("AI__OPENAI__CHATMODEL", chatModelName);
-
-#endif
 
 // Wire up the callback urls (self referencing)
 webApp.WithEnvironment("CallBackUrl", webApp.GetEndpoint("https"));
