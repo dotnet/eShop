@@ -10,8 +10,6 @@ class CatalogItemEntityTypeConfiguration
         builder.Property(ci => ci.Name)
             .HasMaxLength(50);
 
-        builder.Ignore(ci => ci.PictureUri);
-
         builder.Property(ci => ci.Embedding)
             .HasColumnType("vector(1536)");
 
