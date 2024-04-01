@@ -12,6 +12,8 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.SemanticKernel.TextGeneration;
+using eShop.WebApp.Services.OrderStatus.IntegrationEvents;
+using eShop.Basket.API.Grpc;
 
 public static class Extensions
 {
@@ -101,6 +103,7 @@ public static class Extensions
 
         if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("openai")) && !string.IsNullOrWhiteSpace(deploymentName))
         {
+            builder.Services.AddKernel();
             builder.AddAzureOpenAI("openai");
             builder.Services.AddAzureOpenAIChatCompletion(deploymentName);
         }

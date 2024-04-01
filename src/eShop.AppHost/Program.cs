@@ -4,14 +4,11 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 builder.AddForwardedHeaders();
 
-var redis = builder.AddRedisContainer("redis");
-var rabbitMq = builder.AddRabbitMQContainer("eventbus");
-var postgres = builder.AddPostgresContainer("postgres")
-    .WithAnnotation(new ContainerImageAnnotation
-    {
-        Image = "ankane/pgvector",
-        Tag = "latest"
-    });
+var redis = builder.AddRedis("redis");
+var rabbitMq = builder.AddRabbitMQ("eventbus");
+var postgres = builder.AddPostgres("postgres")
+    .WithImage("ankane/pgvector")
+    .WithImageTag("latest");
 
 var catalogDb = postgres.AddDatabase("catalogdb");
 var identityDb = postgres.AddDatabase("identitydb");
@@ -23,9 +20,9 @@ var openAi = builder.AddAzureOpenAI("openai");
 // Services
 var identityApi = builder.AddProject<Projects.Identity_API>("identity-api")
     .WithReference(identityDb)
-    .WithLaunchProfile("https");
+    .WithLaunchProfile("http");
 
-var idpHttps = identityApi.GetEndpoint("https");
+var idpHttps = identityApi.GetEndpoint("http");
 
 var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
     .WithReference(redis)
@@ -71,17 +68,17 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp")
     .WithReference(rabbitMq)
     .WithReference(openAi, optional: true)
     .WithEnvironment("IdentityUrl", idpHttps)
-    .WithLaunchProfile("https");
+    .WithLaunchProfile("http");
 
 // Wire up the callback urls (self referencing)
-webApp.WithEnvironment("CallBackUrl", webApp.GetEndpoint("https"));
-webhooksClient.WithEnvironment("CallBackUrl", webhooksClient.GetEndpoint("https"));
+webApp.WithEnvironment("CallBackUrl", webApp.GetEndpoint("http"));
+webhooksClient.WithEnvironment("CallBackUrl", webhooksClient.GetEndpoint("http"));
 
 // Identity has a reference to all of the apps for callback urls, this is a cyclic reference
 identityApi.WithEnvironment("BasketApiClient", basketApi.GetEndpoint("http"))
            .WithEnvironment("OrderingApiClient", orderingApi.GetEndpoint("http"))
            .WithEnvironment("WebhooksApiClient", webHooksApi.GetEndpoint("http"))
-           .WithEnvironment("WebhooksWebClient", webhooksClient.GetEndpoint("https"))
-           .WithEnvironment("WebAppClient", webApp.GetEndpoint("https"));
+           .WithEnvironment("WebhooksWebClient", webhooksClient.GetEndpoint("http"))
+           .WithEnvironment("WebAppClient", webApp.GetEndpoint("http"));
 
 builder.Build().Run();
