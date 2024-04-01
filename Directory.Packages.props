@@ -2,12 +2,12 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    <AspnetVersion>8.0.2</AspnetVersion>
-    <MicrosoftExtensionsVersion>8.2.0</MicrosoftExtensionsVersion>
-    <EfVersion>8.0.2</EfVersion>
-    <AspireVersion>8.0.0-preview.3.24105.21</AspireVersion>
-    <GrpcVersion>2.61.0</GrpcVersion>
-    <DuendeVersion>7.0.1</DuendeVersion>
+    <AspnetVersion>8.0.3</AspnetVersion>
+    <MicrosoftExtensionsVersion>8.3.0</MicrosoftExtensionsVersion>
+    <EfVersion>8.0.3</EfVersion>
+    <AspireVersion>8.0.0-preview.4.24156.9</AspireVersion>
+    <GrpcVersion>2.62.0</GrpcVersion>
+    <DuendeVersion>7.0.3</DuendeVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Version together with Aspire -->
@@ -36,17 +36,17 @@
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EfVersion)" />
     <PackageVersion Include="NSubstitute" Version="5.1.0" />
-    <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.15" />
+    <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
     <PackageVersion Include="Pgvector" Version="0.2.0" />
     <PackageVersion Include="Pgvector.EntityFrameworkCore" Version="0.2.0" />
     <!-- Version together with runtime -->
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
     <!-- Xabaril packages -->
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="8.0.0" />
     <!-- AI -->
-    <PackageVersion Include="Microsoft.SemanticKernel" Version="1.4.0" />
+    <PackageVersion Include="Microsoft.SemanticKernel" Version="1.6.3" />
     <!-- Open Telemetry -->
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.7.0" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.7.0" />
@@ -70,11 +70,11 @@
     <PackageVersion Include="Grpc.Tools" Version="$(GrpcVersion)" PrivateAssets="All" />
     <!-- Miscellaneous -->
     <PackageVersion Include="Automapper" Version="13.0.1" />
-    <PackageVersion Include="Dapper" Version="2.1.28" />
+    <PackageVersion Include="Dapper" Version="2.1.35" />
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageVersion Include="MediatR" Version="12.2.0" />
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
-    <PackageVersion Include="Polly" Version="8.3.0" />
+    <PackageVersion Include="Polly" Version="8.3.1" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
     <PackageVersion Include="xunit" Version="2.6.6" />
