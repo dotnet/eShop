@@ -1,0 +1,42 @@
+name: eShop Pull Request Validation - .NET MAUI
+
+on:
+  pull_request:
+    branches:
+      - '**'
+    paths:
+      - 'src/ClientApp/**'
+      - 'test/ClientApp.UnitTests/**'
+      - '.github/workflows/pr-validation-maui.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/ClientApp/**'
+      - 'test/ClientApp.UnitTests/**'
+      - '.github/workflows/pr-validation-maui.yml'
+
+jobs:  
+  test:
+    runs-on: windows-latest    
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET (global.json)
+        uses: actions/setup-dotnet@v3
+
+      - name: Update Workloads
+        run: dotnet workload update
+
+      - name: Install Workloads
+        shell: pwsh
+        run: |
+          dotnet workload install android
+          dotnet workload install ios
+          dotnet workload install maccatalyst
+          dotnet workload install maui
+
+      - name: Build 
+        run: dotnet build src/ClientApp/ClientApp.csproj
+        
+      - name: Test
+        run: dotnet test tests/ClientApp.UnitTests/ClientApp.UnitTests.csproj
