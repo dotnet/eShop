@@ -273,7 +273,6 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
             Description = "Test catalog description 1",
             Price = 11000.08m,
             PictureFileName = null,
-            PictureUri = null,
             CatalogTypeId = 8,
             CatalogType = null,
             CatalogBrandId = 13,

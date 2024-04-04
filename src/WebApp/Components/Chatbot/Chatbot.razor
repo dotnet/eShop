@@ -6,6 +6,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager Nav
 @inject CatalogService CatalogService
+@inject IProductImageUrlProvider ProductImages
 @inject BasketState BasketState
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ILoggerFactory LoggerFactory
@@ -57,7 +58,7 @@
         if (kernel is not null)
         {
             AuthenticationState auth = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            chatState = new ChatState(CatalogService, BasketState, auth.User, Nav, kernel, LoggerFactory);
+            chatState = new ChatState(CatalogService, BasketState, auth.User, Nav, ProductImages, kernel, LoggerFactory);
         }
         else
         {

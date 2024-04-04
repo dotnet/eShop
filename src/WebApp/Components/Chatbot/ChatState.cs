@@ -17,14 +17,16 @@ public class ChatState
     private readonly NavigationManager _navigationManager;
     private readonly ILogger _logger;
     private readonly Kernel _kernel;
+    private readonly IProductImageUrlProvider _productImages;
     private readonly OpenAIPromptExecutionSettings _aiSettings = new() { ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions };
 
-    public ChatState(CatalogService catalogService, BasketState basketState, ClaimsPrincipal user, NavigationManager nav, Kernel kernel, ILoggerFactory loggerFactory)
+    public ChatState(CatalogService catalogService, BasketState basketState, ClaimsPrincipal user, NavigationManager nav, IProductImageUrlProvider productImages, Kernel kernel, ILoggerFactory loggerFactory)
     {
         _catalogService = catalogService;
         _basketState = basketState;
         _user = user;
         _navigationManager = nav;
+        _productImages = productImages;
         _logger = loggerFactory.CreateLogger(typeof(ChatState));
 
         if (_logger.IsEnabled(LogLevel.Debug))
@@ -105,6 +107,11 @@ public class ChatState
             try
             {
                 var results = await chatState._catalogService.GetCatalogItemsWithSemanticRelevance(0, 8, productDescription!);
+                for (int i = 0; i < results.Data.Count; i++)
+                {
+                    results.Data[i] = results.Data[i] with { PictureUrl = chatState._productImages.GetProductImageUrl(results.Data[i].Id) };
+                }
+
                 return JsonSerializer.Serialize(results);
             }
             catch (HttpRequestException e)
