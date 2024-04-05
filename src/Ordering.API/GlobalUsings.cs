@@ -1,4 +1,6 @@
-﻿global using System.Data.Common;
+﻿global using Asp.Versioning;
+global using Asp.Versioning.Conventions;
+global using System.Data.Common;
 global using Npgsql;
 global using System.Runtime.Serialization;
 global using Dapper;
