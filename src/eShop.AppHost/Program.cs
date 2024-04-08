@@ -67,7 +67,7 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", "http")
     .WithEnvironment("IdentityUrl", idpHttps);
 
 // set to true if you want to use OpenAI
-bool useOpenAI = true;
+bool useOpenAI = builder.Configuration.GetValue("EnableAI", false);
 if (useOpenAI)
 {
     const string chatAIName = "openai";
