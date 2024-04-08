@@ -8,8 +8,9 @@ builder.AddForwardedHeaders();
 var redis = builder.AddRedis("redis");
 var rabbitMq = builder.AddRabbitMQ("eventbus");
 var postgres = builder.AddPostgres("postgres")
-    .WithImage("ankane/pgvector")
-    .WithImageTag("latest");
+    .WithPgAdmin()
+    .WithImage("pgvector/pgvector")
+    .WithImageTag("pg16");
 
 var catalogDb = postgres.AddDatabase("catalogdb");
 var identityDb = postgres.AddDatabase("identitydb");
@@ -66,10 +67,11 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", "http")
     .WithEnvironment("IdentityUrl", idpHttps);
 
 // set to true if you want to use OpenAI
-bool useOpenAI = false;
+bool useOpenAI = true;
 if (useOpenAI)
 {
-    const string openAIName = "openai";
+    const string chatAIName = "openai";
+    const string embeddingAIName = "embedding";
     const string textEmbeddingName = "text-embedding-ada-002";
     const string chatModelName = "gpt-35-turbo-16k";
 
@@ -79,10 +81,13 @@ if (useOpenAI)
     //     -or-
     //   "openai": "Endpoint=https://<name>.openai.azure.com/" (to use Azure OpenAI)
     // }
-    IResourceBuilder<IResourceWithConnectionString> openAI;
-    if (builder.Configuration.GetConnectionString(openAIName) is not null)
+    IResourceBuilder<IResourceWithConnectionString> chatAI;
+    IResourceBuilder<IResourceWithConnectionString> embeddingAI;
+    if (builder.Configuration.GetConnectionString(chatAIName) is not null)
     {
-        openAI = builder.AddConnectionString(openAIName);
+        // If using connection string approach, use the same for both models
+        chatAI = builder.AddConnectionString(chatAIName);
+        embeddingAI = builder.AddConnectionString(chatAIName);
     }
     else
     {
@@ -91,17 +96,19 @@ if (useOpenAI)
         //   "SubscriptionId": "<your subscription ID>"
         //   "Location": "<location>"
         // }
-        openAI = builder.AddAzureOpenAI(openAIName)
-            .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-35-turbo", "0613"))
+        chatAI = builder.AddAzureOpenAI(chatAIName)
+            .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-35-turbo", "0613"));
+
+        embeddingAI = builder.AddAzureOpenAI(embeddingAIName)
             .AddDeployment(new AzureOpenAIDeployment(textEmbeddingName, "text-embedding-ada-002", "2"));
     }
 
     catalogApi
-        .WithReference(openAI)
+        .WithReference(embeddingAI)
         .WithEnvironment("AI__OPENAI__EMBEDDINGNAME", textEmbeddingName);
 
     webApp
-        .WithReference(openAI)
+        .WithReference(chatAI)
         .WithEnvironment("AI__OPENAI__CHATMODEL", chatModelName); ;
 }
 

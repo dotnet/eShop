@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using eShop.Catalog.API.Services;
+using Microsoft.SemanticKernel.Memory;
 
 namespace eShop.Catalog.API.Infrastructure;
 
@@ -7,8 +8,11 @@ public partial class CatalogContextSeed(
     IWebHostEnvironment env,
     IOptions<CatalogOptions> settings,
     ICatalogAI catalogAI,
-    ILogger<CatalogContextSeed> logger) : IDbSeeder<CatalogContext>
+    ILogger<CatalogContextSeed> logger,
+    IMemoryStore memoryStore = null) : IDbSeeder<CatalogContext>
 {
+    private const string MemoryCollection = "catalogMemory";
+
     public async Task SeedAsync(CatalogContext context)
     {
         var useCustomizationData = settings.Value.UseCustomizationData;
@@ -52,28 +56,26 @@ public partial class CatalogContextSeed(
                 MaxStockThreshold = 200,
                 RestockThreshold = 10,
                 PictureFileName = $"{source.Id}.webp",
-                Embedding = catalogAI.IsEnabled ? new Pgvector.Vector(source.Embedding) : null,
             }));
-
             logger.LogInformation("Seeded catalog with {NumItems} items", context.CatalogItems.Count());
             await context.SaveChangesAsync();
 
+            // Create memory records for Semantic Kernel
             if (catalogAI.IsEnabled)
             {
-                bool anyChanged = false;
-                foreach (var item in context.CatalogItems)
+                var collectionExists = await memoryStore.DoesCollectionExistAsync(MemoryCollection);
+                if (!collectionExists)
                 {
-                    if (item.Embedding is null)
-                    {
-                        logger.LogInformation("Creating embedding for catalog item {ItemId} ({ItemName})", item.Id, item.Name);
-                        item.Embedding = await catalogAI.GetEmbeddingAsync(item);
-                        anyChanged = true;
-                    }
+                    await memoryStore.CreateCollectionAsync(MemoryCollection);
                 }
 
-                if (anyChanged)
+                var memoryRecords = sourceItems.Select(source => 
+                    MemoryRecord.LocalRecord(source.Id.ToString(), source.Description, source.Name, source.Embedding)
+                );
+
+                await foreach (var id in memoryStore.UpsertBatchAsync(MemoryCollection, memoryRecords))
                 {
-                    await context.SaveChangesAsync();
+                    logger.LogInformation("Created memory record for Catalog item with Id {Id}", id);
                 }
             }
         }
