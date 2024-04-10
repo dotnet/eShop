@@ -17,10 +17,11 @@ var orderDb = postgres.AddDatabase("orderingdb");
 var webhooksDb = postgres.AddDatabase("webhooksdb");
 
 // Services
-var identityApi = builder.AddProject<Projects.Identity_API>("identity-api", "http")
+var identityApi = builder.AddProject<Projects.Identity_API>("identity-api", "https")
+    .WithExternalHttpEndpoints()
     .WithReference(identityDb);
 
-var idpHttps = identityApi.GetEndpoint("http");
+var idpHttps = identityApi.GetEndpoint("https");
 
 var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
     .WithReference(redis)
@@ -58,7 +59,8 @@ var webhooksClient = builder.AddProject<Projects.WebhookClient>("webhooksclient"
     .WithReference(webHooksApi)
     .WithEnvironment("IdentityUrl", idpHttps);
 
-var webApp = builder.AddProject<Projects.WebApp>("webapp", "http")
+var webApp = builder.AddProject<Projects.WebApp>("webapp", "https")
+    .WithExternalHttpEndpoints()
     .WithReference(basketApi)
     .WithReference(catalogApi)
     .WithReference(orderingApi)
@@ -106,14 +108,14 @@ if (useOpenAI)
 }
 
 // Wire up the callback urls (self referencing)
-webApp.WithEnvironment("CallBackUrl", webApp.GetEndpoint("http"));
-webhooksClient.WithEnvironment("CallBackUrl", webhooksClient.GetEndpoint("http"));
+webApp.WithEnvironment("CallBackUrl", webApp.GetEndpoint("https"));
+webhooksClient.WithEnvironment("CallBackUrl", webhooksClient.GetEndpoint("https"));
 
 // Identity has a reference to all of the apps for callback urls, this is a cyclic reference
 identityApi.WithEnvironment("BasketApiClient", basketApi.GetEndpoint("http"))
            .WithEnvironment("OrderingApiClient", orderingApi.GetEndpoint("http"))
            .WithEnvironment("WebhooksApiClient", webHooksApi.GetEndpoint("http"))
-           .WithEnvironment("WebhooksWebClient", webhooksClient.GetEndpoint("http"))
-           .WithEnvironment("WebAppClient", webApp.GetEndpoint("http"));
+           .WithEnvironment("WebhooksWebClient", webhooksClient.GetEndpoint("https"))
+           .WithEnvironment("WebAppClient", webApp.GetEndpoint("https"));
 
 builder.Build().Run();
