@@ -265,7 +265,6 @@ public static class CatalogApi
             Description = product.Description,
             Name = product.Name,
             PictureFileName = product.PictureFileName,
-            PictureUri = product.PictureUri,
             Price = product.Price,
             AvailableStock = product.AvailableStock,
             RestockThreshold = product.RestockThreshold,
