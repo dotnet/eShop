@@ -30,7 +30,7 @@ public sealed class OrderingApiFixture : WebApplicationFactory<Program>, IAsyncL
             config.AddInMemoryCollection(new Dictionary<string, string>
             {
                 { $"ConnectionStrings:{Postgres.Resource.Name}", _postgresConnectionString },
-                { "Identity:Url", IdentityApi.Resource.Annotations.OfType<EndpointAnnotation>().Where(x => x.Name == "https").Single().AllocatedEndpoint.UriString }
+                { "Identity:Url", IdentityApi.Resource.Annotations.OfType<EndpointAnnotation>().First().AllocatedEndpoint.UriString }
             });
         });
         builder.ConfigureServices(services =>
