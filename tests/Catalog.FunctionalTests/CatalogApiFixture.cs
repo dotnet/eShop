@@ -8,6 +8,7 @@ public sealed class CatalogApiFixture : WebApplicationFactory<Program>, IAsyncLi
     private readonly IHost _app;
 
     public IResourceBuilder<PostgresServerResource> Postgres { get; private set; }
+    private string _postgresConnectionString;
 
     public CatalogApiFixture()
     {
@@ -25,7 +26,7 @@ public sealed class CatalogApiFixture : WebApplicationFactory<Program>, IAsyncLi
         {
             config.AddInMemoryCollection(new Dictionary<string, string>
             {
-                { $"ConnectionStrings:{Postgres.Resource.Name}", Postgres.Resource.GetConnectionString() },
+                { $"ConnectionStrings:{Postgres.Resource.Name}", _postgresConnectionString },
                 });
         });
         return base.CreateHost(builder);
@@ -48,5 +49,6 @@ public sealed class CatalogApiFixture : WebApplicationFactory<Program>, IAsyncLi
     public async Task InitializeAsync()
     {
         await _app.StartAsync();
+        _postgresConnectionString = await Postgres.Resource.GetConnectionStringAsync();
     }
 }
