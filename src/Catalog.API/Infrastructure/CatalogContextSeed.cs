@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using eShop.Catalog.API.Services;
+using Pgvector;
 
 namespace eShop.Catalog.API.Infrastructure;
 
@@ -40,7 +41,7 @@ public partial class CatalogContextSeed(
             var brandIdsByName = await context.CatalogBrands.ToDictionaryAsync(x => x.Brand, x => x.Id);
             var typeIdsByName = await context.CatalogTypes.ToDictionaryAsync(x => x.Type, x => x.Id);
 
-            await context.CatalogItems.AddRangeAsync(sourceItems.Select(source => new CatalogItem
+            var catalogItems = sourceItems.Select(source => new CatalogItem
             {
                 Id = source.Id,
                 Name = source.Name,
@@ -52,30 +53,21 @@ public partial class CatalogContextSeed(
                 MaxStockThreshold = 200,
                 RestockThreshold = 10,
                 PictureFileName = $"{source.Id}.webp",
-                Embedding = catalogAI.IsEnabled ? new Pgvector.Vector(source.Embedding) : null,
-            }));
-
-            logger.LogInformation("Seeded catalog with {NumItems} items", context.CatalogItems.Count());
-            await context.SaveChangesAsync();
+            }).ToArray();
 
             if (catalogAI.IsEnabled)
             {
-                bool anyChanged = false;
-                foreach (var item in context.CatalogItems)
+                logger.LogInformation("Generating {NumItems} embeddings", catalogItems.Length);
+                IReadOnlyList<Vector> embeddings = await catalogAI.GetEmbeddingsAsync(catalogItems);
+                for (int i = 0; i < catalogItems.Length; i++)
                 {
-                    if (item.Embedding is null)
-                    {
-                        logger.LogInformation("Creating embedding for catalog item {ItemId} ({ItemName})", item.Id, item.Name);
-                        item.Embedding = await catalogAI.GetEmbeddingAsync(item);
-                        anyChanged = true;
-                    }
-                }
-
-                if (anyChanged)
-                {
-                    await context.SaveChangesAsync();
+                    catalogItems[i].Embedding = embeddings[i];
                 }
             }
+
+            await context.CatalogItems.AddRangeAsync(catalogItems);
+            logger.LogInformation("Seeded catalog with {NumItems} items", context.CatalogItems.Count());
+            await context.SaveChangesAsync();
         }
     }
 
@@ -87,6 +79,5 @@ public partial class CatalogContextSeed(
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
-        public float[] Embedding { get; set; }
     }
 }
