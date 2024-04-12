@@ -51,7 +51,10 @@
                 <ColumnDefinition Width=".5*" />
             </Grid.ColumnDefinitions>
             <!--  IMAGE  -->
-            <Border Grid.Row="0" StrokeShape="RoundedRectangle 4">
+            <Border Grid.Row="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="4" />
+                </Border.StrokeShape>
                 <Image
                     Aspect="AspectFit"
                     Source="{Binding PictureUri, Mode=OneTime, TargetNullValue='logo_header.png'}" />
