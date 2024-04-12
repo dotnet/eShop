@@ -1,6 +1,5 @@
 ﻿using eShop.AppHost;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
