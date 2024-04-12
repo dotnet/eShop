@@ -4,6 +4,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:eShop.ClientApp.Controls"
+    xmlns:models="clr-namespace:eShop.ClientApp.Models.Catalog"
+    x:DataType="models:CatalogItem"
     HeightRequest="380">
     <ContentView.Resources>
         <ResourceDictionary>
@@ -41,7 +43,7 @@
     <ContentView.Content>
         <Grid Margin="0" Padding="10">
             <Grid.RowDefinitions>
-                <RowDefinition Height="250" />
+                <RowDefinition Height="150" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
@@ -49,10 +51,14 @@
                 <ColumnDefinition Width=".5*" />
             </Grid.ColumnDefinitions>
             <!--  IMAGE  -->
-            <Image
-                Grid.Row="0"
-                Aspect="AspectFit"
-                Source="{Binding PictureUri, Mode=OneTime, TargetNullValue='logo_header.png'}" />
+            <Border Grid.Row="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="4" />
+                </Border.StrokeShape>
+                <Image
+                    Aspect="AspectFit"
+                    Source="{Binding PictureUri, Mode=OneTime, TargetNullValue='logo_header.png'}" />
+            </Border>
 
             <Grid
                 Grid.Row="0"
@@ -65,12 +71,14 @@
             <Label
                 Grid.Row="1"
                 Style="{StaticResource ProductNameStyle}"
-                Text="{Binding Name, Mode=OneTime, Converter={StaticResource ToUpperConverter}}" />
+                Text="{Binding Name, Mode=OneTime, Converter={StaticResource ToUpperConverter}}"
+                VerticalTextAlignment="Start" />
             <!--  PRICE  -->
             <Label
                 Grid.Row="2"
                 Style="{StaticResource ProductPriceStyle}"
-                Text="{Binding Price, Mode=OneTime, StringFormat='${0:N}'}" />
+                Text="{Binding Price, Mode=OneTime, StringFormat='${0:N}'}"
+                VerticalTextAlignment="Start" />
         </Grid>
     </ContentView.Content>
 </ContentView>
