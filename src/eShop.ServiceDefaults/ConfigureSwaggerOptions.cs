@@ -61,7 +61,7 @@ internal sealed class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOpti
         {
             if (text.Length > 0)
             {
-                if (text[^1] == '.')
+                if (text[^1] != '.')
                 {
                     text.Append('.');
                 }
