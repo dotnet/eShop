@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -90,16 +91,29 @@ internal sealed class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOpti
             {
                 text.AppendLine();
 
+                var rendered = false;
+
                 foreach (var link in policy.Links.Where(l => l.Type == "text/html"))
                 {
-                    text.AppendLine();
-
-                    if (link.Title.HasValue)
+                    if (!rendered)
                     {
-                        text.Append(link.Title.Value).Append(": ");
+                        text.Append("<h4>Links</h4><ul>");
+                        rendered = true;
                     }
 
+                    text.Append("<li><a href=\"");
                     text.Append(link.LinkTarget.OriginalString);
+                    text.Append("\">");
+                    text.Append(
+                        StringSegment.IsNullOrEmpty(link.Title)
+                        ? link.LinkTarget.OriginalString
+                        : link.Title.ToString());
+                    text.Append("</a></li>");
+                }
+
+                if (rendered)
+                {
+                    text.Append("</ul>");
                 }
             }
         }
