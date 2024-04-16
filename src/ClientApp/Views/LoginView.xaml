@@ -37,7 +37,6 @@
     <!--  AUTH  -->
     <Grid
         ColumnSpacing="8"
-        IgnoreSafeArea="True"
         IsVisible="{Binding IsMock, Converter={StaticResource InverseBoolConverter}}"
         RowDefinitions="*,Auto,Auto,120"
         RowSpacing="0"
@@ -45,7 +44,7 @@
         <!--  BANNER  -->
         <ScrollView
             Grid.Column="0"
-            Grid.ColumnSpan="3"
+            Grid.ColumnSpan="0"
             Grid.Row="0"
             Grid.RowSpan="4"
             HorizontalScrollBarVisibility="Never"
@@ -58,10 +57,30 @@
                 Source="header.png"
                 x:Name="Banner" />
         </ScrollView>
+        <ContentView
+            Grid.Column="0"
+            Grid.ColumnSpan="0"
+            Grid.Row="0"
+            Grid.RowSpan="4">
+            <ContentView.Background>
+                <LinearGradientBrush 
+                    StartPoint="0,0"
+                    EndPoint="0,1">
+                    <GradientStop Color="{StaticResource LightGrayColor}"
+                                  Offset="0.0" />
+                    <GradientStop Color="Transparent"
+                                  Offset="0.1" />
+                    <GradientStop Color="Transparent"
+                                  Offset="0.66" />             
+                    <GradientStop Color="{StaticResource LightGrayColor}"
+                                  Offset="1.0" />
+                </LinearGradientBrush>
+            </ContentView.Background>
+        </ContentView>
         <Image
             Aspect="AspectFit"
             Grid.Column="0"
-            Grid.ColumnSpan="3"
+            Grid.ColumnSpan="0"
             Grid.Row="0"
             HorizontalOptions="Center"
             Source="logo_header.png"
