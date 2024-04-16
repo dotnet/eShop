@@ -14,25 +14,25 @@ public class Order
 
     public int SequenceNumber { get; set; }
 
-    [JsonPropertyName("date")]
+    [JsonPropertyName("Date")]
     public DateTime OrderDate { get; set; }
 
-    [JsonPropertyName("status")]
+    [JsonPropertyName("Status")]
     public OrderStatus OrderStatus { get; set; }
 
-    [JsonPropertyName("city")]
+    [JsonPropertyName("City")]
     public string ShippingCity { get; set; }
 
-    [JsonPropertyName("street")]
+    [JsonPropertyName("Street")]
     public string ShippingStreet { get; set; }
 
-    [JsonPropertyName("state")]
+    [JsonPropertyName("State")]
     public string ShippingState { get; set; }
 
-    [JsonPropertyName("country")]
+    [JsonPropertyName("Country")]
     public string ShippingCountry { get; set; }
 
-    [JsonPropertyName("zipCode")]
+    [JsonPropertyName("ZipCode")]
     public string ShippingZipCode { get; set; }
 
     public int CardTypeId { get; set; }
@@ -45,12 +45,12 @@ public class Order
 
     public string CardSecurityNumber { get; set; }
 
-    [JsonPropertyName("orderitems")]
+    [JsonPropertyName("Orderitems")]
     public List<OrderItem> OrderItems { get; set; }
 
-    [JsonPropertyName("total")]
+    [JsonPropertyName("Total")]
     public decimal Total { get; set; }
 
-    [JsonPropertyName("ordernumber")]
+    [JsonPropertyName("Ordernumber")]
     public int OrderNumber { get; set; }
 }
