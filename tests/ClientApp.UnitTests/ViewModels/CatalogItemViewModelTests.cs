@@ -39,7 +39,7 @@ public class CatalogItemViewModelTests
     {
         bool messageReceived = false;
 
-        var CatalogItemViewModel = new CatalogItemViewModel(_appEnvironmentService, _navigationService);
+        var catalogItemViewModel = new CatalogItemViewModel(_appEnvironmentService, _navigationService);
 
         WeakReferenceMessenger.Default
             .Register<Messages.AddProductMessage>(
@@ -49,7 +49,7 @@ public class CatalogItemViewModelTests
                     messageReceived = true;
                 });
 
-        await CatalogItemViewModel.AddCatalogItemCommand
+        await catalogItemViewModel.AddCatalogItemCommand
             .ExecuteUntilComplete(
                 new CatalogItem
                 {
