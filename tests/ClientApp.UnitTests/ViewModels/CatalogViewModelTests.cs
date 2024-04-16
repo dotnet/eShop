@@ -1,8 +1,7 @@
-using CommunityToolkit.Mvvm.Messaging;
-using eShop.ClientApp.Models.Catalog;
+using ClientApp.UnitTests.Mocks;
 using eShop.ClientApp.Services.Identity;
 
-namespace eShop.ClientApp.UnitTests;
+namespace ClientApp.UnitTests.ViewModels;
 
 public class CatalogViewModelTests
 {

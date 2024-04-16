@@ -5,5 +5,4 @@ global using eShop.ClientApp.Services.Basket;
 global using eShop.ClientApp.Services.Catalog;
 global using eShop.ClientApp.Services.Order;
 global using eShop.ClientApp.Services.Settings;
-global using eShop.ClientApp.UnitTests.Mocks;
 global using eShop.ClientApp.ViewModels;

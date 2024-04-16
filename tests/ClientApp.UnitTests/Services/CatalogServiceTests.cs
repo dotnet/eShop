@@ -1,4 +1,4 @@
-﻿namespace eShop.ClientApp.UnitTests;
+﻿namespace ClientApp.UnitTests.Services;
 
 public class CatalogServiceTests
 {

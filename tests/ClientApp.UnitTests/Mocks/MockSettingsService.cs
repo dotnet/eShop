@@ -1,6 +1,6 @@
 ﻿using eShop.ClientApp.Models.Token;
 
-namespace eShop.ClientApp.UnitTests.Mocks;
+namespace ClientApp.UnitTests.Mocks;
 
 public class MockSettingsService : ISettingsService
 {

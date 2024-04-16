@@ -1,8 +1,10 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+﻿using ClientApp.UnitTests.Mocks;
+using CommunityToolkit.Mvvm.Messaging;
+using eShop.ClientApp.Messages;
 using eShop.ClientApp.Models.Catalog;
 using eShop.ClientApp.Services.Identity;
 
-namespace eShop.ClientApp.UnitTests;
+namespace ClientApp.UnitTests.ViewModels;
 
 public class CatalogItemViewModelTests
 {
@@ -12,10 +14,10 @@ public class CatalogItemViewModelTests
     public CatalogItemViewModelTests()
     {
         _navigationService = new MockNavigationService();
-        var mockBasketService = new BasketMockService();
         var mockCatalogService = new CatalogMockService();
         var mockOrderService = new OrderMockService();
         var mockIdentityService = new IdentityMockService();
+        var mockBasketService = new BasketMockService();
 
         _appEnvironmentService =
             new AppEnvironmentService(
@@ -41,22 +43,17 @@ public class CatalogItemViewModelTests
 
         var catalogItemViewModel = new CatalogItemViewModel(_appEnvironmentService, _navigationService);
 
+        catalogItemViewModel.CatalogItem = new CatalogItem {Id = 123, Name = "test", Price = 1.23m,};
+        
         WeakReferenceMessenger.Default
-            .Register<Messages.AddProductMessage>(
+            .Register<CatalogItemViewModelTests, AddProductMessage>(
                 this,
-                (r, m) =>
+                (_, message) =>
                 {
                     messageReceived = true;
                 });
-
-        await catalogItemViewModel.AddCatalogItemCommand
-            .ExecuteUntilComplete(
-                new CatalogItem
-                {
-                    Id = 123,
-                    Name = "test",
-                    Price = 1.23m,
-                });
+        
+        await catalogItemViewModel.AddCatalogItemCommand.ExecuteUntilComplete();
 
         Assert.True(messageReceived);
     }

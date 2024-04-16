@@ -1,6 +1,7 @@
-﻿using eShop.ClientApp.Services.Identity;
+﻿using ClientApp.UnitTests.Mocks;
+using eShop.ClientApp.Services.Identity;
 
-namespace eShop.ClientApp.UnitTests;
+namespace ClientApp.UnitTests.ViewModels;
 
 public class OrderViewModelTests
 {
