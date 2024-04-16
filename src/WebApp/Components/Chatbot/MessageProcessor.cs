@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace eShop.WebApp.Chatbot;
 
-public static class MessageProcessor
+public static partial class MessageProcessor
 {
     public static MarkupString AllowImages(string message)
     {
@@ -17,7 +17,7 @@ public static class MessageProcessor
         var prevEnd = 0;
         message = message.Replace("&lt;", "<").Replace("&gt;", ">");
 
-        foreach (Match match in Regex.Matches(message, @"\!?\[([^\]]+)\]\s*\((http[^\)]+)\)"))
+        foreach (Match match in FindMarkdownImages().Matches(message))
         {
             var contentToHere = message.Substring(prevEnd, match.Index - prevEnd);
             result.Append(HtmlEncoder.Default.Encode(contentToHere));
@@ -29,4 +29,7 @@ public static class MessageProcessor
 
         return new MarkupString(result.ToString());
     }
+
+    [GeneratedRegex(@"\!?\[([^\]]+)\]\s*\(([^\)]+)\)")]
+    private static partial Regex FindMarkdownImages();
 }

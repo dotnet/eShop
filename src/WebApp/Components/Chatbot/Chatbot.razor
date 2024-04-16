@@ -6,6 +6,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager Nav
 @inject CatalogService CatalogService
+@inject IProductImageUrlProvider ProductImages
 @inject BasketState BasketState
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ILoggerFactory LoggerFactory
@@ -27,7 +28,7 @@
         }
         else if (missingConfiguration)
         {
-            <p class="message message-assistant"><strong>The chatbot is missing required configuration.</strong> Please edit appsettings.json in the WebApp project. You'll need an API key to enable AI features.</p>
+            <p class="message message-assistant"><strong>The chatbot is missing required configuration.</strong> Please set 'useOpenAI = true' in eShop.AppHost/Program.cs. You'll need an API key or an Azure Subscription to enable AI features.</p>
         }
 
         @if (thinking)
@@ -57,7 +58,7 @@
         if (kernel is not null)
         {
             AuthenticationState auth = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            chatState = new ChatState(CatalogService, BasketState, auth.User, Nav, kernel, LoggerFactory);
+            chatState = new ChatState(CatalogService, BasketState, auth.User, Nav, ProductImages, kernel, LoggerFactory);
         }
         else
         {
