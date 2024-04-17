@@ -1,4 +1,4 @@
-using CommunityToolkit.Maui;
+﻿using CommunityToolkit.Maui;
 using eShop.ClientApp.Services;
 using eShop.ClientApp.Services.AppEnvironment;
 using eShop.ClientApp.Services.Basket;
@@ -48,7 +48,9 @@ public static class MauiProgram
                         .AddAppAction(AppActions.ViewProfileAction)
                         .OnAppAction(App.HandleAppActions);
                 })
+#if !WINDOWS
             .UseMauiMaps()
+#endif
             .RegisterAppServices()
             .RegisterViewModels()
             .RegisterViews()
