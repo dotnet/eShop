@@ -1,4 +1,4 @@
-﻿namespace eShop.Basket.API.Model;
+﻿namespace eShop.Basket.API.Models;
 
 public class CustomerBasket
 {
