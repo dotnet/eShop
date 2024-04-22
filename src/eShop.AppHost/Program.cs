@@ -57,7 +57,7 @@ builder.AddProject<Projects.Mobile_Bff_Shopping>("mobile-bff")
     .WithReference(identityApi);
 
 // Apps
-var webhooksClient = builder.AddProject<Projects.WebhookClient>("webhooksclient")
+var webhooksClient = builder.AddProject<Projects.WebhookClient>("webhooksclient", launchProfileName)
     .WithReference(webHooksApi)
     .WithEnvironment("IdentityUrl", identityEndpoint);
 
