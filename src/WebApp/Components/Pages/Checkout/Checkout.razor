@@ -114,10 +114,8 @@
 
     protected override void OnInitialized()
     {
-        if (Info is null)
-        {
-            PopulateFormWithDefaultInfo();
-        }
+        //Always creating the fake payment object
+        PopulateFormWithDefaultInfo();
 
         editContext = new EditContext(Info!);
         extraMessages = new ValidationMessageStore(editContext);
