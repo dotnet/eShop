@@ -3,12 +3,19 @@ using System.Net.Http.Headers;
 using eShop.ClientApp.Exceptions;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace eShop.ClientApp.Services.RequestProvider;
 
 public class RequestProvider : IRequestProvider
 {
-
+    private readonly JsonSerializerOptions _jsonSerializerContext = 
+        new()
+        {
+            PropertyNameCaseInsensitive = true,
+            NumberHandling = JsonNumberHandling.AllowReadingFromString,
+        };
+    
     private readonly Lazy<HttpClient> _httpClient =
         new(() =>
             {
@@ -21,49 +28,63 @@ public class RequestProvider : IRequestProvider
     public async Task<TResult> GetAsync<TResult>(string uri, string token = "")
     {
         HttpClient httpClient = GetOrCreateHttpClient(token);
-        HttpResponseMessage response = await httpClient.GetAsync(uri).ConfigureAwait(false);
+        using HttpResponseMessage response = await httpClient.GetAsync(uri).ConfigureAwait(false);
 
-        await RequestProvider.HandleResponse(response).ConfigureAwait(false);
+        await HandleResponse(response).ConfigureAwait(false);
 
-        TResult result = await response.Content.ReadFromJsonAsync<TResult>();
+        TResult result = await response.Content.ReadFromJsonAsync<TResult>(_jsonSerializerContext).ConfigureAwait(false);
 
         return result;
     }
 
-    public async Task<TResult> PostAsync<TResult>(string uri, TResult data, string token = "", string header = "")
+    public async Task<TResult> PostAsync<TRequest, TResult>(string uri, TRequest data, string token = "", string header = "")
     {
         HttpClient httpClient = GetOrCreateHttpClient(token);
 
         if (!string.IsNullOrEmpty(header))
         {
-            RequestProvider.AddHeaderParameter(httpClient, header);
+            AddHeaderParameter(httpClient, header);
         }
+        
+        using HttpResponseMessage response = await httpClient.PostAsJsonAsync(uri, data).ConfigureAwait(false);
 
-        var content = new StringContent(JsonSerializer.Serialize(data));
-        content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-        HttpResponseMessage response = await httpClient.PostAsync(uri, content).ConfigureAwait(false);
-
-        await RequestProvider.HandleResponse(response).ConfigureAwait(false);
-        TResult result = await response.Content.ReadFromJsonAsync<TResult>();
+        await HandleResponse(response).ConfigureAwait(false);
+        TResult result = await response.Content.ReadFromJsonAsync<TResult>(_jsonSerializerContext).ConfigureAwait(false);
 
         return result;
     }
 
+    public async Task<bool> PostAsync<TRequest>(string uri, TRequest data, string token = "", string header = "")
+    {
+        HttpClient httpClient = GetOrCreateHttpClient(token);
+
+        if (!string.IsNullOrEmpty(header))
+        {
+            AddHeaderParameter(httpClient, header);
+        }
+        
+        using HttpResponseMessage response = await httpClient.PostAsJsonAsync(uri, data).ConfigureAwait(false);
+
+        await HandleResponse(response).ConfigureAwait(false);
+
+        return response.IsSuccessStatusCode;
+    }
+    
     public async Task<TResult> PostAsync<TResult>(string uri, string data, string clientId, string clientSecret)
     {
         HttpClient httpClient = GetOrCreateHttpClient(string.Empty);
 
         if (!string.IsNullOrWhiteSpace(clientId) && !string.IsNullOrWhiteSpace(clientSecret))
         {
-            RequestProvider.AddBasicAuthenticationHeader(httpClient, clientId, clientSecret);
+            AddBasicAuthenticationHeader(httpClient, clientId, clientSecret);
         }
 
-        var content = new StringContent(data);
+        using var content = new StringContent(data);
         content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
-        HttpResponseMessage response = await httpClient.PostAsync(uri, content).ConfigureAwait(false);
+        using HttpResponseMessage response = await httpClient.PostAsync(uri, content).ConfigureAwait(false);
 
-        await RequestProvider.HandleResponse(response).ConfigureAwait(false);
-        TResult result = await response.Content.ReadFromJsonAsync<TResult>();
+        await HandleResponse(response).ConfigureAwait(false);
+        TResult result = await response.Content.ReadFromJsonAsync<TResult>(_jsonSerializerContext).ConfigureAwait(false);
 
         return result;
     }
@@ -74,15 +95,13 @@ public class RequestProvider : IRequestProvider
 
         if (!string.IsNullOrEmpty(header))
         {
-            RequestProvider.AddHeaderParameter(httpClient, header);
+            AddHeaderParameter(httpClient, header);
         }
+        
+        using HttpResponseMessage response = await httpClient.PutAsJsonAsync(uri, data).ConfigureAwait(false);
 
-        var content = new StringContent(JsonSerializer.Serialize(data));
-        content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-        HttpResponseMessage response = await httpClient.PutAsync(uri, content).ConfigureAwait(false);
-
-        await RequestProvider.HandleResponse(response).ConfigureAwait(false);
-        TResult result = await response.Content.ReadFromJsonAsync<TResult>();
+        await HandleResponse(response).ConfigureAwait(false);
+        TResult result = await response.Content.ReadFromJsonAsync<TResult>(_jsonSerializerContext).ConfigureAwait(false);
 
         return result;
     }
@@ -133,8 +152,7 @@ public class RequestProvider : IRequestProvider
         {
             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            if (response.StatusCode == HttpStatusCode.Forbidden ||
-                    response.StatusCode == HttpStatusCode.Unauthorized)
+            if (response.StatusCode == HttpStatusCode.Forbidden || response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 throw new ServiceAuthenticationException(content);
             }

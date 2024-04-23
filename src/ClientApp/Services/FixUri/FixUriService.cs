@@ -27,20 +27,11 @@ public class FixUriService : IFixUriService
 
         try
         {
-            if (!_settingsService.UseMocks && _settingsService.IdentityEndpointBase != GlobalSetting.DefaultEndpoint)
+            if (!_settingsService.UseMocks && _settingsService.GatewayCatalogEndpointBase != _settingsService.DefaultEndpoint)
             {
                 foreach (var catalogItem in catalogItems)
                 {
-                    MatchCollection serverResult = IpRegex.Matches(catalogItem.PictureUri);
-                    MatchCollection localResult = IpRegex.Matches(_settingsService.IdentityEndpointBase);
-
-                    if (serverResult.Count != -1 && localResult.Count != -1)
-                    {
-                        var serviceIp = serverResult[0].Value;
-                        var localIp = localResult[0].Value;
-
-                        catalogItem.PictureUri = catalogItem.PictureUri.Replace(serviceIp, localIp);
-                    }
+                    catalogItem.PictureUri = Path.Combine(_settingsService.GatewayCatalogEndpointBase, $"api/v1/catalog/items/{catalogItem.Id}/pic");
                 }
             }
         }
@@ -59,7 +50,7 @@ public class FixUriService : IFixUriService
 
         try
         {
-            if (!_settingsService.UseMocks && _settingsService.IdentityEndpointBase != GlobalSetting.DefaultEndpoint)
+            if (!_settingsService.UseMocks && _settingsService.IdentityEndpointBase != _settingsService.DefaultEndpoint)
             {
                 foreach (var basketItem in basketItems)
                 {
@@ -90,7 +81,7 @@ public class FixUriService : IFixUriService
 
         try
         {
-            if (!_settingsService.UseMocks && _settingsService.IdentityEndpointBase != GlobalSetting.DefaultEndpoint)
+            if (!_settingsService.UseMocks && _settingsService.IdentityEndpointBase != _settingsService.DefaultEndpoint)
             {
                 foreach (var campaignItem in campaignItems)
                 {

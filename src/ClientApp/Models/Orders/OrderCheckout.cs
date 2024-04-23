@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using eShop.ClientApp.Models.Orders;
 
 namespace eShop.ClientApp.Models.Basket;
 
-public class BasketCheckout
+public class OrderCheckout
 {
     [Required]
     public string City { get; set; }
@@ -29,6 +30,8 @@ public class BasketCheckout
 
     public string Buyer { get; set; }
 
+    public IList<OrderItem> Items { get; set; }
+    
     [Required]
     public Guid RequestId { get; set; }
 }

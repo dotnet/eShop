@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ContentView
     x:Class="eShop.ClientApp.Views.Templates.ProductTemplate"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -6,7 +6,7 @@
     xmlns:controls="clr-namespace:eShop.ClientApp.Controls"
     xmlns:models="clr-namespace:eShop.ClientApp.Models.Catalog"
     x:DataType="models:CatalogItem"
-    HeightRequest="380">
+    HeightRequest="260">
     <ContentView.Resources>
         <ResourceDictionary>
 
@@ -30,7 +30,6 @@
                 <Setter Property="WidthRequest" Value="42" />
                 <Setter Property="HorizontalOptions" Value="Center" />
                 <Setter Property="VerticalOptions" Value="End" />
-                <Setter Property="Margin" Value="0,0,0,24" />
             </Style>
 
             <Style x:Key="AddImageStyle" TargetType="{x:Type Image}">
@@ -45,18 +44,15 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="150" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="32" />
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width=".5*" />
-            </Grid.ColumnDefinitions>
             <!--  IMAGE  -->
             <Border Grid.Row="0">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="4" />
                 </Border.StrokeShape>
                 <Image
-                    Aspect="AspectFit"
+                    Aspect="AspectFill"
                     Source="{Binding PictureUri, Mode=OneTime, TargetNullValue='logo_header.png'}" />
             </Border>
 
@@ -77,7 +73,7 @@
             <Label
                 Grid.Row="2"
                 Style="{StaticResource ProductPriceStyle}"
-                Text="{Binding Price, Mode=OneTime, StringFormat='${0:N}'}"
+                Text="{Binding Price, Mode=OneTime, StringFormat='${0:N2}'}"
                 VerticalTextAlignment="Start" />
         </Grid>
     </ContentView.Content>
