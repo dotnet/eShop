@@ -11,6 +11,8 @@ public sealed class OrderingApiFixture : WebApplicationFactory<Program>, IAsyncL
     public IResourceBuilder<PostgresServerResource> IdentityDB { get; private set; }
     public IResourceBuilder<ProjectResource> IdentityApi { get; private set; }
 
+    private string _postgresConnectionString;
+
     public OrderingApiFixture()
     {
         var options = new DistributedApplicationOptions { AssemblyName = typeof(OrderingApiFixture).Assembly.FullName, DisableDashboard = true };
@@ -27,8 +29,8 @@ public sealed class OrderingApiFixture : WebApplicationFactory<Program>, IAsyncL
         {
             config.AddInMemoryCollection(new Dictionary<string, string>
             {
-                { $"ConnectionStrings:{Postgres.Resource.Name}", Postgres.Resource.GetConnectionString() },
-                { "Identity:Url", IdentityApi.Resource.Annotations.OfType<AllocatedEndpointAnnotation>().Single().UriString }
+                { $"ConnectionStrings:{Postgres.Resource.Name}", _postgresConnectionString },
+                { "Identity:Url", IdentityApi.GetEndpoint("http").Url }
             });
         });
         builder.ConfigureServices(services =>
@@ -55,6 +57,7 @@ public sealed class OrderingApiFixture : WebApplicationFactory<Program>, IAsyncL
     public async Task InitializeAsync()
     {
         await _app.StartAsync();
+        _postgresConnectionString = await Postgres.Resource.GetConnectionStringAsync();
     }
 
     private class AutoAuthorizeStartupFilter : IStartupFilter

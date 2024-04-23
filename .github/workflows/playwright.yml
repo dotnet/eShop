@@ -37,6 +37,7 @@ jobs:
     - name: Run Playwright tests
       run: npx playwright test
       env:
+        ESHOP_USE_HTTP_ENDPOINTS: 1
         USERNAME1: bob
         PASSWORD: Pass123$
     - uses: actions/upload-artifact@v4

@@ -490,3 +490,4 @@ $RECYCLE.BIN/
 /playwright/.cache/
 /playwright/.auth/
 /user.json
+.azure
