@@ -18,16 +18,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mobile.Bff.Shopping\Mobile.Bff.Shopping.csproj" />
-    <ProjectReference Include="..\Basket.API\Basket.API.csproj" />
-    <ProjectReference Include="..\Catalog.API\Catalog.API.csproj" />
-    <ProjectReference Include="..\Identity.API\Identity.API.csproj" />
-    <ProjectReference Include="..\Ordering.API\Ordering.API.csproj" />
-    <ProjectReference Include="..\OrderProcessor\OrderProcessor.csproj" />
-    <ProjectReference Include="..\PaymentProcessor\PaymentProcessor.csproj" />
-    <ProjectReference Include="..\Webhooks.API\Webhooks.API.csproj" />
-    <ProjectReference Include="..\WebApp\WebApp.csproj" />
-    <ProjectReference Include="..\WebhookClient\WebhookClient.csproj" />
+    <ProjectReference Include="..\Mobile.Bff.Shopping\Mobile.Bff.Shopping.csproj" IsAspireProjectResource="true"/>
+    <ProjectReference Include="..\Basket.API\Basket.API.csproj" IsAspireProjectResource="true" />
+    <ProjectReference Include="..\Catalog.API\Catalog.API.csproj" IsAspireProjectResource="true" />
+    <ProjectReference Include="..\Identity.API\Identity.API.csproj" IsAspireProjectResource="true"  />
+    <ProjectReference Include="..\Ordering.API\Ordering.API.csproj" IsAspireProjectResource="true" />
+    <ProjectReference Include="..\OrderProcessor\OrderProcessor.csproj" IsAspireProjectResource="true" />
+    <ProjectReference Include="..\PaymentProcessor\PaymentProcessor.csproj" IsAspireProjectResource="true" />
+    <ProjectReference Include="..\Webhooks.API\Webhooks.API.csproj" IsAspireProjectResource="true" />
+    <ProjectReference Include="..\WebApp\WebApp.csproj" IsAspireProjectResource="true" />
+    <ProjectReference Include="..\WebhookClient\WebhookClient.csproj" IsAspireProjectResource="true" />
   </ItemGroup>
 
 </Project>
