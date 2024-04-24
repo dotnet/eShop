@@ -1,10 +1,10 @@
 ﻿@Catalog.API_HostAddress = http://localhost:5222
+@ApiVersion = 1.0
 
-
-GET {{Catalog.API_HostAddress}}/api/v1/catalog/items
+GET {{Catalog.API_HostAddress}}/api/catalog/items?api-version={{ApiVersion}}
 
 ###
 
-GET {{Catalog.API_HostAddress}}/api/v1/catalog/items/type/1/brand/2
+GET {{Catalog.API_HostAddress}}/api/catalog/items/type/1/brand/2?api-version={{ApiVersion}}
 
 ###

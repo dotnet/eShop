@@ -4,17 +4,19 @@ using Order = eShop.Ordering.API.Application.Queries.Order;
 
 public static class OrdersApi
 {
-    public static RouteGroupBuilder MapOrdersApi(this RouteGroupBuilder app)
+    public static RouteGroupBuilder MapOrdersApiV1(this IEndpointRouteBuilder app)
     {
-        app.MapPut("/cancel", CancelOrderAsync);
-        app.MapPut("/ship", ShipOrderAsync);
-        app.MapGet("{orderId:int}", GetOrderAsync);
-        app.MapGet("/", GetOrdersByUserAsync);
-        app.MapGet("/cardtypes", GetCardTypesAsync);
-        app.MapPost("/draft", CreateOrderDraftAsync);
-        app.MapPost("/", CreateOrderAsync);
+        var api = app.MapGroup("api/orders").HasApiVersion(1.0);
 
-        return app;
+        api.MapPut("/cancel", CancelOrderAsync);
+        api.MapPut("/ship", ShipOrderAsync);
+        api.MapGet("{orderId:int}", GetOrderAsync);
+        api.MapGet("/", GetOrdersByUserAsync);
+        api.MapGet("/cardtypes", GetCardTypesAsync);
+        api.MapPost("/draft", CreateOrderDraftAsync);
+        api.MapPost("/", CreateOrderAsync);
+
+        return api;
     }
 
     public static async Task<Results<Ok, BadRequest<string>, ProblemHttpResult>> CancelOrderAsync(

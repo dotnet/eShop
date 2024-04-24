@@ -6,7 +6,7 @@ namespace eShop.WebAppComponents.Services;
 
 public class CatalogService(HttpClient httpClient)
 {
-    private readonly string remoteServiceBaseUrl = "api/v1/catalog/";
+    private readonly string remoteServiceBaseUrl = "api/catalog/";
 
     public Task<CatalogItem?> GetCatalogItem(int id)
     {
