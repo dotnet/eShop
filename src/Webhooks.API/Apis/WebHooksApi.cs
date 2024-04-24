@@ -6,16 +6,18 @@ namespace Webhooks.API;
 
 public static class WebHooksApi
 {
-    public static RouteGroupBuilder MapWebhooksApi(this RouteGroupBuilder app)
+    public static RouteGroupBuilder MapWebHooksApiV1(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/", async (WebhooksContext context, ClaimsPrincipal user) =>
+        var api = app.MapGroup("/api/webhooks").HasApiVersion(1.0);
+
+        api.MapGet("/", async (WebhooksContext context, ClaimsPrincipal user) =>
         {
             var userId = user.GetUserId();
             var data = await context.Subscriptions.Where(s => s.UserId == userId).ToListAsync();
             return TypedResults.Ok(data);
         });
 
-        app.MapGet("/{id:int}", async Task<Results<Ok<WebhookSubscription>, NotFound<string>>> (
+        api.MapGet("/{id:int}", async Task<Results<Ok<WebhookSubscription>, NotFound<string>>> (
             WebhooksContext context,
             ClaimsPrincipal user,
             int id) =>
@@ -30,7 +32,7 @@ public static class WebHooksApi
             return TypedResults.NotFound($"Subscriptions {id} not found");
         });
 
-        app.MapPost("/", async Task<Results<Created, BadRequest<string>>> (
+        api.MapPost("/", async Task<Results<Created, BadRequest<string>>> (
             WebhookSubscriptionRequest request,
             IGrantUrlTesterService grantUrlTester,
             WebhooksContext context,
@@ -52,7 +54,7 @@ public static class WebHooksApi
                 context.Add(subscription);
                 await context.SaveChangesAsync();
 
-                return TypedResults.Created($"/api/v1/webhooks/{subscription.Id}");
+                return TypedResults.Created($"/api/webhooks/{subscription.Id}");
             }
             else
             {
@@ -61,7 +63,7 @@ public static class WebHooksApi
         })
         .ValidateWebhookSubscriptionRequest();
 
-        app.MapDelete("/{id:int}", async Task<Results<Accepted, NotFound<string>>> (
+        api.MapDelete("/{id:int}", async Task<Results<Accepted, NotFound<string>>> (
             WebhooksContext context,
             ClaimsPrincipal user,
             int id) =>
@@ -73,12 +75,12 @@ public static class WebHooksApi
             {
                 context.Remove(subscription);
                 await context.SaveChangesAsync();
-                return TypedResults.Accepted($"/api/v1/webhooks/{subscription.Id}");
+                return TypedResults.Accepted($"/api/webhooks/{subscription.Id}");
             }
 
             return TypedResults.NotFound($"Subscriptions {id} not found");
         });
 
-        return app;
+        return api;
     }
 }

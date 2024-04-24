@@ -2,7 +2,7 @@
 
 public class OrderingService(HttpClient httpClient)
 {
-    private readonly string remoteServiceBaseUrl = "/api/v1/Orders/";
+    private readonly string remoteServiceBaseUrl = "/api/Orders/";
 
     public Task<OrderRecord[]> GetOrders()
     {
