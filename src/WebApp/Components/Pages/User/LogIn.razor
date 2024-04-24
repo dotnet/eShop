@@ -8,11 +8,12 @@
     [CascadingParameter]
     public HttpContext? HttpContext { get; set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         var returnUrl = ReturnUrl ?? "/";
         var url = new Uri(returnUrl, UriKind.RelativeOrAbsolute);
         Nav.NavigateTo(url.IsAbsoluteUri ? "/" : returnUrl);
+        await base.OnInitializedAsync();
     }
 
     public static string Url(NavigationManager nav)
