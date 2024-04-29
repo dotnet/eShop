@@ -7,16 +7,16 @@ public class OrderItem
     public string ProductId { get; set; }
     public Guid? OrderId { get; set; }
 
-    [JsonPropertyName("unitprice")]
+    [JsonPropertyName("UnitPrice")]
     public decimal UnitPrice { get; set; }
 
-    [JsonPropertyName("productname")]
+    [JsonPropertyName("ProductName")]
     public string ProductName { get; set; }
 
-    [JsonPropertyName("pictureurl")]
+    [JsonPropertyName("PictureUrl")]
     public string PictureUrl { get; set; }
 
-    [JsonPropertyName("units")]
+    [JsonPropertyName("Units")]
     public int Quantity { get; set; }
 
     public decimal Discount { get; set; }

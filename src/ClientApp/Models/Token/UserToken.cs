@@ -4,18 +4,18 @@ namespace eShop.ClientApp.Models.Token;
 
 public class UserToken
 {
-    [JsonPropertyName("id_token")]
+    [JsonPropertyName("IdToken")]
     public string IdToken { get; set; }
 
-    [JsonPropertyName("access_token")]
+    [JsonPropertyName("AccessToken")]
     public string AccessToken { get; set; }
 
-    [JsonPropertyName("expires_in")]
+    [JsonPropertyName("ExpiresIn")]
     public int ExpiresIn { get; set; }
 
-    [JsonPropertyName("token_type")]
+    [JsonPropertyName("TokenType")]
     public string TokenType { get; set; }
 
-    [JsonPropertyName("refresh_token")]
+    [JsonPropertyName("RefreshToken")]
     public string RefreshToken { get; set; }
 }

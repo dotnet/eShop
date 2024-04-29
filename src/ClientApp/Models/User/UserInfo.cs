@@ -4,51 +4,51 @@ namespace eShop.ClientApp.Models.User;
 
 public class UserInfo
 {
-    [JsonPropertyName("sub")]
+    [JsonPropertyName("Sub")]
     public string UserId { get; set; }
 
-    [JsonPropertyName("preferred_username")]
+    [JsonPropertyName("PreferredUsername")]
     public string PreferredUsername { get; set; }
 
-    [JsonPropertyName("name")]
+    [JsonPropertyName("Name")]
     public string Name { get; set; }
 
-    [JsonPropertyName("last_name")]
+    [JsonPropertyName("LastName")]
     public string LastName { get; set; }
 
-    [JsonPropertyName("card_number")]
+    [JsonPropertyName("CardNumber")]
     public string CardNumber { get; set; }
 
-    [JsonPropertyName("card_holder")]
+    [JsonPropertyName("CardHolder")]
     public string CardHolder { get; set; }
 
-    [JsonPropertyName("card_security_number")]
+    [JsonPropertyName("CardSecurityNumber")]
     public string CardSecurityNumber { get; set; }
 
-    [JsonPropertyName("address_city")]
+    [JsonPropertyName("AddressCity")]
     public string Address { get; set; }
 
-    [JsonPropertyName("address_country")]
+    [JsonPropertyName("AddressCountry")]
     public string Country { get; set; }
 
-    [JsonPropertyName("address_state")]
+    [JsonPropertyName("AddressState")]
     public string State { get; set; }
 
-    [JsonPropertyName("address_street")]
+    [JsonPropertyName("AddressStreet")]
     public string Street { get; set; }
 
-    [JsonPropertyName("address_zip_code")]
+    [JsonPropertyName("AddressZipcode")]
     public string ZipCode { get; set; }
 
-    [JsonPropertyName("email")]
+    [JsonPropertyName("Email")]
     public string Email { get; set; }
 
-    [JsonPropertyName("email_verified")]
+    [JsonPropertyName("EmailVerified")]
     public bool EmailVerified { get; set; }
 
-    [JsonPropertyName("phone_number")]
+    [JsonPropertyName("PhoneNumber")]
     public string PhoneNumber { get; set; }
 
-    [JsonPropertyName("phone_number_verified")]
+    [JsonPropertyName("PhoneNumberVerified")]
     public bool PhoneNumberVerified { get; set; }
 }
