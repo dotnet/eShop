@@ -1,7 +1,7 @@
 ﻿using eShop.ClientApp.Validations;
 using eShop.ClientApp.ViewModels.Base;
 
-namespace eShop.ClientApp.UnitTests;
+namespace ClientApp.UnitTests.Mocks;
 
 public class MockViewModel : ViewModelBase
 {

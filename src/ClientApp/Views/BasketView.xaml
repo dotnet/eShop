@@ -67,7 +67,7 @@
                             VerticalOptions="CenterAndExpand" />
                         <Label
                             Style="{StaticResource CartTotalStyle}"
-                            Text="{Binding Total, StringFormat='${0:N}'}"
+                            Text="{Binding Total, StringFormat='${0:N2}'}"
                             TextColor="{StaticResource GreenColor}"
                             HorizontalOptions="End"
                             VerticalOptions="CenterAndExpand" />

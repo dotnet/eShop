@@ -58,8 +58,7 @@ public partial class ProfileViewModel : ViewModelBase
             async () =>
             {
                 // Get orders
-                var authToken = _settingsService.AuthAccessToken;
-                var orders = await _appEnvironmentService.OrderService.GetOrdersAsync(authToken);
+                var orders = await _appEnvironmentService.OrderService.GetOrdersAsync();
 
                 _orders.ReloadData(orders);
             });
