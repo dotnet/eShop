@@ -4,7 +4,8 @@ namespace eShop.ClientApp.Models.Orders;
 
 public class OrderItem
 {
-    public string ProductId { get; set; }
+    public long ProductId { get; set; }
+    
     public Guid? OrderId { get; set; }
 
     [JsonPropertyName("unitprice")]

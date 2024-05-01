@@ -1,4 +1,4 @@
-﻿namespace eShop.ClientApp.UnitTests;
+﻿namespace ClientApp.UnitTests.Services;
 
 public class OrdersServiceTests
 {
@@ -6,7 +6,7 @@ public class OrdersServiceTests
     public async Task GetFakeOrderTest()
     {
         var ordersMockService = new OrderMockService();
-        var order = await ordersMockService.GetOrderAsync(1, GlobalSetting.Instance.AuthToken);
+        var order = await ordersMockService.GetOrderAsync(1);
 
         Assert.NotNull(order);
     }
@@ -15,7 +15,7 @@ public class OrdersServiceTests
     public async Task GetFakeOrdersTest()
     {
         var ordersMockService = new OrderMockService();
-        var result = await ordersMockService.GetOrdersAsync(GlobalSetting.Instance.AuthToken);
+        var result = await ordersMockService.GetOrdersAsync();
 
         Assert.NotEmpty(result);
     }

@@ -1,77 +1,143 @@
-﻿using System.Net;
-using System.Text;
-using eShop.ClientApp.Helpers;
-using eShop.ClientApp.Models.Token;
-using eShop.ClientApp.Services.RequestProvider;
-using IdentityModel;
-using PCLCrypto;
-using static PCLCrypto.WinRTCrypto;
+﻿using eShop.ClientApp.Models.Token;
+using eShop.ClientApp.Models.User;
+using eShop.ClientApp.Services.Settings;
+using IdentityModel.OidcClient;
 
 namespace eShop.ClientApp.Services.Identity;
 
 public class IdentityService : IIdentityService
 {
-    private readonly IRequestProvider _requestProvider;
-    private string _codeVerifier;
+    private readonly IdentityModel.OidcClient.Browser.IBrowser _browser;
+    private readonly ISettingsService _settingsService;
 
-    public IdentityService(IRequestProvider requestProvider)
+    public IdentityService(IdentityModel.OidcClient.Browser.IBrowser browser, ISettingsService settingsService)
     {
-        _requestProvider = requestProvider;
+        _browser = browser;
+        _settingsService = settingsService;
     }
 
-    public string CreateAuthorizationRequest()
+    public async Task<bool> SignInAsync()
     {
-        // Create URI to authorization endpoint
-        var authorizeRequest = new AuthorizeRequest(GlobalSetting.Instance.AuthorizeEndpoint);
+        var response = await GetClient().LoginAsync(new LoginRequest { }).ConfigureAwait(false);
 
-        // Dictionary with values for the authorize request
-        Dictionary<string, string> dic = new ()
+        if (response.IsError)
         {
-            { "client_id", GlobalSetting.Instance.ClientId },
-            { "client_secret", GlobalSetting.Instance.ClientSecret },
-            { "response_type", "code id_token" },
-            { "scope", "openid profile basket orders offline_access" },
-            { "redirect_uri", GlobalSetting.Instance.Callback },
-            { "nonce", Guid.NewGuid().ToString("N") },
-            { "code_challenge", CreateCodeChallenge() },
-            { "code_challenge_method", "S256" }
-        };
+            return false;
+        }
 
-        // Add CSRF token to protect against cross-site request forgery attacks.
-        var currentCSRFToken = Guid.NewGuid().ToString("N");
-        dic.Add("state", currentCSRFToken);
+        await _settingsService
+            .SetUserTokenAsync(
+                new()
+                {
+                    AccessToken = response.AccessToken,
+                    IdToken = response.IdentityToken,
+                    RefreshToken = response.RefreshToken,
+                    ExpiresAt = response.AccessTokenExpiration,
+                })
+            .ConfigureAwait(false);
 
-        var authorizeUri = authorizeRequest.Create(dic);
-        return authorizeUri;
+        return !response.IsError;
     }
 
-    public string CreateLogoutRequest(string token)
+    public async Task<bool> SignOutAsync()
     {
-        if (string.IsNullOrEmpty(token))
+        var response = await GetClient().LogoutAsync(new LogoutRequest { }).ConfigureAwait(false);
+
+        if (response.IsError)
+        {
+            return false;
+        }
+
+        await _settingsService.SetUserTokenAsync(default);
+
+        return !response.IsError;
+    }
+
+    public async Task<UserInfo> GetUserInfoAsync()
+    {
+        var authToken = await GetAuthTokenAsync().ConfigureAwait(false);
+
+        if (string.IsNullOrEmpty(authToken))
+        {
+            return UserInfo.Default;
+        }
+        
+        var userInfoWithClaims = await GetClient().GetUserInfoAsync(authToken).ConfigureAwait(false);
+        
+        return
+            new()
+            {
+                UserId = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "sub")?.Value,
+                Email = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "email")?.Value,
+                PhoneNumber = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "phone_number")?.Value,
+                
+                Street = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "address_street")?.Value,
+                Address = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "address_city")?.Value,
+                State = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "address_state")?.Value,
+                ZipCode = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "address_zip_code")?.Value,
+                Country = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "address_country")?.Value,
+                
+                PreferredUsername = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "preferred_username")?.Value,
+                Name = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "name")?.Value,
+                LastName = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "last_name")?.Value,
+                
+                CardNumber = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "card_number")?.Value,
+                CardHolder = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "card_holder")?.Value,
+                CardSecurityNumber = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "card_security_number")?.Value,
+                
+                PhoneNumberVerified = bool.Parse(userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "phone_number_verified")?.Value ?? "false"),
+                EmailVerified = bool.Parse(userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "email_verified")?.Value ?? "false"),
+            };
+    }
+    
+    public async Task<string> GetAuthTokenAsync()
+    {
+        var userToken = await _settingsService.GetUserTokenAsync().ConfigureAwait(false);
+
+        if (userToken is null) 
         {
             return string.Empty;
         }
 
-        var settings = GlobalSetting.Instance;
-        var (endpoint, callback) =
-            (settings.LogoutEndpoint, settings.LogoutCallback);
+        if (userToken.ExpiresAt.Subtract(DateTimeOffset.Now).TotalMinutes > 5)
+        {
+            return userToken.AccessToken;
+        }
+        
+        var response = await GetClient().RefreshTokenAsync(userToken.RefreshToken).ConfigureAwait(false);
+        
+        if (response.IsError)
+        {
+            return string.Empty;
+        }
 
-        return $"{endpoint}?id_token_hint={token}&post_logout_redirect_uri={callback}";
+        await _settingsService
+            .SetUserTokenAsync(
+                new()
+                {
+                    AccessToken = response.AccessToken,
+                    IdToken = response.IdentityToken,
+                    RefreshToken = response.RefreshToken,
+                    ExpiresAt = response.AccessTokenExpiration,
+                })
+            .ConfigureAwait(false);
+
+        return response.AccessToken;
+
     }
-
-    public async Task<UserToken> GetTokenAsync(string code)
+    
+    private OidcClient GetClient()
     {
-        string data = string.Format("grant_type=authorization_code&code={0}&redirect_uri={1}&code_verifier={2}", code, WebUtility.UrlEncode(GlobalSetting.Instance.Callback), _codeVerifier);
-        var token = await _requestProvider.PostAsync<UserToken>(GlobalSetting.Instance.TokenEndpoint, data, GlobalSetting.Instance.ClientId, GlobalSetting.Instance.ClientSecret);
-        return token;
-    }
-
-    private string CreateCodeChallenge()
-    {
-        _codeVerifier = RandomNumberGenerator.CreateUniqueId();
-        var sha256 = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithm.Sha256);
-        var challengeBuffer = sha256.HashData(CryptographicBuffer.CreateFromByteArray(Encoding.UTF8.GetBytes(_codeVerifier)));
-        CryptographicBuffer.CopyToByteArray(challengeBuffer, out byte[] challengeBytes);
-        return Base64Url.Encode(challengeBytes);
+        return new OidcClient(
+            new()
+            {
+                Authority = _settingsService.IdentityEndpointBase,
+                ClientId = _settingsService.ClientId,
+                ClientSecret = _settingsService.ClientSecret,
+                Scope = "openid profile basket orders offline_access",
+                RedirectUri = _settingsService.CallbackUri,
+                PostLogoutRedirectUri = _settingsService.CallbackUri,
+                Browser = _browser,
+            });
     }
 }

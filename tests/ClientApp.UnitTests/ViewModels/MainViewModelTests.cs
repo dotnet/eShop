@@ -1,4 +1,6 @@
-﻿namespace eShop.ClientApp.UnitTests;
+﻿using ClientApp.UnitTests.Mocks;
+
+namespace ClientApp.UnitTests.ViewModels;
 
 public class MainViewModelTests
 {

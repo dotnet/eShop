@@ -16,61 +16,28 @@ public class BasketMockService : IBasketService
             }
     };
 
-    public async Task<CustomerBasket> GetBasketAsync(string guidUser, string token)
+    public async Task<CustomerBasket> GetBasketAsync()
     {
         await Task.Delay(10);
-
-        if (string.IsNullOrEmpty(guidUser) || string.IsNullOrEmpty(token))
-        {
-            return new();
-        }
-
+        
         return MockCustomBasket;
     }
 
-    public async Task<CustomerBasket> UpdateBasketAsync(CustomerBasket customerBasket, string token)
+    public async Task<CustomerBasket> UpdateBasketAsync(CustomerBasket customerBasket)
     {
         await Task.Delay(10);
-
-        if (string.IsNullOrEmpty(token))
-        {
-            return new();
-        }
-
+        
         MockCustomBasket = customerBasket;
 
         return MockCustomBasket;
     }
 
-    public async Task ClearBasketAsync(string guidUser, string token)
+    public async Task ClearBasketAsync()
     {
         await Task.Delay(10);
 
-        if (string.IsNullOrEmpty(token))
-        {
-            return;
-        }
+        MockCustomBasket.Items.Clear();
 
-        if (!string.IsNullOrEmpty(guidUser))
-        {
-            MockCustomBasket.Items.Clear();
-
-            LocalBasketItems = null;
-        }
-    }
-
-    public Task CheckoutAsync(BasketCheckout basketCheckout, string token)
-    {
-        if (string.IsNullOrEmpty(token))
-        {
-            return Task.FromResult(0);
-        }
-
-        if (basketCheckout != null)
-        {
-            MockCustomBasket.Items.Clear();
-        }
-
-        return Task.FromResult(0);
+        LocalBasketItems = null;
     }
 }

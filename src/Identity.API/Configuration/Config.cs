@@ -43,18 +43,18 @@
             {
                 new Client
                 {
-                    ClientId = "xamarin",
-                    ClientName = "eShop Xamarin OpenId Client",
-                    AllowedGrantTypes = GrantTypes.Hybrid,                    
+                    ClientId = "maui",
+                    ClientName = "eShop MAUI OpenId Client",
+                    AllowedGrantTypes = GrantTypes.Code,                    
                     //Used to retrieve the access token on the back channel.
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
-                    RedirectUris = { configuration["XamarinCallback"] },
+                    RedirectUris = { configuration["MauiCallback"] },
                     RequireConsent = false,
                     RequirePkce = true,
-                    PostLogoutRedirectUris = { $"{configuration["XamarinCallback"]}/Account/Redirecting" },
+                    PostLogoutRedirectUris = { $"{configuration["MauiCallback"]}/Account/Redirecting" },
                     //AllowedCorsOrigins = { "http://eshopxamarin" },
                     AllowedScopes = new List<string>
                     {
@@ -68,7 +68,10 @@
                     },
                     //Allow requesting refresh tokens for long lived API access
                     AllowOfflineAccess = true,
-                    AllowAccessTokensViaBrowser = true
+                    AllowAccessTokensViaBrowser = true,
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    AccessTokenLifetime = 60*60*2, // 2 hours
+                    IdentityTokenLifetime= 60*60*2 // 2 hours
                 },
                 new Client
                 {

@@ -10,8 +10,12 @@ public class Order
         OrderItems = new List<OrderItem>();
     }
 
-    public string BuyerId { get; set; }
-
+    [JsonPropertyName("userId")]
+    public string UserId { get; set; }
+    
+    [JsonPropertyName("userName")]
+    public string UserName { get; set; }
+    
     public int SequenceNumber { get; set; }
 
     [JsonPropertyName("date")]
@@ -45,7 +49,7 @@ public class Order
 
     public string CardSecurityNumber { get; set; }
 
-    [JsonPropertyName("orderitems")]
+    [JsonPropertyName("items")]
     public List<OrderItem> OrderItems { get; set; }
 
     [JsonPropertyName("total")]

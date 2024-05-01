@@ -32,7 +32,6 @@ public partial class AppShell : Shell
         Routing.RegisterRoute("Basket", typeof(BasketView));
         Routing.RegisterRoute("Settings", typeof(SettingsView));
         Routing.RegisterRoute("OrderDetail", typeof(OrderDetailView));
-        Routing.RegisterRoute("CampaignDetails", typeof(CampaignDetailsView));
         Routing.RegisterRoute("Checkout", typeof(CheckoutView));
     }
 }

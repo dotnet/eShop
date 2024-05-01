@@ -2,7 +2,9 @@
 <ContentView
     x:Class="eShop.ClientApp.Views.Templates.OrderTemplate"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:eShop.ClientApp.Models.Orders"
+    x:DataType="models:Order">
     <ContentView.Resources>
         <ResourceDictionary>
 
@@ -38,7 +40,7 @@
                 Grid.Column="0"
                 Margin="12">
                 <Label Style="{StaticResource OrderTitleStyle}" Text="TOTAL" />
-                <Label Text="{Binding Total, StringFormat='${0:N}'}" />
+                <Label Text="{Binding Total, StringFormat='${0:N2}'}" />
             </StackLayout>
             <StackLayout
                 Grid.Row="0"

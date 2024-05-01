@@ -1,4 +1,7 @@
-﻿namespace eShop.ClientApp.UnitTests;
+﻿using ClientApp.UnitTests.Mocks;
+using eShop.ClientApp.Services.Identity;
+
+namespace ClientApp.UnitTests.ViewModels;
 
 public class OrderViewModelTests
 {
@@ -12,18 +15,16 @@ public class OrderViewModelTests
         _settingsService = new MockSettingsService();
 
         var mockBasketService = new BasketMockService();
-        var mockCampaignService = new CampaignMockService();
         var mockCatalogService = new CatalogMockService();
         var mockOrderService = new OrderMockService();
-        var mockUserService = new UserMockService();
+        var mockIdentityService = new IdentityMockService();
 
         _appEnvironmentService =
             new AppEnvironmentService(
                 mockBasketService, mockBasketService,
-                mockCampaignService, mockCampaignService,
                 mockCatalogService, mockCatalogService,
                 mockOrderService, mockOrderService,
-                mockUserService, mockUserService);
+                mockIdentityService, mockIdentityService);
 
         _appEnvironmentService.UpdateDependencies(true);
     }
@@ -40,7 +41,7 @@ public class OrderViewModelTests
     {
         var orderViewModel = new OrderDetailViewModel(_appEnvironmentService, _navigationService, _settingsService);
 
-        var order = await _appEnvironmentService.OrderService.GetOrderAsync(1, GlobalSetting.Instance.AuthToken);
+        var order = await _appEnvironmentService.OrderService.GetOrderAsync(1);
 
         orderViewModel.OrderNumber = order.OrderNumber;
         await orderViewModel.InitializeAsync();
@@ -62,7 +63,7 @@ public class OrderViewModelTests
                 invoked = true;
             }
         };
-        var order = await _appEnvironmentService.OrderService.GetOrderAsync(1, GlobalSetting.Instance.AuthToken);
+        var order = await _appEnvironmentService.OrderService.GetOrderAsync(1);
         orderViewModel.OrderNumber = order.OrderNumber;
         await orderViewModel.InitializeAsync();
 

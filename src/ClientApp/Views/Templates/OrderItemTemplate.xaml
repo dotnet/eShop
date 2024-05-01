@@ -2,6 +2,8 @@
 <ContentView
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"     
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"  
+    xmlns:models="clr-namespace:eShop.ClientApp.Models.Orders"
+    x:DataType="models:OrderItem"
     x:Class="eShop.ClientApp.Views.Templates.OrderItemTemplate">
     <ContentView.Resources>
         <ResourceDictionary>
@@ -91,7 +93,7 @@
                     <!-- PRICE -->
                     <Label 
                         Grid.Column="0"
-                        Text="{Binding UnitPrice, StringFormat='${0:N}'}"
+                        Text="{Binding UnitPrice, StringFormat='${0:N2}'}"
                         Style="{StaticResource OrderItemUnitPriceStyle}"/>
                     <Label 
                         Grid.Column="1"
@@ -101,7 +103,7 @@
                 <!-- TOTAL -->
                 <Label
                     Grid.Row="2"
-                    Text="{Binding Total, StringFormat='${0:N}'}"
+                    Text="{Binding Total, StringFormat='${0:N2}'}"
                     Style="{StaticResource OrderTotalStyle}"/>
             </Grid>
             <Grid 

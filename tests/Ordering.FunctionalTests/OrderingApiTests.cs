@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Text;
 using System.Text.Json;
+using Asp.Versioning;
+using Asp.Versioning.Http;
 using eShop.Ordering.API.Application.Commands;
 using eShop.Ordering.API.Application.Models;
 using eShop.Ordering.API.Application.Queries;
@@ -15,15 +17,17 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
 
     public OrderingApiTests(OrderingApiFixture fixture)
     {
+        var handler = new ApiVersionHandler(new QueryStringApiVersionWriter(), new ApiVersion(1.0));
+
         _webApplicationFactory = fixture;
-        _httpClient = _webApplicationFactory.CreateClient();
+        _httpClient = _webApplicationFactory.CreateDefaultClient(handler);
     }
 
     [Fact]
     public async Task GetAllStoredOrdersWorks()
     {
         // Act
-        var response = await _httpClient.GetAsync("api/v1/orders");
+        var response = await _httpClient.GetAsync("api/orders");
         var s = await response.Content.ReadAsStringAsync();
         response.EnsureSuccessStatusCode();
 
@@ -39,7 +43,7 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.Empty.ToString() } }
         };
-        var response = await _httpClient.PutAsync("/api/v1/orders/cancel", content);
+        var response = await _httpClient.PutAsync("/api/orders/cancel", content);
         var s = await response.Content.ReadAsStringAsync();
 
         // Assert
@@ -54,7 +58,7 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
-        var response = await _httpClient.PutAsync("api/v1/orders/cancel", content);
+        var response = await _httpClient.PutAsync("api/orders/cancel", content);
         var s = await response.Content.ReadAsStringAsync();
 
         // Assert
@@ -69,7 +73,7 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.Empty.ToString() } }
         };
-        var response = await _httpClient.PutAsync("api/v1/orders/ship", content);
+        var response = await _httpClient.PutAsync("api/orders/ship", content);
         var s = await response.Content.ReadAsStringAsync();
 
         // Assert
@@ -84,7 +88,7 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
-        var response = await _httpClient.PutAsync("api/v1/orders/ship", content);
+        var response = await _httpClient.PutAsync("api/orders/ship", content);
 
         // Assert
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
@@ -94,7 +98,7 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     public async Task GetAllOrdersCardType()
     {
         // Act 1
-        var response = await _httpClient.GetAsync("api/v1/orders/cardtypes");
+        var response = await _httpClient.GetAsync("api/orders/cardtypes");
         var s = await response.Content.ReadAsStringAsync();
         response.EnsureSuccessStatusCode();
 
@@ -106,7 +110,7 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     public async Task GetStoredOrdersWithOrderId()
     {
         // Act
-        var response = await _httpClient.GetAsync("api/v1/orders/1");
+        var response = await _httpClient.GetAsync("api/orders/1");
         var responseStatus = response.StatusCode;
 
         // Assert
@@ -121,7 +125,7 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.Empty.ToString() } }
         };
-        var response = await _httpClient.PostAsync("api/v1/orders", content);
+        var response = await _httpClient.PostAsync("api/orders", content);
         var s = await response.Content.ReadAsStringAsync();
 
         // Assert
@@ -148,7 +152,7 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
-        var response = await _httpClient.PostAsync("api/v1/orders", content);
+        var response = await _httpClient.PostAsync("api/orders", content);
         var s = await response.Content.ReadAsStringAsync();
 
         // Assert
@@ -174,7 +178,7 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
-        var response = await _httpClient.PostAsync("api/v1/orders/draft", content);
+        var response = await _httpClient.PostAsync("api/orders/draft", content);
         var s = await response.Content.ReadAsStringAsync();
 
         // Assert
@@ -189,7 +193,7 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
-        var response = await _httpClient.PostAsync("api/v1/orders/draft", content);
+        var response = await _httpClient.PostAsync("api/orders/draft", content);
 
         var s = await response.Content.ReadAsStringAsync();
         var responseData = JsonSerializer.Deserialize<OrderDraftDTO>(s, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });

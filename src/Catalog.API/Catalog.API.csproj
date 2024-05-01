@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Asp.Versioning.Http" />
     <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
       <PrivateAssets>all</PrivateAssets>
@@ -22,7 +23,6 @@
   <!-- AI -->
   <ItemGroup>
     <PackageReference Include="Aspire.Azure.AI.OpenAI" />
-    <PackageReference Include="FastBertTokenizer" />
     <PackageReference Include="Microsoft.SemanticKernel" />
     <PackageReference Include="Microsoft.SemanticKernel.Connectors.Onnx" />
     <PackageReference Include="Pgvector" />
