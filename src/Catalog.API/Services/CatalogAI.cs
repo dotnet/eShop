@@ -21,16 +21,16 @@ public sealed class CatalogAI : ICatalogAI
         _logger = logger;
     }
 
-    /// <summary>Gets whether the AI system is enabled.</summary>
+    /// <inheritdoc/>
     public bool IsEnabled => _embeddingGenerator is not null;
 
-    /// <summary>Gets an embedding vector for the specified catalog item.</summary>
+    /// <inheritdoc/>
     public ValueTask<Vector> GetEmbeddingAsync(CatalogItem item) =>
         IsEnabled ?
             GetEmbeddingAsync(CatalogItemToString(item)) :
             ValueTask.FromResult<Vector>(null);
 
-    /// <summary>Gets embedding vectors for the specified catalog items.</summary>
+    /// <inheritdoc/>
     public async ValueTask<IReadOnlyList<Vector>> GetEmbeddingsAsync(IEnumerable<CatalogItem> items)
     {
         if (IsEnabled)
@@ -51,7 +51,7 @@ public sealed class CatalogAI : ICatalogAI
         return null;
     }
 
-    /// <summary>Gets an embedding vector for the specified text.</summary>
+    /// <inheritdoc/>
     public async ValueTask<Vector> GetEmbeddingAsync(string text)
     {
         if (IsEnabled)
