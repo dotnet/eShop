@@ -45,8 +45,6 @@ public class RequestProvider : IRequestProvider
         
         using HttpResponseMessage response = await httpClient.PostAsJsonAsync(uri, data).ConfigureAwait(false);
 
-        using var response = await httpClient.PostAsJsonAsync(uri, data).ConfigureAwait(false);
-
         await HandleResponse(response).ConfigureAwait(false);
         var result = await response.Content.ReadFromJsonAsync<TResult>(_jsonSerializerContext).ConfigureAwait(false);
 
@@ -98,8 +96,6 @@ public class RequestProvider : IRequestProvider
         }
         
         using HttpResponseMessage response = await httpClient.PutAsJsonAsync(uri, data).ConfigureAwait(false);
-
-        using var response = await httpClient.PutAsJsonAsync(uri, data).ConfigureAwait(false);
 
         await HandleResponse(response).ConfigureAwait(false);
         var result = await response.Content.ReadFromJsonAsync<TResult>(_jsonSerializerContext).ConfigureAwait(false);

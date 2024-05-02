@@ -271,12 +271,7 @@ public class SettingsViewModel : ViewModelBase
     {
         _settingsService.GatewayOrdersEndpointBase = _gatewayOrdersEndpoint;
     }
-
-    private void UpdateGatewayOrdersEndpoint()
-    {
-        _settingsService.GatewayOrdersEndpointBase = _gatewayOrdersEndpoint;
-    }
-
+    
     private void UpdateGatewayBasketEndpoint()
     {
         _settingsService.GatewayBasketEndpointBase = _gatewayBasketEndpoint;

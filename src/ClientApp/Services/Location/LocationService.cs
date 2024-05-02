@@ -8,15 +8,10 @@ public class LocationService : ILocationService
 {
     private const string ApiUrlBase = "l/api/v1/locations";
     private readonly IIdentityService _identityService;
-    private readonly IRequestProvider _requestProvider;
-    private readonly ISettingsService _settingsService;
 
-    public LocationService(IIdentityService identityService, ISettingsService settingsService,
-        IRequestProvider requestProvider)
+    public LocationService(IIdentityService identityService)
     {
         _identityService = identityService;
-        _settingsService = settingsService;
-        _requestProvider = requestProvider;
     }
 
     public async Task UpdateUserLocation(Models.Location.Location newLocReq)

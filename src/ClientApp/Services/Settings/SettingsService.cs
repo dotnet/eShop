@@ -117,18 +117,6 @@ public class SettingsService : ISettingsService
         get => Preferences.Get(IdGatewayOrdersBase, string.Empty);
         set => Preferences.Set(IdGatewayOrdersBase, value);
     }
-    
-    public string GatewayBasketEndpointBase
-    {
-        get => Preferences.Get(IdGatewayBasketBase, string.Empty);
-        set => Preferences.Set(IdGatewayBasketBase, value);
-    }
-
-    public string GatewayOrdersEndpointBase
-    {
-        get => Preferences.Get(IdGatewayOrdersBase, string.Empty);
-        set => Preferences.Set(IdGatewayOrdersBase, value);
-    }
 
     public string GatewayBasketEndpointBase
     {

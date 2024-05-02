@@ -22,10 +22,6 @@ public class OrderService : IOrderService
         _settingsService = settingsService;
         _requestProvider = requestProvider;
     }
-    
-    public async Task CreateOrderAsync(Models.Orders.Order newOrder)
-    {
-        var authToken = await _identityService.GetAuthTokenAsync().ConfigureAwait(false);
 
     public async Task CreateOrderAsync(Models.Orders.Order newOrder)
     {

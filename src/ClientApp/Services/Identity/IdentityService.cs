@@ -97,10 +97,6 @@ public class IdentityService : IIdentityService
     {
         var userToken = await _settingsService.GetUserTokenAsync().ConfigureAwait(false);
 
-    public async Task<string> GetAuthTokenAsync()
-    {
-        var userToken = await _settingsService.GetUserTokenAsync().ConfigureAwait(false);
-
         if (userToken is null)
         {
             return string.Empty;

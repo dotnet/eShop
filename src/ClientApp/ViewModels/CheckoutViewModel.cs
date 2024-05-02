@@ -39,8 +39,6 @@ public partial class CheckoutViewModel : ViewModelBase
             async () =>
             {
                 var basketItems = _appEnvironmentService.BasketService.LocalBasketItems;
-                
-                var userInfo = await _appEnvironmentService.IdentityService.GetUserInfoAsync();
 
                 var userInfo = await _appEnvironmentService.IdentityService.GetUserInfoAsync();
 

@@ -76,10 +76,6 @@ public class CatalogMockService : ICatalogService
 
         return MockCatalog;
     }
-    
-    public async Task<CatalogItem> GetCatalogItemAsync(int catalogItemId)
-    {
-        await Task.Delay(10);
 
     public async Task<CatalogItem> GetCatalogItemAsync(int catalogItemId)
     {
