@@ -1,4 +1,4 @@
-﻿using ClientApp.UnitTests.Mocks;
+using ClientApp.UnitTests.Mocks;
 
 namespace ClientApp.UnitTests.Services;
 

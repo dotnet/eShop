@@ -11,21 +11,19 @@ namespace eShop.WebApp.Chatbot;
 
 public class ChatState
 {
-    private readonly CatalogService _catalogService;
-    private readonly BasketState _basketState;
+    private readonly ICatalogService _catalogService;
+    private readonly IBasketState _basketState;
     private readonly ClaimsPrincipal _user;
-    private readonly NavigationManager _navigationManager;
     private readonly ILogger _logger;
     private readonly Kernel _kernel;
     private readonly IProductImageUrlProvider _productImages;
     private readonly OpenAIPromptExecutionSettings _aiSettings = new() { ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions };
 
-    public ChatState(CatalogService catalogService, BasketState basketState, ClaimsPrincipal user, NavigationManager nav, IProductImageUrlProvider productImages, Kernel kernel, ILoggerFactory loggerFactory)
+    public ChatState(ICatalogService catalogService, IBasketState basketState, ClaimsPrincipal user, IProductImageUrlProvider productImages, Kernel kernel, ILoggerFactory loggerFactory)
     {
         _catalogService = catalogService;
         _basketState = basketState;
         _user = user;
-        _navigationManager = nav;
         _productImages = productImages;
         _logger = loggerFactory.CreateLogger(typeof(ChatState));
 

@@ -1,4 +1,4 @@
-﻿using eShop.ClientApp.Models.Catalog;
+using eShop.ClientApp.Models.Catalog;
 
 namespace eShop.ClientApp.Services.Catalog;
 

@@ -1,4 +1,4 @@
-﻿using eShop.ClientApp.Models.User;
+using eShop.ClientApp.Models.User;
 
 namespace eShop.ClientApp.Services.Identity;
 

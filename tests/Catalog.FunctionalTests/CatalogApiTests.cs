@@ -1,7 +1,9 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc.Testing;
+using Asp.Versioning;
+using Asp.Versioning.Http;
 using eShop.Catalog.API.Model;
+using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace eShop.Catalog.FunctionalTests;
 
@@ -13,15 +15,17 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
 
     public CatalogApiTests(CatalogApiFixture fixture)
     {
+        var handler = new ApiVersionHandler(new QueryStringApiVersionWriter(), new ApiVersion(1.0));
+
         _webApplicationFactory = fixture;
-        _httpClient = _webApplicationFactory.CreateClient();
+        _httpClient = _webApplicationFactory.CreateDefaultClient(handler);
     }
 
     [Fact]
     public async Task GetCatalogItemsRespectsPageSize()
     {
         // Act
-        var response = await _httpClient.GetAsync("/api/v1/catalog/items?pageIndex=0&pageSize=5");
+        var response = await _httpClient.GetAsync("/api/catalog/items?pageIndex=0&pageSize=5");
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -38,7 +42,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     public async Task UpdateCatalogItemWorksWithoutPriceUpdate()
     {
         // Act - 1
-        var response = await _httpClient.GetAsync("/api/v1/catalog/items/1");
+        var response = await _httpClient.GetAsync("/api/catalog/items/1");
         response.EnsureSuccessStatusCode();
         var body = await response.Content.ReadAsStringAsync();
         var itemToUpdate = JsonSerializer.Deserialize<CatalogItem>(body, _jsonSerializerOptions);
@@ -46,11 +50,11 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         // Act - 2
         var priorAvailableStock = itemToUpdate.AvailableStock;
         itemToUpdate.AvailableStock -= 1;
-        response = await _httpClient.PutAsJsonAsync("/api/v1/catalog/items", itemToUpdate);
+        response = await _httpClient.PutAsJsonAsync("/api/catalog/items", itemToUpdate);
         response.EnsureSuccessStatusCode();
 
         // Act - 3
-        response = await _httpClient.GetAsync("/api/v1/catalog/items/1");
+        response = await _httpClient.GetAsync("/api/catalog/items/1");
         response.EnsureSuccessStatusCode();
         body = await response.Content.ReadAsStringAsync();
         var updatedItem = JsonSerializer.Deserialize<CatalogItem>(body, _jsonSerializerOptions);
@@ -64,7 +68,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     public async Task UpdateCatalogItemWorksWithPriceUpdate()
     {
         // Act - 1
-        var response = await _httpClient.GetAsync("/api/v1/catalog/items/1");
+        var response = await _httpClient.GetAsync("/api/catalog/items/1");
         response.EnsureSuccessStatusCode();
         var body = await response.Content.ReadAsStringAsync();
         var itemToUpdate = JsonSerializer.Deserialize<CatalogItem>(body, _jsonSerializerOptions);
@@ -73,11 +77,11 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var priorAvailableStock = itemToUpdate.AvailableStock;
         itemToUpdate.AvailableStock -= 1;
         itemToUpdate.Price = 1.99m;
-        response = await _httpClient.PutAsJsonAsync("/api/v1/catalog/items", itemToUpdate);
+        response = await _httpClient.PutAsJsonAsync("/api/catalog/items", itemToUpdate);
         response.EnsureSuccessStatusCode();
 
         // Act - 3
-        response = await _httpClient.GetAsync("/api/v1/catalog/items/1");
+        response = await _httpClient.GetAsync("/api/catalog/items/1");
         response.EnsureSuccessStatusCode();
         body = await response.Content.ReadAsStringAsync();
         var updatedItem = JsonSerializer.Deserialize<CatalogItem>(body, _jsonSerializerOptions);
@@ -92,7 +96,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     public async Task GetCatalogItemsbyIds()
     {
         // Act
-        var response = await _httpClient.GetAsync("/api/v1/catalog/items/by?ids=1&ids=2&ids=3");
+        var response = await _httpClient.GetAsync("/api/catalog/items/by?ids=1&ids=2&ids=3");
 
         // Arrange   
         response.EnsureSuccessStatusCode();
@@ -107,7 +111,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     public async Task GetCatalogItemWithId()
     {
         // Act
-        var response = await _httpClient.GetAsync("/api/v1/catalog/items/2");
+        var response = await _httpClient.GetAsync("/api/catalog/items/2");
 
         // Arrange   
         response.EnsureSuccessStatusCode();
@@ -123,7 +127,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     public async Task GetCatalogItemWithExactName()
     {
         // Act
-        var response = await _httpClient.GetAsync("api/v1/catalog/items/by/Wanderer%20Black%20Hiking%20Boots?PageSize=5&PageIndex=0");
+        var response = await _httpClient.GetAsync("api/catalog/items/by/Wanderer%20Black%20Hiking%20Boots?PageSize=5&PageIndex=0");
 
         // Arrange   
         response.EnsureSuccessStatusCode();
@@ -143,7 +147,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     public async Task GetCatalogItemWithPartialName()
     {
        // Act
-       var response = await _httpClient.GetAsync("api/v1/catalog/items/by/Alpine?PageSize=5&PageIndex=0");
+       var response = await _httpClient.GetAsync("api/catalog/items/by/Alpine?PageSize=5&PageIndex=0");
 
         // Arrange   
         response.EnsureSuccessStatusCode();
@@ -163,7 +167,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     public async Task GetCatalogItemPicWithId()
     {
         // Act
-        var response = await _httpClient.GetAsync("api/v1/catalog/items/1/pic");
+        var response = await _httpClient.GetAsync("api/catalog/items/1/pic");
 
         // Arrange   
         response.EnsureSuccessStatusCode();
@@ -178,7 +182,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     public async Task GetCatalogItemWithsemanticrelevance()
     {
         // Act
-        var response = await _httpClient.GetAsync("api/v1/catalog/items/withsemanticrelevance/Wanderer?PageSize=5&PageIndex=0");
+        var response = await _httpClient.GetAsync("api/catalog/items/withsemanticrelevance/Wanderer?PageSize=5&PageIndex=0");
 
         // Arrange   
         response.EnsureSuccessStatusCode();
@@ -196,7 +200,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     public async Task GetCatalogItemWithTypeIdBrandId()
     {
         // Act
-        var response = await _httpClient.GetAsync("api/v1/catalog/items/type/3/brand/3?PageSize=5&PageIndex=0");
+        var response = await _httpClient.GetAsync("api/catalog/items/type/3/brand/3?PageSize=5&PageIndex=0");
 
         // Arrange   
         response.EnsureSuccessStatusCode();
@@ -216,7 +220,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     public async Task GetAllCatalogTypeItemWithBrandId()
     {
         // Act
-        var response = await _httpClient.GetAsync("api/v1/catalog/items/type/all/brand/3?PageSize=5&PageIndex=0");
+        var response = await _httpClient.GetAsync("api/catalog/items/type/all/brand/3?PageSize=5&PageIndex=0");
 
         // Arrange
         response.EnsureSuccessStatusCode();
@@ -235,7 +239,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     public async Task GetAllCatalogTypes()
     {
         // Act
-        var response = await _httpClient.GetAsync("api/v1/catalog/catalogtypes");
+        var response = await _httpClient.GetAsync("api/catalog/catalogtypes");
 
         // Arrange   
         response.EnsureSuccessStatusCode();
@@ -251,7 +255,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     public async Task GetAllCatalogBrands()
     {
         // Act
-        var response = await _httpClient.GetAsync("api/v1/catalog/catalogbrands");
+        var response = await _httpClient.GetAsync("api/catalog/catalogbrands");
 
         // Arrange   
         response.EnsureSuccessStatusCode();
@@ -282,11 +286,11 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
             MaxStockThreshold = 200,
             OnReorder = false
         };
-        var response = await _httpClient.PostAsJsonAsync("/api/v1/catalog/items", bodyContent);
+        var response = await _httpClient.PostAsJsonAsync("/api/catalog/items", bodyContent);
         response.EnsureSuccessStatusCode();
 
         // Act - 2
-        response = await _httpClient.GetAsync("/api/v1/catalog/items/10015");
+        response = await _httpClient.GetAsync("/api/catalog/items/10015");
         response.EnsureSuccessStatusCode();
         var body = await response.Content.ReadAsStringAsync();
         var addedItem = JsonSerializer.Deserialize<CatalogItem>(body, _jsonSerializerOptions);
@@ -300,11 +304,11 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     public async Task DeleteCatalogItem()
     {
         //Act - 1
-        var response = await _httpClient.DeleteAsync("/api/v1/catalog/items/5");
+        var response = await _httpClient.DeleteAsync("/api/catalog/items/5");
         response.EnsureSuccessStatusCode();
 
         // Act - 2
-        var response1 = await _httpClient.GetAsync("/api/v1/catalog/items/5");
+        var response1 = await _httpClient.GetAsync("/api/catalog/items/5");
         var responseStatus = response1.StatusCode;
 
         // Assert - 1

@@ -11,7 +11,7 @@ class CatalogItemEntityTypeConfiguration
             .HasMaxLength(50);
 
         builder.Property(ci => ci.Embedding)
-            .HasColumnType("vector(1536)");
+            .HasColumnType("vector(384)");
 
         builder.HasOne(ci => ci.CatalogBrand)
             .WithMany();

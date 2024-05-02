@@ -3,12 +3,12 @@ using eShop.ClientApp.Services.Identity;
 
 namespace ClientApp.UnitTests.ViewModels;
 
-public class CatalogViewModelTests
+public class CatalogItemViewModelTests
 {
     private readonly INavigationService _navigationService;
     private readonly IAppEnvironmentService _appEnvironmentService;
 
-    public CatalogViewModelTests()
+    public CatalogItemViewModelTests()
     {
         _navigationService = new MockNavigationService();
 

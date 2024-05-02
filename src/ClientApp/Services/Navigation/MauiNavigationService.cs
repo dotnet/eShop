@@ -1,4 +1,4 @@
-﻿using eShop.ClientApp.Models.User;
+using eShop.ClientApp.Models.User;
 using eShop.ClientApp.Services.AppEnvironment;
 
 namespace eShop.ClientApp.Services;

@@ -1,4 +1,4 @@
-﻿using eShop.ClientApp.Models.Token;
+using eShop.ClientApp.Models.Token;
 using eShop.ClientApp.Models.User;
 using eShop.ClientApp.Services.Settings;
 using IdentityModel.OidcClient;
@@ -92,6 +92,10 @@ public class IdentityService : IIdentityService
                                "false")
             };
     }
+    
+    public async Task<string> GetAuthTokenAsync()
+    {
+        var userToken = await _settingsService.GetUserTokenAsync().ConfigureAwait(false);
 
     public async Task<string> GetAuthTokenAsync()
     {

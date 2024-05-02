@@ -1,4 +1,4 @@
-﻿using eShop.ClientApp.Models.Basket;
+using eShop.ClientApp.Models.Basket;
 using eShop.ClientApp.Services;
 using eShop.ClientApp.Services.AppEnvironment;
 using eShop.ClientApp.Services.Settings;
@@ -89,6 +89,8 @@ public partial class BasketViewModel : ViewModelBase
     public async Task ClearBasketItems()
     {
         _basketItems.Clear();
+        
+        await _appEnvironmentService.BasketService.ClearBasketAsync();
 
         await _appEnvironmentService.BasketService.ClearBasketAsync();
 

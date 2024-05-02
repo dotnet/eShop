@@ -4,9 +4,9 @@ using eShop.WebAppComponents.Catalog;
 
 namespace eShop.WebAppComponents.Services;
 
-public class CatalogService(HttpClient httpClient)
+public class CatalogService(HttpClient httpClient) : ICatalogService
 {
-    private readonly string remoteServiceBaseUrl = "api/v1/catalog/";
+    private readonly string remoteServiceBaseUrl = "api/catalog/";
 
     public Task<CatalogItem?> GetCatalogItem(int id)
     {

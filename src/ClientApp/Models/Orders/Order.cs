@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace eShop.ClientApp.Models.Orders;
 
@@ -10,10 +10,12 @@ public class Order
         OrderItems = new List<OrderItem>();
     }
 
-    [JsonPropertyName("userId")] public string UserId { get; set; }
-
-    [JsonPropertyName("userName")] public string UserName { get; set; }
-
+    [JsonPropertyName("userId")]
+    public string UserId { get; set; }
+    
+    [JsonPropertyName("userName")]
+    public string UserName { get; set; }
+    
     public int SequenceNumber { get; set; }
 
     [JsonPropertyName("date")] public DateTime OrderDate { get; set; }
@@ -40,7 +42,8 @@ public class Order
 
     public string CardSecurityNumber { get; set; }
 
-    [JsonPropertyName("items")] public List<OrderItem> OrderItems { get; set; }
+    [JsonPropertyName("items")]
+    public List<OrderItem> OrderItems { get; set; }
 
     [JsonPropertyName("total")] public decimal Total { get; set; }
 

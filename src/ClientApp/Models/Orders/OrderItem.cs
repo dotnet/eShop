@@ -1,11 +1,11 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace eShop.ClientApp.Models.Orders;
 
 public class OrderItem
 {
     public long ProductId { get; set; }
-
+    
     public Guid? OrderId { get; set; }
 
     [JsonPropertyName("unitprice")] public decimal UnitPrice { get; set; }

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using eShop.ClientApp.Models.Basket;
 using eShop.ClientApp.Models.Catalog;
@@ -27,13 +27,11 @@ public class FixUriService : IFixUriService
 
         try
         {
-            if (!_settingsService.UseMocks &&
-                _settingsService.GatewayCatalogEndpointBase != _settingsService.DefaultEndpoint)
+            if (!_settingsService.UseMocks && _settingsService.GatewayCatalogEndpointBase != _settingsService.DefaultEndpoint)
             {
                 foreach (var catalogItem in catalogItems)
                 {
-                    catalogItem.PictureUri = Path.Combine(_settingsService.GatewayCatalogEndpointBase,
-                        $"api/v1/catalog/items/{catalogItem.Id}/pic");
+                    catalogItem.PictureUri = Path.Combine(_settingsService.GatewayCatalogEndpointBase, $"api/v1/catalog/items/{catalogItem.Id}/pic");
                 }
             }
         }

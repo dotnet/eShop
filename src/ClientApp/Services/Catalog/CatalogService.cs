@@ -1,4 +1,4 @@
-﻿using eShop.ClientApp.Helpers;
+using eShop.ClientApp.Helpers;
 using eShop.ClientApp.Models.Catalog;
 using eShop.ClientApp.Services.FixUri;
 using eShop.ClientApp.Services.RequestProvider;

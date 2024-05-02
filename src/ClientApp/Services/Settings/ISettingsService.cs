@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using eShop.ClientApp.Models.Token;
 
 namespace eShop.ClientApp.Services.Settings;

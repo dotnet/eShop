@@ -39,9 +39,11 @@ public static class Extensions
             .AddAuthToken();
 
         builder.Services.AddHttpClient<CatalogService>(o => o.BaseAddress = new("http://catalog-api"))
+            .AddApiVersion(1.0)
             .AddAuthToken();
 
         builder.Services.AddHttpClient<OrderingService>(o => o.BaseAddress = new("http://ordering-api"))
+            .AddApiVersion(1.0)
             .AddAuthToken();
     }
 

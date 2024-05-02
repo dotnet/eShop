@@ -1,4 +1,4 @@
-﻿using eShop.ClientApp.Models.Basket;
+using eShop.ClientApp.Models.Basket;
 using eShop.ClientApp.Models.Orders;
 using eShop.ClientApp.Models.User;
 using eShop.ClientApp.Services;
@@ -39,6 +39,8 @@ public partial class CheckoutViewModel : ViewModelBase
             async () =>
             {
                 var basketItems = _appEnvironmentService.BasketService.LocalBasketItems;
+                
+                var userInfo = await _appEnvironmentService.IdentityService.GetUserInfoAsync();
 
                 var userInfo = await _appEnvironmentService.IdentityService.GetUserInfoAsync();
 

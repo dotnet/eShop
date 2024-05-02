@@ -1,4 +1,4 @@
-﻿using eShop.ClientApp.Models.Catalog;
+using eShop.ClientApp.Models.Catalog;
 
 namespace eShop.ClientApp.Services.Catalog;
 
@@ -76,6 +76,10 @@ public class CatalogMockService : ICatalogService
 
         return MockCatalog;
     }
+    
+    public async Task<CatalogItem> GetCatalogItemAsync(int catalogItemId)
+    {
+        await Task.Delay(10);
 
     public async Task<CatalogItem> GetCatalogItemAsync(int catalogItemId)
     {

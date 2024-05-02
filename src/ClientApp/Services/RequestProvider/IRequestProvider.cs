@@ -1,8 +1,12 @@
-﻿namespace eShop.ClientApp.Services.RequestProvider;
+namespace eShop.ClientApp.Services.RequestProvider;
 
 public interface IRequestProvider
 {
     Task<TResult> GetAsync<TResult>(string uri, string token = "");
+    
+    Task<TResponse> PostAsync<TRequest, TResponse>(string uri, TRequest data, string token = "", string header = "");
+    
+    Task<bool> PostAsync<TRequest>(string uri, TRequest data, string token = "", string header = "");
 
     Task<TResponse> PostAsync<TRequest, TResponse>(string uri, TRequest data, string token = "", string header = "");
 

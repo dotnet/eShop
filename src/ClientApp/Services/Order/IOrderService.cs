@@ -1,4 +1,4 @@
-﻿using eShop.ClientApp.Models.Basket;
+using eShop.ClientApp.Models.Basket;
 
 namespace eShop.ClientApp.Services.Order;
 

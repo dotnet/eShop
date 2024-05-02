@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -42,6 +42,8 @@ public class RequestProvider : IRequestProvider
         {
             AddHeaderParameter(httpClient, header);
         }
+        
+        using HttpResponseMessage response = await httpClient.PostAsJsonAsync(uri, data).ConfigureAwait(false);
 
         using var response = await httpClient.PostAsJsonAsync(uri, data).ConfigureAwait(false);
 
@@ -94,6 +96,8 @@ public class RequestProvider : IRequestProvider
         {
             AddHeaderParameter(httpClient, header);
         }
+        
+        using HttpResponseMessage response = await httpClient.PutAsJsonAsync(uri, data).ConfigureAwait(false);
 
         using var response = await httpClient.PutAsJsonAsync(uri, data).ConfigureAwait(false);
 

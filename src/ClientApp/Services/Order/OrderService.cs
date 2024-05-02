@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using eShop.ClientApp.Helpers;
 using eShop.ClientApp.Models.Basket;
 using eShop.ClientApp.Models.Orders;
@@ -22,6 +22,10 @@ public class OrderService : IOrderService
         _settingsService = settingsService;
         _requestProvider = requestProvider;
     }
+    
+    public async Task CreateOrderAsync(Models.Orders.Order newOrder)
+    {
+        var authToken = await _identityService.GetAuthTokenAsync().ConfigureAwait(false);
 
     public async Task CreateOrderAsync(Models.Orders.Order newOrder)
     {

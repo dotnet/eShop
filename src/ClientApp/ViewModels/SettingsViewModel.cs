@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Input;
 using eShop.ClientApp.Services;
@@ -265,6 +265,11 @@ public class SettingsViewModel : ViewModelBase
     private void UpdateGatewayShoppingEndpoint()
     {
         _settingsService.GatewayCatalogEndpointBase = _gatewayCatalogEndpoint;
+    }
+    
+    private void UpdateGatewayOrdersEndpoint()
+    {
+        _settingsService.GatewayOrdersEndpointBase = _gatewayOrdersEndpoint;
     }
 
     private void UpdateGatewayOrdersEndpoint()

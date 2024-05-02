@@ -1,4 +1,4 @@
-﻿using eShop.ClientApp.Services.Basket;
+using eShop.ClientApp.Services.Basket;
 using eShop.ClientApp.Services.Catalog;
 using eShop.ClientApp.Services.Identity;
 using eShop.ClientApp.Services.Order;

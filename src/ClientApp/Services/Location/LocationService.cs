@@ -1,4 +1,4 @@
-﻿using eShop.ClientApp.Services.Identity;
+using eShop.ClientApp.Services.Identity;
 using eShop.ClientApp.Services.RequestProvider;
 using eShop.ClientApp.Services.Settings;
 
