@@ -1,4 +1,4 @@
-﻿namespace eShop.ClientApp.UnitTests.Mocks;
+﻿namespace ClientApp.UnitTests.Mocks;
 
 public class MockNavigationService : INavigationService
 {

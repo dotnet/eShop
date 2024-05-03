@@ -40,7 +40,7 @@
                 Grid.Column="0"
                 Margin="12">
                 <Label Style="{StaticResource OrderTitleStyle}" Text="TOTAL" />
-                <Label Text="{Binding Total, StringFormat='${0:N}'}" />
+                <Label Text="{Binding Total, StringFormat='${0:N2}'}" />
             </StackLayout>
             <StackLayout
                 Grid.Row="0"

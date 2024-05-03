@@ -10,5 +10,50 @@ updates:
       - public-nuget
     schedule:
       interval: weekly
-    open-pull-requests-limit: 15      
+    open-pull-requests-limit: 15
+    groups:
+      Aspire:
+        patterns:
+          - "Aspire.*"
+          - "Microsoft.Extensions.ServiceDiscovery.*"
+      Azure:
+        patterns:
+          - "Azure.*"
+          - "Microsoft.Azure.*"
+          - "Microsoft.Extensions.Azure"
+      AspNetCoreHealthChecks:
+        patterns:
+          - "AspNetCore.HealthChecks.*"
+      AspNetCore:
+        patterns:
+          - "Microsoft.AspNetCore.*"
+          - "Microsoft.Extensions.Features"
+      MicrosoftExtensions:
+        patterns:
+          - "Microsoft.Extensions.*"
+          - "Microsoft.Bcl.*"
+      EntityFrameworkCore:
+        patterns:
+          - "Microsoft.EntityFrameworkCore.*"
+      FluentUi:
+        patterns:
+          - "Microsoft.FluentUI.*"
+      OpenTelemetry:
+        patterns:
+          - "OpenTelemetry.*"
+      Npgsql:
+        patterns:
+          - "Npgsql.*"
+      MicrosoftDotNet:
+        patterns:
+          - "Microsoft.DotNet.*"
+      Grpc:
+        patterns:
+          - "Grpc.*"
+      Pgvector:
+        patterns:
+          - "Pgvector.*"
+      Duende:
+        patterns:
+          - "Duende.*"
 

@@ -108,7 +108,7 @@
                     <!-- PRICE -->
                     <Label 
                         Grid.Column="0"
-                        Text="{Binding UnitPrice, StringFormat='${0:N}'}"
+                        Text="{Binding UnitPrice, StringFormat='${0:N2}'}"
                         Style="{StaticResource OrderItemUnitPriceStyle}"/>
                     <!-- QUANTITY -->
                     <Label    
@@ -119,7 +119,7 @@
                 <!-- TOTAL -->
                 <Label
                     Grid.Row="2"
-                    Text="{Binding Total, StringFormat='${0:N}'}"
+                    Text="{Binding Total, StringFormat='${0:N2}'}"
                     Style="{StaticResource OrderTotalStyle}"/>
                 <!-- DELETE BUTTON IF ON DESKTOP -->
                 <Button

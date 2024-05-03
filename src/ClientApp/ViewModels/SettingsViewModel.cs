@@ -19,8 +19,9 @@ public class SettingsViewModel : ViewModelBase
     private bool _allowGpsLocation;
     private bool _useFakeLocation;
     private string _identityEndpoint;
-    private string _gatewayShoppingEndpoint;
-    private string _gatewayMarketingEndpoint;
+    private string _gatewayCatalogEndpoint;
+    private string _gatewayOrdersEndpoint;
+    private string _gatewayBasketEndpoint;
     private double _latitude;
     private double _longitude;
     private string _gpsWarningMessage;
@@ -86,32 +87,45 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
-    public string GatewayShoppingEndpoint
+    public string GatewayCatalogEndpoint
     {
-        get => _gatewayShoppingEndpoint;
+        get => _gatewayCatalogEndpoint;
         set
         {
-            SetProperty(ref _gatewayShoppingEndpoint, value);
+            SetProperty(ref _gatewayCatalogEndpoint, value);
             if (!string.IsNullOrEmpty(value))
             {
                 UpdateGatewayShoppingEndpoint();
             }
         }
     }
-
-    public string GatewayMarketingEndpoint
+    
+    public string GatewayOrdersEndpoint
     {
-        get => _gatewayMarketingEndpoint;
+        get => _gatewayOrdersEndpoint;
         set
         {
-            SetProperty(ref _gatewayMarketingEndpoint, value);
+            SetProperty(ref _gatewayOrdersEndpoint, value);
             if (!string.IsNullOrEmpty(value))
             {
-                UpdateGatewayMarketingEndpoint();
+                UpdateGatewayOrdersEndpoint();
             }
         }
     }
-
+    
+    public string GatewayBasketEndpoint
+    {
+        get => _gatewayBasketEndpoint;
+        set
+        {
+            SetProperty(ref _gatewayBasketEndpoint, value);
+            if (!string.IsNullOrEmpty(value))
+            {
+                UpdateGatewayBasketEndpoint();
+            }
+        }
+    }
+    
     public double Latitude
     {
         get => _latitude;
@@ -137,9 +151,7 @@ public class SettingsViewModel : ViewModelBase
         get => _allowGpsLocation;
         set => SetProperty(ref _allowGpsLocation, value);
     }
-
-    public bool UserIsLogged => !string.IsNullOrEmpty(_settingsService.AuthAccessToken);
-
+    
     public ICommand ToggleMockServicesCommand { get; }
 
     public ICommand ToggleFakeLocationCommand { get; }
@@ -159,13 +171,31 @@ public class SettingsViewModel : ViewModelBase
 
         _useAzureServices = !_settingsService.UseMocks;
         _identityEndpoint = _settingsService.IdentityEndpointBase;
-        _gatewayShoppingEndpoint = _settingsService.GatewayShoppingEndpointBase;
-        _gatewayMarketingEndpoint = _settingsService.GatewayMarketingEndpointBase;
         _latitude = double.Parse(_settingsService.Latitude, CultureInfo.CurrentCulture);
         _longitude = double.Parse(_settingsService.Longitude, CultureInfo.CurrentCulture);
         _useFakeLocation = _settingsService.UseFakeLocation;
         _allowGpsLocation = _settingsService.AllowGpsLocation;
         _gpsWarningMessage = string.Empty;
+        
+        IdentityEndpoint = 
+            !string.IsNullOrEmpty(_settingsService.IdentityEndpointBase) 
+                ? _settingsService.IdentityEndpointBase 
+                : "https://localhost:5243";
+        
+        GatewayCatalogEndpoint = 
+            !string.IsNullOrEmpty(_settingsService.GatewayCatalogEndpointBase) 
+                ? _settingsService.GatewayCatalogEndpointBase 
+                : "http://localhost:5222";
+        
+        GatewayBasketEndpoint = 
+            !string.IsNullOrEmpty(_settingsService.GatewayBasketEndpointBase) 
+                ? _settingsService.GatewayBasketEndpointBase 
+                : "http://localhost:5221";
+        
+        GatewayOrdersEndpoint = 
+            !string.IsNullOrEmpty(_settingsService.GatewayOrdersEndpointBase) 
+                ? _settingsService.GatewayOrdersEndpointBase 
+                : "http://localhost:5224";
 
         ToggleMockServicesCommand = new RelayCommand(ToggleMockServices);
 
@@ -194,13 +224,6 @@ public class SettingsViewModel : ViewModelBase
 
         OnPropertyChanged(nameof(TitleUseAzureServices));
         OnPropertyChanged(nameof(DescriptionUseAzureServices));
-
-        //TODO: We should re-evaluate this workflow
-        if (UseAzureServices)
-        {
-            _settingsService.AuthAccessToken = string.Empty;
-            _settingsService.AuthIdToken = string.Empty;
-        }
     }
 
     private void ToggleFakeLocation()
@@ -219,10 +242,8 @@ public class SettingsViewModel : ViewModelBase
                 Latitude = _latitude,
                 Longitude = _longitude
             };
-
-            var authToken = _settingsService.AuthAccessToken;
-
-            await _locationService.UpdateUserLocation(locationRequest, authToken);
+            
+            await _locationService.UpdateUserLocation(locationRequest);
         }
     }
 
@@ -241,19 +262,24 @@ public class SettingsViewModel : ViewModelBase
     private void UpdateIdentityEndpoint()
     {
         // Update remote endpoint (save to local storage)
-        GlobalSetting.Instance.BaseIdentityEndpoint = _settingsService.IdentityEndpointBase = _identityEndpoint;
+        _settingsService.IdentityEndpointBase = _identityEndpoint;
     }
 
     private void UpdateGatewayShoppingEndpoint()
     {
-        GlobalSetting.Instance.BaseGatewayShoppingEndpoint = _settingsService.GatewayShoppingEndpointBase = _gatewayShoppingEndpoint;
+        _settingsService.GatewayCatalogEndpointBase = _gatewayCatalogEndpoint;
     }
-
-    private void UpdateGatewayMarketingEndpoint()
+    
+    private void UpdateGatewayOrdersEndpoint()
     {
-        GlobalSetting.Instance.BaseGatewayMarketingEndpoint = _settingsService.GatewayMarketingEndpointBase = _gatewayMarketingEndpoint;
+        _settingsService.GatewayOrdersEndpointBase = _gatewayOrdersEndpoint;
     }
 
+    private void UpdateGatewayBasketEndpoint()
+    {
+        _settingsService.GatewayBasketEndpointBase = _gatewayBasketEndpoint;
+    }
+    
     private void UpdateFakeLocation()
     {
         _settingsService.UseFakeLocation = _useFakeLocation;

@@ -8,8 +8,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using OpenTelemetry;
 using OpenTelemetry.Context.Propagation;
+using Polly.Retry;
 
-public class RabbitMQEventBus(
+public sealed class RabbitMQEventBus(
     ILogger<RabbitMQEventBus> logger,
     IServiceProvider serviceProvider,
     IOptions<EventBusOptions> options,
@@ -18,10 +19,10 @@ public class RabbitMQEventBus(
 {
     private const string ExchangeName = "eshop_event_bus";
 
-    private readonly int _retryCount = options.Value.RetryCount;
+    private readonly ResiliencePipeline _pipeline = CreateResiliencePipeline(options.Value.RetryCount);
     private readonly TextMapPropagator _propagator = rabbitMQTelemetry.Propagator;
     private readonly ActivitySource _activitySource = rabbitMQTelemetry.ActivitySource;
-    private string _queueName = options.Value.SubscriptionClientName;
+    private readonly string _queueName = options.Value.SubscriptionClientName;
     private readonly EventBusSubscriptionInfo _subscriptionInfo = subscriptionOptions.Value;
     private IConnection _rabbitMQConnection;
 
@@ -29,10 +30,6 @@ public class RabbitMQEventBus(
 
     public Task PublishAsync(IntegrationEvent @event)
     {
-        var policy = Policy.Handle<BrokerUnreachableException>()
-            .Or<SocketException>()
-            .WaitAndRetryAsync(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
-
         var routingKey = @event.GetType().Name;
 
         if (logger.IsEnabled(LogLevel.Trace))
@@ -55,7 +52,7 @@ public class RabbitMQEventBus(
         // https://github.com/open-telemetry/semantic-conventions/blob/main/docs/messaging/messaging-spans.md
         var activityName = $"{routingKey} publish";
 
-        return policy.ExecuteAsync(() =>
+        return _pipeline.Execute(() =>
         {
             using var activity = _activitySource.StartActivity(activityName, ActivityKind.Client);
 
@@ -297,5 +294,25 @@ public class RabbitMQEventBus(
     public Task StopAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
+    }
+
+    private static ResiliencePipeline CreateResiliencePipeline(int retryCount)
+    {
+        // See https://www.pollydocs.org/strategies/retry.html
+        var retryOptions = new RetryStrategyOptions
+        {
+            ShouldHandle = new PredicateBuilder().Handle<BrokerUnreachableException>().Handle<SocketException>(),
+            MaxRetryAttempts = retryCount,
+            DelayGenerator = (context) => ValueTask.FromResult(GenerateDelay(context.AttemptNumber))
+        };
+
+        return new ResiliencePipelineBuilder()
+            .AddRetry(retryOptions)
+            .Build();
+
+        static TimeSpan? GenerateDelay(int attempt)
+        {
+            return TimeSpan.FromSeconds(Math.Pow(2, attempt));
+        }
     }
 }

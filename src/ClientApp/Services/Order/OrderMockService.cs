@@ -52,7 +52,7 @@ public class OrderMockService : IOrderService
         new OrderItem { OrderId = Guid.NewGuid(), ProductId = Common.Common.MockCatalogItemId03, Discount = 0, ProductName = ".NET Bot Black Sweatshirt (M)", Quantity = 2, UnitPrice = 19.95M, PictureUrl = "fake_product_03.png" }
     };
 
-    private static readonly BasketCheckout MockBasketCheckout = new()
+    private static readonly OrderCheckout MockOrderCheckout = new()
     {
         CardExpiration = DateTime.UtcNow,
         CardHolderName = "FakeCardHolderName",
@@ -65,43 +65,36 @@ public class OrderMockService : IOrderService
         Street = "FakeStreet"
     };
 
-    public async Task<IEnumerable<Models.Orders.Order>> GetOrdersAsync(string token)
+    public async Task<IEnumerable<Models.Orders.Order>> GetOrdersAsync()
     {
         await Task.Delay(10);
 
-        return !string.IsNullOrEmpty(token)
-            ? MockOrders
+        return MockOrders
                 .OrderByDescending(o => o.OrderNumber)
-                .ToArray()
-            : Enumerable.Empty<Models.Orders.Order>();
+                .ToArray();
     }
 
-    public async Task<Models.Orders.Order> GetOrderAsync(int orderId, string token)
+    public async Task<Models.Orders.Order> GetOrderAsync(int orderId)
     {
         await Task.Delay(10);
 
-        return !string.IsNullOrEmpty(token)
-            ? MockOrders
-                .FirstOrDefault(o => o.OrderNumber.Equals(orderId))
-            : new Models.Orders.Order();
+        return MockOrders
+                .FirstOrDefault(o => o.OrderNumber.Equals(orderId));
     }
 
-    public async Task CreateOrderAsync(Models.Orders.Order newOrder, string token)
+    public async Task CreateOrderAsync(Models.Orders.Order newOrder)
     {
         await Task.Delay(10);
-
-        if (!string.IsNullOrEmpty(token))
-        {
-            MockOrders.Add(newOrder);
-        }
+        
+        MockOrders.Add(newOrder);
     }
 
-    public BasketCheckout MapOrderToBasket(Models.Orders.Order order)
+    public OrderCheckout MapOrderToBasket(Models.Orders.Order order)
     {
-        return MockBasketCheckout;
+        return MockOrderCheckout;
     }
 
-    public Task<bool> CancelOrderAsync(int orderId, string token)
+    public Task<bool> CancelOrderAsync(int orderId)
     {
         return Task.FromResult(true);
     }

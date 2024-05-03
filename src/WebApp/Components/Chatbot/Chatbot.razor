@@ -58,7 +58,7 @@
         if (kernel is not null)
         {
             AuthenticationState auth = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            chatState = new ChatState(CatalogService, BasketState, auth.User, Nav, ProductImages, kernel, LoggerFactory);
+            chatState = new ChatState(CatalogService, BasketState, auth.User, ProductImages, kernel, LoggerFactory);
         }
         else
         {

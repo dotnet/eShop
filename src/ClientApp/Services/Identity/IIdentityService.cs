@@ -1,10 +1,15 @@
 ﻿using eShop.ClientApp.Models.Token;
+using eShop.ClientApp.Models.User;
 
 namespace eShop.ClientApp.Services.Identity;
 
 public interface IIdentityService
 {
-    string CreateAuthorizationRequest();
-    string CreateLogoutRequest(string token);
-    Task<UserToken> GetTokenAsync(string code);
+    Task<bool> SignInAsync();
+
+    Task<bool> SignOutAsync();
+    
+    Task<UserInfo> GetUserInfoAsync();
+
+    Task<string> GetAuthTokenAsync();
 }
