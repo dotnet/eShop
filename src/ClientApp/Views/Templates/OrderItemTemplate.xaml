@@ -2,33 +2,33 @@
 
 <ContentView
     x:Class="eShop.ClientApp.Views.Templates.OrderItemTemplate"
-    x:DataType="models:OrderItem"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:eShop.ClientApp.Models.Orders"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    x:DataType="models:OrderItem">
     <ContentView.Resources>
         <ResourceDictionary>
 
             <Style
+                x:Key="OrderItemTitleStyle"
                 BasedOn="{StaticResource MediumSizeFontStyle}"
-                TargetType="{x:Type Label}"
-                x:Key="OrderItemTitleStyle">
+                TargetType="{x:Type Label}">
                 <Setter Property="LineBreakMode" Value="HeadTruncation" />
             </Style>
 
-            <Style TargetType="{x:Type Label}" x:Key="OrderItemUnitPriceStyle">
+            <Style x:Key="OrderItemUnitPriceStyle" TargetType="{x:Type Label}">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="FontSize" Value="{StaticResource MidMediumSize}" />
                 <Setter Property="HorizontalOptions" Value="Start" />
             </Style>
 
-            <Style TargetType="{x:Type Label}" x:Key="OrderItemQuantityStyle">
+            <Style x:Key="OrderItemQuantityStyle" TargetType="{x:Type Label}">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="FontSize" Value="{StaticResource MidMediumSize}" />
                 <Setter Property="HorizontalOptions" Value="End" />
             </Style>
 
-            <Style TargetType="{x:Type Label}" x:Key="OrderTotalStyle">
+            <Style x:Key="OrderTotalStyle" TargetType="{x:Type Label}">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="FontSize" Value="{StaticResource LargerSize}" />
                 <Setter Property="TextColor" Value="{StaticResource GreenColor}" />
@@ -49,17 +49,17 @@
             </Grid.RowDefinitions>
             <!--  IMAGE  -->
             <Image
-                Aspect="AspectFit"
-                Grid.Column="0"
                 Grid.Row="0"
-                HeightRequest="108"
+                Grid.Column="0"
                 Margin="12,0,0,0"
+                Aspect="AspectFit"
+                HeightRequest="108"
                 Source="{Binding PictureUrl}"
                 VerticalOptions="Start"
                 WidthRequest="108" />
             <Grid
-                Grid.Column="1"
                 Grid.Row="0"
+                Grid.Column="1"
                 Margin="6">
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -93,10 +93,10 @@
                     Text="{Binding Total, StringFormat='${0:N2}'}" />
             </Grid>
             <Grid
-                BackgroundColor="{StaticResource SeparatorLineColor}"
+                Grid.Row="1"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                Grid.Row="1" />
+                BackgroundColor="{StaticResource SeparatorLineColor}" />
         </Grid>
     </ContentView.Content>
 </ContentView>

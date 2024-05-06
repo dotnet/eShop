@@ -1,26 +1,23 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <views:ContentPageBase
-    BackgroundColor="#aa000000"
-    Padding="24"
-    Shell.NavBarIsVisible="False"
-    Shell.PresentationMode="ModalNotAnimated"
     x:Class="eShop.ClientApp.Views.CatalogItemView"
-    x:DataType="viewmodels:CatalogItemViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:animations="clr-namespace:eShop.ClientApp.Animations"
     xmlns:triggers="clr-namespace:eShop.ClientApp.Triggers"
     xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
     xmlns:views="clr-namespace:eShop.ClientApp.Views"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    Padding="24"
+    x:DataType="viewmodels:CatalogItemViewModel"
+    BackgroundColor="#aa000000"
+    Shell.NavBarIsVisible="False"
+    Shell.PresentationMode="ModalNotAnimated">
     <views:ContentPageBase.Resources>
         <ResourceDictionary>
-
-
-            <animations:StoryBoard Target="{x:Reference ContentContainer}" x:Key="DisplayAnimation">
+            <animations:StoryBoard x:Key="DisplayAnimation" Target="{x:Reference ContentContainer}">
                 <animations:FadeInAnimation Direction="Up" Duration="600" />
             </animations:StoryBoard>
-
         </ResourceDictionary>
     </views:ContentPageBase.Resources>
     <views:ContentPageBase.Triggers>
@@ -29,72 +26,72 @@
         </EventTrigger>
     </views:ContentPageBase.Triggers>
     <Border
+        x:Name="ContentContainer"
         BackgroundColor="Gray"
         StrokeShape="RoundRectangle 8,8,8,8"
-        StrokeThickness="1"
-        x:Name="ContentContainer">
+        StrokeThickness="1">
         <Grid
+            Padding="16"
             BackgroundColor="White"
             ColumnDefinitions="*,Auto"
-            Padding="16"
             RowDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto"
             RowSpacing="8">
             <Image
-                Aspect="AspectFill"
+                Grid.Row="0"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                Grid.Row="0"
                 Margin="-16,-16,-16,0"
+                Aspect="AspectFill"
                 Source="{Binding CatalogItem.PictureUri, Mode=OneWay}" />
 
             <ImageButton
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="16"
                 Aspect="AspectFill"
                 BackgroundColor="White"
                 Command="{Binding DismissCommand, Mode=OneTime}"
                 CornerRadius="16"
-                Grid.Column="0"
-                Grid.Row="0"
                 HeightRequest="32"
                 HorizontalOptions="Start"
-                Margin="16"
                 Source="arrow_left.png"
                 VerticalOptions="Start"
                 WidthRequest="32" />
             <Label
-                FontAttributes="Bold"
-                FontSize="{StaticResource ExtraBigSize}"
+                Grid.Row="1"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                Grid.Row="1"
+                FontAttributes="Bold"
+                FontSize="{StaticResource ExtraBigSize}"
                 Style="{StaticResource LargeSizeFontStyle}"
                 Text="{Binding CatalogItem.Name, Mode=OneWay}" />
             <Label
+                Grid.Row="2"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                Grid.Row="2"
                 Style="{StaticResource MediumSizeFontStyle}"
                 Text="{Binding CatalogItem.CatalogBrand.Brand, Mode=OneWay}" />
             <Label
+                Grid.Row="3"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                Grid.Row="3"
                 Text="{Binding CatalogItem.Description, Mode=OneWay}" />
             <Label
-                Grid.Column="0"
                 Grid.Row="4"
+                Grid.Column="0"
                 Text="{Binding CatalogItem.Price, StringFormat='{0:C2}', Mode=OneWay}"
                 VerticalTextAlignment="Center" />
 
             <Button
+                Grid.Row="4"
+                Grid.Column="1"
+                Margin="8"
                 BackgroundColor="White"
                 BorderColor="Black"
                 BorderWidth="2"
                 Command="{Binding AddCatalogItemCommand, Mode=OneTime}"
                 CornerRadius="8"
-                Grid.Column="1"
-                Grid.Row="4"
                 ImageSource="cart.png"
-                Margin="8"
                 Text="Add to shopping bag"
                 TextColor="Black" />
         </Grid>

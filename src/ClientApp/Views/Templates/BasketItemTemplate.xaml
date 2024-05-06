@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <SwipeView
-    HeightRequest="88"
-    Padding="4"
     x:Class="eShop.ClientApp.Views.Templates.BasketItemTemplate"
-    x:DataType="models:BasketItem"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:eShop.ClientApp.Models.Basket"
     xmlns:vm="clr-namespace:eShop.ClientApp.ViewModels"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    Padding="4"
+    x:DataType="models:BasketItem"
+    HeightRequest="88">
     <SwipeView.Resources>
         <ResourceDictionary>
-            <Style TargetType="{x:Type Label}" x:Key="OrderItemUnitPriceStyle">
+            <Style x:Key="OrderItemUnitPriceStyle" TargetType="{x:Type Label}">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="FontSize" Value="{StaticResource MidMediumSize}" />
                 <Setter Property="HorizontalOptions" Value="Start" />
             </Style>
 
-            <Style TargetType="{x:Type Label}" x:Key="OrderTotalStyle">
+            <Style x:Key="OrderTotalStyle" TargetType="{x:Type Label}">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="FontSize" Value="{StaticResource LargerSize}" />
                 <Setter Property="TextColor" Value="{StaticResource GreenColor}" />
                 <Setter Property="HorizontalOptions" Value="End" />
             </Style>
 
-            <Style TargetType="{x:Type Label}" x:Key="QuantityStyle">
+            <Style x:Key="QuantityStyle" TargetType="{x:Type Label}">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="HorizontalOptions" Value="End" />
                 <Setter Property="VerticalOptions" Value="Fill" />
@@ -59,17 +59,17 @@
         </Grid.RowDefinitions>
         <!--  IMAGE  -->
         <Image
-            Aspect="AspectFit"
-            Grid.Column="0"
             Grid.Row="0"
-            HeightRequest="74"
+            Grid.Column="0"
             Margin="12,0,0,0"
+            Aspect="AspectFit"
+            HeightRequest="74"
             Source="{Binding PictureUrl}"
             VerticalOptions="Center"
             WidthRequest="74" />
         <Grid
-            Grid.Column="1"
             Grid.Row="0"
+            Grid.Column="1"
             Margin="6">
             <Grid.RowDefinitions>
                 <RowDefinition />
@@ -101,19 +101,19 @@
                 Text="{Binding Total, StringFormat='${0:N2}'}" />
             <!--  DELETE BUTTON IF ON DESKTOP  -->
             <Button
+                Grid.Row="2"
                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BasketViewModel}}, Path=DeleteCommand}"
                 CommandParameter="{Binding}"
-                Grid.Row="2"
                 HorizontalOptions="Start"
                 IsVisible="{OnIdiom False,
                                     Desktop=True}"
                 Text="Delete" />
         </Grid>
         <Grid
-            BackgroundColor="#F0AD4E"
+            Grid.Row="1"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            Grid.Row="1"
+            BackgroundColor="#F0AD4E"
             IsVisible="{Binding HasNewPrice}">
             <Label
                 HeightRequest="60"
@@ -124,9 +124,9 @@
                 VerticalTextAlignment="Center" />
         </Grid>
         <Grid
-            BackgroundColor="Gray"
+            Grid.Row="2"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            Grid.Row="2" />
+            BackgroundColor="Gray" />
     </Grid>
 </SwipeView>

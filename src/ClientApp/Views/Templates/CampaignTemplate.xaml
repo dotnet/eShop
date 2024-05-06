@@ -2,14 +2,14 @@
 
 <ContentView
     x:Class="eShop.ClientApp.Views.Templates.CampaignTemplate"
-    x:DataType="models:CampaignItem"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:eShop.ClientApp.Models.Marketing"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    x:DataType="models:CampaignItem">
     <ContentView.Resources>
         <ResourceDictionary>
 
-            <Style TargetType="{x:Type Label}" x:Key="CampaignNameStyle">
+            <Style x:Key="CampaignNameStyle" TargetType="{x:Type Label}">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="FontSize" Value="{StaticResource LargeSize}" />
                 <Setter Property="HorizontalOptions" Value="Center" />
@@ -26,8 +26,8 @@
             </Grid.RowDefinitions>
             <!--  IMAGE  -->
             <Image
-                Aspect="AspectFill"
                 Grid.Row="0"
+                Aspect="AspectFill"
                 Source="{Binding PictureUri, TargetNullValue='logo_header.png'}" />
             <!--  NAME  -->
             <Label

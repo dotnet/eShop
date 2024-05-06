@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <views:ContentPageBase
-    BackgroundColor="{StaticResource LightGrayColor}"
-    Shell.FlyoutBehavior="Disabled"
-    Shell.NavBarIsVisible="False"
-    Shell.TabBarIsVisible="False"
-    ios:Page.UseSafeArea="False"
     x:Class="eShop.ClientApp.Views.LoginView"
-    x:DataType="viewmodels:LoginViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:animations="clr-namespace:eShop.ClientApp.Animations"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:triggers="clr-namespace:eShop.ClientApp.Triggers"
     xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
     xmlns:views="clr-namespace:eShop.ClientApp.Views"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    ios:Page.UseSafeArea="False"
+    x:DataType="viewmodels:LoginViewModel"
+    BackgroundColor="{StaticResource LightGrayColor}"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False">
     <ContentPage.Title>
         <OnPlatform x:TypeArguments="x:String">
             <On Platform="iOS, WinUI" Value="Northern Mountains" />
@@ -23,7 +23,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
 
-            <animations:StoryBoard Target="{x:Reference LoginPanel}" x:Key="LoginAnimation">
+            <animations:StoryBoard x:Key="LoginAnimation" Target="{x:Reference LoginPanel}">
                 <animations:FadeInAnimation Direction="Up" Duration="1500" />
             </animations:StoryBoard>
 
@@ -36,73 +36,67 @@
     </ContentPage.Triggers>
     <!--  AUTH  -->
     <Grid
+        x:Name="LoginPanel"
         ColumnSpacing="8"
         IsVisible="{Binding IsMock, Converter={StaticResource InverseBoolConverter}}"
         RowDefinitions="*,Auto,Auto,120"
-        RowSpacing="0"
-        x:Name="LoginPanel">
+        RowSpacing="0">
         <!--  BANNER  -->
         <ScrollView
-            Grid.Column="0"
-            Grid.ColumnSpan="0"
+            x:Name="BannerScroll"
             Grid.Row="0"
             Grid.RowSpan="4"
+            Grid.Column="0"
+            Grid.ColumnSpan="0"
             HorizontalScrollBarVisibility="Never"
             InputTransparent="True"
             Orientation="Both"
-            VerticalScrollBarVisibility="Never"
-            x:Name="BannerScroll">
+            VerticalScrollBarVisibility="Never">
             <Image
+                x:Name="Banner"
                 Aspect="AspectFill"
-                Source="header.png"
-                x:Name="Banner" />
+                Source="header.png" />
         </ScrollView>
         <ContentView
-            Grid.Column="0"
-            Grid.ColumnSpan="0"
             Grid.Row="0"
-            Grid.RowSpan="4">
+            Grid.RowSpan="4"
+            Grid.Column="0"
+            Grid.ColumnSpan="0">
             <ContentView.Background>
-                <LinearGradientBrush 
-                    StartPoint="0,0"
-                    EndPoint="0,1">
-                    <GradientStop Color="{StaticResource LightGrayColor}"
-                                  Offset="0.0" />
-                    <GradientStop Color="Transparent"
-                                  Offset="0.1" />
-                    <GradientStop Color="Transparent"
-                                  Offset="0.66" />             
-                    <GradientStop Color="{StaticResource LightGrayColor}"
-                                  Offset="1.0" />
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Offset="0.0" Color="{StaticResource LightGrayColor}" />
+                    <GradientStop Offset="0.1" Color="Transparent" />
+                    <GradientStop Offset="0.66" Color="Transparent" />
+                    <GradientStop Offset="1.0" Color="{StaticResource LightGrayColor}" />
                 </LinearGradientBrush>
             </ContentView.Background>
         </ContentView>
         <Image
-            Aspect="AspectFit"
+            Grid.Row="0"
             Grid.Column="0"
             Grid.ColumnSpan="0"
-            Grid.Row="0"
+            Aspect="AspectFit"
             HorizontalOptions="Center"
             Source="logo_header.png"
             VerticalOptions="Center" />
 
         <!--  SETTINGS  -->
         <ImageButton
-            Command="{Binding SettingsCommand}"
             Grid.Row="0"
-            HorizontalOptions="End"
             Margin="16,60"
+            Command="{Binding SettingsCommand}"
+            HorizontalOptions="End"
             Source="{StaticResource SettingsIconDarkImageSource}"
             VerticalOptions="Start" />
 
         <!--  LOG IN BUTTON  -->
         <Button
+            Grid.Row="2"
+            Grid.Column="0"
+            Margin="8"
             BackgroundColor="Black"
             Command="{Binding SignInCommand}"
             CornerRadius="16"
-            Grid.Column="0"
-            Grid.Row="2"
-            Margin="8"
             Text="Login"
             TextColor="White" />
 
@@ -119,10 +113,10 @@
 
         <!--  INDICATOR  -->
         <ActivityIndicator
-            Color="{StaticResource BlackColor}"
             HorizontalOptions="Center"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
-            VerticalOptions="Center" />
+            VerticalOptions="Center"
+            Color="{StaticResource BlackColor}" />
     </Grid>
 </views:ContentPageBase>

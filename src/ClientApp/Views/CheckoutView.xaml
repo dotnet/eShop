@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <views:ContentPageBase
-    Title="CHECKOUT"
     x:Class="eShop.ClientApp.Views.CheckoutView"
-    x:DataType="viewmodels:CheckoutViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:templates="clr-namespace:eShop.ClientApp.Views.Templates"
     xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
     xmlns:views="clr-namespace:eShop.ClientApp.Views"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    Title="CHECKOUT"
+    x:DataType="viewmodels:CheckoutViewModel">
     <ContentPage.Resources>
         <ResourceDictionary>
 
-            <Style TargetType="{x:Type Label}" x:Key="OrderTitleStyle">
+            <Style x:Key="OrderTitleStyle" TargetType="{x:Type Label}">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="FontSize" Value="{StaticResource MediumSize}" />
                 <Setter Property="TextColor" Value="Gray" />
             </Style>
 
-            <Style TargetType="{x:Type Label}" x:Key="OrderContentStyle">
+            <Style x:Key="OrderContentStyle" TargetType="{x:Type Label}">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="FontSize" Value="{StaticResource MediumSize}" />
             </Style>
 
             <Style
+                x:Key="ShippingAddressStyle"
                 BasedOn="{StaticResource OrderTitleStyle}"
-                TargetType="{x:Type Label}"
-                x:Key="ShippingAddressStyle">
+                TargetType="{x:Type Label}">
                 <Setter Property="FontSize" Value="{StaticResource LargeSize}" />
             </Style>
 
             <Style
+                x:Key="AddressStyle"
                 BasedOn="{StaticResource OrderContentStyle}"
-                TargetType="{x:Type Label}"
-                x:Key="AddressStyle">
+                TargetType="{x:Type Label}">
                 <Setter Property="FontSize" Value="{StaticResource LittleSize}" />
             </Style>
 
@@ -63,61 +63,61 @@
             </Grid.RowDefinitions>
 
             <Label
-                Grid.Column="0"
                 Grid.Row="0"
+                Grid.Column="0"
                 Style="{StaticResource OrderTitleStyle}"
                 Text="ORDER NUMBER" />
             <Label
-                Grid.Column="0"
                 Grid.Row="1"
+                Grid.Column="0"
                 Style="{StaticResource OrderContentStyle}"
                 Text="{Binding Order.OrderNumber}" />
 
             <Label
-                Grid.Column="0"
                 Grid.Row="3"
+                Grid.Column="0"
                 Style="{StaticResource OrderTitleStyle}"
                 Text="TOTAL" />
             <Label
-                Grid.Column="0"
                 Grid.Row="4"
+                Grid.Column="0"
                 Style="{StaticResource OrderContentStyle}"
                 Text="{Binding Order.Total, StringFormat='${0:N2}'}" />
 
             <Label
-                Grid.Column="1"
                 Grid.Row="0"
+                Grid.Column="1"
                 Style="{StaticResource OrderTitleStyle}"
                 Text="DATE" />
             <Label
-                Grid.Column="1"
                 Grid.Row="1"
+                Grid.Column="1"
                 Style="{StaticResource OrderContentStyle}"
                 Text="{Binding Order.OrderDate, StringFormat={StaticResource DateTimeFormat}}" />
 
             <Label
-                Grid.Column="1"
                 Grid.Row="3"
+                Grid.Column="1"
                 Style="{StaticResource OrderTitleStyle}"
                 Text="STATUS" />
             <Label
-                Grid.Column="1"
                 Grid.Row="4"
+                Grid.Column="1"
                 Style="{StaticResource OrderContentStyle}"
                 Text="{Binding Order.OrderStatus}" />
 
             <!--  SHIPPING ADDRESS  -->
             <Label
+                Grid.Row="6"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                Grid.Row="6"
                 Style="{StaticResource ShippingAddressStyle}"
                 Text="SHIPPING ADDRESS" />
 
             <VerticalStackLayout
+                Grid.Row="7"
                 Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Grid.Row="7">
+                Grid.ColumnSpan="2">
                 <Label Style="{StaticResource AddressStyle}" Text="{Binding ShippingAddress.Street}" />
                 <Label Style="{StaticResource AddressStyle}" Text="{Binding ShippingAddress.ZipCode}" />
                 <Label Style="{StaticResource AddressStyle}" Text="{Binding ShippingAddress.State}" />
@@ -137,28 +137,28 @@
         </CollectionView>
         <!--  CHECKOUT  -->
         <Grid
-            BackgroundColor="{StaticResource LightGrayColor}"
-            ColumnDefinitions="*"
             Grid.Row="2"
             Padding="16"
+            BackgroundColor="{StaticResource LightGrayColor}"
+            ColumnDefinitions="*"
             RowDefinitions="auto">
             <Button
+                Grid.Row="0"
+                Grid.Column="0"
                 BackgroundColor="Black"
                 Command="{Binding CheckoutCommand}"
                 CornerRadius="4"
-                Grid.Column="0"
-                Grid.Row="0"
                 Text="Place order" />
         </Grid>
         <!--  INDICATOR  -->
         <ActivityIndicator
-            Color="{StaticResource LightGreenColor}"
             Grid.Row="0"
             Grid.RowSpan="2"
             HorizontalOptions="Center"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
-            VerticalOptions="Center">
+            VerticalOptions="Center"
+            Color="{StaticResource LightGreenColor}">
             <ActivityIndicator.WidthRequest>
                 <OnPlatform x:TypeArguments="x:Double">
                     <On Platform="iOS, Android" Value="100" />

@@ -17,7 +17,7 @@ public partial class CatalogView
         base.OnAppearing();
 
         WeakReferenceMessenger.Default
-            .Register<CatalogView, AddProductMessage>(
+            .Register<CatalogView, ProductCountChangedMessage>(
                 this,
                 async (recipient, message) =>
                 {
@@ -34,7 +34,7 @@ public partial class CatalogView
     {
         base.OnDisappearing();
 
-        WeakReferenceMessenger.Default.Unregister<AddProductMessage>(this);
+        WeakReferenceMessenger.Default.Unregister<ProductCountChangedMessage>(this);
     }
 
     private void Products_OnScrolled(object sender, ItemsViewScrolledEventArgs e)

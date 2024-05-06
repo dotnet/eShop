@@ -10,8 +10,6 @@ public partial class MapView
     {
         BindingContext = viewModel;
         InitializeComponent();
-
-        var map = new Map(new MapSpan(new Location(0, 0), 0, 0));
     }
 
     private async void Pin_MarkerClicked(Object sender, PinClickedEventArgs e)

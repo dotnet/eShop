@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <views:ContentPageBase
-    Title="CART"
     x:Class="eShop.ClientApp.Views.BasketView"
-    x:DataType="viewmodels:BasketViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:templates="clr-namespace:eShop.ClientApp.Views.Templates"
     xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
     xmlns:views="clr-namespace:eShop.ClientApp.Views"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    Title="CART"
+    x:DataType="viewmodels:BasketViewModel">
     <ContentPage.Resources>
         <ResourceDictionary />
     </ContentPage.Resources>
@@ -34,29 +34,29 @@
         </CollectionView>
         <!--  CHECKOUT  -->
         <Grid
+            Grid.Row="1"
+            Padding="16"
             BackgroundColor="{StaticResource LightGrayColor}"
             ColumnDefinitions="40,*,40"
             ColumnSpacing="4"
-            Grid.Row="1"
-            Padding="16"
             RowDefinitions="auto,3,auto,auto"
             RowSpacing="4">
             <Image
-                Grid.Column="0"
                 Grid.Row="0"
+                Grid.Column="0"
                 HeightRequest="32"
                 Source="cart.png"
                 WidthRequest="32" />
             <Label
-                Grid.Column="1"
                 Grid.Row="0"
+                Grid.Column="1"
                 HorizontalTextAlignment="Center"
                 Text="Your Shopping bag"
                 VerticalTextAlignment="Center" />
             <Border
-                BackgroundColor="Black"
-                Grid.Column="2"
                 Grid.Row="0"
+                Grid.Column="2"
+                BackgroundColor="Black"
                 HorizontalOptions="Center"
                 MinimumHeightRequest="32"
                 MinimumWidthRequest="32"
@@ -69,30 +69,30 @@
                     VerticalTextAlignment="Center" />
             </Border>
             <BoxView
-                Color="Black"
+                Grid.Row="1"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
-                Grid.Row="1"
                 HeightRequest="1"
-                VerticalOptions="End" />
+                VerticalOptions="End"
+                Color="Black" />
             <Label
-                Grid.Column="0"
                 Grid.Row="2"
+                Grid.Column="0"
                 HorizontalTextAlignment="Center"
                 Text="Total" />
             <Label
+                Grid.Row="2"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
-                Grid.Row="2"
                 HorizontalTextAlignment="End"
                 Text="{Binding Total, StringFormat='${0:N2}'}" />
             <Button
+                Grid.Row="2"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
                 BackgroundColor="Black"
                 Command="{Binding CheckoutCommand}"
                 CornerRadius="4"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Grid.Row="2"
                 Text="Check out" />
         </Grid>
     </Grid>

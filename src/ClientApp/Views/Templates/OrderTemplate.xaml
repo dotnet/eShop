@@ -2,17 +2,17 @@
 
 <ContentView
     x:Class="eShop.ClientApp.Views.Templates.OrderTemplate"
-    x:DataType="models:Order"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:eShop.ClientApp.Models.Orders"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    x:DataType="models:Order">
     <ContentView.Resources>
         <ResourceDictionary>
 
             <Style
+                x:Key="OrderTitleStyle"
                 BasedOn="{StaticResource MediumSizeFontStyle}"
-                TargetType="{x:Type Label}"
-                x:Key="OrderTitleStyle">
+                TargetType="{x:Type Label}">
                 <Setter Property="TextColor" Value="Gray" />
             </Style>
 
@@ -30,38 +30,38 @@
                 <RowDefinition Height="1" />
             </Grid.RowDefinitions>
             <StackLayout
-                Grid.Column="0"
                 Grid.Row="0"
+                Grid.Column="0"
                 Margin="12">
                 <Label Style="{StaticResource OrderTitleStyle}" Text="ORDER NUMBER" />
                 <Label Text="{Binding OrderNumber}" />
             </StackLayout>
             <StackLayout
-                Grid.Column="0"
                 Grid.Row="1"
+                Grid.Column="0"
                 Margin="12">
                 <Label Style="{StaticResource OrderTitleStyle}" Text="TOTAL" />
                 <Label Text="{Binding Total, StringFormat='${0:N2}'}" />
             </StackLayout>
             <StackLayout
-                Grid.Column="1"
                 Grid.Row="0"
+                Grid.Column="1"
                 Margin="12">
                 <Label Style="{StaticResource OrderTitleStyle}" Text="DATE" />
                 <Label Text="{Binding OrderDate, StringFormat={StaticResource DateTimeFormat}}" />
             </StackLayout>
             <StackLayout
-                Grid.Column="1"
                 Grid.Row="1"
+                Grid.Column="1"
                 Margin="12">
                 <Label Style="{StaticResource OrderTitleStyle}" Text="STATUS" />
                 <Label Text="{Binding OrderStatus}" />
             </StackLayout>
             <Grid
-                BackgroundColor="Gray"
+                Grid.Row="2"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                Grid.Row="2" />
+                BackgroundColor="Gray" />
         </Grid>
     </ContentView.Content>
 </ContentView>

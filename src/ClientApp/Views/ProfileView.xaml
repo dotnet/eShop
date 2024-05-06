@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 
 <views:ContentPageBase
-    Title="MY PROFILE"
     x:Class="eShop.ClientApp.Views.ProfileView"
-    x:DataType="viewmodels:ProfileViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:templates="clr-namespace:eShop.ClientApp.Views.Templates"
     xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
     xmlns:views="clr-namespace:eShop.ClientApp.Views"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    Title="MY PROFILE"
+    x:DataType="viewmodels:ProfileViewModel">
     <ContentPage.Resources>
         <ResourceDictionary>
 
-            <Style TargetType="{x:Type Label}" x:Key="MyOrdersLabelStyle">
+            <Style x:Key="MyOrdersLabelStyle" TargetType="{x:Type Label}">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="FontSize" Value="{StaticResource MediumSize}" />
                 <Setter Property="HorizontalTextAlignment" Value="Center" />

@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <ContentView
-    HeightRequest="260"
     x:Class="eShop.ClientApp.Views.Templates.ProductTemplate"
-    x:DataType="models:CatalogItem"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:eShop.ClientApp.Models.Catalog"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    x:DataType="models:CatalogItem"
+    HeightRequest="260">
     <ContentView.Resources>
         <ResourceDictionary>
 
-            <Style TargetType="{x:Type Label}" x:Key="ProductNameStyle">
+            <Style x:Key="ProductNameStyle" TargetType="{x:Type Label}">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="FontSize" Value="{StaticResource MediumSize}" />
                 <Setter Property="HorizontalOptions" Value="Center" />
                 <Setter Property="Margin" Value="0, 12, 0, 6" />
             </Style>
 
-            <Style TargetType="{x:Type Label}" x:Key="ProductPriceStyle">
+            <Style x:Key="ProductPriceStyle" TargetType="{x:Type Label}">
                 <Setter Property="FontAttributes" Value="Bold" />
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="FontSize" Value="{StaticResource MidMediumSize}" />
@@ -39,12 +39,12 @@
             </Grid.RowDefinitions>
             <!--  IMAGE  -->
             <Border
-                BackgroundColor="Gray"
+                Grid.Row="0"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                Grid.Row="0"
-                HeightRequest="150"
                 Margin="16"
+                BackgroundColor="Gray"
+                HeightRequest="150"
                 StrokeShape="RoundRectangle 8,8,8,8"
                 StrokeThickness="1"
                 VerticalOptions="Start"
@@ -54,15 +54,15 @@
 
             <!--  NAME  -->
             <Label
-                Grid.Column="0"
                 Grid.Row="1"
+                Grid.Column="0"
                 Style="{StaticResource ProductNameStyle}"
                 Text="{Binding Name, Mode=OneTime, Converter={StaticResource ToUpperConverter}}"
                 VerticalTextAlignment="Center" />
             <!--  PRICE  -->
             <Label
-                Grid.Column="1"
                 Grid.Row="1"
+                Grid.Column="1"
                 MaxLines="1"
                 Style="{StaticResource ProductPriceStyle}"
                 Text="{Binding Price, Mode=OneTime, StringFormat='${0:N2}'}"
