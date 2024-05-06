@@ -61,20 +61,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.26.0"/>
-    <PackageReference Include="Grpc.Net.Client" Version="2.61.0"/>
-    <PackageReference Include="Grpc.Tools" Version="2.62.0">
+    <PackageReference Include="Google.Protobuf" Version="3.26.1" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.62.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.63.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="IdentityModel.OidcClient" Version="5.2.1"/>
-    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.14" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.14" />
-    <PackageReference Include="Microsoft.Maui.Controls.Maps" Version="8.0.14" />
+    <PackageReference Include="IdentityModel.OidcClient" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.21" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.21" />
+    <PackageReference Include="Microsoft.Maui.Controls.Maps" Version="8.0.21" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.*-*"/>
 
-    <PackageReference Include="CommunityToolkit.Maui" Version="7.0.1"/>
-    <PackageReference Include="IdentityModel" Version="6.2.0"/>
+    <PackageReference Include="CommunityToolkit.Maui" Version="8.0.1" />
+    <PackageReference Include="IdentityModel" Version="7.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2"/>
   </ItemGroup>
 
@@ -83,6 +83,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Protobuf>
   </ItemGroup>
+
+  <PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
+    <RuntimeIdentifiers>$(RuntimeIdentifiers);android-arm64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Debug'">
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+  </PropertyGroup>
 
   <!-- Build Properties must be defined within these property groups to ensure successful publishing
        to the Mac App Store. See: https://aka.ms/maui-publish-app-store#define-build-properties-in-your-project-file -->
