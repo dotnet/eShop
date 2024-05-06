@@ -1,6 +1,6 @@
 # eShop Reference Application - "Northern Mountains"
 
-A reference .NET application implementing an eCommerce web site using a services-based architecture.
+A reference .NET application implementing an e-commerce website using a services-based architecture.
 
 ![eShop Reference Application architecture diagram](img/eshop_architecture.png)
 
@@ -11,7 +11,7 @@ A reference .NET application implementing an eCommerce web site using a services
 ### Prerequisites
 
 - Clone the eShop repository: https://github.com/dotnet/eshop
-- (Windows only) Install Visual Studio. Visual Studio contains tooling support for .NET Aspire that you will want to have. [Visual Studio 2022 version 17.10 Preview](https://visualstudio.microsoft.com/vs/preview/).
+- (Windows only) Install Visual Studio. Visual Studio contains tooling support for .NET Aspire that you'll want to have. [Visual Studio 2022 version 17.10 Preview](https://visualstudio.microsoft.com/vs/preview/).
   - During installation, ensure that the following are selected:
     - `ASP.NET and web development` workload.
     - `.NET Aspire SDK` component in `Individual components`.
@@ -22,7 +22,7 @@ dotnet workload update
 dotnet workload install aspire
 dotnet restore eShop.Web.slnf
 ```
-- Install & start Docker Desktop:  https://docs.docker.com/engine/install/
+- Install & start Docker Desktop: https://docs.docker.com/engine/install/
 
 ### Running the solution
 
@@ -79,7 +79,7 @@ Notes:
 
 ## Contributing
 
-For more information on contributing to this repo, please read [the contribution documentation](./CONTRIBUTING.md) and [the Code of Conduct](CODE-OF-CONDUCT.md).
+For more information on contributing to this repo, read [the contribution documentation](./CONTRIBUTING.md) and [the Code of Conduct](CODE-OF-CONDUCT.md).
 
 ## eShop on Azure
 
