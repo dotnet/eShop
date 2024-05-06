@@ -46,7 +46,7 @@ public class CatalogItemViewModelTests
         catalogItemViewModel.CatalogItem = new CatalogItem {Id = 123, Name = "test", Price = 1.23m,};
         
         WeakReferenceMessenger.Default
-            .Register<CatalogItemViewModelTests, AddProductMessage>(
+            .Register<CatalogItemViewModelTests, ProductCountChangedMessage>(
                 this,
                 (_, message) =>
                 {

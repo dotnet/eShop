@@ -44,6 +44,7 @@ public class BasketService : IBasketService, IDisposable
         {
             var basketResponse = await GetBasketClient()
                 .GetBasketAsync(new GetBasketRequest(), CreateAuthenticationHeaders(authToken));
+            
             if (basketResponse.IsInitialized() && basketResponse.Items.Any())
             {
                 foreach (var item in basketResponse.Items)

@@ -51,7 +51,7 @@ public partial class CatalogItemViewModel : ViewModelBase
             var basketUpdate = await _appEnvironmentService.BasketService.UpdateBasketAsync(basket);
 
             WeakReferenceMessenger.Default
-                .Send(new AddProductMessage(basketUpdate.ItemCount));
+                .Send(new ProductCountChangedMessage(basketUpdate.ItemCount));
 
             await NavigationService.PopAsync();
         }

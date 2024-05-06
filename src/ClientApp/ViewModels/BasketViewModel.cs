@@ -92,8 +92,6 @@ public partial class BasketViewModel : ViewModelBase
         
         await _appEnvironmentService.BasketService.ClearBasketAsync();
 
-        await _appEnvironmentService.BasketService.ClearBasketAsync();
-
         ReCalculateTotal();
     }
 

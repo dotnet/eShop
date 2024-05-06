@@ -46,7 +46,7 @@ public partial class CatalogViewModel : ViewModelBase
         _types = new ObservableCollectionEx<CatalogTypeSelectionViewModel>();
 
         WeakReferenceMessenger.Default
-            .Register<CatalogViewModel, AddProductMessage>(
+            .Register<CatalogViewModel, ProductCountChangedMessage>(
                 this,
                 (_, message) =>
                 {

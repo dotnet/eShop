@@ -1,3 +1,5 @@
+using CommunityToolkit.Mvvm.Messaging;
+using eShop.ClientApp.Messages;
 using eShop.ClientApp.Models.Basket;
 using eShop.ClientApp.Models.Orders;
 using eShop.ClientApp.Models.User;
@@ -114,6 +116,9 @@ public partial class CheckoutViewModel : ViewModelBase
 
             // Reset Basket badge
             await _basketViewModel.ClearBasketItems();
+            
+            WeakReferenceMessenger.Default
+                .Send(new ProductCountChangedMessage(0));
 
             // Navigate to Orders
             await NavigationService.NavigateToAsync("//Main/Catalog");
