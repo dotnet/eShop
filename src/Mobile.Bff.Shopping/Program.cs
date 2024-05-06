@@ -1,7 +1,6 @@
 ﻿var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-builder.AddBasicServiceDefaults();  // Default health checks 
 
 builder.Services.AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"))
@@ -9,6 +8,7 @@ builder.Services.AddReverseProxy()
 
 var app = builder.Build();
 
+app.MapDefaultEndpoints();
 app.MapReverseProxy();
 
 await app.RunAsync();
