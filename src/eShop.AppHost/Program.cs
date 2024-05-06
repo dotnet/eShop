@@ -97,7 +97,7 @@ if (useOpenAI)
         // }
         openAI = builder.AddAzureOpenAI(openAIName)
             .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-35-turbo", "0613"))
-            .AddDeployment(new AzureOpenAIDeployment(textEmbeddingName, "text-embedding-3-small", "2"));
+            .AddDeployment(new AzureOpenAIDeployment(textEmbeddingName, "text-embedding-3-small", "1"));
     }
 
     catalogApi
