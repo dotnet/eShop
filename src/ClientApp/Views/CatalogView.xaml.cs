@@ -1,8 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using eShop.ClientApp.Messages;
 
 namespace eShop.ClientApp.Views;
 
-public partial class CatalogView : ContentPageBase
+public partial class CatalogView
 {
     public CatalogView(CatalogViewModel viewModel)
     {
@@ -16,7 +17,7 @@ public partial class CatalogView : ContentPageBase
         base.OnAppearing();
 
         WeakReferenceMessenger.Default
-            .Register<CatalogView, Messages.AddProductMessage>(
+            .Register<CatalogView, ProductCountChangedMessage>(
                 this,
                 async (recipient, message) =>
                 {
@@ -33,6 +34,24 @@ public partial class CatalogView : ContentPageBase
     {
         base.OnDisappearing();
 
-        WeakReferenceMessenger.Default.Unregister<Messages.AddProductMessage>(this);
+        WeakReferenceMessenger.Default.Unregister<ProductCountChangedMessage>(this);
+    }
+
+    private void Products_OnScrolled(object sender, ItemsViewScrolledEventArgs e)
+    {
+        if (e.VerticalOffset < 0)
+        {
+            return;
+        }
+
+        if (e.VerticalOffset > 200)
+        {
+            HeaderImage.Opacity = 0d;
+            HeaderImage.Scale = 2.0;
+            return;
+        }
+
+        HeaderImage.Opacity = 1.0d - (e.VerticalOffset / 200d);
+        HeaderImage.Scale = 1.0d + (1.0d * (e.VerticalOffset / 200d));
     }
 }

@@ -3,7 +3,8 @@
 public static class ThemeEffects
 {
     public static readonly BindableProperty CircleProperty =
-        BindableProperty.CreateAttached("Circle", typeof(bool), typeof(ThemeEffects), false, propertyChanged: OnChanged<CircleEffect, bool>);
+        BindableProperty.CreateAttached("Circle", typeof(bool), typeof(ThemeEffects), false,
+            propertyChanged: OnChanged<CircleEffect, bool>);
 
     public static bool GetCircle(BindableObject view)
     {
