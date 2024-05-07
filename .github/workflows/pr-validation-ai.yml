@@ -32,7 +32,7 @@ jobs:
       - name: Build 
         run: dotnet build eShop.LLMEvals.slnf
       - name: Pull model
-        run: ollama pull phi-3
+        run: ollama pull phi3
       - name: Test
         env:
           ESHOP_TESTS_SK_KERNEL_COMPLETION_TYPE: "openai"
@@ -40,6 +40,6 @@ jobs:
           AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
           AZURE_OPENAI_KEY: ${{ secrets.AZURE_OPENAI_KEY }}
           ESHOP_OPENAI_ENDPOINT: "http://localhost:11434"
-          ESHOP_OPENAI_MODEL: "phi-3"
+          ESHOP_OPENAI_MODEL: "phi3"
           ESHOP_OPENAI_KEY: "api"
         run: dotnet test eShop.LLMEvals.slnf
