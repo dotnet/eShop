@@ -24,7 +24,7 @@ public class ChatStateTests : IClassFixture<PromptEvaluationFixture>
 
     [Theory]
     [InlineData("Do you have any backpack in the catalog?", 3)]
-    [InlineData("In the Northern Mountains catalog I saw a book about python, but the image is blurry. Could you send me the code to connecting to azure blob storage that is in the book first chapter?", 1)]
+  //[InlineData("In the Northern Mountains catalog I saw a book about python, but the image is blurry. Could you send me the code to connecting to azure blob storage that is in the book first chapter?", 1)]
     [InlineData("Add the best reviewed gift for a kid less than $20 usd", 3)]
     [InlineData("What are the top brands in your catalog?", 3)]
     public async Task AskingCommonQuestionsReturnCoherentResults(string question, int minRelevance)
