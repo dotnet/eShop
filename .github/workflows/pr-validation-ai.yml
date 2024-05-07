@@ -1,4 +1,4 @@
-name: eShop Pull Request Validation
+name: eShop Pull Request Validation - AI LLM Evals
 
 on:
   pull_request:
