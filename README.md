@@ -15,7 +15,7 @@ A reference .NET application implementing an eCommerce web site using a services
   - During installation, ensure that the following are selected:
     - `ASP.NET and web development` workload.
     - `.NET Aspire SDK` component in `Individual components`.
-- Install the latest [.NET 8 SDK](https://github.com/dotnet/installer#installers-and-binaries)
+- Install the latest [.NET 9 SDK](https://github.com/dotnet/installer#installers-and-binaries) referenced in `global.json`
 - On Mac/Linux (or if not using Visual Studio), install the Aspire workload with the following commands:
 ```powershell
 dotnet workload update

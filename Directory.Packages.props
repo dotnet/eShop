@@ -2,9 +2,9 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    <AspnetVersion>8.0.4</AspnetVersion>
-    <MicrosoftExtensionsVersion>8.4.0</MicrosoftExtensionsVersion>
-    <EfVersion>8.0.4</EfVersion>
+    <AspnetVersion>9.0.0-preview.3.24172.13</AspnetVersion>
+    <MicrosoftExtensionsVersion>9.0.0-preview.3.24209.3</MicrosoftExtensionsVersion>
+    <EfVersion>9.0.0-preview.3.24172.4</EfVersion>
     <AspireVersion>8.0.0-preview.5.24201.12</AspireVersion>
     <GrpcVersion>2.62.0</GrpcVersion>
     <DuendeVersion>7.0.4</DuendeVersion>
@@ -40,16 +40,16 @@
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="$(MicrosoftExtensionsVersion)" />
     <!-- Version together with EF -->
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0-preview.3" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EfVersion)" />
     <PackageVersion Include="NSubstitute" Version="5.1.0" />
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
     <PackageVersion Include="Pgvector" Version="0.2.0" />
     <PackageVersion Include="Pgvector.EntityFrameworkCore" Version="0.2.0" />
     <!-- Version together with runtime -->
-    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.0-preview.3.24172.9" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.0-preview.3.24172.9" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0-preview.3.24172.9" />
     <!-- Xabaril packages -->
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="8.0.1" />
     <!-- AI -->
