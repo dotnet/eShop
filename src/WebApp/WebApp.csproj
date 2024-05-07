@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <UserSecretsId>2d86f364-a439-47c5-9468-3b85a7d9a18e</UserSecretsId>
     <Nullable>enable</Nullable>
     <RootNamespace>eShop.WebApp</RootNamespace>
