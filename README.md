@@ -43,6 +43,24 @@ then look for lines like this in the console output in order to find the URL to 
 Now listening on: http://localhost:18848
 ```
 
+## Azure Open AI
+
+When using Azure OpenAI, inside *eShop.AppHost/appsettings.json*, add the following section:
+
+```json
+  "ConnectionStrings": {
+    "OpenAi": "Endpoint=xxx;Key=xxx;"
+  }
+```
+
+Replace the values with your own. Then, in the eShop.AppHost *Program.cs*, set this value to **true**
+
+```csharp
+bool useOpenAI = false;
+```
+
+Here's additional guidance on the [.NET Aspire OpenAI component](https://learn.microsoft.com/dotnet/aspire/azureai/azureai-openai-component?tabs=dotnet-cli). 
+
 ### Sample data
 
 The sample catalog data is defined in [catalog.json](https://github.com/dotnet/eShop/blob/main/src/Catalog.API/Setup/catalog.json). Those product names, descriptions, and brand names are fictional and were generated using [GPT-35-Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/chatgpt), and the corresponding [product images](https://github.com/dotnet/eShop/tree/main/src/Catalog.API/Pics) were generated using [DALL·E 3](https://openai.com/dall-e-3).
