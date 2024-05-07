@@ -28,6 +28,9 @@ dotnet workload update
 dotnet workload install aspire
 dotnet restore eShop.Web.slnf
 ```
+
+> Note: These commands may require `sudo`
+
 - Optional: Install [Visual Studio Code with C# Dev Kit](https://code.visualstudio.com/docs/csharp/get-started)
 - Optional: Install [.NET MAUI Workload](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=visual-studio-code)
 
@@ -60,7 +63,7 @@ The sample catalog data is defined in [catalog.json](https://github.com/dotnet/e
 
 You can use the [Azure Developer CLI](https://aka.ms/azd) to run this project on Azure with only a few commands. Follow the next instructions:
 
-- Install [azd](https://aka.ms/azure-dev/install).
+- Install the latest or update to the latest [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install).
 - Log in `azd` (if you haven't done it before) to your Azure account:
 ```sh
 azd auth login
