@@ -50,6 +50,9 @@ then look for lines like this in the console output in order to find the URL to 
 Now listening on: http://localhost:18848
 ```
 
+> You may need to install ASP.NET Core HTTPS development certificates. Learn more at https://aka.ms/aspnet/https-trust-dev-cert
+
+
 ### Sample data
 
 The sample catalog data is defined in [catalog.json](https://github.com/dotnet/eShop/blob/main/src/Catalog.API/Setup/catalog.json). Those product names, descriptions, and brand names are fictional and were generated using [GPT-35-Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/chatgpt), and the corresponding [product images](https://github.com/dotnet/eShop/tree/main/src/Catalog.API/Pics) were generated using [DALL·E 3](https://openai.com/dall-e-3).
