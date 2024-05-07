@@ -22,7 +22,7 @@ A reference .NET application implementing an e-commerce website using a services
 
 #### Mac, Linux, & Windows without Visual Studio
 - Install the latest [.NET 8 SDK](https://dot.net/download?cid=eshop)
-- Install the .NET Aspire workload with the following commands:
+- Install the [.NET Aspire workload](https://learn.microsoft.com/dotnet/aspire/fundamentals/setup-tooling?tabs=dotnet-cli%2Cunix#install-net-aspire) with the following commands:
 ```powershell
 dotnet workload update
 dotnet workload install aspire
