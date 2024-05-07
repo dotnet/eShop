@@ -1,0 +1,12 @@
+
+{
+  "solution": {
+    "path": "eShop.sln",
+    "projects": [
+      "src\\WebApp\\WebApp.csproj",
+      "src\\eShop.ServiceDefaults\\eShop.ServiceDefaults.csproj",
+      "src\\eShop.AppHost\\eShop.AppHost.csproj",
+      "tests\\AI.UnitTests\\AI.UnitTests.csproj"
+    ]
+  }
+}
