@@ -34,7 +34,8 @@ public class ChatState
         }
 
         _kernel = kernel;
-        _kernel.Plugins.AddFromObject(new CatalogInteractions(this));
+
+        ConfigureKernel();
 
         Messages = new ChatHistory("""
             You are an AI customer service agent for the online retailer Northern Mountains.
@@ -46,6 +47,15 @@ public class ChatState
             you refuse to answer, and you instead ask if there's a topic related to Northern Mountains you can assist with.
             """);
         Messages.AddAssistantMessage("Hi! I'm the Northern Mountains Concierge. How can I help?");
+    }
+
+    private void ConfigureKernel()
+    {
+        var catalogInteractionsPlugin = new CatalogInteractions(this);
+        if (!_kernel.Plugins.Contains("CatalogInteractions"))
+        {
+            _kernel.Plugins.AddFromObject(catalogInteractionsPlugin);
+        }
     }
 
     public ChatHistory Messages { get; }
@@ -105,9 +115,13 @@ public class ChatState
             try
             {
                 var results = await chatState._catalogService.GetCatalogItemsWithSemanticRelevance(0, 8, productDescription!);
-                for (int i = 0; i < results.Data.Count; i++)
+
+                if (results != null)
                 {
-                    results.Data[i] = results.Data[i] with { PictureUrl = chatState._productImages.GetProductImageUrl(results.Data[i].Id) };
+                    for (int i = 0; i < results.Data.Count; i++)
+                    {
+                        results.Data[i] = results.Data[i] with { PictureUrl = chatState._productImages.GetProductImageUrl(results.Data[i].Id) };
+                    }
                 }
 
                 return JsonSerializer.Serialize(results);
