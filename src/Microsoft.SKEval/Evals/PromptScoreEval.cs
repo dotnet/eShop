@@ -44,8 +44,11 @@ public class PromptScoreEval : IEvaluator<int>
 
         var evalResult = await function.InvokeAsync(kernel, promptArgs);
 
-        var evalInt = int.Parse(evalResult.ToString());
+        if (int.TryParse(evalResult.ToString(), out var evalInt))
+        {
+            return evalInt;
+        }
 
-        return evalInt;
+        return 0;
     }
 }
