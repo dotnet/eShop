@@ -31,16 +31,14 @@ jobs:
         run: dotnet workload install aspire
       - name: Build 
         run: dotnet build eShop.LLMEvals.slnf
-      - name: Start ollama
-        run: |
-          ollama serve &
-          ollama pull phi
+      - name: Pull model
+        run: ollama pull phi-3
       - name: Test
         env:
+          ESHOP_TESTS_SK_KERNEL_COMPLETION_TYPE: "openai"
           AZURE_OPENAI_MODEL: ${{ secrets.AZURE_OPENAI_MODEL }}
           AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
           AZURE_OPENAI_KEY: ${{ secrets.AZURE_OPENAI_KEY }}
-          ESHOP_TESTS_SK_KERNEL_COMPLETION_TYPE: "openai"
           ESHOP_OPENAI_ENDPOINT: "http://localhost:11434"
           ESHOP_OPENAI_MODEL: "phi-3"
           ESHOP_OPENAI_KEY: "api"
