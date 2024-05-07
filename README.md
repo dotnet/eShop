@@ -18,7 +18,7 @@ A reference .NET application implementing an e-commerce website using a services
   - Select the following workloads:
     - `ASP.NET and web development` workload.
     - `.NET Aspire SDK` component in `Individual components`.
-    - Optional: `.NET Muli-platform App UI development` to run client apps
+    - Optional: `.NET Multi-platform App UI development` to run client apps
 
 #### Mac, Linux, & Windows without Visual Studio
 - Install the latest [.NET 8 SDK](https://dot.net/download?cid=eshop)
