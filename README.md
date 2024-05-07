@@ -53,7 +53,7 @@ then look for lines like this in the console output in order to find the URL to 
 Login to the dashboard at: http://localhost:19888/login?t=uniquelogincodeforyou
 ```
 
-> You may need to install ASP.NET Core HTTPS development certificates first. Learn more at https://aka.ms/aspnet/https-trust-dev-cert
+> You may need to install ASP.NET Core HTTPS development certificates first, and then close all browser tabs. Learn more at https://aka.ms/aspnet/https-trust-dev-cert
 
 ### Sample data
 
