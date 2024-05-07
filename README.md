@@ -11,18 +11,25 @@ A reference .NET application implementing an e-commerce website using a services
 ### Prerequisites
 
 - Clone the eShop repository: https://github.com/dotnet/eshop
-- (Windows only) Install Visual Studio. Visual Studio contains tooling support for .NET Aspire that you'll want to have. [Visual Studio 2022 version 17.10 Preview](https://visualstudio.microsoft.com/vs/preview/).
-  - During installation, ensure that the following are selected:
+- Install & start Docker Desktop: https://docs.docker.com/engine/install/
+
+#### Windows with Visutal Studio
+- Install [Visual Studio 2022 version 17.10 Preview](https://visualstudio.microsoft.com/vs/preview/).
+  - Select the following workloads:
     - `ASP.NET and web development` workload.
     - `.NET Aspire SDK` component in `Individual components`.
+    - Optional: `.NET Muli-platform App UI development` to run client apps
+
+#### Mac, Linux, & Windows without Visual Studio
 - Install the latest [.NET 8 SDK](https://dot.net/download?cid=eshop)
-- On Mac/Linux (or if not using Visual Studio), install the Aspire workload with the following commands:
+- Install the .NET Aspire workload with the following commands:
 ```powershell
 dotnet workload update
 dotnet workload install aspire
 dotnet restore eShop.Web.slnf
 ```
-- Install & start Docker Desktop: https://docs.docker.com/engine/install/
+- Optional: Install [Visual Studio Code with C# Dev Kit](https://code.visualstudio.com/docs/csharp/get-started)
+- Optional: Install [.NET MAUI Workload](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=visual-studio-code)
 
 ### Running the solution
 
