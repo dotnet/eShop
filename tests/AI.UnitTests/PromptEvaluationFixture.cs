@@ -1,4 +1,5 @@
-﻿using System;
+﻿#pragma warning disable SKEXP0001, SKEXP0003, SKEXP0010, SKEXP0011, SKEXP0050, SKEXP0052
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,11 +25,21 @@ namespace WebApp.UnitTests
 
             var builder = Kernel.CreateBuilder();
 
-            builder.AddAzureOpenAIChatCompletion(
+            if (config["ESHOP_TESTS_SK_KERNEL_COMPLETION_TYPE"]?.ToString().Equals("openai") ?? false)
+            {
+                builder.AddOpenAIChatCompletion(
+                   modelId: config["ESHOP_OPENAI_MODEL"],
+                   endpoint: new Uri(config["ESHOP_OPENAI_ENDPOINT"]),
+                   apiKey: config["ESHOP_OPENAI_KEY"]);
+            }
+            else
+            {
+                builder.AddAzureOpenAIChatCompletion(
                     config["AZURE_OPENAI_MODEL"],
                     config["AZURE_OPENAI_ENDPOINT"],
                     config["AZURE_OPENAI_KEY"]);
-
+            }
+            
             Kernel = builder.Build();
         }
     }

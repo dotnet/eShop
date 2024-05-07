@@ -23,15 +23,25 @@ jobs:
       - uses: actions/checkout@v4
       - name: Setup .NET (global.json)
         uses: actions/setup-dotnet@v3
+      - name: Install ollama
+        run: curl -fsSL https://ollama.com/install.sh | sh
       - name: Update Workloads
         run: dotnet workload update
       - name: Install Workloads
         run: dotnet workload install aspire
       - name: Build 
         run: dotnet build eShop.LLMEvals.slnf
+      - name: Start ollama
+        run: |
+          ollama serve &
+          ollama pull phi
       - name: Test
         env:
           AZURE_OPENAI_MODEL: ${{ secrets.AZURE_OPENAI_MODEL }}
           AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
           AZURE_OPENAI_KEY: ${{ secrets.AZURE_OPENAI_KEY }}
+          ESHOP_TESTS_SK_KERNEL_COMPLETION_TYPE: "openai"
+          ESHOP_OPENAI_ENDPOINT: "http://localhost:11434"
+          ESHOP_OPENAI_MODEL: "phi"
+          ESHOP_OPENAI_KEY: "api"
         run: dotnet test eShop.LLMEvals.slnf
