@@ -124,10 +124,10 @@ public static class OrdersApi
         //mask the credit card number
         
         services.Logger.LogInformation(
-            "Sending command: {CommandName} - {IdProperty}: {CommandId} ({@Command})",
+            "Sending command: {CommandName} - {IdProperty}: {CommandId}",
             request.GetGenericTypeName(),
             nameof(request.UserId),
-            request.UserId, new{}); //don't log the request as it has CC number
+            request.UserId); //don't log the request as it has CC number
 
         if (requestId == Guid.Empty)
         {
