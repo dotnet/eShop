@@ -1,11 +1,10 @@
-﻿namespace eShop.ClientApp.Views
+﻿namespace eShop.ClientApp.Views;
+
+public partial class BasketView
 {
-    public partial class BasketView : ContentPageBase
+    public BasketView(BasketViewModel viewModel)
     {
-        public BasketView(BasketViewModel viewModel)
-        {
-            BindingContext = viewModel;
-            InitializeComponent();
-        }
+        BindingContext = viewModel;
+        InitializeComponent();
     }
 }

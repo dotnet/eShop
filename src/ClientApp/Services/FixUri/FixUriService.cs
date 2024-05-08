@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using eShop.ClientApp.Models.Basket;
 using eShop.ClientApp.Models.Catalog;
@@ -54,8 +54,8 @@ public class FixUriService : IFixUriService
             {
                 foreach (var basketItem in basketItems)
                 {
-                    MatchCollection serverResult = IpRegex.Matches(basketItem.PictureUrl);
-                    MatchCollection localResult = IpRegex.Matches(_settingsService.IdentityEndpointBase);
+                    var serverResult = IpRegex.Matches(basketItem.PictureUrl);
+                    var localResult = IpRegex.Matches(_settingsService.IdentityEndpointBase);
 
                     if (serverResult.Count != -1 && localResult.Count != -1)
                     {
@@ -85,8 +85,8 @@ public class FixUriService : IFixUriService
             {
                 foreach (var campaignItem in campaignItems)
                 {
-                    MatchCollection serverResult = IpRegex.Matches(campaignItem.PictureUri);
-                    MatchCollection localResult = IpRegex.Matches(_settingsService.IdentityEndpointBase);
+                    var serverResult = IpRegex.Matches(campaignItem.PictureUri);
+                    var localResult = IpRegex.Matches(_settingsService.IdentityEndpointBase);
 
                     if (serverResult.Count != -1 && localResult.Count != -1)
                     {

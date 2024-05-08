@@ -1,8 +1,6 @@
-﻿using System.Diagnostics;
-
 namespace eShop.ClientApp.Views;
 
-public partial class LoginView : ContentPageBase
+public partial class LoginView
 {
     private readonly LoginViewModel _viewModel;
 
@@ -10,6 +8,7 @@ public partial class LoginView : ContentPageBase
     {
         BindingContext = _viewModel = viewModel;
         InitializeComponent();
+        BannerScroll.ScrollToAsync(0, BannerScroll.ContentSize.Height, false);
     }
 
     protected override void OnAppearing()

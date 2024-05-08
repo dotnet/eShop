@@ -9,13 +9,10 @@ namespace eShop.ClientApp.ViewModels;
 public partial class ProfileViewModel : ViewModelBase
 {
     private readonly IAppEnvironmentService _appEnvironmentService;
-    private readonly ISettingsService _settingsService;
     private readonly ObservableCollectionEx<Order> _orders;
+    private readonly ISettingsService _settingsService;
 
-    [ObservableProperty]
-    private Order _selectedOrder;
-
-    public IList<Order> Orders => _orders;
+    [ObservableProperty] private Order _selectedOrder;
 
     public ProfileViewModel(
         IAppEnvironmentService appEnvironmentService, ISettingsService settingsService,
@@ -27,6 +24,8 @@ public partial class ProfileViewModel : ViewModelBase
 
         _orders = new ObservableCollectionEx<Order>();
     }
+
+    public IList<Order> Orders => _orders;
 
     public override async Task InitializeAsync()
     {
@@ -42,7 +41,7 @@ public partial class ProfileViewModel : ViewModelBase
                 // Logout
                 await NavigationService.NavigateToAsync(
                     "//Login",
-                    new Dictionary<string, object> { { "Logout", true } });
+                    new Dictionary<string, object> {{"Logout", true}});
             });
     }
 
@@ -74,6 +73,6 @@ public partial class ProfileViewModel : ViewModelBase
 
         await NavigationService.NavigateToAsync(
             "OrderDetail",
-            new Dictionary<string, object> { { nameof(Order.OrderNumber), order.OrderNumber } });
+            new Dictionary<string, object> {{nameof(Order.OrderNumber), order.OrderNumber}});
     }
 }

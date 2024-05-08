@@ -1,39 +1,31 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using eShop.ClientApp.Services;
 using eShop.ClientApp.Services.AppEnvironment;
-using eShop.ClientApp.Services.Identity;
 using eShop.ClientApp.Services.OpenUrl;
 using eShop.ClientApp.Services.Settings;
 using eShop.ClientApp.Validations;
 using eShop.ClientApp.ViewModels.Base;
-using IdentityModel.Client;
 
 namespace eShop.ClientApp.ViewModels;
 
 public partial class LoginViewModel : ViewModelBase
 {
-    private readonly ISettingsService _settingsService;
-    private readonly IOpenUrlService _openUrlService;
     private readonly IAppEnvironmentService _appEnvironmentService;
+    private readonly IOpenUrlService _openUrlService;
+    private readonly ISettingsService _settingsService;
 
-    [ObservableProperty]
-    private ValidatableObject<string> _userName = new();
+    [ObservableProperty] private bool _isLogin;
 
-    [ObservableProperty]
-    ValidatableObject<string> _password = new();
+    [ObservableProperty] private bool _isMock;
 
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(MockSignInCommand))]
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(MockSignInCommand))]
     private bool _isValid;
 
-    [ObservableProperty]
-    private bool _isMock;
+    [ObservableProperty] private string _loginUrl;
 
-    [ObservableProperty]
-    private bool _isLogin;
+    [ObservableProperty] private ValidatableObject<string> _password = new();
 
-    [ObservableProperty]
-    private string _loginUrl;
+    [ObservableProperty] private ValidatableObject<string> _userName = new();
 
     public LoginViewModel(
         IOpenUrlService openUrlService, IAppEnvironmentService appEnvironmentService,
@@ -68,7 +60,7 @@ public partial class LoginViewModel : ViewModelBase
         await IsBusyFor(
             async () =>
             {
-                bool isAuthenticated = false;
+                var isAuthenticated = false;
 
                 try
                 {
@@ -113,7 +105,7 @@ public partial class LoginViewModel : ViewModelBase
     private async Task PerformLogoutAsync()
     {
         await _appEnvironmentService.IdentityService.SignOutAsync();
-        
+
         _settingsService.UseFakeLocation = false;
 
         UserName.Value = string.Empty;
@@ -134,8 +126,8 @@ public partial class LoginViewModel : ViewModelBase
 
     private void AddValidations()
     {
-        UserName.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A username is required." });
-        Password.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A password is required." });
+        UserName.Validations.Add(new IsNotNullOrEmptyRule<string> {ValidationMessage = "A username is required."});
+        Password.Validations.Add(new IsNotNullOrEmptyRule<string> {ValidationMessage = "A password is required."});
     }
 
     public void InvalidateMock()

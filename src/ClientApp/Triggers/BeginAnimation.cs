@@ -9,6 +9,8 @@ public class BeginAnimation : TriggerAction<VisualElement>
     protected override async void Invoke(VisualElement sender)
     {
         if (Animation != null)
+        {
             await Animation.Begin();
+        }
     }
 }

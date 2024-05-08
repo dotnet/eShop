@@ -1,8 +1,10 @@
 ﻿using Microsoft.Maui.Controls.Maps;
+using Microsoft.Maui.Maps;
+using Map = Microsoft.Maui.Controls.Maps.Map;
 
 namespace eShop.ClientApp.Views;
 
-public partial class MapView : ContentPageBase
+public partial class MapView
 {
     public MapView(MapViewModel viewModel)
     {
@@ -10,7 +12,7 @@ public partial class MapView : ContentPageBase
         InitializeComponent();
     }
 
-    async void Pin_MarkerClicked(System.Object sender, Microsoft.Maui.Controls.Maps.PinClickedEventArgs e)
+    private async void Pin_MarkerClicked(Object sender, PinClickedEventArgs e)
     {
         e.HideInfoWindow = true;
 

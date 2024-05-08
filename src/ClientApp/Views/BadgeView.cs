@@ -5,62 +5,29 @@ namespace eShop.ClientApp.Views;
 [ContentProperty(nameof(Content))]
 public class BadgeView : Grid
 {
-    private readonly Border _border;
-    private readonly RoundRectangle _borderShape;
-    private readonly Label _badgeIndicator;
-
     public static BindableProperty ContentProperty =
-    BindableProperty.Create(nameof(Content), typeof(View), typeof(BadgeView), default(View),
+        BindableProperty.Create(nameof(Content), typeof(View), typeof(BadgeView),
             propertyChanged: OnLayoutPropertyChanged);
 
-    public View Content
-    {
-        get => (View)GetValue(ContentProperty);
-        set => SetValue(ContentProperty, value);
-    }
-
     public static BindableProperty TextProperty =
-            BindableProperty.Create(nameof(Text), typeof(string), typeof(BadgeView), default(string),
-                propertyChanged: OnLayoutPropertyChanged);
-
-    public string Text
-    {
-        get => (string)GetValue(TextProperty);
-        set => SetValue(TextProperty, value);
-    }
+        BindableProperty.Create(nameof(Text), typeof(string), typeof(BadgeView),
+            propertyChanged: OnLayoutPropertyChanged);
 
     public static BindableProperty TextColorProperty =
-            BindableProperty.Create(nameof(TextColor), typeof(Color), typeof(BadgeView), default(Color),
-                propertyChanged: OnLayoutPropertyChanged);
-
-    public Color TextColor
-    {
-        get => (Color)GetValue(TextColorProperty);
-        set => SetValue(TextColorProperty, value);
-    }
+        BindableProperty.Create(nameof(TextColor), typeof(Color), typeof(BadgeView),
+            propertyChanged: OnLayoutPropertyChanged);
 
     public static BindableProperty FontSizeProperty =
-            BindableProperty.Create(nameof(FontSize), typeof(double), typeof(BadgeView), 10.0d,
-                propertyChanged: OnLayoutPropertyChanged);
-
-    public double FontSize
-    {
-        get => (double)GetValue(FontSizeProperty);
-        set => SetValue(FontSizeProperty, value);
-    }
+        BindableProperty.Create(nameof(FontSize), typeof(double), typeof(BadgeView), 10.0d,
+            propertyChanged: OnLayoutPropertyChanged);
 
     public static BindableProperty BadgeColorProperty =
-            BindableProperty.Create(nameof(BadgeColor), typeof(Color), typeof(BadgeView), default(Color),
-                propertyChanged: OnLayoutPropertyChanged);
+        BindableProperty.Create(nameof(BadgeColor), typeof(Color), typeof(BadgeView),
+            propertyChanged: OnLayoutPropertyChanged);
 
-    public Color BadgeColor
-    {
-        get => (Color)GetValue(BadgeColorProperty);
-        set => SetValue(BadgeColorProperty, value);
-    }
-
-    static void OnLayoutPropertyChanged(BindableObject bindable, object oldValue, object newValue) =>
-            (bindable as BadgeView)?.UpdateLayout();
+    private readonly Label _badgeIndicator;
+    private readonly Border _border;
+    private readonly RoundRectangle _borderShape;
 
     public BadgeView()
     {
@@ -69,7 +36,7 @@ public class BadgeView : Grid
             {
                 Padding = 4,
                 HorizontalTextAlignment = TextAlignment.Center,
-                VerticalTextAlignment = TextAlignment.Center,
+                VerticalTextAlignment = TextAlignment.Center
             };
 
         _borderShape = new RoundRectangle();
@@ -81,12 +48,47 @@ public class BadgeView : Grid
                 Content = _badgeIndicator,
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Start,
-                ZIndex = 10,
+                ZIndex = 10
             };
 
         Children.Add(_border);
 
         UpdateLayout();
+    }
+
+    public View Content
+    {
+        get => (View)GetValue(ContentProperty);
+        set => SetValue(ContentProperty, value);
+    }
+
+    public string Text
+    {
+        get => (string)GetValue(TextProperty);
+        set => SetValue(TextProperty, value);
+    }
+
+    public Color TextColor
+    {
+        get => (Color)GetValue(TextColorProperty);
+        set => SetValue(TextColorProperty, value);
+    }
+
+    public double FontSize
+    {
+        get => (double)GetValue(FontSizeProperty);
+        set => SetValue(FontSizeProperty, value);
+    }
+
+    public Color BadgeColor
+    {
+        get => (Color)GetValue(BadgeColorProperty);
+        set => SetValue(BadgeColorProperty, value);
+    }
+
+    private static void OnLayoutPropertyChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        (bindable as BadgeView)?.UpdateLayout();
     }
 
     protected override void OnHandlerChanging(HandlerChangingEventArgs args)
@@ -136,4 +138,3 @@ public class BadgeView : Grid
         BatchCommit();
     }
 }
-
