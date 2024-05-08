@@ -34,6 +34,8 @@ dotnet restore eShop.Web.slnf
 - Optional: Install [Visual Studio Code with C# Dev Kit](https://code.visualstudio.com/docs/csharp/get-started)
 - Optional: Install [.NET MAUI Workload](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=visual-studio-code)
 
+> Note: When running on Mac with Apple Silicon (M series processor), Rosetta 2 for grpc-tools. 
+
 ### Running the solution
 
 > [!WARNING]
