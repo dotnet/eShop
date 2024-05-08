@@ -13,7 +13,7 @@ A reference .NET application implementing an e-commerce website using a services
 - Clone the eShop repository: https://github.com/dotnet/eshop
 - Install & start Docker Desktop: https://docs.docker.com/engine/install/
 
-#### Windows with Visutal Studio
+#### Windows with Visual Studio
 - Install [Visual Studio 2022 version 17.10 Preview](https://visualstudio.microsoft.com/vs/preview/).
   - Select the following workloads:
     - `ASP.NET and web development` workload.
