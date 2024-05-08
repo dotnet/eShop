@@ -120,12 +120,14 @@ public static class OrdersApi
         CreateOrderRequest request,
         [AsParameters] OrderServices services)
     {
+        
+        //mask the credit card number
+        
         services.Logger.LogInformation(
             "Sending command: {CommandName} - {IdProperty}: {CommandId} ({@Command})",
             request.GetGenericTypeName(),
             nameof(request.UserId),
-            request.UserId,
-            request);
+            request.UserId, new{}); //don't log the request as it has CC number
 
         if (requestId == Guid.Empty)
         {
@@ -135,9 +137,10 @@ public static class OrdersApi
 
         using (services.Logger.BeginScope(new List<KeyValuePair<string, object>> { new("IdentifiedCommandId", requestId) }))
         {
+            var maskedCCNumber = request.CardNumber.Replace(request.CardNumber.Substring(0, 12), new string('X', 12));
             var createOrderCommand = new CreateOrderCommand(request.Items, request.UserId, request.UserName, request.City, request.Street,
                 request.State, request.Country, request.ZipCode,
-                request.CardNumber, request.CardHolderName, request.CardExpiration,
+                maskedCCNumber, request.CardHolderName, request.CardExpiration,
                 request.CardSecurityNumber, request.CardTypeId);
 
             var requestCreateOrder = new IdentifiedCommand<CreateOrderCommand, bool>(createOrderCommand, requestId);

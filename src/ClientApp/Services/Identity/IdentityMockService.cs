@@ -31,7 +31,7 @@ public class IdentityMockService : IIdentityService
             PreferredUsername = "sampleUser",
             Name = "Sample",
             LastName = "User",
-            CardNumber = "1234567890123456",
+            CardNumber = "XXXXXXXXXXXX3456",
             CardHolder = "Sample User",
             CardSecurityNumber = "123",
             Address = "123 Sample Street",
