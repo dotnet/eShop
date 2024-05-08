@@ -1,57 +1,44 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
+
 <ContentView
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"     
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"  
+    x:Class="eShop.ClientApp.Views.Templates.OrderItemTemplate"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:eShop.ClientApp.Models.Orders"
-    x:DataType="models:OrderItem"
-    x:Class="eShop.ClientApp.Views.Templates.OrderItemTemplate">
+    x:DataType="models:OrderItem">
     <ContentView.Resources>
         <ResourceDictionary>
 
-            <Style x:Key="OrderItemTitleStyle" 
-               TargetType="{x:Type Label}"
-                   BasedOn="{StaticResource MediumSizeFontStyle}">
-                <Setter Property="LineBreakMode" 
-                        Value="HeadTruncation" />
+            <Style
+                x:Key="OrderItemTitleStyle"
+                BasedOn="{StaticResource MediumSizeFontStyle}"
+                TargetType="{x:Type Label}">
+                <Setter Property="LineBreakMode" Value="HeadTruncation" />
             </Style>
 
-            <Style x:Key="OrderItemUnitPriceStyle" 
-               TargetType="{x:Type Label}">
-                <Setter Property="FontFamily"
-                        Value="Montserrat-Regular" />
-                <Setter Property="FontSize" 
-                        Value="{StaticResource MidMediumSize}" />
-                <Setter Property="HorizontalOptions" 
-                        Value="Start" />
+            <Style x:Key="OrderItemUnitPriceStyle" TargetType="{x:Type Label}">
+                <Setter Property="FontFamily" Value="Montserrat-Regular" />
+                <Setter Property="FontSize" Value="{StaticResource MidMediumSize}" />
+                <Setter Property="HorizontalOptions" Value="Start" />
             </Style>
 
-            <Style x:Key="OrderItemQuantityStyle" 
-               TargetType="{x:Type Label}">
-                <Setter Property="FontFamily"
-                        Value="Montserrat-Regular" />
-                <Setter Property="FontSize" 
-                        Value="{StaticResource MidMediumSize}" />
-                <Setter Property="HorizontalOptions" 
-                        Value="End" />
+            <Style x:Key="OrderItemQuantityStyle" TargetType="{x:Type Label}">
+                <Setter Property="FontFamily" Value="Montserrat-Regular" />
+                <Setter Property="FontSize" Value="{StaticResource MidMediumSize}" />
+                <Setter Property="HorizontalOptions" Value="End" />
             </Style>
 
-            <Style x:Key="OrderTotalStyle" 
-               TargetType="{x:Type Label}">
-                <Setter Property="FontFamily"
-                        Value="Montserrat-Regular" />
-                <Setter Property="FontSize" 
-                        Value="{StaticResource LargerSize}" />
-                <Setter Property="TextColor" 
-                        Value="{StaticResource GreenColor}" />
-                <Setter Property="HorizontalOptions" 
-                        Value="End" />
+            <Style x:Key="OrderTotalStyle" TargetType="{x:Type Label}">
+                <Setter Property="FontFamily" Value="Montserrat-Regular" />
+                <Setter Property="FontSize" Value="{StaticResource LargerSize}" />
+                <Setter Property="TextColor" Value="{StaticResource GreenColor}" />
+                <Setter Property="HorizontalOptions" Value="End" />
             </Style>
 
         </ResourceDictionary>
     </ContentView.Resources>
     <ContentView.Content>
-        <Grid   
-            HeightRequest="120">
+        <Grid HeightRequest="120">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -60,57 +47,56 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="1" />
             </Grid.RowDefinitions>
-            <!-- IMAGE -->
+            <!--  IMAGE  -->
             <Image
+                Grid.Row="0"
                 Grid.Column="0"
-                Grid.Row="0"
-                Source="{Binding PictureUrl}"        
-                HeightRequest="108" 
-                WidthRequest="108"
+                Margin="12,0,0,0"
                 Aspect="AspectFit"
+                HeightRequest="108"
+                Source="{Binding PictureUrl}"
                 VerticalOptions="Start"
-                Margin="12,0,0,0" />
+                WidthRequest="108" />
             <Grid
-                Grid.Column="1"
                 Grid.Row="0"
+                Grid.Column="1"
                 Margin="6">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <!-- NAME -->
+                <!--  NAME  -->
                 <Label
                     Grid.Row="0"
-                    Text="{Binding ProductName, Converter={StaticResource ToUpperConverter}}"
-                    Style="{StaticResource OrderItemTitleStyle}"/>
-                <Grid
-                    Grid.Row="1">
+                    Style="{StaticResource OrderItemTitleStyle}"
+                    Text="{Binding ProductName, Converter={StaticResource ToUpperConverter}}" />
+                <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <!-- PRICE -->
-                    <Label 
+                    <!--  PRICE  -->
+                    <Label
                         Grid.Column="0"
-                        Text="{Binding UnitPrice, StringFormat='${0:N2}'}"
-                        Style="{StaticResource OrderItemUnitPriceStyle}"/>
-                    <Label 
+                        Style="{StaticResource OrderItemUnitPriceStyle}"
+                        Text="{Binding UnitPrice, StringFormat='${0:N2}'}" />
+                    <Label
                         Grid.Column="1"
-                        Text="{Binding Quantity}"
-                        Style="{StaticResource OrderItemQuantityStyle}"/>
+                        Style="{StaticResource OrderItemQuantityStyle}"
+                        Text="{Binding Quantity}" />
                 </Grid>
-                <!-- TOTAL -->
+                <!--  TOTAL  -->
                 <Label
                     Grid.Row="2"
-                    Text="{Binding Total, StringFormat='${0:N2}'}"
-                    Style="{StaticResource OrderTotalStyle}"/>
+                    Style="{StaticResource OrderTotalStyle}"
+                    Text="{Binding Total, StringFormat='${0:N2}'}" />
             </Grid>
-            <Grid 
+            <Grid
+                Grid.Row="1"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                Grid.Row="1"
-                BackgroundColor="{StaticResource SeparatorLineColor}"/>
+                BackgroundColor="{StaticResource SeparatorLineColor}" />
         </Grid>
     </ContentView.Content>
 </ContentView>

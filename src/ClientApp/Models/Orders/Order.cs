@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace eShop.ClientApp.Models.Orders;
 
@@ -18,26 +18,19 @@ public class Order
     
     public int SequenceNumber { get; set; }
 
-    [JsonPropertyName("date")]
-    public DateTime OrderDate { get; set; }
+    [JsonPropertyName("date")] public DateTime OrderDate { get; set; }
 
-    [JsonPropertyName("status")]
-    public OrderStatus OrderStatus { get; set; }
+    [JsonPropertyName("status")] public string OrderStatus { get; set; }
 
-    [JsonPropertyName("city")]
-    public string ShippingCity { get; set; }
+    [JsonPropertyName("city")] public string ShippingCity { get; set; }
 
-    [JsonPropertyName("street")]
-    public string ShippingStreet { get; set; }
+    [JsonPropertyName("street")] public string ShippingStreet { get; set; }
 
-    [JsonPropertyName("state")]
-    public string ShippingState { get; set; }
+    [JsonPropertyName("state")] public string ShippingState { get; set; }
 
-    [JsonPropertyName("country")]
-    public string ShippingCountry { get; set; }
+    [JsonPropertyName("country")] public string ShippingCountry { get; set; }
 
-    [JsonPropertyName("zipCode")]
-    public string ShippingZipCode { get; set; }
+    [JsonPropertyName("zipCode")] public string ShippingZipCode { get; set; }
 
     public int CardTypeId { get; set; }
 
@@ -52,9 +45,7 @@ public class Order
     [JsonPropertyName("items")]
     public List<OrderItem> OrderItems { get; set; }
 
-    [JsonPropertyName("total")]
-    public decimal Total { get; set; }
+    [JsonPropertyName("total")] public decimal Total { get; set; }
 
-    [JsonPropertyName("ordernumber")]
-    public int OrderNumber { get; set; }
+    [JsonPropertyName("ordernumber")] public int OrderNumber { get; set; }
 }

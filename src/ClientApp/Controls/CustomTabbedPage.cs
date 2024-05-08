@@ -3,12 +3,10 @@
 public class CustomTabbedPage : TabbedPage
 {
     public static BindableProperty BadgeTextProperty =
-        BindableProperty.CreateAttached("BadgeText", typeof(string), typeof(CustomTabbedPage), default(string),
-            BindingMode.OneWay);
+        BindableProperty.CreateAttached("BadgeText", typeof(string), typeof(CustomTabbedPage), default(string));
 
     public static BindableProperty BadgeColorProperty =
-        BindableProperty.CreateAttached("BadgeColor", typeof(Color), typeof(CustomTabbedPage), Colors.Transparent,
-            BindingMode.OneWay);
+        BindableProperty.CreateAttached("BadgeColor", typeof(Color), typeof(CustomTabbedPage), Colors.Transparent);
 
     public static string GetBadgeText(BindableObject view)
     {

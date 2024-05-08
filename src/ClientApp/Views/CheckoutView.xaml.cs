@@ -1,6 +1,6 @@
 ﻿namespace eShop.ClientApp.Views;
 
-public partial class CheckoutView : ContentPageBase
+public partial class CheckoutView
 {
     public CheckoutView(CheckoutViewModel viewModel)
     {

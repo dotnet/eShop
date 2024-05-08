@@ -1,19 +1,20 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Globalization;
 using eShop.ClientApp.Services;
 using eShop.ClientApp.Services.AppEnvironment;
 using eShop.ClientApp.Services.Location;
 using eShop.ClientApp.Services.Settings;
 using eShop.ClientApp.Services.Theme;
+using Location = eShop.ClientApp.Models.Location.Location;
 
 namespace eShop.ClientApp;
 
 public partial class App : Application
 {
-    private readonly ISettingsService _settingsService;
     private readonly IAppEnvironmentService _appEnvironmentService;
-    private readonly INavigationService _navigationService;
     private readonly ILocationService _locationService;
+    private readonly INavigationService _navigationService;
+    private readonly ISettingsService _settingsService;
     private readonly ITheme _theme;
 
     public App(
@@ -33,7 +34,7 @@ public partial class App : Application
 
         MainPage = new AppShell(navigationService);
 
-        Application.Current.UserAppTheme = AppTheme.Light;
+        Current.UserAppTheme = AppTheme.Light;
     }
 
     private void InitApp()
@@ -57,7 +58,7 @@ public partial class App : Application
         {
             await GetGpsLocation();
         }
-        
+
         if (!_settingsService.UseMocks)
         {
             await SendCurrentLocation();
@@ -83,7 +84,7 @@ public partial class App : Application
         Dispatcher.Dispatch(() => SetStatusBar());
     }
 
-    void SetStatusBar()
+    private void SetStatusBar()
     {
         var nav = Current.MainPage as NavigationPage;
 
@@ -134,18 +135,18 @@ public partial class App : Application
 
     private async Task SendCurrentLocation()
     {
-        var location = new Models.Location.Location
+        var location = new Location
         {
             Latitude = double.Parse(_settingsService.Latitude, CultureInfo.InvariantCulture),
             Longitude = double.Parse(_settingsService.Longitude, CultureInfo.InvariantCulture)
         };
-        
+
         await _locationService.UpdateUserLocation(location);
     }
 
     public static void HandleAppActions(AppAction appAction)
     {
-        if (App.Current is not App app)
+        if (Current is not App app)
         {
             return;
         }

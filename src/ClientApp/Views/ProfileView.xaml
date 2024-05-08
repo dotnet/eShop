@@ -1,24 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+
 <views:ContentPageBase
     x:Class="eShop.ClientApp.Views.ProfileView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:templates="clr-namespace:eShop.ClientApp.Views.Templates"
-    xmlns:viewModelBase="clr-namespace:eShop.ClientApp.ViewModels.Base"
     xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
     xmlns:views="clr-namespace:eShop.ClientApp.Views"
-    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="MY PROFILE"
     x:DataType="viewmodels:ProfileViewModel">
     <ContentPage.Resources>
         <ResourceDictionary>
-
-            <Style x:Key="LoginButtonStyle" TargetType="{x:Type Label}">
-                <Setter Property="FontFamily" Value="Montserrat-Regular" />
-                <Setter Property="TextColor" Value="{StaticResource WhiteColor}" />
-                <Setter Property="HorizontalOptions" Value="Center" />
-                <Setter Property="VerticalOptions" Value="Center" />
-            </Style>
 
             <Style x:Key="MyOrdersLabelStyle" TargetType="{x:Type Label}">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
@@ -31,7 +23,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="LOGOUT" Command="{Binding LogoutCommand}" />
+        <ToolbarItem Command="{Binding LogoutCommand}" Text="LOGOUT" />
     </ContentPage.ToolbarItems>
 
     <!--  ORDERS  -->
@@ -44,16 +36,14 @@
                 VerticalOptions="Center" />
         </Grid>
         <CollectionView
-            SelectedItem="{Binding SelectedOrder, Mode=TwoWay}"
-            ItemsSource="{Binding Orders}"
             ItemSizingStrategy="MeasureAllItems"
-            SelectionMode="Single"
+            ItemsSource="{Binding Orders}"
+            SelectedItem="{Binding SelectedOrder, Mode=TwoWay}"
             SelectionChangedCommand="{Binding OrderDetailCommand}"
-            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}">
+            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}"
+            SelectionMode="Single">
             <CollectionView.Header>
-                <Label
-                    Style="{StaticResource MyOrdersLabelStyle}"
-                    Text="MY ORDERS" />
+                <Label Style="{StaticResource MyOrdersLabelStyle}" Text="MY ORDERS" />
             </CollectionView.Header>
             <CollectionView.ItemTemplate>
                 <DataTemplate>

@@ -11,18 +11,28 @@ A reference .NET application implementing an e-commerce website using a services
 ### Prerequisites
 
 - Clone the eShop repository: https://github.com/dotnet/eshop
-- (Windows only) Install Visual Studio. Visual Studio contains tooling support for .NET Aspire that you'll want to have. [Visual Studio 2022 version 17.10 Preview](https://visualstudio.microsoft.com/vs/preview/).
-  - During installation, ensure that the following are selected:
+- Install & start Docker Desktop: https://docs.docker.com/engine/install/
+
+#### Windows with Visutal Studio
+- Install [Visual Studio 2022 version 17.10 Preview](https://visualstudio.microsoft.com/vs/preview/).
+  - Select the following workloads:
     - `ASP.NET and web development` workload.
     - `.NET Aspire SDK` component in `Individual components`.
-- Install the latest [.NET 8 SDK](https://github.com/dotnet/installer#installers-and-binaries)
-- On Mac/Linux (or if not using Visual Studio), install the Aspire workload with the following commands:
+    - Optional: `.NET Multi-platform App UI development` to run client apps
+
+#### Mac, Linux, & Windows without Visual Studio
+- Install the latest [.NET 8 SDK](https://dot.net/download?cid=eshop)
+- Install the [.NET Aspire workload](https://learn.microsoft.com/dotnet/aspire/fundamentals/setup-tooling?tabs=dotnet-cli%2Cunix#install-net-aspire) with the following commands:
 ```powershell
 dotnet workload update
 dotnet workload install aspire
 dotnet restore eShop.Web.slnf
 ```
-- Install & start Docker Desktop: https://docs.docker.com/engine/install/
+
+> Note: These commands may require `sudo`
+
+- Optional: Install [Visual Studio Code with C# Dev Kit](https://code.visualstudio.com/docs/csharp/get-started)
+- Optional: Install [.NET MAUI Workload](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=visual-studio-code)
 
 ### Running the solution
 
@@ -40,10 +50,12 @@ dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj
 ```
 then look for lines like this in the console output in order to find the URL to open the Aspire dashboard:
 ```sh
-Now listening on: http://localhost:18848
+Login to the dashboard at: http://localhost:19888/login?t=uniquelogincodeforyou
 ```
 
-## Azure Open AI
+> You may need to install ASP.NET Core HTTPS development certificates first, and then close all browser tabs. Learn more at https://aka.ms/aspnet/https-trust-dev-cert
+
+### Azure Open AI
 
 When using Azure OpenAI, inside *eShop.AppHost/appsettings.json*, add the following section:
 
@@ -61,15 +73,11 @@ bool useOpenAI = false;
 
 Here's additional guidance on the [.NET Aspire OpenAI component](https://learn.microsoft.com/dotnet/aspire/azureai/azureai-openai-component?tabs=dotnet-cli). 
 
-### Sample data
-
-The sample catalog data is defined in [catalog.json](https://github.com/dotnet/eShop/blob/main/src/Catalog.API/Setup/catalog.json). Those product names, descriptions, and brand names are fictional and were generated using [GPT-35-Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/chatgpt), and the corresponding [product images](https://github.com/dotnet/eShop/tree/main/src/Catalog.API/Pics) were generated using [DALL·E 3](https://openai.com/dall-e-3).
-
-## Use Azure Developer CLI
+### Use Azure Developer CLI
 
 You can use the [Azure Developer CLI](https://aka.ms/azd) to run this project on Azure with only a few commands. Follow the next instructions:
 
-- Install [azd](https://aka.ms/azure-dev/install).
+- Install the latest or update to the latest [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install).
 - Log in `azd` (if you haven't done it before) to your Azure account:
 ```sh
 azd auth login
@@ -79,8 +87,8 @@ azd auth login
 azd init
 ```
 - During init:
-  - Select `Use code in the current directory`. Azd will automatically detect the Dotnet Aspire project.
-  - Confirm `.Net (Aspire)` and continue.
+  - Select `Use code in the current directory`. Azd will automatically detect the .NET Aspire project.
+  - Confirm `.NET (Aspire)` and continue.
   - Select which services to expose to the Internet (exposing `webapp` is enough to test the sample).
   - Finalize the initialization by giving a name to your environment.
 
@@ -98,6 +106,10 @@ Notes:
 ## Contributing
 
 For more information on contributing to this repo, read [the contribution documentation](./CONTRIBUTING.md) and [the Code of Conduct](CODE-OF-CONDUCT.md).
+
+### Sample data
+
+The sample catalog data is defined in [catalog.json](https://github.com/dotnet/eShop/blob/main/src/Catalog.API/Setup/catalog.json). Those product names, descriptions, and brand names are fictional and were generated using [GPT-35-Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/chatgpt), and the corresponding [product images](https://github.com/dotnet/eShop/tree/main/src/Catalog.API/Pics) were generated using [DALL·E 3](https://openai.com/dall-e-3).
 
 ## eShop on Azure
 
