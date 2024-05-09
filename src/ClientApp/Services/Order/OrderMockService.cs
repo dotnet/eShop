@@ -26,8 +26,12 @@ public class OrderMockService : IOrderService
     {
         Id = Guid.NewGuid(),
         CardHolderName = "American Express",
-        CardNumber = "378282246310005",
-        CardType = new CardType {Id = 3, Name = "MasterCard"},
+        CardNumber = "XXXXXXXXXXXX0005",
+        CardType = new CardType
+        {
+            Id = 3,
+            Name = "MasterCard"
+        },
         Expiration = MockExpirationDate.ToString(),
         ExpirationMonth = MockExpirationDate.Month,
         ExpirationYear = MockExpirationDate.Year,
@@ -62,7 +66,7 @@ public class OrderMockService : IOrderService
     {
         CardExpiration = DateTime.UtcNow,
         CardHolderName = "FakeCardHolderName",
-        CardNumber = "122333423224",
+        CardNumber = "XXXXXXXXXXXX3224",
         CardSecurityNumber = "1234",
         CardTypeId = 1,
         City = "FakeCity",
