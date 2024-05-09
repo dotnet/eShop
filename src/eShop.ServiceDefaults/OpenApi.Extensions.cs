@@ -1,11 +1,11 @@
 ﻿using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace eShop.ServiceDefaults;
 
@@ -21,74 +21,123 @@ public static partial class Extensions
             return app;
         }
 
-        app.UseSwagger();
+        app.MapOpenApi();
 
         if (app.Environment.IsDevelopment())
         {
-            app.UseSwaggerUI(setup =>
-            {
-                /// {
-                ///   "OpenApi": {
-                ///     "Endpoint: {
-                ///         "Name": 
-                ///     },
-                ///     "Auth": {
-                ///         "ClientId": ..,
-                ///         "AppName": ..
-                ///     }
-                ///   }
-                /// }
-
-                var pathBase = configuration["PATH_BASE"] ?? string.Empty;
-                var authSection = openApiSection.GetSection("Auth");
-                var endpointSection = openApiSection.GetRequiredSection("Endpoint");
-
-                foreach (var description in app.DescribeApiVersions())
-                {
-                    var name = description.GroupName;
-                    var url = endpointSection["Url"] ?? $"{pathBase}/swagger/{name}/swagger.json";
-
-                    setup.SwaggerEndpoint(url, name);
-                }
-
-                if (authSection.Exists())
-                {
-                    setup.OAuthClientId(authSection.GetRequiredValue("ClientId"));
-                    setup.OAuthAppName(authSection.GetRequiredValue("AppName"));
-                }
-            });
-
-            // Add a redirect from the root of the app to the swagger endpoint
-            app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
+            var authSection = openApiSection.GetSection("Auth");
+            app.MapSwaggerUi(authSection);
         }
 
         return app;
+    }
+
+    private static IEndpointConventionBuilder MapSwaggerUi(this IEndpointRouteBuilder endpoints, IConfigurationSection authConfigurationSection)
+    {
+        return endpoints.MapGet("/swagger/{documentName}", (string documentName) => Results.Content($$"""
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>OpenAPI -- {{documentName}}</title>
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
+    </head>
+    <body>
+        <div id="swagger-ui"></div>
+
+        <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
+        <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+
+        <script>
+            window.onload = function() {
+                const ui = SwaggerUIBundle({
+                    url: "/openapi/{{documentName}}.json",
+                        dom_id: '#swagger-ui',
+                        deepLinking: true,
+                        presets: [
+                            SwaggerUIBundle.presets.apis,
+                            SwaggerUIStandalonePreset
+                        ],
+                        plugins: [
+                            SwaggerUIBundle.plugins.DownloadUrl
+                        ],
+                        layout: "StandaloneLayout",
+                });
+                {{InitializeOAuth(authConfigurationSection)}}
+                window.ui = ui
+            }
+        </script>
+    </body>
+    </html>
+    """, "text/html")).ExcludeFromDescription();
+
+        static string InitializeOAuth(IConfigurationSection configurationSection)
+        {
+            if (configurationSection.Exists())
+            {
+                var clientId = configurationSection.GetRequiredValue("ClientId");
+                var appName = configurationSection.GetRequiredValue("AppName");
+                return $@"
+                    ui.initOAuth({{
+                            appName: ""{appName}"",
+                            clientId: ""{clientId}"",
+                            appName: ""{appName}"",
+                        }});
+                    ";
+            }
+            return string.Empty;
+        }
     }
 
     public static IHostApplicationBuilder AddDefaultOpenApi(
         this IHostApplicationBuilder builder,
         IApiVersioningBuilder? apiVersioning = default)
     {
-        var services = builder.Services;
-        var configuration = builder.Configuration;
-        var openApi = configuration.GetSection("OpenApi");
+        var openApi = builder.Configuration.GetSection("OpenApi");
+        var identitySection = builder.Configuration.GetSection("Identity");
+
+        var scopes = identitySection.Exists()
+            ? identitySection.GetRequiredSection("Scopes").GetChildren().ToDictionary(p => p.Key, p => p.Value)
+            : new Dictionary<string, string?>();
+
 
         if (!openApi.Exists())
         {
             return builder;
         }
 
-        services.AddEndpointsApiExplorer();
-
         if (apiVersioning is not null)
         {
             // the default format will just be ApiVersion.ToString(); for example, 1.0.
             // this will format the version as "'v'major[.minor][-status]"
-            apiVersioning.AddApiExplorer(options => options.GroupNameFormat = "'v'VVV");
-            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
-            services.AddSwaggerGen(options => options.OperationFilter<OpenApiDefaultValues>());
+            var versioned = apiVersioning.AddApiExplorer(options => options.GroupNameFormat = "'v'VVV");
+            var apiDescriptionProvider = versioned.Services.GetService<IApiVersionDescriptionProvider>();
+            foreach (var description in apiDescriptionProvider.ApiVersionDescriptions)
+            {
+                builder.Services.AddOpenApi(description.GroupName, options =>
+                {
+                    options.ApplyApiVersionInfo(description,
+                        title: openApi.GetRequiredValue("Document:Title"),
+                        description: openApi.GetRequiredValue("Document:Description"));
+                    options.ApplyAuthorizationChecks([.. scopes.Keys]);
+                    options.ApplySecuritySchemeDefinitions();
+                    options.ApplyOperationDefaultValues();
+                });
+            }
         }
 
         return builder;
+    }
+
+    internal static T GetService<T>(this IServiceCollection services)
+    {
+        var descriptor = services.LastOrDefault(d => typeof(T).IsAssignableFrom(d.ServiceType) || d.ServiceType == typeof(T));
+        if (descriptor is { ImplementationInstance: T instance })
+        {
+            return instance;
+        }
+        else
+        {
+            return (T)descriptor!.ImplementationFactory!(services.BuildServiceProvider());
+        }
     }
 }
