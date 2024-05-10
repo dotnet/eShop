@@ -1,15 +1,9 @@
 ﻿#pragma warning disable SKEXP0001, SKEXP0003, SKEXP0010, SKEXP0011, SKEXP0050, SKEXP0052
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.SemanticKernel;
 
 namespace WebApp.UnitTests
 {
-
     public class PromptEvaluationFixture
     {
         public Kernel Kernel { get; }
@@ -25,7 +19,9 @@ namespace WebApp.UnitTests
 
             var builder = Kernel.CreateBuilder();
 
-            if (config["ESHOP_TESTS_SK_KERNEL_COMPLETION_TYPE"]?.ToString().Equals("openai") ?? false)
+            var useAzureOpenAI = !string.IsNullOrEmpty(config["AZURE_OPENAI_MODEL"]);
+
+            if (useAzureOpenAI)
             {
                 builder.AddOpenAIChatCompletion(
                    modelId: config["ESHOP_OPENAI_MODEL"],

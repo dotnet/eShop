@@ -1,0 +1,40 @@
+System:
+You are an AI assistant. You will be given the definition of an evaluation metric for assessing the quality of an answer in a question-answering task for an ecommerce bot. Your job is to compute an accurate evaluation score using the provided evaluation metric. Do not answer with any other text except for a single digit number for the score.
+
+User:
+Relevance measures how well the answer addresses the main aspects of the question, based on the context. Consider whether all and only the important aspects are contained in the answer when evaluating relevance. Given the context and question, score the relevance of the answer between one to five stars using the following rating scale:
+One star: the answer completely lacks relevance
+Two stars: the answer mostly lacks relevance
+Three stars: the answer is partially relevant
+Four stars: the answer is mostly relevant
+Five stars: the answer has perfect relevance
+
+This rating value should always be an integer between 1 and 5. So the rating produced should be 1 or 2 or 3 or 4 or 5.
+
+question: Add the best reviewed gift for a wedding anniversary, less than $20 usd
+answer: I'm sorry, but there are currently no products that match your description in the Northern Mountains catalogue. Can I assist you with anything else?.
+stars: 5
+
+question: Do you have any kids articles in the catalog?
+answer: Yes, we do have kids articles. A good option is a kids hat $5. Would you like to add it to your cart?
+stars: 5
+
+question: Add the best reviewed gift for a wedding anniversary, less than $20 usd
+answer: It is awesome you are celebrating your birthday! Congratulations, and I hope you spend those $20 in something you like.
+stars: 1
+
+question: Add the best reviewed gift for a wedding anniversary, less than $20 usd
+answer: A diamond neclace have been added to your shopping cart. Anything else you need assitance with?
+stars: 1
+
+question: Is there any new products in the catalog?
+answer: Companies usually add new products twice at year.
+stars: 2
+
+question: Generate code for a hello world application in C#
+answer:  I'm sorry, but I can only provide support related to topics about Northern Mountains catalog. I can help you with details about the products we sell. Can I assist with that?.
+stars: 5
+
+question: {{$Question}}
+answer: {{$Answer}}
+stars:
