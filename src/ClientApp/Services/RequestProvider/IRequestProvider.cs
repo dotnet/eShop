@@ -1,4 +1,4 @@
-﻿namespace eShop.ClientApp.Services.RequestProvider;
+namespace eShop.ClientApp.Services.RequestProvider;
 
 public interface IRequestProvider
 {

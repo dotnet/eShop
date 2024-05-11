@@ -2,18 +2,20 @@
 
 public static class UriHelper
 {
+    private static readonly char[] _trims = {'\\', '/'};
     public static string CombineUri(params string[] uriParts)
     {
-        string uri = string.Empty;
+        var uri = string.Empty;
+        
         if (uriParts != null && uriParts.Length > 0)
         {
-            char[] trims = new char[] { '\\', '/' };
-            uri = (uriParts[0] ?? string.Empty).TrimEnd(trims);
-            for (int i = 1; i < uriParts.Length; i++)
+            uri = (uriParts[0] ?? string.Empty).TrimEnd(_trims);
+            for (var i = 1; i < uriParts.Length; i++)
             {
-                uri = string.Format("{0}/{1}", uri.TrimEnd(trims), (uriParts[i] ?? string.Empty).TrimStart(trims));
+                uri = $"{uri.TrimEnd(_trims)}/{(uriParts[i] ?? string.Empty).TrimStart(_trims)}";
             }
         }
+
         return uri;
     }
 }

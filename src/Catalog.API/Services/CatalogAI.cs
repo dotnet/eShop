@@ -1,55 +1,76 @@
-﻿using Azure.AI.OpenAI;
+﻿using System.Diagnostics;
+using Microsoft.SemanticKernel.Embeddings;
 using Pgvector;
 
 namespace eShop.Catalog.API.Services;
 
 public sealed class CatalogAI : ICatalogAI
 {
-    private readonly string _aiEmbeddingModel;
-    private readonly OpenAIClient _openAIClient;
+    private const int EmbeddingDimensions = 384;
+    private readonly ITextEmbeddingGenerationService _embeddingGenerator;
 
     /// <summary>The web host environment.</summary>
     private readonly IWebHostEnvironment _environment;
     /// <summary>Logger for use in AI operations.</summary>
     private readonly ILogger _logger;
 
-    public CatalogAI(IOptions<AIOptions> options, IWebHostEnvironment environment, ILogger<CatalogAI> logger, OpenAIClient openAIClient = null)
+    public CatalogAI(IWebHostEnvironment environment, ILogger<CatalogAI> logger, ITextEmbeddingGenerationService embeddingGenerator = null)
     {
-        var aiOptions = options.Value;
-        _openAIClient = openAIClient;
-        _aiEmbeddingModel = aiOptions.OpenAI.EmbeddingName ?? "text-embedding-ada-002";
-        IsEnabled = _openAIClient != null;
+        _embeddingGenerator = embeddingGenerator;
         _environment = environment;
         _logger = logger;
-
-        if (_logger.IsEnabled(LogLevel.Information))
-        {
-            _logger.LogInformation("Embedding model: \"{model}\"", _aiEmbeddingModel);
-        }
     }
 
-    /// <summary>Gets whether the AI system is enabled.</summary>
-    public bool IsEnabled { get; }
+    /// <inheritdoc/>
+    public bool IsEnabled => _embeddingGenerator is not null;
 
-    /// <summary>Gets an embedding vector for the specified text.</summary>
+    /// <inheritdoc/>
+    public ValueTask<Vector> GetEmbeddingAsync(CatalogItem item) =>
+        IsEnabled ?
+            GetEmbeddingAsync(CatalogItemToString(item)) :
+            ValueTask.FromResult<Vector>(null);
+
+    /// <inheritdoc/>
+    public async ValueTask<IReadOnlyList<Vector>> GetEmbeddingsAsync(IEnumerable<CatalogItem> items)
+    {
+        if (IsEnabled)
+        {
+            long timestamp = Stopwatch.GetTimestamp();
+
+            IList<ReadOnlyMemory<float>> embeddings = await _embeddingGenerator.GenerateEmbeddingsAsync(items.Select(CatalogItemToString).ToList());
+            var results = embeddings.Select(m => new Vector(m[0..EmbeddingDimensions])).ToList();
+
+            if (_logger.IsEnabled(LogLevel.Trace))
+            {
+                _logger.LogTrace("Generated {EmbeddingsCount} embeddings in {ElapsedMilliseconds}s", results.Count, Stopwatch.GetElapsedTime(timestamp).TotalSeconds);
+            }
+
+            return results;
+        }
+
+        return null;
+    }
+
+    /// <inheritdoc/>
     public async ValueTask<Vector> GetEmbeddingAsync(string text)
     {
-        if (!IsEnabled)
+        if (IsEnabled)
         {
-            return null;
+            long timestamp = Stopwatch.GetTimestamp();
+
+            ReadOnlyMemory<float> embedding = await _embeddingGenerator.GenerateEmbeddingAsync(text);
+            embedding = embedding[0..EmbeddingDimensions];
+
+            if (_logger.IsEnabled(LogLevel.Trace))
+            {
+                _logger.LogTrace("Generated embedding in {ElapsedMilliseconds}s: '{Text}'", Stopwatch.GetElapsedTime(timestamp).TotalSeconds, text);
+            }
+
+            return new Vector(embedding);
         }
 
-        if (_logger.IsEnabled(LogLevel.Information))
-        {
-            _logger.LogInformation("Getting embedding for \"{text}\"", text);
-        }
-
-        EmbeddingsOptions options = new(_aiEmbeddingModel, [text]);
-        return new Vector((await _openAIClient.GetEmbeddingsAsync(options)).Value.Data[0].Embedding);
+        return null;
     }
 
-    /// <summary>Gets an embedding vector for the specified catalog item.</summary>
-    public ValueTask<Vector> GetEmbeddingAsync(CatalogItem item) => IsEnabled ?
-        GetEmbeddingAsync($"{item.Name} {item.Description}") :
-        ValueTask.FromResult<Vector>(null);
+    private static string CatalogItemToString(CatalogItem item) => $"{item.Name} {item.Description}";
 }

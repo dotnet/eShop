@@ -2,7 +2,7 @@
 
 public partial class CustomNavigationView : NavigationPage
 {
-    public CustomNavigationView() : base()
+    public CustomNavigationView()
     {
         InitializeComponent();
     }

@@ -1,23 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+
 <views:ContentPageBase
     x:Class="eShop.ClientApp.Views.CatalogView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:animations="clr-namespace:eShop.ClientApp.Animations"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:templates="clr-namespace:eShop.ClientApp.Views.Templates"
     xmlns:triggers="clr-namespace:eShop.ClientApp.Triggers"
     xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
     xmlns:views="clr-namespace:eShop.ClientApp.Views"
-    Title="CATALOG"
     x:DataType="viewmodels:CatalogViewModel">
+    <Shell.TitleView>
+        <Grid Padding="2" ColumnDefinitions="40,*,40">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Offset="0.0" Color="White" />
+                    <GradientStop Offset="0.75" Color="#8CFFFFFF" />
+                    <GradientStop Offset="1.0" Color="Transparent" />
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Image Grid.Column="1" Source="logo_header.png" />
+            <ImageButton
+                Grid.Column="2"
+                Aspect="AspectFit"
+                Command="{Binding FilterCommand, Mode=OneTime}"
+                HeightRequest="24"
+                HorizontalOptions="Center"
+                Source="{DynamicResource FilterIconForTitleImageSource}"
+                VerticalOptions="Center"
+                WidthRequest="24" />
+        </Grid>
+    </Shell.TitleView>
     <ContentPage.Resources>
         <ResourceDictionary>
-
-            <Style x:Key="FilterLabelStyle" TargetType="{x:Type Label}">
-                <Setter Property="TextColor" Value="{StaticResource WhiteColor}" />
-                <Setter Property="HorizontalOptions" Value="Center" />
-                <Setter Property="VerticalOptions" Value="Center" />
-            </Style>
 
             <animations:StoryBoard x:Key="ProductsAnimation" Target="{x:Reference Products}">
                 <animations:FadeInAnimation
@@ -33,60 +49,188 @@
             <triggers:BeginAnimation Animation="{StaticResource ProductsAnimation}" />
         </EventTrigger>
     </ContentPage.Triggers>
-    <ContentPage.ToolbarItems>
-        <ToolbarItem IconImageSource="{DynamicResource FilterIconForTitleImageSource}" Command="{Binding ShowFilterCommand, Mode=OneTime}" />
-    </ContentPage.ToolbarItems>
-    <Grid ColumnSpacing="0" RowSpacing="0">
+    <Grid
+        ColumnSpacing="0"
+        RowDefinitions="Auto,*"
+        RowSpacing="0">
+        <Image
+            x:Name="HeaderImage"
+            Grid.RowSpan="2"
+            Margin="0,60,0,0"
+            Aspect="AspectFit"
+            Source="header_home.png"
+            VerticalOptions="Start" />
+
         <!--  CATALOG  -->
-        <Label
-            IsVisible="{Binding Products.Count, Converter={StaticResource DoesNotHaveCountConverter}}"
-            Text="NO PRODUCTS FOUND"
-            HorizontalOptions="Center"
-            VerticalOptions="Center" />
         <CollectionView
             x:Name="Products"
-            HorizontalOptions="CenterAndExpand"
-            SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
-            IsVisible="{Binding Products.Count, Converter={StaticResource HasCountConverter}}"
+            Grid.Row="1"
+            ItemSizingStrategy="MeasureFirstItem"
             ItemsSource="{Binding Products, Mode=OneTime}"
+            Scrolled="Products_OnScrolled"
+            SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+            SelectionChangedCommand="{Binding ViewCatalogItemCommand, Mode=OneTime}"
+            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}"
             SelectionMode="Single"
-            VerticalScrollBarVisibility="Never"
-            SelectionChangedCommand="{Binding AddCatalogItemCommand}"
-            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}">
-			<CollectionView.ItemsLayout>
-				<GridItemsLayout Orientation="Vertical"
-								 Span="{OnIdiom 2, Desktop=4}" />
-			</CollectionView.ItemsLayout>
+            VerticalScrollBarVisibility="Never">
+            <CollectionView.Header>
+                <Grid
+                    Padding="8"
+                    MinimumHeightRequest="200"
+                    RowDefinitions="*,Auto,Auto"
+                    RowSpacing="4">
+                    <Label
+                        Grid.Row="1"
+                        FontAttributes="Bold"
+                        FontSize="{StaticResource ExtraBigSize}"
+                        Text="Ready for a new adventure?" />
+                    <Label
+                        Grid.Row="2"
+                        FontSize="{StaticResource MediumSize}"
+                        Text="Start the season with the latest in clothing and equipment." />
+                </Grid>
+            </CollectionView.Header>
+            <CollectionView.EmptyView>
+                <Label
+                    HorizontalOptions="Center"
+                    Text="NO PRODUCTS FOUND"
+                    VerticalOptions="Center" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="{OnIdiom 2, Desktop=4}" />
+            </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <templates:ProductTemplate />
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+
+        <views:BadgeView
+            x:Name="badge"
+            Grid.Row="1"
+            Margin="16"
+            BadgeColor="{AppThemeBinding Light={StaticResource DarkBackgroundColor},
+                                         Dark={StaticResource LightBackgroundColor}}"
+            HorizontalOptions="End"
+            Text="{Binding BadgeCount, Mode=OneWay}"
+            TextColor="{AppThemeBinding Light={StaticResource DarkForegroundColor},
+                                        Dark={StaticResource LightForegroundColor}}"
+            VerticalOptions="End">
+            <Button
+                Padding="8"
+                BackgroundColor="{StaticResource LightGrayColor}"
+                Command="{Binding ViewBasketCommand, Mode=OneTime}"
+                CornerRadius="8"
+                HeightRequest="56"
+                ImageSource="{DynamicResource BasketIconForTitleImageSource}"
+                WidthRequest="56" />
+        </views:BadgeView>
+
+        <mct:Expander
+            Grid.Row="1"
+            IsExpanded="{Binding IsFiltering, Mode=OneWay}"
+            VerticalOptions="Start">
+            <mct:Expander.Shadow>
+                <Shadow
+                    Brush="Black"
+                    Opacity="1.0"
+                    Radius="200"
+                    Offset="0,20" />
+            </mct:Expander.Shadow>
+            <mct:Expander.Content>
+                <Border StrokeShape="RoundRectangle 0,0,12,12" StrokeThickness="0">
+                    <ScrollView BackgroundColor="White" VerticalOptions="Fill">
+                        <VerticalStackLayout Padding="8,8,8,16" Spacing="4">
+                            <Label FontAttributes="Bold" FontSize="{StaticResource LargerSize}">Filters</Label>
+                            <BoxView
+                                Margin="4"
+                                HeightRequest="1"
+                                Color="Black" />
+                            <Label FontAttributes="Bold" Style="{StaticResource MediumSizeFontStyle}">Brands</Label>
+                            <FlexLayout
+                                AlignContent="Start"
+                                AlignItems="Start"
+                                BindableLayout.ItemsSource="{Binding Brands, Mode=OneWay}"
+                                Direction="Row"
+                                Wrap="Wrap">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="viewmodels:CatalogBrandSelectionViewModel">
+                                        <Button
+                                            Margin="4"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CatalogViewModel}}, Path=SelectCatalogBrandCommand}"
+                                            CommandParameter="{Binding Value}"
+                                            Style="{StaticResource TransparentButtonStyle}"
+                                            Text="{Binding Value.Brand, Mode=OneTime}">
+                                            <Button.Triggers>
+                                                <DataTrigger
+                                                    Binding="{Binding Selected}"
+                                                    TargetType="Button"
+                                                    Value="True">
+                                                    <Setter Property="TextColor" Value="{StaticResource AccentColor}" />
+                                                </DataTrigger>
+                                            </Button.Triggers>
+                                        </Button>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                                <BindableLayout.EmptyView>
+                                    <Label HorizontalOptions="Fill" Text="Loading" />
+                                </BindableLayout.EmptyView>
+                            </FlexLayout>
+                            <Label FontAttributes="Bold" Style="{StaticResource MediumSizeFontStyle}">Types</Label>
+                            <FlexLayout
+                                AlignContent="Start"
+                                AlignItems="Start"
+                                BindableLayout.ItemsSource="{Binding Types, Mode=OneWay}"
+                                Direction="Row"
+                                Wrap="Wrap">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="viewmodels:CatalogTypeSelectionViewModel">
+                                        <Button
+                                            Margin="4"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CatalogViewModel}}, Path=SelectCatalogTypeCommand}"
+                                            CommandParameter="{Binding Value}"
+                                            Style="{StaticResource TransparentButtonStyle}"
+                                            Text="{Binding Value.Type, Mode=OneTime}">
+                                            <Button.Triggers>
+                                                <DataTrigger
+                                                    Binding="{Binding Selected}"
+                                                    TargetType="Button"
+                                                    Value="True">
+                                                    <Setter Property="TextColor" Value="{StaticResource AccentColor}" />
+                                                </DataTrigger>
+                                            </Button.Triggers>
+                                        </Button>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                                <BindableLayout.EmptyView>
+                                    <Label HorizontalOptions="Fill" Text="Loading" />
+                                </BindableLayout.EmptyView>
+                            </FlexLayout>
+                            <HorizontalStackLayout HorizontalOptions="End">
+                                <Button
+                                    Command="{Binding ClearFilterCommand}"
+                                    Style="{StaticResource TransparentButtonStyle}"
+                                    Text="Clear" />
+                                <Button
+                                    Command="{Binding ApplyFilterCommand}"
+                                    CornerRadius="4"
+                                    Text="Apply" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </ScrollView>
+                </Border>
+            </mct:Expander.Content>
+        </mct:Expander>
+
+
         <!--  INDICATOR  -->
-		<ActivityIndicator
+        <ActivityIndicator
+            Grid.Row="1"
             HorizontalOptions="Center"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
             VerticalOptions="Center"
-            Color="{StaticResource BlackColor}"/>
-
-        <views:BadgeView
-            x:Name="badge"
-            Margin="16"
-            Text="{Binding BadgeCount, Mode=OneWay}"
-            BadgeColor="{AppThemeBinding Light={StaticResource DarkBackgroundColor}, Dark={StaticResource LightBackgroundColor}}"
-            TextColor="{AppThemeBinding Light={StaticResource DarkForegroundColor}, Dark={StaticResource LightForegroundColor}}"
-            HorizontalOptions="End"
-            VerticalOptions="End">
-                <Button
-                    ImageSource="{DynamicResource BasketIconForTitleImageSource}"
-                    Command="{Binding ViewBasketCommand, Mode=OneTime}"
-                    BackgroundColor="{StaticResource LightGrayColor}"
-                    Padding="8"
-                    CornerRadius="8"
-                    HeightRequest="56"
-                    WidthRequest="56"/>
-        </views:BadgeView>
+            Color="{StaticResource BlackColor}" />
     </Grid>
 </views:ContentPageBase>

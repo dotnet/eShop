@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
+
 <views:ContentPageBase
     x:Class="eShop.ClientApp.Views.OrderDetailView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -6,9 +7,8 @@
     xmlns:animations="clr-namespace:eShop.ClientApp.Animations"
     xmlns:templates="clr-namespace:eShop.ClientApp.Views.Templates"
     xmlns:triggers="clr-namespace:eShop.ClientApp.Triggers"
-    xmlns:views="clr-namespace:eShop.ClientApp.Views"
-    xmlns:viewModelBase="clr-namespace:eShop.ClientApp.ViewModels.Base"
     xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
+    xmlns:views="clr-namespace:eShop.ClientApp.Views"
     Title="{Binding Order.OrderNumber, StringFormat='ORDER {0}'}"
     x:DataType="viewmodels:OrderDetailViewModel">
     <ContentPage.Resources>
@@ -27,7 +27,10 @@
                 <Setter Property="FontSize" Value="{StaticResource LittleSize}" />
             </Style>
 
-            <Style x:Key="OrderTotalStyle" BasedOn="{StaticResource MediumSizeFontStyle}" TargetType="{x:Type Label}" >
+            <Style
+                x:Key="OrderTotalStyle"
+                BasedOn="{StaticResource MediumSizeFontStyle}"
+                TargetType="{x:Type Label}">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="FontSize" Value="{StaticResource LargerSize}" />
                 <Setter Property="HorizontalOptions" Value="End" />
@@ -82,7 +85,10 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <!--  ORDER INFO  -->
-            <Grid x:Name="OrderInfo" Opacity="0" Padding="8">
+            <Grid
+                x:Name="OrderInfo"
+                Padding="8"
+                Opacity="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
@@ -98,24 +104,61 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource TitleStyle}" Text="ORDER NUMBER" />
-                <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource OrderContentStyle}" Text="{Binding Order.OrderNumber}" />
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Style="{StaticResource TitleStyle}"
+                    Text="ORDER NUMBER" />
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Style="{StaticResource OrderContentStyle}"
+                    Text="{Binding Order.OrderNumber}" />
 
-                <Label Grid.Row="3" Grid.Column="0" Style="{StaticResource TitleStyle}" Text="TOTAL" />
-                <Label Grid.Row="4" Grid.Column="0" Style="{StaticResource OrderContentStyle}" Text="{Binding Order.Total, StringFormat='${0:N2}'}" />
+                <Label
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Style="{StaticResource TitleStyle}"
+                    Text="TOTAL" />
+                <Label
+                    Grid.Row="4"
+                    Grid.Column="0"
+                    Style="{StaticResource OrderContentStyle}"
+                    Text="{Binding Order.Total, StringFormat='${0:N2}'}" />
 
-                <Label Grid.Row="0" Grid.Column="1" Style="{StaticResource TitleStyle}" Text="DATE" />
-                <Label Grid.Row="1" Grid.Column="1" Style="{StaticResource OrderContentStyle}" Text="{Binding Order.OrderDate, StringFormat={StaticResource DateTimeFormat}}" />
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Style="{StaticResource TitleStyle}"
+                    Text="DATE" />
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Style="{StaticResource OrderContentStyle}"
+                    Text="{Binding Order.OrderDate, StringFormat={StaticResource DateTimeFormat}}" />
 
-                <Label Grid.Row="3" Grid.Column="1" Style="{StaticResource TitleStyle}" Text="STATUS" />
-                <Label Grid.Row="4" Grid.Column="1" Style="{StaticResource OrderContentStyle}" Text="{Binding Order.OrderStatus, Converter={StaticResource OrderStatusToStringConverter}}" />
-                
+                <Label
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Style="{StaticResource TitleStyle}"
+                    Text="STATUS" />
+                <Label
+                    Grid.Row="4"
+                    Grid.Column="1"
+                    Style="{StaticResource OrderContentStyle}"
+                    Text="{Binding Order.OrderStatus}" />
+
                 <!--  SHIPPING ADDRESS  -->
                 <Label
-                    Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"
+                    Grid.Row="6"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
                     Style="{StaticResource TitleStyle}"
                     Text="SHIPPING ADDRESS" />
-                <VerticalStackLayout Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2">
+                <VerticalStackLayout
+                    Grid.Row="7"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2">
                     <Label Style="{StaticResource AddressStyle}" Text="{Binding Order.ShippingStreet}" />
                     <Label Style="{StaticResource AddressStyle}" Text="{Binding Order.ShippingCity}" />
                     <Label Style="{StaticResource AddressStyle}" Text="{Binding Order.ShippingState}" />
@@ -136,9 +179,7 @@
             </CollectionView.ItemTemplate>
             <CollectionView.Footer>
                 <VerticalStackLayout Padding="8">
-                    <Label
-                        Style="{StaticResource OrderTotalStyle}"
-                        Text="TOTAL"/>
+                    <Label Style="{StaticResource OrderTotalStyle}" Text="TOTAL" />
                     <Label
                         Style="{StaticResource OrderTotalStyle}"
                         Text="{Binding Order.Total, StringFormat='${0:N2}'}"

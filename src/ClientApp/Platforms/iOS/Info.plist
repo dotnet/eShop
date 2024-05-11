@@ -3,7 +3,7 @@
 <plist version="1.0">
     <dict>
         <key>LSRequiresIPhoneOS</key>
-        <true />
+        <true/>
         <key>UIDeviceFamily</key>
         <array>
             <integer>1</integer>

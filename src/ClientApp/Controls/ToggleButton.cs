@@ -5,23 +5,23 @@ namespace eShop.ClientApp.Controls;
 public class ToggleButton : ContentView
 {
     public static readonly BindableProperty CommandProperty =
-        BindableProperty.Create(nameof(Command), typeof(ICommand), typeof(ToggleButton), null);
+        BindableProperty.Create(nameof(Command), typeof(ICommand), typeof(ToggleButton));
 
     public static readonly BindableProperty CommandParameterProperty =
-        BindableProperty.Create(nameof(CommandParameter), typeof(object), typeof(ToggleButton), null);
+        BindableProperty.Create(nameof(CommandParameter), typeof(object), typeof(ToggleButton));
 
     public static readonly BindableProperty CheckedProperty =
         BindableProperty.Create(nameof(Checked), typeof(bool), typeof(ToggleButton), false, BindingMode.TwoWay,
-            null, propertyChanged: OnCheckedChanged);
+            propertyChanged: OnCheckedChanged);
 
     public static readonly BindableProperty AnimateProperty =
         BindableProperty.Create(nameof(Animate), typeof(bool), typeof(ToggleButton), false);
 
     public static readonly BindableProperty CheckedImageProperty =
-        BindableProperty.Create(nameof(CheckedImage), typeof(ImageSource), typeof(ToggleButton), null);
+        BindableProperty.Create(nameof(CheckedImage), typeof(ImageSource), typeof(ToggleButton));
 
     public static readonly BindableProperty UnCheckedImageProperty =
-        BindableProperty.Create(nameof(UnCheckedImage), typeof(ImageSource), typeof(ToggleButton), null);
+        BindableProperty.Create(nameof(UnCheckedImage), typeof(ImageSource), typeof(ToggleButton));
 
     private ICommand _toggleCommand;
     private Image _toggleImage;
@@ -67,7 +67,7 @@ public class ToggleButton : ContentView
         set => SetValue(UnCheckedImageProperty, value);
     }
 
-    public ICommand ToogleCommand =>
+    public ICommand ToggleCommand =>
         _toggleCommand ??= new Command(() =>
         {
             Checked = !Checked;
@@ -84,10 +84,7 @@ public class ToggleButton : ContentView
 
         Animate = true;
 
-        GestureRecognizers.Add(new TapGestureRecognizer
-        {
-            Command = ToogleCommand
-        });
+        GestureRecognizers.Add(new TapGestureRecognizer {Command = ToggleCommand});
 
         _toggleImage.Source = UnCheckedImage;
         Content = _toggleImage;
@@ -105,7 +102,9 @@ public class ToggleButton : ContentView
         var toggleButton = (ToggleButton)bindable;
 
         if (Equals(newValue, null) && !Equals(oldValue, null))
+        {
             return;
+        }
 
         toggleButton._toggleImage.Source = toggleButton.Checked
             ? toggleButton.CheckedImage

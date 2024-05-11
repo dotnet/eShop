@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
+
 <Shell
+    x:Class="eShop.ClientApp.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:views="clr-namespace:eShop.ClientApp.Views"
-    x:Class="eShop.ClientApp.AppShell">
+    xmlns:views="clr-namespace:eShop.ClientApp.Views">
 
     <Shell.Resources>
         <ResourceDictionary>
@@ -26,13 +27,29 @@
         <BackButtonBehavior TextOverride="" />
     </Shell.BackButtonBehavior>
 
-    <FlyoutItem >
+    <FlyoutItem>
         <ShellContent ContentTemplate="{DataTemplate views:LoginView}" Route="Login" />
     </FlyoutItem>
 
     <TabBar Route="Main">
-        <ShellContent Title="CATALOG" Route="Catalog" Icon="{StaticResource CatalogIconImageSource}" ContentTemplate="{DataTemplate views:CatalogView}" />
-        <ShellContent Title="MAP" Route="Map" IsVisible="{OnPlatform Android=True, iOS=True, MacCatalyst=True, Default=False}" Icon="{StaticResource MapIconImageSource}" ContentTemplate="{DataTemplate views:MapView}" />
-        <ShellContent Title="PROFILE" Route="Profile" Icon="{StaticResource ProfileIconImageSource}" ContentTemplate="{DataTemplate views:ProfileView}" />
+        <ShellContent
+            Title="CATALOG"
+            ContentTemplate="{DataTemplate views:CatalogView}"
+            Icon="{StaticResource CatalogIconImageSource}"
+            Route="Catalog" />
+        <ShellContent
+            Title="MAP"
+            ContentTemplate="{DataTemplate views:MapView}"
+            Icon="{StaticResource MapIconImageSource}"
+            IsVisible="{OnPlatform Android=True,
+                                   iOS=True,
+                                   MacCatalyst=True,
+                                   Default=False}"
+            Route="Map" />
+        <ShellContent
+            Title="PROFILE"
+            ContentTemplate="{DataTemplate views:ProfileView}"
+            Icon="{StaticResource ProfileIconImageSource}"
+            Route="Profile" />
     </TabBar>
 </Shell>

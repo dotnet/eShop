@@ -1,4 +1,6 @@
-﻿using eShop.ClientApp.Models.Basket;
+using CommunityToolkit.Mvvm.Messaging;
+using eShop.ClientApp.Messages;
+using eShop.ClientApp.Models.Basket;
 using eShop.ClientApp.Models.Orders;
 using eShop.ClientApp.Models.User;
 using eShop.ClientApp.Services;
@@ -10,17 +12,15 @@ namespace eShop.ClientApp.ViewModels;
 
 public partial class CheckoutViewModel : ViewModelBase
 {
-    private readonly IDialogService _dialogService;
-    private readonly ISettingsService _settingsService;
     private readonly IAppEnvironmentService _appEnvironmentService;
 
     private readonly BasketViewModel _basketViewModel;
+    private readonly IDialogService _dialogService;
+    private readonly ISettingsService _settingsService;
 
-    [ObservableProperty]
-    private Order _order;
+    [ObservableProperty] private Order _order;
 
-    [ObservableProperty]
-    private Address _shippingAddress;
+    [ObservableProperty] private Address _shippingAddress;
 
     public CheckoutViewModel(
         BasketViewModel basketViewModel,
@@ -41,7 +41,7 @@ public partial class CheckoutViewModel : ViewModelBase
             async () =>
             {
                 var basketItems = _appEnvironmentService.BasketService.LocalBasketItems;
-                
+
                 var userInfo = await _appEnvironmentService.IdentityService.GetUserInfoAsync();
 
                 // Create Shipping Address
@@ -60,19 +60,21 @@ public partial class CheckoutViewModel : ViewModelBase
                 {
                     CardNumber = userInfo?.CardNumber,
                     CardHolderName = userInfo?.CardHolder,
-                    CardType = new CardType { Id = 3, Name = "MasterCard" },
+                    CardType = new CardType {Id = 3, Name = "MasterCard"},
                     SecurityNumber = userInfo?.CardSecurityNumber
                 };
 
-                var orderItems = CheckoutViewModel.CreateOrderItems(basketItems);
+                var orderItems = CreateOrderItems(basketItems);
 
                 // Create new Order
                 Order = new Order
                 {
+                    //TODO: Get a better order number generator
+                    OrderNumber = (int)DateTimeOffset.Now.TimeOfDay.TotalMilliseconds,
                     UserId = userInfo.UserId,
                     UserName = userInfo.PreferredUsername,
                     OrderItems = orderItems,
-                    OrderStatus = OrderStatus.Submitted,
+                    OrderStatus = "Submitted",
                     OrderDate = DateTime.Now,
                     CardHolderName = paymentInfo.CardHolderName,
                     CardNumber = paymentInfo.CardNumber,
@@ -84,7 +86,7 @@ public partial class CheckoutViewModel : ViewModelBase
                     ShippingStreet = ShippingAddress.Street,
                     ShippingCity = ShippingAddress.City,
                     ShippingZipCode = ShippingAddress.ZipCode,
-                    Total = CheckoutViewModel.CalculateTotal(orderItems),
+                    Total = CalculateTotal(orderItems)
                 };
 
                 if (_settingsService.UseMocks)
@@ -108,12 +110,15 @@ public partial class CheckoutViewModel : ViewModelBase
             basket.RequestId = Guid.NewGuid();
 
             await _appEnvironmentService.OrderService.CreateOrderAsync(Order);
-            
+
             // Clean Basket
             await _appEnvironmentService.BasketService.ClearBasketAsync();
 
             // Reset Basket badge
             await _basketViewModel.ClearBasketItems();
+            
+            WeakReferenceMessenger.Default
+                .Send(new ProductCountChangedMessage(0));
 
             // Navigate to Orders
             await NavigationService.NavigateToAsync("//Main/Catalog");
@@ -157,7 +162,7 @@ public partial class CheckoutViewModel : ViewModelBase
 
         foreach (var orderItem in orderItems)
         {
-            total += (orderItem.Quantity * orderItem.UnitPrice);
+            total += orderItem.Quantity * orderItem.UnitPrice;
         }
 
         return total;

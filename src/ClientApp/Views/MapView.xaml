@@ -1,14 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<views:ContentPageBase xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-            xmlns:maps="http://schemas.microsoft.com/dotnet/2021/maui/maps"
-             xmlns:sensors="clr-namespace:Microsoft.Maui.Devices.Sensors;assembly=Microsoft.Maui.Essentials"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             xmlns:views="clr-namespace:eShop.ClientApp.Views"
-             xmlns:vm="clr-namespace:eShop.ClientApp.ViewModels"
-             x:Class="eShop.ClientApp.Views.MapView"
-             x:DataType="vm:MapViewModel"
-             Title="Microsoft Visitor Center">
+
+<views:ContentPageBase
+    x:Class="eShop.ClientApp.Views.MapView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:maps="http://schemas.microsoft.com/dotnet/2021/maui/maps"
+    xmlns:sensors="clr-namespace:Microsoft.Maui.Devices.Sensors;assembly=Microsoft.Maui.Essentials"
+    xmlns:views="clr-namespace:eShop.ClientApp.Views"
+    xmlns:vm="clr-namespace:eShop.ClientApp.ViewModels"
+    Title="Microsoft Visitor Center"
+    x:DataType="vm:MapViewModel">
     <maps:Map
         IsScrollEnabled="False"
         IsZoomEnabled="False"
@@ -31,9 +32,9 @@
             <DataTemplate>
                 <maps:Pin
                     x:DataType="vm:Store"
-                    Location="{Binding Location}"
                     Address="{Binding Address}"
                     Label="{Binding Description}"
+                    Location="{Binding Location}"
                     MarkerClicked="Pin_MarkerClicked" />
             </DataTemplate>
         </maps:Map.ItemTemplate>
