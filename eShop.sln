@@ -69,7 +69,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AI.UnitTests", "tests\AI.Un
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.SKEval", "src\Microsoft.SKEval\Microsoft.SKEval.csproj", "{E926E64C-2149-427D-99B4-743E16EBC2A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.BatchEvals", "AI.BatchEvals\AI.BatchEvals.csproj", "{B70C3934-8F9A-4F5A-9705-C255F57911D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.BatchEvals", "tests\AI.BatchEvals\AI.BatchEvals.csproj", "{B70C3934-8F9A-4F5A-9705-C255F57911D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
