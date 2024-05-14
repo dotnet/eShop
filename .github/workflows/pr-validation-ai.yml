@@ -1,7 +1,7 @@
 name: eShop Pull Request Validation - AI LLM Evals
 
 on:
-  workflow:
+  workflow_dispatch:
   pull_request:
     paths-ignore:
       - '**.md'
