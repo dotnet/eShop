@@ -95,9 +95,9 @@ static void ConfigureServices(ServiceCollection serviceCollection, string[] args
         {
             var builder = Kernel.CreateBuilder();
 
-            var useAzureOpenAI = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("AZURE_AI_MODEL"));
+            var completionType = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ESHOP_TESTS_AI_COMPLETION_TYPE"));
 
-            if (useAzureOpenAI)
+            if (!completionType.ToString().ToLowerInvariant().Equals("openai"))
             {
                 builder.AddAzureOpenAIChatCompletion(
                     Environment.GetEnvironmentVariable("AZURE_AI_MODEL")!,

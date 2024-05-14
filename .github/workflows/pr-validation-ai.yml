@@ -18,7 +18,7 @@ on:
 
 env:
   ESHOP_AI_MODEL: "phi3"
-  ESHOP_TESTS_SK_KERNEL_COMPLETION_TYPE: "openai"
+  ESHOP_TESTS_AI_COMPLETION_TYPE: "openai"
 
 jobs:  
   test:
@@ -39,7 +39,7 @@ jobs:
         run: ollama pull ${{ env.ESHOP_AI_MODEL }}
       - name: Test
         env:
-          ESHOP_TESTS_SK_KERNEL_COMPLETION_TYPE: ${{ env.ESHOP_TESTS_SK_KERNEL_COMPLETION_TYPE }}
+          ESHOP_TESTS_AI_COMPLETION_TYPE: ${{ env.ESHOP_TESTS_AI_COMPLETION_TYPE }}
           AZURE_AI_MODEL: ${{ secrets.AZURE_AI_MODEL }}
           AZURE_AI_ENDPOINT: ${{ secrets.AZURE_AI_ENDPOINT }}
           AZURE_AI_KEY: ${{ secrets.AZURE_AI_KEY }}
