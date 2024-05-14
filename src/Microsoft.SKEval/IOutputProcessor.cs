@@ -1,8 +1,8 @@
-namespace Microsoft.SKEval;
+﻿namespace Microsoft.SKEval;
 
 public interface IOutputProcessor
 {
     public Task Init();
 
-    public Task Process(BatchEvalPromptOutput evalOutput);
+    public void Process(BatchEvalPromptOutput evalOutput);
 }

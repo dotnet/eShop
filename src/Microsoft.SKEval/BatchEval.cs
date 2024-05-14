@@ -1,4 +1,4 @@
-using Microsoft.SKEval.Metrics;
+﻿using Microsoft.SKEval.Metrics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.SemanticKernel;
 using OpenTelemetry;

@@ -27,7 +27,7 @@ var inputOption = new Option<string>("--input")
 
 var outputOption = new Option<string>("--format")
 {
-    Description = "Format of the output",
+    Description = "Format of the output. Options: csv, tsv, yaml, json.",
     IsRequired = true
 };
 
@@ -54,8 +54,7 @@ createPostCommand.SetHandler(async (dataFilePath, format) =>
         .AddEvaluator(eShop.WebApp.AIBatchEvals.RelevanceEval.GetInstance(kernel))
         .AddEvaluator(new GroundednessEval(kernel));
     
-
-    //batchEval.WithCsvOutputProcessor("results_adversary.csv");
+    batchEval.WithCsvOutputProcessor("results_adversary.csv");
 
     var results = await batchEval
         .WithInputProcessor(chatInputProcessor)
@@ -71,6 +70,17 @@ var result = await rootCommand.InvokeAsync(args);
 return result;
 static void ConfigureServices(ServiceCollection serviceCollection, string[] args)
 {
+    if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING")))
+    {
+        serviceCollection
+            .AddOpenTelemetry()
+            .WithMetrics(m =>
+            {
+                m.AddMeter("Microsoft.SemanticKernel*");
+                m.AddMeter("Microsoft.SKEval*");
+            });
+    }
+
     serviceCollection
         .AddLogging(configure =>
         {

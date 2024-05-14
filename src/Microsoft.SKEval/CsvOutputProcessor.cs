@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 
 namespace Microsoft.SKEval;
 
@@ -11,11 +11,11 @@ public class CsvOutputProcessor(string filePath) : IOutputProcessor
         return Task.CompletedTask;
     }
 
-    public async Task Process(BatchEvalPromptOutput evalOutput)
+    public void Process(BatchEvalPromptOutput evalOutput)
     {
         var output = ToCsv(evalOutput);
         
-        await File.AppendAllTextAsync(FilePath, output);
+        Console.WriteLine(output);
     }
 
     private static string ToCsv(BatchEvalPromptOutput result)
