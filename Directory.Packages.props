@@ -40,7 +40,7 @@
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="$(MicrosoftExtensionsVersion)" />
     <!-- Version together with EF -->
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EfVersion)" />
     <PackageVersion Include="NSubstitute" Version="5.1.0" />
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
