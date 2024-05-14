@@ -1,4 +1,4 @@
-﻿using eShop.ClientApp.Models.Orders;
+using eShop.ClientApp.Models.Orders;
 using eShop.ClientApp.Services;
 using eShop.ClientApp.Services.AppEnvironment;
 using eShop.ClientApp.Services.Settings;
@@ -9,20 +9,16 @@ namespace eShop.ClientApp.ViewModels;
 [QueryProperty(nameof(OrderNumber), "OrderNumber")]
 public partial class OrderDetailViewModel : ViewModelBase
 {
-    private readonly ISettingsService _settingsService;
     private readonly IAppEnvironmentService _appEnvironmentService;
+    private readonly ISettingsService _settingsService;
 
-    [ObservableProperty]
-    private Order _order;
+    [ObservableProperty] private bool _isSubmittedOrder;
 
-    [ObservableProperty]
-    private bool _isSubmittedOrder;
+    [ObservableProperty] private Order _order;
 
-    [ObservableProperty]
-    private string _orderStatusText;
+    [ObservableProperty] private int _orderNumber;
 
-    [ObservableProperty]
-    private int _orderNumber;
+    [ObservableProperty] private string _orderStatusText;
 
     public OrderDetailViewModel(
         IAppEnvironmentService appEnvironmentService,
@@ -40,8 +36,8 @@ public partial class OrderDetailViewModel : ViewModelBase
             {
                 // Get order detail info
                 Order = await _appEnvironmentService.OrderService.GetOrderAsync(OrderNumber);
-                IsSubmittedOrder = Order.OrderStatus == OrderStatus.Submitted;
-                OrderStatusText = Order.OrderStatus.ToString().ToUpper();
+                IsSubmittedOrder = Order.OrderStatus.Equals("Submitted", StringComparison.OrdinalIgnoreCase);
+                OrderStatusText = Order.OrderStatus;
             });
     }
 
@@ -52,12 +48,12 @@ public partial class OrderDetailViewModel : ViewModelBase
 
         if (result)
         {
-            OrderStatusText = OrderStatus.Cancelled.ToString().ToUpper();
+            OrderStatusText = "Cancelled";
         }
         else
         {
             Order = await _appEnvironmentService.OrderService.GetOrderAsync(Order.OrderNumber);
-            OrderStatusText = Order.OrderStatus.ToString().ToUpper();
+            OrderStatusText = Order.OrderStatus;
         }
 
         IsSubmittedOrder = false;

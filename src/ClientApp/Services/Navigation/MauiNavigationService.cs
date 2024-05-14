@@ -1,7 +1,5 @@
-﻿using eShop.ClientApp.Models.User;
+using eShop.ClientApp.Models.User;
 using eShop.ClientApp.Services.AppEnvironment;
-using eShop.ClientApp.Services.Identity;
-using eShop.ClientApp.Services.Settings;
 
 namespace eShop.ClientApp.Services;
 
@@ -30,6 +28,8 @@ public class MauiNavigationService : INavigationService
             : Shell.Current.GoToAsync(shellNavigation);
     }
 
-    public Task PopAsync() =>
-        Shell.Current.GoToAsync("..");
+    public Task PopAsync()
+    {
+        return Shell.Current.GoToAsync("..");
+    }
 }

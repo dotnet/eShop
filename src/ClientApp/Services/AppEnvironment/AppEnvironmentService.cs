@@ -1,4 +1,4 @@
-﻿using eShop.ClientApp.Services.Basket;
+using eShop.ClientApp.Services.Basket;
 using eShop.ClientApp.Services.Catalog;
 using eShop.ClientApp.Services.Identity;
 using eShop.ClientApp.Services.Order;
@@ -7,25 +7,17 @@ namespace eShop.ClientApp.Services.AppEnvironment;
 
 public class AppEnvironmentService : IAppEnvironmentService
 {
-    private readonly IBasketService _mockBasketService;
     private readonly IBasketService _basketService;
+    private readonly ICatalogService _catalogService;
+    private readonly IIdentityService _identityService;
+    private readonly IBasketService _mockBasketService;
 
     private readonly ICatalogService _mockCatalogService;
-    private readonly ICatalogService _catalogService;
+
+    private readonly IIdentityService _mockIdentityService;
 
     private readonly IOrderService _mockOrderService;
     private readonly IOrderService _orderService;
-
-    private readonly IIdentityService _mockIdentityService;
-    private readonly IIdentityService _identityService;
-
-    public IBasketService BasketService { get; private set; }
-
-    public ICatalogService CatalogService { get; private set; }
-
-    public IOrderService OrderService { get; private set; }
-
-    public IIdentityService IdentityService { get; private set; }
 
     public AppEnvironmentService(
         IBasketService mockBasketService, IBasketService basketService,
@@ -46,6 +38,14 @@ public class AppEnvironmentService : IAppEnvironmentService
         _identityService = identityService;
     }
 
+    public IBasketService BasketService { get; private set; }
+
+    public ICatalogService CatalogService { get; private set; }
+
+    public IOrderService OrderService { get; private set; }
+
+    public IIdentityService IdentityService { get; private set; }
+
     public void UpdateDependencies(bool useMockServices)
     {
         if (useMockServices)
@@ -64,4 +64,3 @@ public class AppEnvironmentService : IAppEnvironmentService
         }
     }
 }
-

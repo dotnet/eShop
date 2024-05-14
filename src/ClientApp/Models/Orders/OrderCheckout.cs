@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using eShop.ClientApp.Models.Orders;
 
 namespace eShop.ClientApp.Models.Basket;

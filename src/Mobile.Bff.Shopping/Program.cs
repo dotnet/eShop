@@ -8,6 +8,7 @@ builder.Services.AddReverseProxy()
 
 var app = builder.Build();
 
+app.MapDefaultEndpoints();
 app.MapReverseProxy();
 
 await app.RunAsync();

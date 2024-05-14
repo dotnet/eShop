@@ -1,7 +1,16 @@
-﻿namespace ClientApp.UnitTests.Services;
+using ClientApp.UnitTests.Mocks;
+
+namespace ClientApp.UnitTests.Services;
 
 public class OrdersServiceTests
 {
+    private readonly ISettingsService _settingsService;
+
+    public OrdersServiceTests()
+    {
+        _settingsService = new MockSettingsService();
+    }
+    
     [Fact]
     public async Task GetFakeOrderTest()
     {
