@@ -19,21 +19,21 @@ namespace WebApp.UnitTests
 
             var builder = Kernel.CreateBuilder();
 
-            var useAzureOpenAI = !string.IsNullOrEmpty(config["AZURE_OPENAI_MODEL"]);
+            var useAzureOpenAI = !string.IsNullOrEmpty(config["AZURE_AI_MODEL"]);
 
             if (useAzureOpenAI)
             {
                 builder.AddOpenAIChatCompletion(
-                   modelId: config["ESHOP_OPENAI_MODEL"],
-                   endpoint: new Uri(config["ESHOP_OPENAI_ENDPOINT"]),
-                   apiKey: config["ESHOP_OPENAI_KEY"]);
+                   modelId: config["ESHOP_AI_MODEL"],
+                   endpoint: new Uri(config["ESHOP_AI_ENDPOINT"]),
+                   apiKey: config["ESHOP_AI_KEY"]);
             }
             else
             {
                 builder.AddAzureOpenAIChatCompletion(
-                    config["AZURE_OPENAI_MODEL"],
-                    config["AZURE_OPENAI_ENDPOINT"],
-                    config["AZURE_OPENAI_KEY"]);
+                    config["AZURE_AI_MODEL"],
+                    config["AZURE_AI_ENDPOINT"],
+                    config["AZURE_AI_KEY"]);
             }
             
             Kernel = builder.Build();

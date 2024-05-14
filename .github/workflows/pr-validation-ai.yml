@@ -17,7 +17,7 @@ on:
       - '.github/workflows/pr-validation-maui.yml'
 
 env:
-  ESHOP_OPENAI_MODEL: "phi3"
+  ESHOP_AI_MODEL: "phi3"
   ESHOP_TESTS_SK_KERNEL_COMPLETION_TYPE: "openai"
 
 jobs:  
@@ -36,14 +36,14 @@ jobs:
       - name: Build 
         run: dotnet build eShop.LLMEvals.slnf
       - name: Pull model
-        run: ollama pull ${{ env.ESHOP_OPENAI_MODEL }}
+        run: ollama pull ${{ env.ESHOP_AI_MODEL }}
       - name: Test
         env:
           ESHOP_TESTS_SK_KERNEL_COMPLETION_TYPE: ${{ env.ESHOP_TESTS_SK_KERNEL_COMPLETION_TYPE }}
-          AZURE_OPENAI_MODEL: ${{ secrets.AZURE_OPENAI_MODEL }}
-          AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
-          AZURE_OPENAI_KEY: ${{ secrets.AZURE_OPENAI_KEY }}
-          ESHOP_OPENAI_ENDPOINT: "http://localhost:11434"
-          ESHOP_OPENAI_MODEL: ${{ env.ESHOP_OPENAI_MODEL }}
-          ESHOP_OPENAI_KEY: "api"
+          AZURE_AI_MODEL: ${{ secrets.AZURE_AI_MODEL }}
+          AZURE_AI_ENDPOINT: ${{ secrets.AZURE_AI_ENDPOINT }}
+          AZURE_AI_KEY: ${{ secrets.AZURE_AI_KEY }}
+          ESHOP_AI_ENDPOINT: "http://localhost:11434"
+          ESHOP_AI_MODEL: ${{ env.ESHOP_AI_MODEL }}
+          ESHOP_AI_KEY: "api"
         run: dotnet test eShop.LLMEvals.slnf

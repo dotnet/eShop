@@ -95,21 +95,21 @@ static void ConfigureServices(ServiceCollection serviceCollection, string[] args
         {
             var builder = Kernel.CreateBuilder();
 
-            var useAzureOpenAI = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("AZURE_OPENAI_MODEL"));
+            var useAzureOpenAI = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("AZURE_AI_MODEL"));
 
             if (useAzureOpenAI)
             {
                 builder.AddAzureOpenAIChatCompletion(
-                    Environment.GetEnvironmentVariable("AZURE_OPENAI_MODEL")!,
-                    Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!,
-                    Environment.GetEnvironmentVariable("AZURE_OPENAI_KEY")!);
+                    Environment.GetEnvironmentVariable("AZURE_AI_MODEL")!,
+                    Environment.GetEnvironmentVariable("AZURE_AI_ENDPOINT")!,
+                    Environment.GetEnvironmentVariable("AZURE_AI_KEY")!);
             }
             else
             {
                 builder.AddOpenAIChatCompletion(
-                    modelId: Environment.GetEnvironmentVariable("ESHOP_OPENAI_MODEL")!,
-                    endpoint: new Uri(Environment.GetEnvironmentVariable("ESHOP_OPENAI_ENDPOINT")!),
-                    apiKey: Environment.GetEnvironmentVariable("ESHOP_OPENAI_KEY")!);
+                    modelId: Environment.GetEnvironmentVariable("ESHOP_AI_MODEL")!,
+                    endpoint: new Uri(Environment.GetEnvironmentVariable("ESHOP_AI_ENDPOINT")!),
+                    apiKey: Environment.GetEnvironmentVariable("ESHOP_AI_KEY")!);
             }
            
             return builder.Build();
