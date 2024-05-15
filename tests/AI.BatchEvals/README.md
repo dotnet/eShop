@@ -26,6 +26,15 @@ cd tests/AI.BatchEvals
 dotnet run -- run
 ```
 
+## Configuration
+
+The application supports environment variables for configuring Azure AI or OpenAI chat completion services:
+
+- `APPLICATIONINSIGHTS_CONNECTION_STRING`: Connection string for Application Insights (optional).
+- `ESHOP_TESTS_AI_COMPLETION_TYPE`: Set to "openai" for OpenAI chat completion or "azureopenai" for Azure OpenAI  endpoints(optional). You can use Ollama and `openai` for using local models.
+- `AZURE_AI_MODEL`, `AZURE_AI_ENDPOINT`, `AZURE_AI_KEY`: Configuration for Azure AI chat completion.
+- `ESHOP_AI_MODEL`, `ESHOP_AI_ENDPOINT`, `ESHOP_AI_KEY`: Configuration for OpenAI chat completion.
+
 ## Usage
 
 The application provides a set of command-line options to configure the evaluation process:
@@ -51,15 +60,6 @@ dotnet run -- --input assets/tinybatch.jsonl --format csv > results.csv
 ```
 
 The current sample provide [two batches of questions to play with](assets/).
-
-## Configuration
-
-The application supports environment variables for configuring Azure AI or OpenAI chat completion services:
-
-- `APPLICATIONINSIGHTS_CONNECTION_STRING`: Connection string for Application Insights (optional).
-- `ESHOP_TESTS_AI_COMPLETION_TYPE`: Set to "openai" for OpenAI chat completion or "azureopenai" for Azure OpenAI  endpoints(optional). You can use Ollama and `openai` for using local models.
-- `AZURE_AI_MODEL`, `AZURE_AI_ENDPOINT`, `AZURE_AI_KEY`: Configuration for Azure AI chat completion (optional).
-- `ESHOP_AI_MODEL`, `ESHOP_AI_ENDPOINT`, `ESHOP_AI_KEY`: Configuration for OpenAI chat completion (optional).
 
 ## Extending
 
