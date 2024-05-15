@@ -6,7 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Microsoft.SKEval;
+using Microsoft.ApplicationInsights.Extensibility;
+using Azure.Monitor.OpenTelemetry.Exporter;
 using AI.BatchEvals;
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 
 var serviceCollection = new ServiceCollection();
 
@@ -44,14 +49,15 @@ createPostCommand.SetHandler(async (dataFilePath, format) =>
 {
     var kernel = serviceProvider.GetRequiredService<Kernel>();
     var chatInputProcessor = serviceProvider.GetRequiredService<ChatInputProcessor>();
+    var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
 
-    var batchEval = new BatchEval<ModelInputQA>();
-
-    batchEval.ConfigureMeterBuilder();
+    var batchEval = new BatchEval<ModelInputQA>(loggerFactory.CreateLogger(typeof(Program)));
 
     batchEval
         .AddEvaluator(new CoherenceEval(kernel))
         .AddEvaluator(eShop.WebApp.AIBatchEvals.RelevanceEval.GetInstance(kernel));
+
+    ConfigureMetrics<ModelInputQA>(batchEval);
 
     switch (format.ToLowerInvariant())
     {
@@ -79,17 +85,44 @@ rootCommand.AddCommand(createPostCommand);
 var result = await rootCommand.InvokeAsync(args);
 
 return result;
+
+static void ConfigureMetrics<T>(BatchEval<T> batchEval)
+{
+    var builder = batchEval.CreateMeterProviderBuilder();
+
+    if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING")))
+    {
+        builder.AddAzureMonitorMetricExporter();
+    } 
+    
+    if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OTLP_ENDPOINT"))) {
+        builder.AddOtlpExporter(otlpOptions =>
+        {
+            otlpOptions.Endpoint = new Uri(Environment.GetEnvironmentVariable("OTLP_ENDPOINT")!);
+        });
+    } else {
+        builder.AddConsoleExporter();
+    }
+
+    builder.AddMeter("Microsoft.SemanticKernel*");
+    
+    builder.Build();
+}
+
 static void ConfigureServices(ServiceCollection serviceCollection, string[] args)
 {
     if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING")))
     {
-        serviceCollection
-            .AddOpenTelemetry()
-            .WithMetrics(m =>
+        serviceCollection.AddApplicationInsightsTelemetryWorkerService((options) => 
+            options.ConnectionString = Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING"));
+
+        var loggerFactory = LoggerFactory.Create(builder =>
+        {
+            builder.AddOpenTelemetry(options =>
             {
-                m.AddMeter("Microsoft.SemanticKernel*");
-                m.AddMeter("Microsoft.SKEval*");
+                options.AddAzureMonitorLogExporter();
             });
+        });
     }
 
     serviceCollection
@@ -101,6 +134,8 @@ static void ConfigureServices(ServiceCollection serviceCollection, string[] args
             {
                 configure.SetMinimumLevel(LogLevel.Debug);
             }
+            
+            configure.AddFilter<Microsoft.Extensions.Logging.ApplicationInsights.ApplicationInsightsLoggerProvider>("Category", LogLevel.Information);
         })
         .AddSingleton((sp) =>
         {

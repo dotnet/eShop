@@ -172,25 +172,15 @@ public class BatchEval<T>
         return results;
     }
 
-    public void ConfigureMeterBuilder()
+    public MeterProviderBuilder CreateMeterProviderBuilder()
     {
         var builder = Sdk.CreateMeterProviderBuilder()
             .AddMeter(MeterId);
 
         builder.AddLLMEvalMetrics(intEvaluators);
 
-        if (string.IsNullOrEmpty(OtlpEndpoint))
-        {
-            builder.AddConsoleExporter();
-        } else {
-            builder.AddOtlpExporter(otlpOptions =>
-            {
-                otlpOptions.Endpoint = new Uri(OtlpEndpoint);
-            });
-        }
-
         builder.AddMeter("Microsoft.SemanticKernel*");
     
-        builder.Build();
+        return builder;
     }
 }
