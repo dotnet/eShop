@@ -27,7 +27,7 @@ var inputOption = new Option<string>("--input")
 
 var outputOption = new Option<string>("--format")
 {
-    Description = "Format of the output. Options: csv, tsv, yaml, json.",
+    Description = "Format of the output. Options: csv, tsv, json.",
     IsRequired = true
 };
 
@@ -51,8 +51,7 @@ createPostCommand.SetHandler(async (dataFilePath, format) =>
 
     batchEval
         .AddEvaluator(new CoherenceEval(kernel))
-        .AddEvaluator(eShop.WebApp.AIBatchEvals.RelevanceEval.GetInstance(kernel))
-        .AddEvaluator(new GroundednessEval(kernel));
+        .AddEvaluator(eShop.WebApp.AIBatchEvals.RelevanceEval.GetInstance(kernel));
 
     switch (format.ToLowerInvariant())
     {

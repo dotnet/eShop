@@ -16,8 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Microsoft.SKEval\Microsoft.SKEval.csproj" />
-    <ProjectReference Include="..\src\Microsoft.SKEval\Microsoft.SKEval.csproj" />
-    <ProjectReference Include="..\src\WebApp\WebApp.csproj" />
+    <ProjectReference Include="..\..\src\WebApp\WebApp.csproj" />
     
   </ItemGroup>
 

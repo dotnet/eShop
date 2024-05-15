@@ -1,5 +1,6 @@
 ﻿using Microsoft.SKEval.Metrics;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
@@ -24,6 +25,13 @@ public class BatchEval<T>
     IOutputProcessor? outputProcessor;
 
     public string? OtlpEndpoint { get; set; } = default!;
+
+    private ILogger? logger;
+
+    public BatchEval(ILogger? logger = null)
+    {
+        this.logger = logger;
+    }
 
     public BatchEval<T> WithInputProcessor(IInputProcessor<T> inputProcessor)
     {
@@ -126,8 +134,8 @@ public class BatchEval<T>
                 Subject = modelOutput
             };
 
-            Console.WriteLine($"Q: {modelOutput.Input}");
-            Console.WriteLine($"A: {modelOutput.Output}");
+            logger?.LogDebug($"QUESTION: {modelOutput.Input}");
+            logger?.LogDebug($"ANSWER: {modelOutput.Output}");
 
             evalMetrics.PromptCounter.Add(1);
 
@@ -135,7 +143,7 @@ public class BatchEval<T>
             {
                 var score = await evaluator.Eval(modelOutput);
 
-                Console.WriteLine($"EVAL: {evaluator.Id.ToLowerInvariant()} SCORE: {score}");
+                logger?.LogDebug($"EVAL: {evaluator.Id.ToLowerInvariant()} SCORE: {score}");
                 
                 evalMetrics.ScoreHistograms[evaluator.Id.ToLowerInvariant()].Record(score);
                 evalOutput.Results.Add(evaluator.Id.ToLowerInvariant(), score);
@@ -145,7 +153,7 @@ public class BatchEval<T>
             {
                 var evalResult = await evaluator.Eval(modelOutput);
 
-                Console.WriteLine($"EVAL: {evaluator.Id.ToLowerInvariant()} RESULT: {evalResult}");
+                logger?.LogDebug($"EVAL: {evaluator.Id.ToLowerInvariant()} RESULT: {evalResult}");
 
                 evalOutput.Results.Add(evaluator.Id.ToLowerInvariant(), evalResult);
 
