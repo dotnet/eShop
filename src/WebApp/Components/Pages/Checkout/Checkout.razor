@@ -51,37 +51,6 @@
                 </div>
             </div>
             <div class="form-section">
-                <h2>Payment method</h2>
-                <label>
-                    Cardholder name
-                    <InputText @bind-Value="@Info.CardHolderName" />
-                    <ValidationMessage For="@(() => Info.CardHolderName)" />
-                </label>
-                <div class="form-group">
-                    <div class="form-group-item">
-                        <label>
-                            Card number
-                            <InputText @bind-Value="@Info.CardNumber" />
-                            <ValidationMessage For="@(() => Info.CardNumber)" />
-                        </label>
-                    </div>
-                    <div class="form-group-item">
-                        <label>
-                            Expiration date
-                            <InputText @bind-Value="@CardExpirationString" />
-                            <ValidationMessage For="@(() => CardExpirationString)" />
-                        </label>
-                    </div>
-                    <div class="form-group-item">
-                        <label>
-                            Security code
-                            <InputText @bind-Value="@Info.CardSecurityNumber" />
-                            <ValidationMessage For="@(() => Info.CardSecurityNumber)" />
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="form-section">
                 <div class="form-buttons">
                     <a href="cart" class="button button-secondary"><img role="presentation" src="icons/arrow-left.svg" />Back to the shopping bag</a>
                     <button class="button button-primary" type="submit">Place order</button>
@@ -101,16 +70,6 @@
 
     [CascadingParameter]
     public HttpContext HttpContext { get; set; } = default!;
-
-    // The expiration string is entered in a custom format, so we have a separate
-    // property that defines how to parse and format it
-    [Required]
-    [SupplyParameterFromForm]
-    public string? CardExpirationString
-    {
-        get => Info.CardExpiration?.ToString("MM/yy");
-        set => Info.CardExpiration = ParseExpiryDate(value);
-    }
 
     protected override void OnInitialized()
     {
@@ -132,13 +91,8 @@
             State = ReadClaim("address_state"),
             Country = ReadClaim("address_country"),
             ZipCode = ReadClaim("address_zip_code"),
-            CardNumber = ReadClaim("card_number"),
-            CardHolderName = ReadClaim("card_holder"),
-            CardSecurityNumber = ReadClaim("card_security_number"),
             RequestId = Guid.NewGuid()
         };
-
-        CardExpirationString = ReadClaim("card_expiration");
 
         string? ReadClaim(string type)
             => HttpContext.User.Claims.FirstOrDefault(x => x.Type == type)?.Value;
@@ -164,11 +118,6 @@
     private async Task PerformCustomValidationAsync()
     {
         extraMessages.Clear();
-        if (Info.CardExpiration is null)
-        {
-            extraMessages.Add(FieldIdentifier.Create(() => CardExpirationString), "Must be valid mm/yy");
-            editContext.NotifyValidationStateChanged();
-        }
 
         if ((await Basket.GetBasketItemsAsync()).Count == 0)
         {
