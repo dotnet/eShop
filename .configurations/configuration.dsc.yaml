@@ -74,7 +74,7 @@ properties:
      settings:
        productId: Microsoft.VisualStudio.Product.Community
        channelId: VisualStudio.17.Preview
-       components: [Microsoft.VisualStudio.Workload.NetWeb, Microsoft.VisualStudio.Workload.NetCrossPlat]
+       components: [Microsoft.VisualStudio.Workload.NetWeb, Microsoft.VisualStudio.Workload.NetCrossPlat, aspire]
        includeRecommended: true
    ### Install Microsoft Visual Studio Code
    ### -------------------------------------
