@@ -53,8 +53,20 @@ createPostCommand.SetHandler(async (dataFilePath, format) =>
         .AddEvaluator(new CoherenceEval(kernel))
         .AddEvaluator(eShop.WebApp.AIBatchEvals.RelevanceEval.GetInstance(kernel))
         .AddEvaluator(new GroundednessEval(kernel));
-    
-    batchEval.WithCsvOutputProcessor("results_adversary.csv");
+
+    switch (format.ToLowerInvariant())
+    {
+        case "csv":
+            batchEval.WithOutputProcessor(new CsvOutputProcessor());
+            break;
+        case "tsv":
+            batchEval.WithOutputProcessor(new TsvOutputProcessor());
+            break;
+        default:
+        case "json":
+            batchEval.WithOutputProcessor(new JsonOutputProcessor());
+            break;
+    }
 
     var results = await batchEval
         .WithInputProcessor(chatInputProcessor)

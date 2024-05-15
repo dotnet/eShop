@@ -37,9 +37,9 @@ public class BatchEval<T>
         return this;
     }
 
-    public BatchEval<T> WithCsvOutputProcessor(string filename)
+    public BatchEval<T> WithCsvOutputProcessor()
     {
-        return WithOutputProcessor(new CsvOutputProcessor(filename));
+        return WithOutputProcessor(new CsvOutputProcessor());
     }
 
     public BatchEval<T> AddEvaluator(IEvaluator<int> evaluator)

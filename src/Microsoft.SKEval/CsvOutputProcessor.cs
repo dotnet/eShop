@@ -2,10 +2,8 @@
 
 namespace Microsoft.SKEval;
 
-public class CsvOutputProcessor(string filePath) : IOutputProcessor
+public class CsvOutputProcessor() : IOutputProcessor
 {
-    public string FilePath { get; set; } = filePath;
-
     public Task Init()
     {
         return Task.CompletedTask;

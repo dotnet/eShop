@@ -5,11 +5,8 @@ namespace Microsoft.SKEval
 {
     public class JsonOutputProcessor : IOutputProcessor
     {
-        public string FilePath { get; set; }
-
-        public JsonOutputProcessor(string filePath)
+        public JsonOutputProcessor()
         {
-            FilePath = filePath;
         }
 
         public Task Init()

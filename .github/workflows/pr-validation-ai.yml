@@ -19,10 +19,10 @@ on:
 
 env:
   ESHOP_AI_MODEL: "phi3"
-  ESHOP_TESTS_AI_COMPLETION_TYPE: "openai"
+  ESHOP_TESTS_AI_COMPLETION_TYPE: "azureopenai"
 
 jobs:  
-  test:
+  eval:
     runs-on: ubuntu-latest    
     steps:
       - uses: actions/checkout@v4

@@ -6,6 +6,7 @@ using OpenTelemetry.Trace;
 using System.Diagnostics.Metrics;
 using System.Text;
 using Microsoft.SemanticKernel.Connectors;
+using Microsoft.Extensions.Logging;
 
 namespace Microsoft.SKEval;
 
@@ -14,6 +15,8 @@ public class PromptScoreEval : IEvaluator<int>
     private readonly Kernel kernel;
 
     private readonly KernelFunction function;
+
+    public ILogger Logger { get; set; } = default!;
 
     public string Id { get; }
 
@@ -44,11 +47,17 @@ public class PromptScoreEval : IEvaluator<int>
 
         var evalResult = await function.InvokeAsync(kernel, promptArgs);
 
-        if (int.TryParse(evalResult.ToString(), out var evalInt))
+        Logger?.LogDebug($"Model Eval Answer: {evalResult}");
+
+        var evalInt = 0;
+
+        try
         {
-            return evalInt;
+            evalInt = int.Parse(evalResult.ToString().Trim());
+        } catch (Exception ex) {
+            Logger?.LogError(ex.Message);
         }
 
-        return 0;
+        return evalInt;
     }
 }

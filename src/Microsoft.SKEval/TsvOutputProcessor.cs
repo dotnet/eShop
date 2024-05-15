@@ -6,11 +6,8 @@ namespace Microsoft.SKEval
 {
     public class TsvOutputProcessor : IOutputProcessor
     {
-        public string FilePath { get; set; }
-
-        public TsvOutputProcessor(string filePath)
+        public TsvOutputProcessor()
         {
-            FilePath = filePath;
         }
 
         public Task Init()
