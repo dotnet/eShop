@@ -31,7 +31,7 @@ public class FixUriService : IFixUriService
             {
                 foreach (var catalogItem in catalogItems)
                 {
-                    catalogItem.PictureUri = Path.Combine(_settingsService.GatewayCatalogEndpointBase, $"api/v1/catalog/items/{catalogItem.Id}/pic");
+                    catalogItem.PictureUri = Path.Combine(_settingsService.GatewayCatalogEndpointBase, $"api/catalog/items/{catalogItem.Id}/pic?api-version=1.0");
                 }
             }
         }
