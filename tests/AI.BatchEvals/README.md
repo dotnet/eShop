@@ -31,6 +31,7 @@ dotnet run -- run
 The application supports environment variables for configuring Azure AI or OpenAI chat completion services:
 
 - `APPLICATIONINSIGHTS_CONNECTION_STRING`: Connection string for Application Insights (optional).
+- `OTLP_ENDPOINT`: OpenTelemetry Collector endpoint url (optional).
 - `ESHOP_TESTS_AI_COMPLETION_TYPE`: Set to "openai" for OpenAI chat completion or "azureopenai" for Azure OpenAI  endpoints(optional). You can use Ollama and `openai` for using local models.
 - `AZURE_AI_MODEL`, `AZURE_AI_ENDPOINT`, `AZURE_AI_KEY`: Configuration for Azure AI chat completion.
 - `ESHOP_AI_MODEL`, `ESHOP_AI_ENDPOINT`, `ESHOP_AI_KEY`: Configuration for OpenAI chat completion.
@@ -39,7 +40,7 @@ The application supports environment variables for configuring Azure AI or OpenA
 
 The application provides a set of command-line options to configure the evaluation process:
 
-- `--debug`: Enable debug logging.
+- `--debug`: Enable debug logging. If Application Insights connection string is enabled it will send the logs to Azure Monitor as well.
 - `--input <file>`: Specify the input data JSONL file to process (required).
 - `--format <format>`: Specify the format of the output. Options: csv, tsv, json (required).
 
