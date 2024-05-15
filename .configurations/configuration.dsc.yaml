@@ -24,6 +24,18 @@ properties:
      settings:
        name: Microsoft-Windows-Subsystem-Linux
        ensure: Present
+   ### Configure Install Ubuntu
+   ### -------------------------------------
+   - resource: PSDscResources/Script
+     id: ubuntuwsl
+     directives:
+       description: Install Ubuntu for WSL
+     settings:
+       SetScript: |
+         $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+         wsl --install -d Ubuntu
+       GetScript: return $false
+       TestScript: return $false
    ########################################
    ### Install CLIs, SDKs & Tools
    ########################################
