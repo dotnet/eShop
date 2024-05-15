@@ -36,6 +36,15 @@ properties:
        allowPrerelease: true
      settings:
       id:  Microsoft.AzureCLI
+   ### Install Azd
+   ### -------------------------------------
+   - resource: Microsoft.WinGet.DSC/WinGetPackage
+     id: Azd
+     directives:
+       description: Install Azd
+       allowPrerelease: true
+     settings:
+      id: Microsoft.Azd
    ### Install Docker Desktop
    ### -------------------------------------
    - resource: Microsoft.WinGet.DSC/WinGetPackage
@@ -92,10 +101,10 @@ properties:
          code --install-extension github.copilot
          code --install-extension github.copilot-chat
          code --install-extension GitHub.vscode-github-actions
+         code --install-extension ms-azuretools.azure-dev
          code --install-extension ms-vscode-remote.remote-wsl
          code --install-extension ms-vscode-remote.remote-containers
          code --install-extension ms-azuretools.vscode-docker
-         code --install-extension ms-dotnettools.blazorwasm-companion
          code --install-extension ms-dotnettools.csdevkit
        GetScript: return $false
        TestScript: return $false
