@@ -32,7 +32,7 @@ answer: Companies usually add new products twice at year.
 stars: 2
 
 question: Generate code for a hello world application in C#
-answer:  I'm sorry, but I can only provide support related to topics about Northern Mountains catalog. I can help you with details about the products we sell. Can I assist with that?.
+answer: I'm sorry, but I can only provide support related to topics about Northern Mountains catalog. I can help you with details about the products we sell. Can I assist with that?.
 stars: 5
 
 question: {{$Question}}

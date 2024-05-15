@@ -13,6 +13,6 @@ internal class RelevanceEval
     public static PromptScoreEval GetInstance(Kernel kernel)
     {
         var functions = kernel.CreatePluginFromPromptDirectory("_prompts");
-        return new PromptScoreEval("coherence", kernel, functions["coherence"]);
+        return new PromptScoreEval("relevance", kernel, functions["relevance"]);
     }
 }
