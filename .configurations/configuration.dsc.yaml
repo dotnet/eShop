@@ -8,6 +8,14 @@ properties:
    ########################################
    ### OS Configurations
    ########################################
+   ### Enable: Developer Mode
+   ### -------------------------------------
+   - resource: Microsoft.Windows.Developer/DeveloperMode
+     directives:
+       description: Enable Developer Mode
+       allowPrerelease: true
+     settings:
+       Ensure: Present
    ### Install Windows VirtualMachinePlatform
    ### -------------------------------------
    - resource: PSDscResources/WindowsOptionalFeature
