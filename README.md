@@ -19,7 +19,7 @@ Run the following commands from a PowerShell running as administrator:
 set-psrepository -name PSGallery -InstallationPolicy Trusted
 install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-get-WinGetConfiguration -file .\.configurations\ready-for-me.dsc.yaml | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
+get-WinGetConfiguration -file .\.configurations\configuration.dsc.yaml | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
 ```
 
 Or
