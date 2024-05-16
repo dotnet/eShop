@@ -13,14 +13,23 @@ A reference .NET application implementing an e-commerce website using a services
 - Clone the eShop repository: https://github.com/dotnet/eshop
 - Install & start Docker Desktop: https://docs.docker.com/engine/install/
 
-#### Windows with Visual Studio
+#### Windows
+Run the following commands from a PowerShell running as administrator:
+```powershell
+set-psrepository -name PSGallery -InstallationPolicy Trusted
+install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+get-WinGetConfiguration -file .\.configurations\ready-for-me.dsc.yaml | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
+```
+
+Or
 - Install [Visual Studio 2022 version 17.10 Preview](https://visualstudio.microsoft.com/vs/preview/).
   - Select the following workloads:
     - `ASP.NET and web development` workload.
     - `.NET Aspire SDK` component in `Individual components`.
     - Optional: `.NET Multi-platform App UI development` to run client apps
 
-#### Mac, Linux, & Windows without Visual Studio
+#### Mac, Linux, & Windows
 - Install the latest [.NET 8 SDK](https://dot.net/download?cid=eshop)
 - Install the [.NET Aspire workload](https://learn.microsoft.com/dotnet/aspire/fundamentals/setup-tooling?tabs=dotnet-cli%2Cunix#install-net-aspire) with the following commands:
 ```powershell
