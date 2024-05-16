@@ -23,13 +23,17 @@ get-WinGetConfiguration -file .\.configurations\ready-for-me.dsc.yaml | Invoke-W
 ```
 
 Or
+
 - Install [Visual Studio 2022 version 17.10 Preview](https://visualstudio.microsoft.com/vs/preview/).
   - Select the following workloads:
     - `ASP.NET and web development` workload.
     - `.NET Aspire SDK` component in `Individual components`.
     - Optional: `.NET Multi-platform App UI development` to run client apps
 
-#### Mac, Linux, & Windows
+##### Dev Home
+Dev Home looks for and can run DSC configurations in a .configurations folder when cloning a repository from the app. To configure your machine from Dev Home, go to 'Machine Configurations -> Clone Repositories'. Add this repository and clone. In the confirmation page look for the 'Configuration Files Detected' section and click 'Run File'.
+
+#### Mac, Linux, & Windows without Visual Studio
 - Install the latest [.NET 8 SDK](https://dot.net/download?cid=eshop)
 - Install the [.NET Aspire workload](https://learn.microsoft.com/dotnet/aspire/fundamentals/setup-tooling?tabs=dotnet-cli%2Cunix#install-net-aspire) with the following commands:
 ```powershell
