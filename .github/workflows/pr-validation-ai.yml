@@ -1,0 +1,50 @@
+name: eShop Pull Request Validation - AI LLM Evals
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'src/ClientApp/**'
+      - 'test/ClientApp.UnitTests/**'
+      - '.github/workflows/pr-validation-maui.yml'
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - 'src/ClientApp/**'
+      - 'test/ClientApp.UnitTests/**'
+      - '.github/workflows/pr-validation-maui.yml'
+
+env:
+  ESHOP_AI_MODEL: "phi3"
+  ESHOP_TESTS_AI_COMPLETION_TYPE: "azureopenai"
+
+jobs:  
+  eval:
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET (global.json)
+        uses: actions/setup-dotnet@v3
+      - name: Install ollama
+        run: curl -fsSL https://ollama.com/install.sh | sh
+      - name: Update Workloads
+        run: dotnet workload update
+      - name: Install Workloads
+        run: dotnet workload install aspire
+      - name: Build 
+        run: dotnet build eShop.LLMEvals.slnf
+      - name: Pull model
+        run: ollama pull ${{ env.ESHOP_AI_MODEL }}
+      - name: Test
+        env:
+          ESHOP_TESTS_AI_COMPLETION_TYPE: ${{ env.ESHOP_TESTS_AI_COMPLETION_TYPE }}
+          AZURE_AI_MODEL: ${{ secrets.AZURE_AI_MODEL }}
+          AZURE_AI_ENDPOINT: ${{ secrets.AZURE_AI_ENDPOINT }}
+          AZURE_AI_KEY: ${{ secrets.AZURE_AI_KEY }}
+          ESHOP_AI_ENDPOINT: "http://localhost:11434"
+          ESHOP_AI_MODEL: ${{ env.ESHOP_AI_MODEL }}
+          ESHOP_AI_KEY: "api"
+        run: dotnet test eShop.LLMEvals.slnf

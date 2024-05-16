@@ -1,0 +1,23 @@
+{
+    "schema": 1,
+    "type": "completion",
+    "description": "Coherence evaluation",
+    "completion": {
+      "max_tokens": 5000
+    },
+    "input": {
+      "parameters": [
+        {
+          "name": "context",
+          "description": "Context",
+          "defaultValue": ""
+        },
+        {
+          "name": "answer",
+          "description": "Answer",
+          "defaultValue": ""
+        }
+      ]
+    },
+    "default_backends": []
+}

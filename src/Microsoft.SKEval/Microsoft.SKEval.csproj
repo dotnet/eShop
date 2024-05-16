@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>Microsoft.SKEval</PackageId>
+    <Version>0.0.1</Version>
+    <Authors>Maho Pacheco</Authors>
+    <Company>Microsoft</Company>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.0.1" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.7.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.7.0" />
+    <PackageReference Include="xunit" Version="2.5.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="_prompts/coherence/config.json" />
+    <None Remove="_prompts/coherence/skprompt.txt" />
+    <None Remove="_prompts/relevance/config.json" />
+    <None Remove="_prompts/relevance/skprompt.txt" />
+    <None Remove="_prompts/groundedness/config.json" />
+    <None Remove="_prompts/groundedness/skprompt.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="_prompts/coherence/config.json">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_prompts/coherence/skprompt.txt">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_prompts/relevance/config.json">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_prompts/relevance/skprompt.txt">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+      <EmbeddedResource Include="_prompts/groundedness/config.json">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_prompts/groundedness/skprompt.txt">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>
