@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://github.com/Azure/deployment-environments/releases/download/2022-11-11-preview/manifest.schema.json
+name: Function-App-with-Cosmos_AZD-template
+version: 1.0.0
+summary: Azure Function APP with Cosmos Environment
+description: Deploys an Azure Function App with Cosmos, it is compatible with azd.
+runner: ARM
+templatePath: azuredeploy.json
+
+parameters:
+  - id: runtimeType
+    name: Runtime Type
+    description: 'Runtime Type of the Function App runtime,eg python or nodejs'
+    type: string
+    required: true
+    allowed:
+      - "python"
+      - "nodejs"
+  - id: repoUrl
+    name: Repository URL
+    type: string
+    description: Path the the application source code
+    allowed:
+      - "https://github.com/azure-samples/todo-nodejs-mongo-swa-func"
+      - "https://github.com/azure-samples/todo-python-mongo-swa-func"
+    
+    
+

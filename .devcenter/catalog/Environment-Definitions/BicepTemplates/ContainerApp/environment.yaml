@@ -1,0 +1,42 @@
+name: ContainerApp
+summary: This is a deployment of a Azure Container App using Bicep.
+description: Deploys a Container App within a Container App Environment, along with a Log Analytics Workspace
+templatePath: main.bicep
+parameters:
+- id: "cpuCore"
+  name: "Number of CPU Cores"
+  description: "Number of CPU Cores available to the Container App"
+  type: "string"
+  default: ".5"
+  allowed:
+    - "0.25"
+    - "0.5"
+    - "0.75"
+    - "1"
+    - "1.25"
+    - "1.5"
+    - "1.75"
+    - "2"
+- id: "memorySize"
+  name: "Amount of Memory (GB)"
+  description: "Amount of memory available to the Container App"
+  type: "string"
+  default: "1"
+  allowed:
+    - "0.5"
+    - "1"
+    - "1.5"
+    - "2"
+    - "3"
+    - "3.5"
+    - "4"
+- id: "containerImage"
+  name: "Container Image"
+  description: "The container image to deploy"
+  type: "string"
+  default: "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+- id: "location"
+  name: "location"
+  description: "Location to deploy the environment resources. If not specified, will deploy to the region of the project"
+  type: "string"
+runner: Bicep

@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://github.com/Azure/deployment-environments/releases/download/2022-11-11-preview/manifest.schema.json
+name: App-Service-with-Cosmos_AZD-template
+version: 1.0.0
+summary: Azure APP Service with Cosmos Environment
+description: Deploys an Azure App Service with Cosmos, it is compatible with azd.
+runner: ARM
+templatePath: azuredeploy.json
+
+parameters:
+  - id: runtimeType
+    name: Runtime Type
+    description: 'Runtime Type of the App Service runtime,eg python, nodejs or java.'
+    type: string
+    required: true
+    allowed:
+      - "python"
+      - "nodejs"
+      - "java"
+  - id: repoUrl
+    name: Repository URL
+    type: string
+    description: Path the the application source code
+    allowed:
+      - "https://github.com/azure-samples/todo-java-mongo"
+      - "https://github.com/azure-samples/todo-nodejs-mongo"
+      - "https://github.com/azure-samples/todo-python-mongo"
+    
+    
+

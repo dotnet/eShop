@@ -1,0 +1,64 @@
+# This is a winget package installation task for Dev Box.
+
+$schema: 1.0
+name: winget
+description: Applies a winget configuration to the Dev Box.
+author: Microsoft Corporation
+command: './main.ps1 -ConfigurationFile {{configurationFile}} -DownloadUrl {{downloadUrl}} -InlineConfigurationBase64 {{inlineConfigurationBase64}} -Package {{package}} -Version {{version}} -RunAsUser {{runAsUser}}'
+parameters:
+  configurationFile:
+    default: ''
+    type: 'string'
+    required: false
+    description: |
+      The path to the winget config yaml file. The file must be located in the local machine. 
+  downloadUrl:
+    default: ''
+    type: 'string'
+    required: false
+    description: |
+      A publicly accessible URL where the config yaml file is stored. This file will be downloaded to the path given in 'configurationFile'.
+  inlineConfigurationBase64:
+    default: ''
+    type: 'string'
+    required: false
+    description: |
+      A base64 encoded string of the winget config yaml file. This file will be decoded and saved to the path given in 'configurationFile' or to a temporary file if not specified.
+  package:
+    default: ''
+    type: 'string'
+    required: false
+    description: |
+      The name of the package to install. This is an alternative way. 
+      If a config yaml file is provided under other parameters, there is no need for the package name.
+  version:
+    default: ''
+    type: 'string'
+    required: false
+    description: |
+      The version of the package to install.
+      If a config yaml file is provided under other parameters, there is no need for the package version.
+  runAsUser:
+    default: false
+    type: 'boolean'
+    required: false
+    description: |
+      Whether to run the installation as the current user or as an administrator. 
+      If set to true, the installation will run during the user's first login to the machine.
+documentation:
+  notes: This task allows installing packages via winget, or applying a winget configuration file.
+  examples:
+    - name: winget
+      description: Install a package via winget
+      parameters:
+        package: git
+    - name: winget
+      description: Apply a winget configuration file that's already present on the machine
+      parameters:
+        configurationFile: 'C:\WinGetConfig\winget.yaml'
+    - name: winget
+      description: Apply a winget configuration file, downloading from a public URL to the specified path, running as the user
+      parameters:
+        downloadUrl: 'https://raw.githubusercontent.com/microsoft/devhome/main/sampleConfigurations/microsoft/vscode/configuration.dsc.yaml'
+        configurationFile: 'C:\WinGetConfig\configuration.dsc.yaml'
+        runAsUser: true

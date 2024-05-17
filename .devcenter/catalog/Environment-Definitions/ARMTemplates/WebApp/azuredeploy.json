@@ -1,0 +1,62 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.4.451.19169",
+      "templateHash": "2847637193069812520"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location to deploy the environment resources"
+      }
+    },
+    "resourcePrefix": {
+      "type": "string",
+      "defaultValue": "[format('a{0}', uniqueString(resourceGroup().id))]"
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Tags to apply to environment resources"
+      }
+    }
+  },
+  "functions": [],
+  "variables": {
+    "hostingPlanName": "[format('{0}-hp', parameters('resourcePrefix'))]",
+    "webAppName": "[format('{0}-hp', parameters('resourcePrefix'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2017-08-01",
+      "name": "[variables('hostingPlanName')]",
+      "location": "westus",
+      "sku": {
+        "tier": "Standard",
+        "name": "S1"
+      },
+      "tags": "[parameters('tags')]"
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2020-06-01",
+      "name": "[variables('webAppName')]",
+      "location": "westus",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]"
+      },
+      "tags": "[parameters('tags')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]"
+      ]
+    }
+  ]
+}

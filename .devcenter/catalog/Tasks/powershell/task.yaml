@@ -1,0 +1,30 @@
+# This is a simple powershell command execution task for Dev Box.
+
+$schema: 1.0
+name: powershell
+description: Execute a powershell command.
+author: Microsoft Corporation
+command: ".\\Run-Command.ps1 -Command {{command}} -WorkingDirectory {{workingDirectory}}"
+parameters:
+  command:
+    type: string
+    default: ""
+    required: true
+    description: The command to execute.
+  workingDirectory:
+    type: string
+    default: ""
+    required: false
+    description: The working directory to execute the command in.
+documentation:
+  notes: This task is used to execute a powershell command.
+  examples:
+    - name: powershell
+      description: print hello world
+      parameters:
+        command: "Write-Host 'hello, world!'"
+    - name: powershell
+      description: run script
+      parameters:
+        command: "./script.ps1"
+        workingDirectory: C:\\provisioning\\temp

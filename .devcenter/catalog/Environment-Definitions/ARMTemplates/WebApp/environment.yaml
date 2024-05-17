@@ -1,0 +1,5 @@
+name: WebApp
+summary: Deploys Web App on ARM
+description: Deploys an Azure Web App without a data store
+runner: ARM
+templatePath: azuredeploy.json
