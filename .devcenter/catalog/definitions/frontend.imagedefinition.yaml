@@ -18,4 +18,4 @@ tasks:
       directory: z:\workspaces
   - name: winget
     parameters:
-      configurationFile: 'z:\workspaces\dotfiles\.configurations\maui.dsc.yaml'
+      configurationFile: 'z:\workspaces\eshop\.configurations\maui.dsc.yaml'

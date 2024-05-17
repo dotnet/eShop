@@ -8,6 +8,11 @@ scheduledTimePeriod: hour
 scheduledRecurrence: 24
 
 tasks:
+  - name: git-clone
+    description: Clone this repository into z:\Workspaces
+    parameters:
+      repositoryUrl: https://github.com/contoso-co/common-eng-sys.git
+      directory: c:\workspaces
   - name: winget
     parameters:
       downloadUrl: 'https://raw.githubusercontent.com/contoso-co/common-eng-sys/main/dsc-configurations/common-config.dsc.yaml'
@@ -18,4 +23,4 @@ tasks:
       directory: z:\workspaces
   - name: winget
     parameters:
-      configurationFile: 'z:\workspaces\dotfiles\.configurations\backend-eng.dsc.yaml'
+      configurationFile: 'z:\workspaces\eshop\.configurations\backend-eng.dsc.yaml'

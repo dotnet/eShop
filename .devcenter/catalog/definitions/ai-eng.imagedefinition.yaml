@@ -18,4 +18,4 @@ tasks:
       directory: z:\workspaces
   - name: winget
     parameters:
-      configurationFile: 'z:\workspaces\dotfiles\.configurations\intelligent-apps.dsc.yaml'
+      configurationFile: 'z:\workspaces\eshop\.configurations\intelligent-apps.dsc.yaml'
