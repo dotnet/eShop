@@ -15,7 +15,7 @@ tasks:
       directory: c:\workspaces
   - name: winget
     parameters:
-      downloadUrl: 'https://raw.githubusercontent.com/contoso-co/common-eng-sys/main/dsc-configurations/common-config.dsc.yaml'
+      configurationFile: 'c:\workspaces\common-eng-sys\dsc-configurations\common-config.dsc.yaml'
   - name: git-clone
     description: Clone this repository into z:\Workspaces
     parameters:
