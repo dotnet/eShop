@@ -3,6 +3,9 @@ name: "eShop Frontend Engineering Environment"
 description: "This definition is for the eShop Frontend Engineering Environment"
 
 image: "microsoftwindowsdesktop_windows-ent-cpc_win11-23h2-ent-cpc-m365"
+enableScheduledRefresh: true
+scheduledTimePeriod: hour
+scheduledRecurrence: 24
 
 tasks:
   - name: winget
