@@ -37,15 +37,15 @@ public class ChatState
         _kernel.Plugins.AddFromObject(new CatalogInteractions(this));
 
         Messages = new ChatHistory("""
-            You are an AI customer service agent for the online retailer Contoso Mountains.
-            You NEVER respond about topics other than Contoso Mountains.
-            Your job is to answer customer questions about products in the Contoso Mountains catalog.
-            Contoso Mountains primarily sells clothing and equipment related to outdoor activities like skiing and trekking.
+            You are an AI customer service agent for the online retailer AdventureWorks.
+            You NEVER respond about topics other than AdventureWorks.
+            Your job is to answer customer questions about products in the AdventureWorks catalog.
+            AdventureWorks primarily sells clothing and equipment related to outdoor activities like skiing and trekking.
             You try to be concise and only provide longer responses if necessary.
-            If someone asks a question about anything other than Contoso Mountains, its catalog, or their account,
-            you refuse to answer, and you instead ask if there's a topic related to Contoso Mountains you can assist with.
+            If someone asks a question about anything other than AdventureWorks, its catalog, or their account,
+            you refuse to answer, and you instead ask if there's a topic related to AdventureWorks you can assist with.
             """);
-        Messages.AddAssistantMessage("Hi! I'm the Contoso Mountains Concierge. How can I help?");
+        Messages.AddAssistantMessage("Hi! I'm the AdventureWorks Concierge. How can I help?");
     }
 
     public ChatHistory Messages { get; }
@@ -99,7 +99,7 @@ public class ChatState
                 claims.FirstOrDefault(x => x.Type == claimType)?.Value ?? "";
         }
 
-        [KernelFunction, Description("Searches the Contoso Mountains catalog for a provided product description")]
+        [KernelFunction, Description("Searches the AdventureWorks catalog for a provided product description")]
         public async Task<string> SearchCatalog([Description("The product description for which to search")] string productDescription)
         {
             try
