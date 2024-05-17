@@ -1,0 +1,18 @@
+$schema: "1.0"
+name: "eShop Frontend Engineering Environment"
+description: "This definition is for the eShop Frontend Engineering Environment"
+
+image: "microsoftwindowsdesktop_windows-ent-cpc_win11-23h2-ent-cpc-m365"
+
+tasks:
+  - name: winget
+    parameters:
+      downloadUrl: 'https://raw.githubusercontent.com/contoso-co/common-eng-sys/main/dsc-configurations/common-config.dsc.yaml'
+  - name: git-clone
+    description: Clone this repository into z:\Workspaces
+    parameters:
+      repositoryUrl: https://github.com/contoso-co/eshop.git
+      directory: z:\workspaces
+  - name: winget
+    parameters:
+      configurationFile: 'z:\workspaces\dotfiles\.configurations\maui.dsc.yaml'
