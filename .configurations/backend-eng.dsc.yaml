@@ -6,47 +6,15 @@ properties:
   ########################################
   resources:
    ########################################
-   ### OS Configurations
-   ########################################
-   ### Enable: Developer Mode
-   ### -------------------------------------
-   - resource: Microsoft.Windows.Developer/DeveloperMode
-     directives:
-       description: Enable Developer Mode
-       allowPrerelease: true
-     settings:
-       Ensure: Present
-   ### Install Windows VirtualMachinePlatform
-   ### -------------------------------------
-   - resource: PSDscResources/WindowsOptionalFeature
-     directives:
-       description: Install VirtualMachinePlatform
-     settings:
-       name: VirtualMachinePlatform
-       ensure: Present
-   ### Install WSL
-   ### -------------------------------------
-   - resource: PSDscResources/WindowsOptionalFeature
-     directives:
-       description: Install WSL
-     settings:
-       name: Microsoft-Windows-Subsystem-Linux
-       ensure: Present
-   ### Configure Install Ubuntu
-   ### -------------------------------------
-   - resource: PSDscResources/Script
-     id: ubuntuwsl
-     directives:
-       description: Install Ubuntu for WSL
-     settings:
-       SetScript: |
-         $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-         wsl --install -d Ubuntu
-       GetScript: return $false
-       TestScript: return $false
-   ########################################
    ### Install CLIs, SDKs & Tools
    ########################################
+   ### Install Git
+   ### -------------------------------------
+   - resource: Microsoft.WinGet.DSC/WinGetPackage
+     directives:
+       allowPrerelease: true
+     settings:
+       id: Git.Git
    ### Install Azure CLI
    ### -------------------------------------
    - resource: Microsoft.WinGet.DSC/WinGetPackage
@@ -74,38 +42,6 @@ properties:
        allowPrerelease: true
      settings:
       id: Docker.DockerDesktop
-   ### Install Visual Sudio
-   ### -------------------------------------
-   - resource: Microsoft.WinGet.DSC/WinGetPackage
-     id: vscommunity
-     directives:
-      description: Install Visual Studio 2022 Community
-      allowPrerelease: true
-     settings:
-       id: Microsoft.VisualStudio.2022.Community.Preview
-   ### Install VS Workloads
-   ### -------------------------------------
-   - resource: Microsoft.VisualStudio.DSC/VSComponents
-     directives:
-       description: Install required VS workloads from vsconfig file
-       allowPrerelease: true
-     dependsOn:
-       - vscommunity
-     settings:
-       productId: Microsoft.VisualStudio.Product.Community
-       channelId: VisualStudio.17.Preview
-       components: [Microsoft.VisualStudio.Workload.NetWeb, Microsoft.VisualStudio.Workload.NetCrossPlat, aspire]
-       includeRecommended: true
-   ### Install Microsoft Visual Studio Code
-   ### -------------------------------------
-   - resource: Microsoft.WinGet.DSC/WinGetPackage
-     id: vscode
-     directives:
-       description: Install Microsoft Visual Studio Code
-       allowPrerelease: true
-     settings:
-       id: Microsoft.VisualStudioCode
-       ensure: Present
    ### Install VS Code Extension
    ### -------------------------------------
    - resource: PSDscResources/Script
