@@ -1,8 +1,8 @@
 $schema: "1.0"
-name: "ai-engineering-definition"
-description: "This definition is for the eShop AI engineering environment"
+name: "data-engineer-definition"
+description: "This definition is for the eShop data engineering environment"
 
-image: "microsoftvisualstudio_windowsplustools_base-win11-gen2"
+image: "microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2"
 enableScheduledRefresh: true
 scheduledTimePeriod: hour
 scheduledRecurrence: 24
@@ -23,4 +23,4 @@ tasks:
       directory: z:\workspaces
   - name: winget
     parameters:
-      configurationFile: 'z:\workspaces\eshop\.configurations\ai-eng.dsc.yaml'
+      configurationFile: 'z:\workspaces\eshop\.configurations\backend-eng.dsc.yaml'

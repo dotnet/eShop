@@ -1,6 +1,6 @@
 $schema: "1.0"
 name: "frontend-engineering-definition"
-description: "This definition is for the eShop Frontend Engineering Environment"
+description: "This definition is for the eShop frontend engineering environment"
 
 image: "microsoftvisualstudio_windowsplustools_base-win11-gen2"
 enableScheduledRefresh: true
