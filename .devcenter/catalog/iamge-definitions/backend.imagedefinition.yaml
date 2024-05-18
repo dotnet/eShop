@@ -1,8 +1,8 @@
 $schema: "1.0"
-name: "back-end-engineering"
+name: "backend-engineering-definition"
 description: "This definition is for the eShop Backend Engineering Environment"
 
-image: "microsoftwindowsdesktop_windows-ent-cpc_win11-23h2-ent-cpc-m365"
+image: "microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2"
 enableScheduledRefresh: true
 scheduledTimePeriod: hour
 scheduledRecurrence: 24

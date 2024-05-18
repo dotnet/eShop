@@ -1,8 +1,8 @@
 $schema: "1.0"
-name: "ai-engineering"
+name: "ai-engineering-definition"
 description: "This definition is for the eShop AI Engineering Environment"
 
-image: "microsoftwindowsdesktop_windows-ent-cpc_win11-23h2-ent-cpc-m365"
+image: "microsoftvisualstudio_windowsplustools_base-win11-gen2"
 enableScheduledRefresh: true
 scheduledTimePeriod: hour
 scheduledRecurrence: 24
