@@ -42,13 +42,22 @@ properties:
        allowPrerelease: true
      settings:
       id: Docker.DockerDesktop
+   ### Install Microsoft Visual Studio Code
+   ### -------------------------------------
+   - resource: Microsoft.WinGet.DSC/WinGetPackage
+     id: vscode
+     directives:
+       description: Install Microsoft Visual Studio Code
+       allowPrerelease: true
+     settings:
+       id: Microsoft.VisualStudioCode
+       ensure: Present
    ### Install VS Code Extension
    ### -------------------------------------
    - resource: PSDscResources/Script
      id: vscodeextensions
      dependsOn:
        - Azd
-       - docker
      directives:
        description: Install Python Extension for VS Code
      settings:
