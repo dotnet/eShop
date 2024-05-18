@@ -14,11 +14,12 @@ A reference .NET application implementing an e-commerce website using a services
 - Install & start Docker Desktop: https://docs.docker.com/engine/install/
 
 #### Windows
-- Run the following commands in a Powershell Terminal running as `Administrator` to automatically configuration your enviroment with the required tools to build and run this application.
+- Run the following commands in a Powershell Terminal running as `Administrator` to automatically configuration your enviroment with the required tools to build and run this application. (Note: A restart is required and included in the script below.)
 ```powershell
 install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 get-WinGetConfiguration -file .\.configurations\configuration.dsc.yaml | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
+shutdown /r /f
 ```
 
 Or
