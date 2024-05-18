@@ -19,7 +19,7 @@ A reference .NET application implementing an e-commerce website using a services
 install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 get-WinGetConfiguration -file .\.configurations\configuration.dsc.yaml | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
-shutdown /r /f
+shutdown /g
 ```
 
 Or
