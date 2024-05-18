@@ -47,7 +47,6 @@ properties:
    - resource: PSDscResources/Script
      id: vscodeextensions
      dependsOn:
-       - vscode
        - Azd
        - docker
      directives:
