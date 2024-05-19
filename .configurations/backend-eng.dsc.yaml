@@ -46,8 +46,6 @@ properties:
     ### -------------------------------------
     - resource: PSDscResources/Script
       id: vscodeextensions
-      dependsOn:
-        - Azd
       directives:
         description: Install Python Extension for VS Code
       settings:
@@ -64,4 +62,3 @@ properties:
           code --install-extension ms-dotnettools.dotnet-maui
         GetScript: return $false
         TestScript: return $false
- 
