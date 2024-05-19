@@ -10,29 +10,19 @@ properties:
    ########################################
    ### Install Git
    ### -------------------------------------
+   ### Enable: Developer Mode
+   ### -------------------------------------
+   - resource: Microsoft.Windows.Developer/DeveloperMode
+     directives:
+       description: Enable Developer Mode
+       allowPrerelease: true
+     settings:
+       Ensure: Present
    - resource: Microsoft.WinGet.DSC/WinGetPackage
      directives:
        allowPrerelease: true
      settings:
        id: Git.Git
-   ### Install Azure CLI
-   ### -------------------------------------
-   - resource: Microsoft.WinGet.DSC/WinGetPackage
-     id: azurecli
-     directives:
-       description: Install Azure CLI
-       allowPrerelease: true
-     settings:
-      id:  Microsoft.AzureCLI
-   ### Install Azd
-   ### -------------------------------------
-   - resource: Microsoft.WinGet.DSC/WinGetPackage
-     id: Azd
-     directives:
-       description: Install Azd
-       allowPrerelease: true
-     settings:
-      id: Microsoft.Azd
    ### Install Docker Desktop
    ### -------------------------------------
    - resource: Microsoft.WinGet.DSC/WinGetPackage
