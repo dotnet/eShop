@@ -52,3 +52,13 @@ properties:
           code --install-extension ms-dotnettools.csdevkit
         GetScript: return $false
         TestScript: return $false
+    ### Install GitHub Desktop
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: githubdesktop
+      directives:
+        description: Install GitHub Desktop
+        allowPrerelease: true
+      settings:
+        id: GitHub.GitHubDesktop
+        ensure: Present
