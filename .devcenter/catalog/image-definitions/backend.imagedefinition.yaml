@@ -22,3 +22,7 @@ tasks:
   - name: winget
     parameters:
       configurationFile: 'z:\workspaces\eshop\.configurations\backend-eng.dsc.yaml'
+userTasks:
+  - name: winget
+    parameters:
+      configurationFile: 'z:\workspaces\eshop\.configurations\backend-eng.postcreate.dsc.yaml'

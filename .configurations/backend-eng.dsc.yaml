@@ -5,11 +5,6 @@ properties:
   ### RESOURCES: System Configuration
   ########################################
   resources:
-    ########################################
-    ### Install CLIs, SDKs & Tools
-    ########################################
-    ### Install Git
-    ### -------------------------------------
     ### Enable: Developer Mode
     ### -------------------------------------
     - resource: Microsoft.Windows.Developer/DeveloperMode
