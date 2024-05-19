@@ -5,168 +5,169 @@ properties:
   ### RESOURCES: System Configuration
   ########################################
   resources:
-   ########################################
-   ### OS Configurations
-   ########################################
-   ### Enable: Developer Mode
-   ### -------------------------------------
-   - resource: Microsoft.Windows.Developer/DeveloperMode
-     directives:
-       description: Enable Developer Mode
-       allowPrerelease: true
-     settings:
-       Ensure: Present
-   ### Install Windows VirtualMachinePlatform
-   ### -------------------------------------
-   - resource: PSDscResources/WindowsOptionalFeature
-     directives:
-       description: Install VirtualMachinePlatform
-     settings:
-       name: VirtualMachinePlatform
-       ensure: Present
-   ### Install WSL
-   ### -------------------------------------
-   - resource: PSDscResources/WindowsOptionalFeature
-     directives:
-       description: Install WSL
-     settings:
-       name: Microsoft-Windows-Subsystem-Linux
-       ensure: Present
-   ### Configure Install Ubuntu
-   ### -------------------------------------
-   - resource: PSDscResources/Script
-     id: ubuntuwsl
-     directives:
-       description: Install Ubuntu for WSL
-     settings:
-       SetScript: |
-         $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-         wsl --install -d Ubuntu
-       GetScript: return $false
-       TestScript: return $false
-   ########################################
-   ### Install CLIs, SDKs & Tools
-   ########################################
-   ### Install Powershell
-   ### -------------------------------------
-   - resource: Microsoft.WinGet.DSC/WinGetPackage
-     id: powershell
-     directives:
-       description: Install Powershell
-       allowPrerelease: true
-     settings:
-       id: Microsoft.PowerShell
-   ### Install Azure CLI
-   ### -------------------------------------
-   - resource: Microsoft.WinGet.DSC/WinGetPackage
-     id: azurecli
-     directives:
-       description: Install Azure CLI
-       allowPrerelease: true
-     settings:
-      id:  Microsoft.AzureCLI
-   ### Install Bicep CLI
-   ### -------------------------------------
-   - resource: Microsoft.WinGet.DSC/WinGetPackage
-     id: bicep
-     directives:
-       description: Install Bicep CLI
-       allowPrerelease: true
-     settings:
-      id: Microsoft.Bicep
-   ### Install Azd
-   ### -------------------------------------
-   - resource: Microsoft.WinGet.DSC/WinGetPackage
-     id: Azd
-     directives:
-       description: Install Azd
-       allowPrerelease: true
-     settings:
-      id: Microsoft.Azd
-   ### Install Docker Desktop
-   ### -------------------------------------
-   - resource: Microsoft.WinGet.DSC/WinGetPackage
-     id: docker
-     directives:
-       description: Install Docker Desktop
-       allowPrerelease: true
-     settings:
-      id: Docker.DockerDesktop
-   ### Install Node.js
-   ### -------------------------------------
-   - resource: Microsoft.WinGet.DSC/WinGetPackage
-     id: nodejs
-     directives:
-       description: Install nodejs
-       allowPrerelease: true
-     settings:
-       id: OpenJS.NodeJS
-       ensure: Present
-   ### Install Dotnet 8 SDK
-   ### -------------------------------------
-   - resource: Microsoft.WinGet.DSC/WinGetPackage
-     id: dotnet8
-     directives:
-       description: Install DotNet 8 SDK
-       allowPrerelease: true
-     settings:
-       id: Microsoft.DotNet.SDK.8
-       ensure: Present
-   ### Install Python 3.11
-   ### -------------------------------------
-   - resource: Microsoft.WinGet.DSC/WinGetPackage
-     id: python
-     directives:
-       description: Install Python 3.11
-       allowPrerelease: true
-     settings:
-       id: Python.Python.3.11
-       ensure: Present
-   ### Install Microsoft Visual Studio Code
-   ### -------------------------------------
-   - resource: Microsoft.WinGet.DSC/WinGetPackage
-     id: vscode
-     directives:
-       description: Install Microsoft Visual Studio Code
-       allowPrerelease: true
-     settings:
-       id: Microsoft.VisualStudioCode
-       ensure: Present
-   ### Install VS Code Extension
-   ### -------------------------------------
-   - resource: PSDscResources/Script
-     id: vscodeextensions
-     dependsOn:
-       - vscode
-       - python
-       - bicep
-       - Azd
-       - docker
-     directives:
-       description: Install Python Extension for VS Code
-     settings:
-       SetScript: |
-         $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
-         code --install-extension github.copilot
-         code --install-extension github.copilot-chat        
-         code --install-extension GitHub.vscode-github-actions
-         code --install-extension ms-python.python
-         code --install-extension ms-vscode-remote.remote-wsl
-         code --install-extension ms-vscode-remote.remote-containers
-         code --install-extension ms-azuretools.azure-dev
-         code --install-extension ms-azuretools.vscode-azurecontainerapps
-         code --install-extension ms-azuretools.vscode-azurefunctions
-         code --install-extension ms-azuretools.vscode-azurestorage
-         code --install-extension ms-azuretools.vscode-docker
-         code --install-extension ms-dotnettools.blazorwasm-companion
-         code --install-extension ms-dotnettools.csdevkit
-         code --install-extension ms-dotnettools.csharp
-         code --install-extension ms-dotnettools.vscode-dotnet-runtime
-         code --install-extension ms-kubernetes-tools.aks-devx-tools
-         code --install-extension ms-kubernetes-tools.vscode-aks-tools
-         code --install-extension ms-kubernetes-tools.vscode-kubernetes-tools
-         code --install-extension esbenp.prettier-vscode
-         code --install-extension ipedrazas.kubernetes-snippets
-         code --install-extension redhat.vscode-yaml
-       GetScript: return $false
-       TestScript: return $false
+    ########################################
+    ### OS Configurations
+    ########################################
+    ### Enable: Developer Mode
+    ### -------------------------------------
+    - resource: Microsoft.Windows.Developer/DeveloperMode
+      directives:
+        description: Enable Developer Mode
+        allowPrerelease: true
+      settings:
+        Ensure: Present
+    ### Install Windows VirtualMachinePlatform
+    ### -------------------------------------
+    - resource: PSDscResources/WindowsOptionalFeature
+      directives:
+        description: Install VirtualMachinePlatform
+      settings:
+        name: VirtualMachinePlatform
+        ensure: Present
+    ### Install WSL
+    ### -------------------------------------
+    - resource: PSDscResources/WindowsOptionalFeature
+      directives:
+        description: Install WSL
+      settings:
+        name: Microsoft-Windows-Subsystem-Linux
+        ensure: Present
+    ### Configure Install Ubuntu
+    ### -------------------------------------
+    - resource: PSDscResources/Script
+      id: ubuntuwsl
+      directives:
+        description: Install Ubuntu for WSL
+      settings:
+        SetScript: |
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+          wsl --install -d Ubuntu
+        GetScript: return $false
+        TestScript: return $false
+    ########################################
+    ### Install CLIs, SDKs & Tools
+    ########################################
+    ### Install Powershell
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: powershell
+      directives:
+        description: Install Powershell
+        allowPrerelease: true
+      settings:
+        id: Microsoft.PowerShell
+    ### Install Azure CLI
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: azurecli
+      directives:
+        description: Install Azure CLI
+        allowPrerelease: true
+      settings:
+       id:  Microsoft.AzureCLI
+    ### Install Bicep CLI
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: bicep
+      directives:
+        description: Install Bicep CLI
+        allowPrerelease: true
+      settings:
+       id: Microsoft.Bicep
+    ### Install Azd
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Azd
+      directives:
+        description: Install Azd
+        allowPrerelease: true
+      settings:
+       id: Microsoft.Azd
+    ### Install Docker Desktop
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: docker
+      directives:
+        description: Install Docker Desktop
+        allowPrerelease: true
+      settings:
+       id: Docker.DockerDesktop
+    ### Install Node.js
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: nodejs
+      directives:
+        description: Install nodejs
+        allowPrerelease: true
+      settings:
+        id: OpenJS.NodeJS
+        ensure: Present
+    ### Install Dotnet 8 SDK
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: dotnet8
+      directives:
+        description: Install DotNet 8 SDK
+        allowPrerelease: true
+      settings:
+        id: Microsoft.DotNet.SDK.8
+        ensure: Present
+    ### Install Python 3.11
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: python
+      directives:
+        description: Install Python 3.11
+        allowPrerelease: true
+      settings:
+        id: Python.Python.3.11
+        ensure: Present
+    ### Install Microsoft Visual Studio Code
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: vscode
+      directives:
+        description: Install Microsoft Visual Studio Code
+        allowPrerelease: true
+      settings:
+        id: Microsoft.VisualStudioCode
+        ensure: Present
+    ### Install VS Code Extension
+    ### -------------------------------------
+    - resource: PSDscResources/Script
+      id: vscodeextensions
+      dependsOn:
+        - vscode
+        - python
+        - bicep
+        - Azd
+        - docker
+      directives:
+        description: Install Python Extension for VS Code
+      settings:
+        SetScript: |
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+          code --install-extension github.copilot
+          code --install-extension github.copilot-chat        
+          code --install-extension GitHub.vscode-github-actions
+          code --install-extension ms-python.python
+          code --install-extension ms-vscode-remote.remote-wsl
+          code --install-extension ms-vscode-remote.remote-containers
+          code --install-extension ms-azuretools.azure-dev
+          code --install-extension ms-azuretools.vscode-azurecontainerapps
+          code --install-extension ms-azuretools.vscode-azurefunctions
+          code --install-extension ms-azuretools.vscode-azurestorage
+          code --install-extension ms-azuretools.vscode-docker
+          code --install-extension ms-dotnettools.blazorwasm-companion
+          code --install-extension ms-dotnettools.csdevkit
+          code --install-extension ms-dotnettools.csharp
+          code --install-extension ms-dotnettools.vscode-dotnet-runtime
+          code --install-extension ms-kubernetes-tools.aks-devx-tools
+          code --install-extension ms-kubernetes-tools.vscode-aks-tools
+          code --install-extension ms-kubernetes-tools.vscode-kubernetes-tools
+          code --install-extension esbenp.prettier-vscode
+          code --install-extension ipedrazas.kubernetes-snippets
+          code --install-extension redhat.vscode-yaml
+        GetScript: return $false
+        TestScript: return $false
+ 
