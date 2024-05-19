@@ -8,14 +8,17 @@ scheduledTimePeriod: hour
 scheduledRecurrence: 24
 
 tasks:
+  ### Run common DSC configurations for contoso engineering environments to create Dev Drive and install common tools
   - name: winget
     parameters:
       downloadUrl: 'https://raw.githubusercontent.com/contoso-co/common-eng-sys/main/dsc-configurations/common-config.dsc.yaml'
+  ### Clone the eShop repository into the Workspaces directory
   - name: git-clone
     description: Clone this repository into z:\Workspaces
     parameters:
       repositoryUrl: https://github.com/contoso-co/eshop.git
       directory: z:\workspaces
+  ### Run the DSC configuration for the frontend engineering environment
   - name: winget
     parameters:
       configurationFile: 'z:\workspaces\eshop\.configurations\maui.dsc.yaml'
