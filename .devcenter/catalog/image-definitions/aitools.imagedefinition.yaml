@@ -1,5 +1,5 @@
 $schema: "1.0"
-name: "ai-engineering-definition"
+name: "aitools-image"
 description: "This definition is for the eShop AI engineering environment"
 
 image: "microsoftvisualstudio_windowsplustools_base-win11-gen2"

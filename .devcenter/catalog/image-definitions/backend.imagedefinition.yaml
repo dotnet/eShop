@@ -1,5 +1,5 @@
 $schema: "1.0"
-name: "backend-engineering-definition"
+name: "backend-image"
 description: "This definition is for the eShop backend engineering environment"
 
 image: "microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2"
