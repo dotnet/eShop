@@ -10,17 +10,20 @@
     xmlns:triggers="clr-namespace:eShop.ClientApp.Triggers"
     xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
     xmlns:views="clr-namespace:eShop.ClientApp.Views"
-    x:DataType="viewmodels:CatalogViewModel">
+    x:DataType="viewmodels:CatalogViewModel"
+    Shell.BackgroundColor="White"
+    Shell.NavBarHasShadow="False">
     <Shell.TitleView>
-        <Grid Padding="2" ColumnDefinitions="40,*,40">
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Offset="0.0" Color="White" />
-                    <GradientStop Offset="0.75" Color="#8CFFFFFF" />
-                    <GradientStop Offset="1.0" Color="Transparent" />
-                </LinearGradientBrush>
-            </Grid.Background>
-            <Image Grid.Column="1" Source="logo_header.png" />
+        <Grid BackgroundColor="White" ColumnDefinitions="40,*,40">
+            <BoxView
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Background="White" />
+            <Image
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Margin="4"
+                Source="logo_header.png" />
             <ImageButton
                 Grid.Column="2"
                 Aspect="AspectFit"
@@ -167,7 +170,7 @@
                                                     Binding="{Binding Selected}"
                                                     TargetType="Button"
                                                     Value="True">
-                                                    <Setter Property="TextColor" Value="{StaticResource AccentColor}" />
+                                                    <Setter Property="TextColor" Value="{StaticResource HighlightColor}" />
                                                 </DataTrigger>
                                             </Button.Triggers>
                                         </Button>
@@ -197,7 +200,7 @@
                                                     Binding="{Binding Selected}"
                                                     TargetType="Button"
                                                     Value="True">
-                                                    <Setter Property="TextColor" Value="{StaticResource AccentColor}" />
+                                                    <Setter Property="TextColor" Value="{StaticResource HighlightColor}" />
                                                 </DataTrigger>
                                             </Button.Triggers>
                                         </Button>
