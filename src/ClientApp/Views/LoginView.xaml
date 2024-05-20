@@ -17,7 +17,7 @@
     Shell.TabBarIsVisible="False">
     <ContentPage.Title>
         <OnPlatform x:TypeArguments="x:String">
-            <On Platform="iOS, WinUI" Value="Northern Mountains" />
+            <On Platform="iOS, WinUI" Value="AdventureWorks" />
         </OnPlatform>
     </ContentPage.Title>
     <ContentPage.Resources>
