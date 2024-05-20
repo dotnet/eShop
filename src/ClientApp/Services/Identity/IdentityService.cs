@@ -130,16 +130,23 @@ public class IdentityService : IIdentityService
 
     private OidcClient GetClient()
     {
-        return new OidcClient(
-            new OidcClientOptions
-            {
-                Authority = _settingsService.IdentityEndpointBase,
-                ClientId = _settingsService.ClientId,
-                ClientSecret = _settingsService.ClientSecret,
-                Scope = "openid profile basket orders offline_access",
-                RedirectUri = _settingsService.CallbackUri,
-                PostLogoutRedirectUri = _settingsService.CallbackUri,
-                Browser = _browser
-            });
+        var options = new OidcClientOptions
+        {
+            Authority = _settingsService.IdentityEndpointBase,
+            ClientId = _settingsService.ClientId,
+            ClientSecret = _settingsService.ClientSecret,
+            Scope = "openid profile basket orders offline_access",
+            RedirectUri = _settingsService.CallbackUri,
+            PostLogoutRedirectUri = _settingsService.CallbackUri,
+            RefreshDiscoveryDocumentForLogin = false,
+            RefreshDiscoveryOnSignatureFailure = false,
+            Browser = _browser,
+        };
+
+        options.Policy.Discovery.RequireHttps = false;
+        options.Policy.Discovery.ValidateEndpoints = false;
+        options.Policy.Discovery.ValidateIssuerName = false;
+        
+        return new OidcClient(options);
     }
 }

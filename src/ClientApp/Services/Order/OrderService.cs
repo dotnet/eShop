@@ -10,7 +10,7 @@ namespace eShop.ClientApp.Services.Order;
 
 public class OrderService : IOrderService
 {
-    private const string ApiUrlBase = "/api/v1/orders";
+    private const string ApiUrlBase = "api/orders";
     private readonly IIdentityService _identityService;
     private readonly IRequestProvider _requestProvider;
     private readonly ISettingsService _settingsService;
@@ -32,7 +32,7 @@ public class OrderService : IOrderService
             return;
         }
 
-        var uri = UriHelper.CombineUri(_settingsService.GatewayOrdersEndpointBase, ApiUrlBase);
+        var uri = $"{UriHelper.CombineUri(_settingsService.GatewayOrdersEndpointBase, ApiUrlBase)}?api-version=1.0";
 
         var success = await _requestProvider.PostAsync(uri, newOrder, authToken, "x-requestid").ConfigureAwait(false);
     }
@@ -46,7 +46,7 @@ public class OrderService : IOrderService
             return Enumerable.Empty<Models.Orders.Order>();
         }
 
-        var uri = UriHelper.CombineUri(_settingsService.GatewayOrdersEndpointBase, ApiUrlBase);
+        var uri = $"{UriHelper.CombineUri(_settingsService.GatewayOrdersEndpointBase, ApiUrlBase)}?api-version=1.0";
 
         var orders =
             await _requestProvider.GetAsync<IEnumerable<Models.Orders.Order>>(uri, authToken).ConfigureAwait(false);
@@ -65,7 +65,7 @@ public class OrderService : IOrderService
 
         try
         {
-            var uri = UriHelper.CombineUri(_settingsService.GatewayOrdersEndpointBase, $"{ApiUrlBase}/{orderId}");
+            var uri = $"{UriHelper.CombineUri(_settingsService.GatewayOrdersEndpointBase, $"{ApiUrlBase}/{orderId}")}?api-version=1.0";
 
             var order =
                 await _requestProvider.GetAsync<Models.Orders.Order>(uri, authToken).ConfigureAwait(false);
@@ -87,7 +87,7 @@ public class OrderService : IOrderService
             return false;
         }
 
-        var uri = UriHelper.CombineUri(_settingsService.GatewayOrdersEndpointBase, $"{ApiUrlBase}/cancel");
+        var uri = $"{UriHelper.CombineUri(_settingsService.GatewayOrdersEndpointBase, $"{ApiUrlBase}/cancel")}?api-version=1.0";
 
         var cancelOrderCommand = new CancelOrderCommand(orderId);
 
