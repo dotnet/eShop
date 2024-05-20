@@ -27,9 +27,9 @@
             <CollectionView.EmptyView>
                 <!--  EMPTY SHOPPING CART  -->
                 <Label
-                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
                     Text="EMPTY SHOPPING CART"
-                    VerticalOptions="Center" />
+                    VerticalTextAlignment="Center" />
             </CollectionView.EmptyView>
         </CollectionView>
         <!--  CHECKOUT  -->

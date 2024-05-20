@@ -20,7 +20,7 @@
             <Style x:Key="OrderTotalStyle" TargetType="{x:Type Label}">
                 <Setter Property="FontFamily" Value="Montserrat-Regular" />
                 <Setter Property="FontSize" Value="{StaticResource LargerSize}" />
-                <Setter Property="TextColor" Value="{StaticResource GreenColor}" />
+                <Setter Property="TextColor" Value="{StaticResource ImportantColor}" />
                 <Setter Property="HorizontalOptions" Value="End" />
             </Style>
 
