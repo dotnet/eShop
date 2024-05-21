@@ -51,4 +51,3 @@ properties:
           code --install-extension ms-dotnettools.csdevkit
         GetScript: return $false
         TestScript: return $false
-        
