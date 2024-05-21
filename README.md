@@ -1,4 +1,4 @@
-# eShop Reference Application - "Northern Mountains"
+# eShop Reference Application - "AdventureWorks"
 
 A reference .NET application implementing an e-commerce website using a services-based architecture.
 

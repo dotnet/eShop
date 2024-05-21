@@ -2,9 +2,9 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    <AspnetVersion>8.0.4</AspnetVersion>
-    <MicrosoftExtensionsVersion>8.4.0</MicrosoftExtensionsVersion>
-    <EfVersion>8.0.4</EfVersion>
+    <AspnetVersion>8.0.5</AspnetVersion>
+    <MicrosoftExtensionsVersion>8.5.0</MicrosoftExtensionsVersion>
+    <EfVersion>8.0.5</EfVersion>
     <AspireVersion>8.0.0-preview.7.24251.11</AspireVersion>
     <GrpcVersion>2.62.0</GrpcVersion>
     <DuendeVersion>7.0.4</DuendeVersion>
@@ -53,7 +53,7 @@
     <!-- Xabaril packages -->
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="8.0.1" />
     <!-- AI -->
-    <PackageVersion Include="Microsoft.SemanticKernel" Version="1.11.1" />
+    <PackageVersion Include="Microsoft.SemanticKernel" Version="1.12.0" />
     <PackageVersion Include="Microsoft.SemanticKernel.Connectors.Onnx" Version="1.10.0-alpha" />
     <!-- Open Telemetry -->
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.8.1" />
