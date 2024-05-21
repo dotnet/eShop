@@ -47,7 +47,6 @@ properties:
         SetScript: |
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
           code --install-extension github.copilot
-          code --install-extension github.copilot-chat        
           code --install-extension ms-azuretools.vscode-docker
           code --install-extension ms-dotnettools.csdevkit
         GetScript: return $false
