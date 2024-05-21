@@ -5,7 +5,8 @@
     <AspnetVersion>8.0.5</AspnetVersion>
     <MicrosoftExtensionsVersion>8.5.0</MicrosoftExtensionsVersion>
     <EfVersion>8.0.5</EfVersion>
-    <AspireVersion>8.0.0-preview.7.24251.11</AspireVersion>
+    <AspireVersion>8.0.0</AspireVersion>
+    <AspireUnstablePackagesVersion>8.0.0-preview.8.24258.2</AspireUnstablePackagesVersion>
     <GrpcVersion>2.62.0</GrpcVersion>
     <DuendeVersion>7.0.4</DuendeVersion>
     <ApiVersioningVersion>8.1.0</ApiVersioningVersion>
@@ -21,7 +22,7 @@
     <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.RabbitMQ.Client" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.StackExchange.Redis" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Azure.AI.OpenAI" Version="$(AspireVersion)" />
+    <PackageVersion Include="Aspire.Azure.AI.OpenAI" Version="$(AspireUnstablePackagesVersion)" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="$(AspireVersion)" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery.Yarp" Version="$(AspireVersion)" />
     <!-- Version together with ASP.NET -->
