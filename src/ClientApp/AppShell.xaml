@@ -4,12 +4,13 @@
     x:Class="eShop.ClientApp.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:views="clr-namespace:eShop.ClientApp.Views">
 
     <Shell.Resources>
         <ResourceDictionary>
             <Style x:Key="BaseStyle" TargetType="Element">
-                <Setter Property="Shell.BackgroundColor" Value="{AppThemeBinding Dark={StaticResource DarkBackgroundColor}, Light={StaticResource LightBackgroundColor}}" />
+                <Setter Property="Shell.BackgroundColor" Value="White" />
                 <Setter Property="Shell.ForegroundColor" Value="{AppThemeBinding Dark={StaticResource DarkForegroundColor}, Light={StaticResource LightForegroundColor}}" />
                 <Setter Property="Shell.TitleColor" Value="{AppThemeBinding Dark={StaticResource DarkForegroundColor}, Light={StaticResource LightForegroundColor}}" />
                 <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
@@ -26,6 +27,10 @@
     <Shell.BackButtonBehavior>
         <BackButtonBehavior TextOverride="" />
     </Shell.BackButtonBehavior>
+
+    <Shell.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="White" StatusBarStyle="DarkContent" />
+    </Shell.Behaviors>
 
     <FlyoutItem>
         <ShellContent ContentTemplate="{DataTemplate views:LoginView}" Route="Login" />
@@ -47,9 +52,9 @@
                                    Default=False}"
             Route="Map" />
         <ShellContent
-            Title="PROFILE"
+            Title="ORDERS"
             ContentTemplate="{DataTemplate views:ProfileView}"
-            Icon="{StaticResource ProfileIconImageSource}"
+            Icon="{StaticResource BasketIconImageSource}"
             Route="Profile" />
     </TabBar>
 </Shell>

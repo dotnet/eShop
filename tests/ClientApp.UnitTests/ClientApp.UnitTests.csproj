@@ -13,12 +13,16 @@
     <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.21" />
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.21" />
     <PackageReference Include="Microsoft.Maui.Controls.Maps" Version="8.0.21" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+    
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+    
     <PackageReference Include="xunit" Version="2.8.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.7">
+
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    
     <PackageReference Include="coverlet.collector" Version="6.0.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>

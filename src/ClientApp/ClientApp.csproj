@@ -22,7 +22,7 @@
 		<NoWarn>$(NoWarn);XC0022;XC0023</NoWarn>
 
     <!-- Display name -->
-    <ApplicationTitle>Northern Mountains</ApplicationTitle>
+    <ApplicationTitle>AdventureWorks</ApplicationTitle>
 
     <!-- App Identifier -->
     <ApplicationId>com.companyname.eshop</ApplicationId>
