@@ -110,14 +110,12 @@ public static partial class Extensions
             // the default format will just be ApiVersion.ToString(); for example, 1.0.
             // this will format the version as "'v'major[.minor][-status]"
             var versioned = apiVersioning.AddApiExplorer(options => options.GroupNameFormat = "'v'VVV");
-            var apiDescriptionProvider = versioned.Services.GetService<IApiVersionDescriptionProvider>();
-            foreach (var description in apiDescriptionProvider.ApiVersionDescriptions)
+            string[] versions = ["v1"];
+            foreach (var description in versions)
             {
-                builder.Services.AddOpenApi(description.GroupName, options =>
+                builder.Services.AddOpenApi(description, options =>
                 {
-                    options.ApplyApiVersionInfo(description,
-                        title: openApi.GetRequiredValue("Document:Title"),
-                        description: openApi.GetRequiredValue("Document:Description"));
+                    options.ApplyApiVersionInfo(openApi.GetRequiredValue("Document:Title"), openApi.GetRequiredValue("Document:Description"));
                     options.ApplyAuthorizationChecks([.. scopes.Keys]);
                     options.ApplySecuritySchemeDefinitions();
                     options.ApplyOperationDefaultValues();

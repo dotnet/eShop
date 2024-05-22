@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
@@ -13,10 +14,17 @@ namespace eShop.ServiceDefaults;
 
 internal static class OpenApiOptionsExtensions
 {
-    public static OpenApiOptions ApplyApiVersionInfo(this OpenApiOptions options, ApiVersionDescription apiDescription, string title, string description)
+    public static OpenApiOptions ApplyApiVersionInfo(this OpenApiOptions options, string title, string description)
     {
         options.UseTransformer((document, context, cancellationToken) =>
         {
+            var versionedDescriptionProvider = context.ApplicationServices.GetService<IApiVersionDescriptionProvider>();
+            var apiDescription = versionedDescriptionProvider?.ApiVersionDescriptions
+                .SingleOrDefault(description => description.GroupName == context.DocumentName);
+            if (apiDescription is null)
+            {
+                return Task.CompletedTask;
+            }
             document.Info.Version = apiDescription.ApiVersion.ToString();
             document.Info.Title = title;
             document.Info.Description = BuildDescription(apiDescription, description);
