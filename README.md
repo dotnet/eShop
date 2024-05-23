@@ -14,7 +14,7 @@ A reference .NET application implementing an e-commerce website using a services
 - Install & start Docker Desktop: https://docs.docker.com/engine/install/
 
 #### Windows with Visual Studio
-- Install [Visual Studio 2022 version 17.10 Preview](https://visualstudio.microsoft.com/vs/preview/).
+- Install [Visual Studio 2022 version 17.10 or newer](https://visualstudio.microsoft.com/vs/).
   - Select the following workloads:
     - `ASP.NET and web development` workload.
     - `.NET Aspire SDK` component in `Individual components`.
