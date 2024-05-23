@@ -19,9 +19,12 @@ namespace WebApp.UnitTests
 
             var builder = Kernel.CreateBuilder();
 
-            var completionType = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ESHOP_TESTS_AI_COMPLETION_TYPE"));
+            var completionType =
+                    !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ESHOP_TESTS_AI_COMPLETION_TYPE")) ?
+                    Environment.GetEnvironmentVariable("ESHOP_TESTS_AI_COMPLETION_TYPE") :
+                    "openai";
 
-            if (!completionType.ToString().ToLowerInvariant().Equals("openai"))
+            if (completionType.ToString().ToLowerInvariant().Equals("openai"))
             {
                 builder.AddOpenAIChatCompletion(
                    modelId: config["ESHOP_AI_MODEL"],

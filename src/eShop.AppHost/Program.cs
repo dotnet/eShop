@@ -5,6 +5,11 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 builder.AddForwardedHeaders();
 
+// Automatically provision an Application Insights resource
+var insights = builder.ExecutionContext.IsPublishMode
+    ? builder.AddAzureApplicationInsights("appinsights")
+    : builder.AddConnectionString("appinsights");
+
 var redis = builder.AddRedis("redis");
 var rabbitMq = builder.AddRabbitMQ("eventbus");
 var postgres = builder.AddPostgres("postgres")
@@ -70,12 +75,12 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
     .WithEnvironment("IdentityUrl", identityEndpoint);
 
 // set to true if you want to use OpenAI
-bool useOpenAI = false;
+bool useOpenAI = true;
 if (useOpenAI)
 {
     const string openAIName = "openai";
-    const string textEmbeddingName = "text-embedding-3-small";
-    const string chatModelName = "gpt-35-turbo-16k";
+    const string textEmbeddingName = "embedding";
+    const string chatModelName = "chat2";
 
     // to use an existing OpenAI resource, add the following to the AppHost user secrets:
     // "ConnectionStrings": {
@@ -96,17 +101,19 @@ if (useOpenAI)
         //   "Location": "<location>"
         // }
         openAI = builder.AddAzureOpenAI(openAIName)
-            .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-35-turbo", "0613"))
-            .AddDeployment(new AzureOpenAIDeployment(textEmbeddingName, "text-embedding-3-small", "1"));
+            .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-35-turbo-16k", "0613"))
+            .AddDeployment(new AzureOpenAIDeployment(textEmbeddingName, "text-embedding-ada-002", "2"));
     }
 
     catalogApi
+        .WithReference(insights)
         .WithReference(openAI)
         .WithEnvironment("AI__OPENAI__EMBEDDINGNAME", textEmbeddingName);
 
     webApp
+        .WithReference(insights)
         .WithReference(openAI)
-        .WithEnvironment("AI__OPENAI__CHATMODEL", chatModelName); ;
+        .WithEnvironment("AI__OPENAI__CHATMODEL", chatModelName);
 }
 
 // Wire up the callback urls (self referencing)

@@ -1,11 +1,23 @@
 ﻿using eShop.WebApp.Components;
 using eShop.ServiceDefaults;
 
+AppContext.SetSwitch("Microsoft.SemanticKernel.Experimental.GenAI.EnableOTelDiagnosticsSensitive", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+
+builder.Services.AddOpenTelemetry()
+    .WithMetrics(m =>
+    {
+        m.AddMeter("Microsoft.SemanticKernel*");
+    })
+    .WithTracing(t =>
+    {
+        t.AddSource("Microsoft.SemanticKernel*");
+    });
 
 builder.AddApplicationServices();
 
