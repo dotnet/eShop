@@ -14,15 +14,6 @@ A reference .NET application implementing an e-commerce website using a services
 - Install & start Docker Desktop: https://docs.docker.com/engine/install/
 
 #### Windows
-- Run the following commands in a Powershell Terminal running as `Administrator` to automatically configuration your enviroment with the required tools to build and run this application.
-```powershell
-install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-get-WinGetConfiguration -file .\.configurations\configuration.dsc.yaml | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
-```
-
-Or
-
 - Install [Visual Studio 2022 version 17.10 Preview](https://visualstudio.microsoft.com/vs/preview/).
   - Select the following workloads:
     - `ASP.NET and web development` workload.
@@ -30,6 +21,27 @@ Or
     - Optional: `.NET Multi-platform App UI development` to run client apps
 
 Or
+
+- Run the following commands in a Powershell & Terminal running as `Administrator` to automatically configuration your enviroment with the required tools to build and run this application. (Note: A restart is required and included in the script below.)
+
+##### Install Visual Studio 2022 Community
+```powershell
+install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+get-WinGetConfiguration -file .\.configurations\vside.dsc.yaml | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
+shutdown /g
+```
+
+##### Install Visual Studio Code and related extensions
+```powershell
+install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+get-WinGetConfiguration -file .\.configurations\vscode.dsc.yaml | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
+shutdown /g
+```
+
+Or
+
 - From Dev Home go to `Machine Configuration -> Clone repositories`. Enter the URL for this reository. In the confirmation screen look for the section `Configuration File Detected` and click `Run File`.
 
 #### Mac, Linux, & Windows without Visual Studio
