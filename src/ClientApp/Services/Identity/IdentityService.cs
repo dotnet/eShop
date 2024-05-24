@@ -1,7 +1,7 @@
-using eShop.ClientApp.Models.Token;
+﻿using eShop.ClientApp.Models.Token;
 using eShop.ClientApp.Models.User;
+using eShop.ClientApp.Services.RequestProvider;
 using eShop.ClientApp.Services.Settings;
-using IdentityModel.OidcClient;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
 namespace eShop.ClientApp.Services.Identity;
@@ -10,11 +10,13 @@ public class IdentityService : IIdentityService
 {
     private readonly IBrowser _browser;
     private readonly ISettingsService _settingsService;
+    private readonly IHttpsClientHandlerService _httpsClientHandlerService;
 
-    public IdentityService(IBrowser browser, ISettingsService settingsService)
+    public IdentityService(IBrowser browser, ISettingsService settingsService, IHttpsClientHandlerService httpsClientHandlerService)
     {
         _browser = browser;
         _settingsService = settingsService;
+        _httpsClientHandlerService = httpsClientHandlerService;
     }
 
     public async Task<bool> SignInAsync()
@@ -92,7 +94,7 @@ public class IdentityService : IIdentityService
                                "false")
             };
     }
-    
+
     public async Task<string> GetAuthTokenAsync()
     {
         var userToken = await _settingsService.GetUserTokenAsync().ConfigureAwait(false);
@@ -138,15 +140,14 @@ public class IdentityService : IIdentityService
             Scope = "openid profile basket orders offline_access",
             RedirectUri = _settingsService.CallbackUri,
             PostLogoutRedirectUri = _settingsService.CallbackUri,
-            RefreshDiscoveryDocumentForLogin = false,
-            RefreshDiscoveryOnSignatureFailure = false,
-            Browser = _browser,
+            Browser = _browser
         };
 
-        options.Policy.Discovery.RequireHttps = false;
-        options.Policy.Discovery.ValidateEndpoints = false;
-        options.Policy.Discovery.ValidateIssuerName = false;
-        
+#if DEBUG
+        var platformMessageHandler = _httpsClientHandlerService.GetPlatformMessageHandler();
+        options.BackchannelHandler = platformMessageHandler;
+#endif
+
         return new OidcClient(options);
     }
 }

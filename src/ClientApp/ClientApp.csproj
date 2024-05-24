@@ -44,7 +44,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- App Icon -->
-    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#edeafb"/>
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#edeafb" />
 
     <!-- Splash Screen -->
     <MauiSplashScreen Include="Resources\Splash\splash.svg">
@@ -53,11 +53,14 @@
     </MauiSplashScreen>
 
     <!-- Images -->
-    <MauiImage Include="Resources\Images\*"/>
-    <MauiFont Include="Resources\Fonts\*"/>
+    <MauiImage Include="Resources\Images\*" />
+    <MauiFont Include="Resources\Fonts\*" />
 
     <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
-    <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)"/>
+    <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Platforms\Android\Resources\xml\network_security_config.xml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -71,11 +74,11 @@
     <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.21" />
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.21" />
     <PackageReference Include="Microsoft.Maui.Controls.Maps" Version="8.0.21" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.*-*"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.*-*" />
 
     <PackageReference Include="CommunityToolkit.Maui" Version="9.0.0" />
     <PackageReference Include="IdentityModel" Version="7.0.0" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2"/>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
   </ItemGroup>
 
   <ItemGroup>

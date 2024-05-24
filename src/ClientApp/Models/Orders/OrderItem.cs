@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace eShop.ClientApp.Models.Orders;
 
@@ -14,7 +14,7 @@ public class OrderItem
 
     [JsonPropertyName("pictureurl")] public string PictureUrl { get; set; }
 
-    [JsonPropertyName("units")] public int Quantity { get; set; }
+    [JsonPropertyName("quantity")] public int Quantity { get; set; }
 
     public decimal Discount { get; set; }
     public decimal Total => Quantity * UnitPrice;

@@ -1,4 +1,4 @@
-using CommunityToolkit.Maui;
+﻿using CommunityToolkit.Maui;
 using eShop.ClientApp.Services;
 using eShop.ClientApp.Services.AppEnvironment;
 using eShop.ClientApp.Services.Basket;
@@ -12,8 +12,7 @@ using eShop.ClientApp.Services.RequestProvider;
 using eShop.ClientApp.Services.Settings;
 using eShop.ClientApp.Services.Theme;
 using eShop.ClientApp.Views;
-using IdentityModel.OidcClient;
-using Microsoft.Extensions.Logging;
+
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
 namespace eShop.ClientApp;
@@ -64,6 +63,7 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<INavigationService, MauiNavigationService>();
         mauiAppBuilder.Services.AddSingleton<IDialogService, DialogService>();
         mauiAppBuilder.Services.AddSingleton<IOpenUrlService, OpenUrlService>();
+        mauiAppBuilder.Services.AddSingleton<IHttpsClientHandlerService, HttpsClientHandlerService>();
         mauiAppBuilder.Services.AddSingleton<IRequestProvider, RequestProvider>();
         mauiAppBuilder.Services.AddSingleton<IIdentityService, IdentityService>();
         mauiAppBuilder.Services.AddSingleton<IFixUriService, FixUriService>();
@@ -82,7 +82,7 @@ public static class MauiProgram
                 var aes =
                     new AppEnvironmentService(
                         new BasketMockService(), new BasketService(identityService, settingsService, fixUriService),
-                        new CatalogMockService(), new CatalogService(settingsService, requestProvider, fixUriService),
+                        new CatalogMockService(), new CatalogService(identityService, settingsService, requestProvider, fixUriService),
                         new OrderMockService(), new OrderService(identityService, settingsService, requestProvider),
                         new IdentityMockService(), identityService);
 

@@ -1,25 +1,24 @@
-using System.Net;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using eShop.ClientApp.Exceptions;
+﻿using eShop.ClientApp.Exceptions;
 
 namespace eShop.ClientApp.Services.RequestProvider;
 
-public class RequestProvider : IRequestProvider
+public class RequestProvider(IHttpsClientHandlerService _httpsClientHandlerService) : IRequestProvider
 {
     private readonly Lazy<HttpClient> _httpClient =
         new(() =>
             {
+#if DEBUG
+                var httpClient = new HttpClient(_httpsClientHandlerService.GetPlatformMessageHandler());
+#else
                 var httpClient = new HttpClient();
+#endif
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 return httpClient;
             },
             LazyThreadSafetyMode.ExecutionAndPublication);
 
     private readonly JsonSerializerOptions _jsonSerializerContext =
-        new() {PropertyNameCaseInsensitive = true, NumberHandling = JsonNumberHandling.AllowReadingFromString};
+        new() { PropertyNameCaseInsensitive = true, NumberHandling = JsonNumberHandling.AllowReadingFromString };
 
     public async Task<TResult> GetAsync<TResult>(string uri, string token = "")
     {
@@ -42,7 +41,7 @@ public class RequestProvider : IRequestProvider
         {
             AddHeaderParameter(httpClient, header);
         }
-        
+
         using HttpResponseMessage response = await httpClient.PostAsJsonAsync(uri, data).ConfigureAwait(false);
 
         await HandleResponse(response).ConfigureAwait(false);
@@ -94,7 +93,7 @@ public class RequestProvider : IRequestProvider
         {
             AddHeaderParameter(httpClient, header);
         }
-        
+
         using HttpResponseMessage response = await httpClient.PutAsJsonAsync(uri, data).ConfigureAwait(false);
 
         await HandleResponse(response).ConfigureAwait(false);
