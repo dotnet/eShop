@@ -36,7 +36,7 @@ public class CatalogService : ICatalogService
         }
 
         var uri = UriHelper.CombineUri(_settingsService.GatewayCatalogEndpointBase,
-            $"{ApiUrlBase}/items/type/{catalogTypeId}/brand/{catalogBrandId}?{ApiVersion}");
+            $"{ApiUrlBase}/items/type/{catalogTypeId}/brand/{catalogBrandId}?PageSize=100&PageIndex=0&{ApiVersion}");
 
         var catalog = await _requestProvider.GetAsync<CatalogRoot>(uri, authToken).ConfigureAwait(false);
 
