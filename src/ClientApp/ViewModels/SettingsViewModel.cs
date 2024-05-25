@@ -27,7 +27,7 @@ public class SettingsViewModel : ViewModelBase
     private bool _useAzureServices;
     private bool _useFakeLocation;
 
-    static string BaseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "10.0.2.2" : "localhost"
+    static string BaseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "10.0.2.2" : "localhost";
 
     public SettingsViewModel(
         ILocationService locationService, IAppEnvironmentService appEnvironmentService,
@@ -54,7 +54,7 @@ public class SettingsViewModel : ViewModelBase
         GatewayCatalogEndpoint =
             !string.IsNullOrEmpty(_settingsService.GatewayCatalogEndpointBase)
                 ? _settingsService.GatewayCatalogEndpointBase
-                : $"http://{BaseAddress)}:11632";
+                : $"http://{BaseAddress}:11632";
 
         GatewayBasketEndpoint =
             !string.IsNullOrEmpty(_settingsService.GatewayBasketEndpointBase)
