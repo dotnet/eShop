@@ -30,5 +30,10 @@
         <string>Assets.xcassets/appicon.appiconset</string>
         <key>NSLocationWhenInUseUsageDescription</key>
         <string>Can we use your location when your app is being used?</string>
+        <key>NSAppTransportSecurity</key>    
+        <dict>
+            <key>NSAllowsLocalNetworking</key>
+            <true/>
+        </dict>
     </dict>
 </plist>
