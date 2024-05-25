@@ -27,6 +27,8 @@ public class SettingsViewModel : ViewModelBase
     private bool _useAzureServices;
     private bool _useFakeLocation;
 
+    static string BaseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "10.0.2.2" : "localhost"
+
     public SettingsViewModel(
         ILocationService locationService, IAppEnvironmentService appEnvironmentService,
         INavigationService navigationService, ISettingsService settingsService)
@@ -47,22 +49,22 @@ public class SettingsViewModel : ViewModelBase
         IdentityEndpoint =
             !string.IsNullOrEmpty(_settingsService.IdentityEndpointBase)
                 ? _settingsService.IdentityEndpointBase
-                : $"https://{GetLocalHostIpAddress()}:5243";
+                : $"https://{BaseAddress}:5243";
 
         GatewayCatalogEndpoint =
             !string.IsNullOrEmpty(_settingsService.GatewayCatalogEndpointBase)
                 ? _settingsService.GatewayCatalogEndpointBase
-                : $"http://{GetLocalHostIpAddress()}:11632";
+                : $"http://{BaseAddress)}:11632";
 
         GatewayBasketEndpoint =
             !string.IsNullOrEmpty(_settingsService.GatewayBasketEndpointBase)
                 ? _settingsService.GatewayBasketEndpointBase
-                : $"http://{GetLocalHostIpAddress()}:5221";
+                : $"http://{BaseAddress}:5221";
 
         GatewayOrdersEndpoint =
             !string.IsNullOrEmpty(_settingsService.GatewayOrdersEndpointBase)
                 ? _settingsService.GatewayOrdersEndpointBase
-                : $"http://{GetLocalHostIpAddress()}:11632";
+                : $"http://{BaseAddress}:11632";
 
         ToggleMockServicesCommand = new RelayCommand(ToggleMockServices);
 
@@ -337,10 +339,5 @@ public class SettingsViewModel : ViewModelBase
         {
             _settingsService.AllowGpsLocation = _allowGpsLocation;
         }
-    }
-
-    private string GetLocalHostIpAddress()
-    {
-        return DeviceInfo.Platform == DevicePlatform.Android ? "10.0.2.2" : "localhost";
     }
 }

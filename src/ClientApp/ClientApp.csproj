@@ -59,9 +59,6 @@
     <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
-  <ItemGroup>
-    <None Remove="Platforms\Android\Resources\xml\network_security_config.xml" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.26.1" />
