@@ -2,23 +2,23 @@
 
 namespace eShop.ClientApp.Services.RequestProvider;
 
-public class RequestProvider(IHttpsClientHandlerService _httpsClientHandlerService) : IRequestProvider
+public class RequestProvider(HttpMessageHandler _messageHandler) : IRequestProvider
 {
     private readonly Lazy<HttpClient> _httpClient =
         new(() =>
             {
-#if DEBUG
-                var httpClient = new HttpClient(_httpsClientHandlerService.GetPlatformMessageHandler());
-#else
-                var httpClient = new HttpClient();
-#endif
+                var httpClient = _messageHandler is not null ? new HttpClient(_messageHandler) : new HttpClient();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 return httpClient;
             },
             LazyThreadSafetyMode.ExecutionAndPublication);
 
     private readonly JsonSerializerOptions _jsonSerializerContext =
-        new() { PropertyNameCaseInsensitive = true, NumberHandling = JsonNumberHandling.AllowReadingFromString };
+        new()
+        {
+            PropertyNameCaseInsensitive = true, 
+            NumberHandling = JsonNumberHandling.AllowReadingFromString,
+        };
 
     public async Task<TResult> GetAsync<TResult>(string uri, string token = "")
     {

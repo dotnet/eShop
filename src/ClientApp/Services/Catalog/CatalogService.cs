@@ -11,6 +11,7 @@ public class CatalogService : ICatalogService
 {
     private const string ApiUrlBase = "api/catalog";
     private const string ApiVersion = "api-version=1.0";
+
     private readonly IFixUriService _fixUriService;
     private readonly IRequestProvider _requestProvider;
     private readonly ISettingsService _settingsService;

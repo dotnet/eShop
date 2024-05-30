@@ -12,6 +12,9 @@ namespace eShop.ClientApp.ViewModels;
 
 public class SettingsViewModel : ViewModelBase
 {
+    //Needed if using Android Emulator Locally. See https://learn.microsoft.com/en-us/dotnet/maui/data-cloud/local-web-services?view=net-maui-8.0#android
+    private static string _baseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "10.0.2.2" : "localhost";
+    
     private readonly IAppEnvironmentService _appEnvironmentService;
     private readonly ILocationService _locationService;
     private readonly ISettingsService _settingsService;
@@ -26,8 +29,6 @@ public class SettingsViewModel : ViewModelBase
 
     private bool _useAzureServices;
     private bool _useFakeLocation;
-
-    static string BaseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "10.0.2.2" : "localhost";
 
     public SettingsViewModel(
         ILocationService locationService, IAppEnvironmentService appEnvironmentService,
@@ -49,22 +50,22 @@ public class SettingsViewModel : ViewModelBase
         IdentityEndpoint =
             !string.IsNullOrEmpty(_settingsService.IdentityEndpointBase)
                 ? _settingsService.IdentityEndpointBase
-                : $"https://{BaseAddress}:5243";
+                : $"https://{_baseAddress}:5243";
 
         GatewayCatalogEndpoint =
             !string.IsNullOrEmpty(_settingsService.GatewayCatalogEndpointBase)
                 ? _settingsService.GatewayCatalogEndpointBase
-                : $"http://{BaseAddress}:11632";
+                : $"http://{_baseAddress}:11632";
 
         GatewayBasketEndpoint =
             !string.IsNullOrEmpty(_settingsService.GatewayBasketEndpointBase)
                 ? _settingsService.GatewayBasketEndpointBase
-                : $"http://{BaseAddress}:5221";
+                : $"http://{_baseAddress}:5221";
 
         GatewayOrdersEndpoint =
             !string.IsNullOrEmpty(_settingsService.GatewayOrdersEndpointBase)
                 ? _settingsService.GatewayOrdersEndpointBase
-                : $"http://{BaseAddress}:11632";
+                : $"http://{_baseAddress}:11632";
 
         ToggleMockServicesCommand = new RelayCommand(ToggleMockServices);
 

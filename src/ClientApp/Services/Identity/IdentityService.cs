@@ -10,13 +10,14 @@ public class IdentityService : IIdentityService
 {
     private readonly IBrowser _browser;
     private readonly ISettingsService _settingsService;
-    private readonly IHttpsClientHandlerService _httpsClientHandlerService;
 
-    public IdentityService(IBrowser browser, ISettingsService settingsService, IHttpsClientHandlerService httpsClientHandlerService)
+    private readonly HttpMessageHandler _httpMessageHandler;
+
+    public IdentityService(IBrowser browser, ISettingsService settingsService, HttpMessageHandler httpMessageHandler)
     {
         _browser = browser;
         _settingsService = settingsService;
-        _httpsClientHandlerService = httpsClientHandlerService;
+        _httpMessageHandler = httpMessageHandler;
     }
 
     public async Task<bool> SignInAsync()
@@ -140,14 +141,14 @@ public class IdentityService : IIdentityService
             Scope = "openid profile basket orders offline_access",
             RedirectUri = _settingsService.CallbackUri,
             PostLogoutRedirectUri = _settingsService.CallbackUri,
-            Browser = _browser
+            Browser = _browser,
         };
 
-#if DEBUG
-        var platformMessageHandler = _httpsClientHandlerService.GetPlatformMessageHandler();
-        options.BackchannelHandler = platformMessageHandler;
-#endif
-
+        if (_httpMessageHandler is not null)
+        {
+            options.BackchannelHandler = _httpMessageHandler;
+        }
+        
         return new OidcClient(options);
     }
 }

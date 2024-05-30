@@ -9,6 +9,8 @@ namespace eShop.ClientApp.Services.FixUri;
 
 public class FixUriService : IFixUriService
 {
+    private const string ApiVersion = "api-version=1.0";
+    
     private readonly ISettingsService _settingsService;
 
     private readonly Regex IpRegex = new(@"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b");
@@ -31,7 +33,7 @@ public class FixUriService : IFixUriService
             {
                 foreach (var catalogItem in catalogItems)
                 {
-                    catalogItem.PictureUri = Path.Combine(_settingsService.GatewayCatalogEndpointBase, $"api/catalog/items/{catalogItem.Id}/pic?api-version=1.0");
+                    catalogItem.PictureUri = Path.Combine(_settingsService.GatewayCatalogEndpointBase, $"api/catalog/items/{catalogItem.Id}/pic?{ApiVersion}");
                 }
             }
         }
