@@ -13,6 +13,7 @@ using eShop.ClientApp.Services.Settings;
 using eShop.ClientApp.Services.Theme;
 using eShop.ClientApp.Views;
 using IdentityModel.OidcClient;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
@@ -64,8 +65,20 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<INavigationService, MauiNavigationService>();
         mauiAppBuilder.Services.AddSingleton<IDialogService, DialogService>();
         mauiAppBuilder.Services.AddSingleton<IOpenUrlService, OpenUrlService>();
-        mauiAppBuilder.Services.AddSingleton<IRequestProvider, RequestProvider>();
-        mauiAppBuilder.Services.AddSingleton<IIdentityService, IdentityService>();
+        mauiAppBuilder.Services.AddSingleton<IRequestProvider>(
+            sp =>
+            {
+                var debugHttpHandler = sp.GetKeyedService<HttpMessageHandler>("DebugHttpMessageHandler");
+                return new RequestProvider(debugHttpHandler);
+            });
+        mauiAppBuilder.Services.AddSingleton<IIdentityService, IdentityService>(
+            sp =>
+            {
+                var browser = sp.GetRequiredService<IBrowser>();
+                var settingsService = sp.GetRequiredService<ISettingsService>();
+                var debugHttpHandler = sp.GetKeyedService<HttpMessageHandler>("DebugHttpMessageHandler");
+                return new IdentityService(browser, settingsService, debugHttpHandler);
+            });
         mauiAppBuilder.Services.AddSingleton<IFixUriService, FixUriService>();
         mauiAppBuilder.Services.AddSingleton<ILocationService, LocationService>();
 
@@ -93,6 +106,33 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddTransient<IBrowser, MauiAuthenticationBrowser>();
 
 #if DEBUG
+        mauiAppBuilder.Services.AddKeyedSingleton<HttpMessageHandler>(
+            "DebugHttpMessageHandler",
+            (sp, key) =>
+            {
+#if ANDROID
+                var handler = new Xamarin.Android.Net.AndroidMessageHandler();
+                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+                {
+                    if (cert != null && cert.Issuer.Equals("CN=localhost", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                    
+                    return errors == System.Net.Security.SslPolicyErrors.None;
+                };
+                return handler;
+#elif IOS || MACCATALYST
+                var handler = new NSUrlSessionHandler
+                {
+                    TrustOverrideForUrl = (sender, url, trust) => url.StartsWith("https://localhost", StringComparison.OrdinalIgnoreCase),
+                };
+                return handler;
+#else
+                return null;
+#endif
+            });
+        
         mauiAppBuilder.Logging.AddDebug();
 #endif
 
