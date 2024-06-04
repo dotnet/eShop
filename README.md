@@ -22,7 +22,7 @@ A reference .NET application implementing an e-commerce website using a services
 
 Or
 
-- Run the following commands in a Powershell & Terminal running as `Administrator` to automatically configuration your enviroment with the required tools to build and run this application. (Note: A restart is required and included in the script below.)
+- Run the following commands in a Powershell & Terminal running as `Administrator` to automatically configure your enviroment with the required tools to build and run this application. (Note: A restart is required and included in the script below.)
 
 ##### Install Visual Studio 2022 Community
 ```powershell
