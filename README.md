@@ -42,7 +42,7 @@ shutdown /g
 
 Or
 
-- From Dev Home go to `Machine Configuration -> Clone repositories`. Enter the URL for this reository. In the confirmation screen look for the section `Configuration File Detected` and click `Run File`.
+- From Dev Home go to `Machine Configuration -> Clone repositories`. Enter the URL for this repository. In the confirmation screen look for the section `Configuration File Detected` and click `Run File`.
 
 #### Mac, Linux, & Windows without Visual Studio
 - Install the latest [.NET 8 SDK](https://dot.net/download?cid=eshop)
