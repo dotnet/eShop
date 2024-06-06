@@ -3,6 +3,7 @@ using eShop.ClientApp.Services.Identity;
 
 namespace ClientApp.UnitTests.ViewModels;
 
+[TestClass]
 public class OrderViewModelTests
 {
     private readonly INavigationService _navigationService;
@@ -29,14 +30,14 @@ public class OrderViewModelTests
         _appEnvironmentService.UpdateDependencies(true);
     }
 
-    [Fact]
+    [TestMethod]
     public void OrderPropertyIsNullWhenViewModelInstantiatedTest()
     {
         var orderViewModel = new OrderDetailViewModel(_appEnvironmentService, _navigationService, _settingsService);
-        Assert.Null(orderViewModel.Order);
+        Assert.IsNull(orderViewModel.Order);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task OrderPropertyIsNotNullAfterViewModelInitializationTest()
     {
         var orderViewModel = new OrderDetailViewModel(_appEnvironmentService, _navigationService, _settingsService);
@@ -46,10 +47,10 @@ public class OrderViewModelTests
         orderViewModel.OrderNumber = order.OrderNumber;
         await orderViewModel.InitializeAsync();
 
-        Assert.NotNull(orderViewModel.Order);
+        Assert.IsNotNull(orderViewModel.Order);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task SettingOrderPropertyShouldRaisePropertyChanged()
     {
         bool invoked = false;
@@ -67,6 +68,6 @@ public class OrderViewModelTests
         orderViewModel.OrderNumber = order.OrderNumber;
         await orderViewModel.InitializeAsync();
 
-        Assert.True(invoked);
+        Assert.IsTrue(invoked);
     }
 }
