@@ -1,31 +1,32 @@
 ﻿namespace ClientApp.UnitTests.Services;
 
+[TestClass]
 public class CatalogServiceTests
 {
-    [Fact]
+    [TestMethod]
     public async Task GetFakeCatalogTest()
     {
         var catalogMockService = new CatalogMockService();
         var catalog = await catalogMockService.GetCatalogAsync();
 
-        Assert.NotEmpty(catalog);
+        Assert.AreNotEqual(catalog.Count(), 0);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task GetFakeCatalogBrandTest()
     {
         var catalogMockService = new CatalogMockService();
         var catalogBrand = await catalogMockService.GetCatalogBrandAsync();
 
-        Assert.NotEmpty(catalogBrand);
+        Assert.AreNotEqual(catalogBrand.Count(), 0);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task GetFakeCatalogTypeTest()
     {
         var catalogMockService = new CatalogMockService();
         var catalogType = await catalogMockService.GetCatalogTypeAsync();
 
-        Assert.NotEmpty(catalogType);
+        Assert.AreNotEqual(catalogType.Count(), 0);
     }
 }
