@@ -6,6 +6,7 @@ using eShop.ClientApp.Services.Identity;
 
 namespace ClientApp.UnitTests.ViewModels;
 
+[TestClass]
 public class CatalogItemViewModelTests
 {
     private readonly INavigationService _navigationService;
@@ -29,14 +30,14 @@ public class CatalogItemViewModelTests
         _appEnvironmentService.UpdateDependencies(true);
     }
 
-    [Fact]
+    [TestMethod]
     public void AddCatalogItemCommandIsNotNullTest()
     {
         var CatalogItemViewModel = new CatalogItemViewModel(_appEnvironmentService, _navigationService);
-        Assert.NotNull(CatalogItemViewModel.AddCatalogItemCommand);
+        Assert.IsNotNull(CatalogItemViewModel.AddCatalogItemCommand);
     }
     
-    [Fact]
+    [TestMethod]
     public async Task AddCatalogItemCommandSendsAddProductMessageTest()
     {
         bool messageReceived = false;
@@ -55,7 +56,7 @@ public class CatalogItemViewModelTests
         
         await catalogItemViewModel.AddCatalogItemCommand.ExecuteUntilComplete();
 
-        Assert.True(messageReceived);
+        Assert.IsTrue(messageReceived);
     }
 
 }

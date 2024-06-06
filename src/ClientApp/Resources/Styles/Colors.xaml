@@ -10,7 +10,6 @@
     <Color x:Key="AccentColor">#00857D</Color>
     <Color x:Key="LightGreenColor">#83D01B</Color>
     <Color x:Key="GreenColor">#00A69C</Color>
-    <Color x:Key="DarkGreenColor">#00857D</Color>
     <Color x:Key="GrayColor">#e2e2e2</Color>
     <Color x:Key="DisabledColor">Gray</Color>
     <Color x:Key="ErrorColor">#ff5252</Color>
@@ -28,6 +27,8 @@
     <Color x:Key="ListViewBackgroundColor">Transparent</Color>
     <Color x:Key="ThemeListViewBackgroundColor">Transparent</Color>
     <Color x:Key="ActivityIndicatorColor">#00857D</Color>
+    <Color x:Key="HighlightColor">#ed361a</Color>
+    <Color x:Key="ImportantColor">#2556cb</Color>
 
     <!--  Theme Colors  -->
     <Color x:Key="LightBackgroundColor">#FFFFFF</Color>

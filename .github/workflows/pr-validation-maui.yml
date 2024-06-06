@@ -6,14 +6,14 @@ on:
       - '**'
     paths:
       - 'src/ClientApp/**'
-      - 'test/ClientApp.UnitTests/**'
+      - 'tests/ClientApp.UnitTests/**'
       - '.github/workflows/pr-validation-maui.yml'
   push:
     branches:
       - main
     paths:
       - 'src/ClientApp/**'
-      - 'test/ClientApp.UnitTests/**'
+      - 'tests/ClientApp.UnitTests/**'
       - '.github/workflows/pr-validation-maui.yml'
 
 jobs:  

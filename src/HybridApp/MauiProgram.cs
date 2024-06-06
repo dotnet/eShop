@@ -1,5 +1,4 @@
 ﻿using eShop.HybridApp.Services;
-using eShop.WebAppComponents.Services;
 using Microsoft.Extensions.Logging;
 
 namespace eShop.HybridApp;
@@ -7,8 +6,8 @@ namespace eShop.HybridApp;
 public static class MauiProgram
 {
     // NOTE: Must have a trailing slash on base URLs to ensure the full BaseAddress URL is used to resolve relative URLs
-    private static string MobileBffHost = "http://localhost:11632";
-    internal static string MobileBffCatalogBaseUrl = $"{MobileBffHost}/catalog-api/";
+    internal static string MobileBffHost = "http://localhost:11632/";
+
 
     public static MauiApp CreateMauiApp()
     {
@@ -27,8 +26,9 @@ public static class MauiProgram
 		builder.Logging.AddDebug();
 #endif
 
-        builder.Services.AddHttpClient<CatalogService>(o => o.BaseAddress = new(MobileBffCatalogBaseUrl));
-        builder.Services.AddSingleton<IProductImageUrlProvider, ProductImageUrlProvider>();
+
+        builder.Services.AddHttpClient<CatalogService>(o => o.BaseAddress = new(MobileBffHost));
+        builder.Services.AddSingleton<WebAppComponents.Services.IProductImageUrlProvider, ProductImageUrlProvider>();
 
         return builder.Build();
     }
