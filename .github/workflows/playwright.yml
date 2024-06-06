@@ -5,7 +5,7 @@ on:
     paths-ignore:
       - '**.md'
       - 'src/ClientApp/**'
-      - 'test/ClientApp.UnitTests/**'
+      - 'tests/ClientApp.UnitTests/**'
       - '.github/workflows/pr-validation-maui.yml'
   pull_request:
     branches: [ main ]
