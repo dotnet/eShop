@@ -23,6 +23,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseAntiforgery();
 
+app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
