@@ -49,7 +49,7 @@ Or
 
 ##### Install Visual Studio Code and related extensions
 ```powershell
-install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense
+install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense  -Force
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 get-WinGetConfiguration -file .\.configurations\vscode.dsc.yaml | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
 ```
