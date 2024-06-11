@@ -11,4 +11,4 @@ global using eShop.Ordering.Infrastructure.Idempotency;
 global using Microsoft.Extensions.Logging;
 global using NSubstitute;
 global using eShop.Ordering.UnitTests;
-global using Xunit;
+global using Microsoft.VisualStudio.TestTools.UnitTesting;
