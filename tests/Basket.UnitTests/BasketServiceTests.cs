@@ -1,4 +1,4 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using eShop.Basket.API.Repositories;
 using eShop.Basket.API.Grpc;
 using eShop.Basket.API.Model;
@@ -8,9 +8,10 @@ using BasketItem = eShop.Basket.API.Model.BasketItem;
 
 namespace eShop.Basket.UnitTests;
 
+[TestClass]
 public class BasketServiceTests
 {
-    [Fact]
+    [TestMethod]
     public async Task GetBasketReturnsEmptyForNoUser()
     {
         var mockRepository = Substitute.For<IBasketRepository>();
@@ -20,11 +21,11 @@ public class BasketServiceTests
 
         var response = await service.GetBasket(new GetBasketRequest(), serverCallContext);
 
-        Assert.IsType<CustomerBasketResponse>(response);
-        Assert.Empty(response.Items);
+        Assert.IsInstanceOfType<CustomerBasketResponse>(response);
+        Assert.AreEqual(response.Items.Count(), 0);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task GetBasketReturnsItemsForValidUserId()
     {
         var mockRepository = Substitute.For<IBasketRepository>();
@@ -38,11 +39,11 @@ public class BasketServiceTests
 
         var response = await service.GetBasket(new GetBasketRequest(), serverCallContext);
 
-        Assert.IsType<CustomerBasketResponse>(response);
-        Assert.Single(response.Items);
+        Assert.IsInstanceOfType<CustomerBasketResponse>(response);
+        Assert.AreEqual(response.Items.Count(), 1);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task GetBasketReturnsEmptyForInvalidUserId()
     {
         var mockRepository = Substitute.For<IBasketRepository>();
@@ -55,7 +56,7 @@ public class BasketServiceTests
 
         var response = await service.GetBasket(new GetBasketRequest(), serverCallContext);
 
-        Assert.IsType<CustomerBasketResponse>(response);
-        Assert.Empty(response.Items);
+        Assert.IsInstanceOfType<CustomerBasketResponse>(response);
+        Assert.AreEqual(response.Items.Count(), 0);
     }
 }
