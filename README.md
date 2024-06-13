@@ -1,6 +1,6 @@
 # eShop Reference Application - "AdventureWorks"
 
-A reference .NET application implementing an e-commerce website using a services-based architecture.
+A reference .NET application implementing an e-commerce website using a services-based architecture using [.NET Aspire](https://learn.microsoft.com/dotnet/aspire/).
 
 ![eShop Reference Application architecture diagram](img/eshop_architecture.png)
 
@@ -11,7 +11,7 @@ A reference .NET application implementing an e-commerce website using a services
 ### Prerequisites
 
 - Clone the eShop repository: https://github.com/dotnet/eshop
-- Install & start Docker Desktop: https://docs.docker.com/engine/install/
+- [Install & start Docker Desktop](https://docs.docker.com/engine/install/)
 
 #### Windows with Visual Studio
 - Install [Visual Studio 2022 version 17.10 or newer](https://visualstudio.microsoft.com/vs/).
