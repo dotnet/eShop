@@ -58,7 +58,7 @@
             Orientation="Both"
             VerticalScrollBarVisibility="Never">
         </ScrollView>-->
-        <ContentView
+        <!--<ContentView
             Grid.Row="0"
             Grid.Column="0"
             HeightRequest="40"
@@ -70,7 +70,7 @@
                     <GradientStop Offset="1.0" Color="Transparent" />
                 </LinearGradientBrush>
             </ContentView.Background>
-        </ContentView>
+        </ContentView>-->
         <Image
             Grid.Row="0"
             Grid.Column="0"
