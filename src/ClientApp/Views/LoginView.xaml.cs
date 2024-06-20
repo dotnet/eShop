@@ -1,4 +1,4 @@
-namespace eShop.ClientApp.Views;
+﻿namespace eShop.ClientApp.Views;
 
 public partial class LoginView
 {
@@ -8,7 +8,7 @@ public partial class LoginView
     {
         BindingContext = _viewModel = viewModel;
         InitializeComponent();
-        BannerScroll.ScrollToAsync(0, BannerScroll.ContentSize.Height, false);
+        //BannerScroll.ScrollToAsync(0, BannerScroll.ContentSize.Height, false);
     }
 
     protected override void OnAppearing()

@@ -11,9 +11,9 @@
 
   <ItemGroup>
 
-    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.40" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.40" />
-    <PackageReference Include="Microsoft.Maui.Controls.Maps" Version="8.0.40" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.60" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.60" />
+    <PackageReference Include="Microsoft.Maui.Controls.Maps" Version="8.0.60" />
     
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
     

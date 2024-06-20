@@ -42,27 +42,26 @@
         IsVisible="{Binding IsMock, Converter={StaticResource InverseBoolConverter}}"
         RowDefinitions="*,Auto,Auto,120"
         RowSpacing="0">
+        <Image
+            x:Name="Banner"
+            Aspect="AspectFill"
+            Grid.RowSpan="4"
+            Source="header.png" />
         <!--  BANNER  -->
-        <ScrollView
+        <!--<ScrollView
             x:Name="BannerScroll"
             Grid.Row="0"
             Grid.RowSpan="4"
             Grid.Column="0"
-            Grid.ColumnSpan="0"
             HorizontalScrollBarVisibility="Never"
             InputTransparent="True"
             Orientation="Both"
             VerticalScrollBarVisibility="Never">
-            <Image
-                x:Name="Banner"
-                Margin="-40"
-                Aspect="AspectFill"
-                Source="header.png" />
-        </ScrollView>
-        <ContentView
+        </ScrollView>-->
+        <!--<ContentView
             Grid.Row="0"
             Grid.Column="0"
-            Height="40"
+            HeightRequest="40"
             VerticalOptions="Start">
             <ContentView.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -71,12 +70,13 @@
                     <GradientStop Offset="1.0" Color="Transparent" />
                 </LinearGradientBrush>
             </ContentView.Background>
-        </ContentView>
+        </ContentView>-->
         <Image
             Grid.Row="0"
             Grid.Column="0"
             Grid.ColumnSpan="0"
             Aspect="AspectFit"
+            WidthRequest="250"
             HorizontalOptions="Center"
             Source="logo_header.png"
             VerticalOptions="Center" />
