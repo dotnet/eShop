@@ -30,6 +30,7 @@
         BackgroundColor="Gray"
         StrokeShape="RoundRectangle 8,8,8,8"
         StrokeThickness="1">
+        <ScrollView>
         <Grid
             Padding="16"
             BackgroundColor="White"
@@ -95,5 +96,6 @@
                 Text="Add to shopping bag"
                 TextColor="Black" />
         </Grid>
+        </ScrollView>
     </Border>
 </views:ContentPageBase>
