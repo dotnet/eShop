@@ -9,8 +9,8 @@
       "src\\Identity.API\\Identity.API.csproj",
       "src\\IntegrationEventLogEF\\IntegrationEventLogEF.csproj",
       "src\\Mobile.Bff.Shopping\\Mobile.Bff.Shopping.csproj",
-      "src\\Ordering.API\\Ordering.API.csproj",
       "src\\OrderProcessor\\OrderProcessor.csproj",
+      "src\\Ordering.API\\Ordering.API.csproj",
       "src\\Ordering.Domain\\Ordering.Domain.csproj",
       "src\\Ordering.Infrastructure\\Ordering.Infrastructure.csproj",
       "src\\PaymentProcessor\\PaymentProcessor.csproj",
@@ -23,7 +23,10 @@
       "tests\\Basket.UnitTests\\Basket.UnitTests.csproj",
       "tests\\Catalog.FunctionalTests\\Catalog.FunctionalTests.csproj",
       "tests\\Ordering.FunctionalTests\\Ordering.FunctionalTests.csproj",
-      "tests\\Ordering.UnitTests\\Ordering.UnitTests.csproj"
+      "tests\\Ordering.UnitTests\\Ordering.UnitTests.csproj",
+      "tests\\UITest\\UITests1\\UITests.Android\\UITests.Android.csproj",
+      "tests\\UITest\\UITests1\\UITests.Shared\\UITests.Shared.csproj",
+      "tests\\UITest\\UITests1\\UITests.Windows\\UITests.Windows.csproj"
     ]
   }
 }
