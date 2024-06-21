@@ -23,6 +23,7 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
                 Margin="4"
+                HeightRequest="44"
                 Source="logo_header.png" />
             <ImageButton
                 Grid.Column="2"
