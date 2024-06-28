@@ -99,6 +99,7 @@
             Command="{Binding SignInCommand}"
             CornerRadius="16"
             Text="Login"
+            AutomationId="LoginBtn"
             TextColor="White" />
 
         <!--  REGISTER BUTTON  -->

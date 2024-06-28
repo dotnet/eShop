@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 // You will have to make sure that all the namespaces match
 // between the different platform specific projects and the shared
@@ -15,6 +15,23 @@ namespace UITests
         public void AppLaunches()
         {
             App.GetScreenshot().SaveAsFile($"{nameof(AppLaunches)}.png");
+        }
+
+        [Test]
+        public void LoginActionTest()
+        {
+
+            // Arrange
+            // Find elements with the value of the AutomationId property
+            var element = FindUIElement("LoginBtn");
+
+            // Act
+            element.Click();
+            Task.Delay(500).Wait(); // Wait for the click to register and show up on the screenshot
+
+            // Assert
+            App.GetScreenshot().SaveAsFile($"{nameof(LoginActionTest)}.png");
+            //Assert.That();
         }
     }
 }

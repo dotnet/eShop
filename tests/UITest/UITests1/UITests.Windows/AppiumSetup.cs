@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Windows;
@@ -24,8 +24,8 @@ namespace UITests
                 AutomationName = "windows",
                 // Always Windows for Windows
                 PlatformName = "Windows",
-                // The identifier of the deployed application to test
-                App = "com.companyname.basicappiumsample_9zz4h110yvjzm!App",
+                // The identifier of the deployed application to test                
+                App = "C:\\Windows\\System32\\notepad.exe",                
             };
 
             // Note there are many more options that you can use to influence the app under test according to your needs
