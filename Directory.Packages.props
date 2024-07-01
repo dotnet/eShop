@@ -47,8 +47,8 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EfVersion)" />
     <PackageVersion Include="NSubstitute" Version="5.1.0" />
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
-    <PackageVersion Include="Pgvector" Version="0.2.0" />
-    <PackageVersion Include="Pgvector.EntityFrameworkCore" Version="0.2.0" />
+    <PackageVersion Include="Pgvector" Version="0.3.0" />
+    <PackageVersion Include="Pgvector.EntityFrameworkCore" Version="0.2.1" />
     <!-- Version together with runtime -->
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
