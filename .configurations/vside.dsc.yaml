@@ -1,0 +1,107 @@
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+properties:
+  configurationVersion: 0.2.0
+  ########################################
+  ### RESOURCES: System Configuration
+  ########################################
+  resources:
+    ########################################
+    ### OS Configurations
+    ########################################
+    ### Enable: Developer Mode
+    ### -------------------------------------
+    - resource: Microsoft.Windows.Developer/DeveloperMode
+      directives:
+        description: Enable Developer Mode
+        allowPrerelease: true
+      settings:
+        Ensure: Present
+    ### Install Windows VirtualMachinePlatform
+    ### -------------------------------------
+    - resource: PSDscResources/WindowsOptionalFeature
+      directives:
+        description: Install VirtualMachinePlatform
+      settings:
+        name: VirtualMachinePlatform
+        ensure: Present
+    ### Install WSL
+    ### -------------------------------------
+    - resource: PSDscResources/WindowsOptionalFeature
+      directives:
+        description: Install WSL
+      settings:
+        name: Microsoft-Windows-Subsystem-Linux
+        ensure: Present
+    ### Configure Install Ubuntu
+    ### -------------------------------------
+    - resource: PSDscResources/Script
+      id: ubuntuwsl
+      directives:
+        description: Install Ubuntu for WSL
+      settings:
+        SetScript: |
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+          wsl --install -d Ubuntu
+        GetScript: return $false
+        TestScript: return $false
+    ########################################
+    ### Install CLIs, SDKs & Tools
+    ########################################
+    ### Install DotNET SDK Preview
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: dotnetsdk
+      directives:
+        description: Install DotNET SDK Preview
+        allowPrerelease: true
+      settings:
+        id: Microsoft.DotNet.SDK.Preview
+    ### Install Azure CLI
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: azurecli
+      directives:
+        description: Install Azure CLI
+        allowPrerelease: true
+      settings:
+       id:  Microsoft.AzureCLI
+    ### Install Azd
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Azd
+      directives:
+        description: Install Azd
+        allowPrerelease: true
+      settings:
+       id: Microsoft.Azd
+    ### Install Docker Desktop
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: docker
+      directives:
+        description: Install Docker Desktop
+        allowPrerelease: true
+      settings:
+       id: Docker.DockerDesktop
+    ### Install Visual Sudio
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: vscommunity
+      directives:
+       description: Install Visual Studio 2022 Community
+       allowPrerelease: true
+      settings:
+        id: Microsoft.VisualStudio.2022.Community.Preview
+    ### Install VS Workloads
+    ### -------------------------------------
+    - resource: Microsoft.VisualStudio.DSC/VSComponents
+      directives:
+        description: Install required VS workloads from vsconfig file
+        allowPrerelease: true
+      dependsOn:
+        - vscommunity
+      settings:
+        productId: Microsoft.VisualStudio.Product.Community
+        channelId: VisualStudio.17.Preview
+        components: [Microsoft.VisualStudio.Workload.NetWeb, Microsoft.VisualStudio.Workload.NetCrossPlat, aspire]
+        includeRecommended: true

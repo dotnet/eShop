@@ -1,0 +1,116 @@
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+properties:
+  configurationVersion: 0.2.0
+  ########################################
+  ### RESOURCES: System Configuration
+  ########################################
+  resources:
+    ########################################
+    ### OS Configurations
+    ########################################
+    ### Enable: Developer Mode
+    ### -------------------------------------
+    - resource: Microsoft.Windows.Developer/DeveloperMode
+      directives:
+        description: Enable Developer Mode
+        allowPrerelease: true
+      settings:
+        Ensure: Present
+    ### Install Windows VirtualMachinePlatform
+    ### -------------------------------------
+    - resource: PSDscResources/WindowsOptionalFeature
+      directives:
+        description: Install VirtualMachinePlatform
+      settings:
+        name: VirtualMachinePlatform
+        ensure: Present
+    ### Install WSL
+    ### -------------------------------------
+    - resource: PSDscResources/WindowsOptionalFeature
+      directives:
+        description: Install WSL
+      settings:
+        name: Microsoft-Windows-Subsystem-Linux
+        ensure: Present
+    ### Configure Install Ubuntu
+    ### -------------------------------------
+    - resource: PSDscResources/Script
+      id: ubuntuwsl
+      directives:
+        description: Install Ubuntu for WSL
+      settings:
+        SetScript: |
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+          wsl --install -d Ubuntu
+        GetScript: return $false
+        TestScript: return $false
+    ########################################
+    ### Install CLIs, SDKs & Tools
+    ########################################
+    ### Install DotNET SDK Preview
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: dotnetsdk
+      directives:
+        description: Install DotNET SDK Preview
+        allowPrerelease: true
+      settings:
+        id: Microsoft.DotNet.SDK.Preview
+    ### Install Azure CLI
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: azurecli
+      directives:
+        description: Install Azure CLI
+        allowPrerelease: true
+      settings:
+       id:  Microsoft.AzureCLI
+    ### Install Azd
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Azd
+      directives:
+        description: Install Azd
+        allowPrerelease: true
+      settings:
+       id: Microsoft.Azd
+    ### Install Docker Desktop
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: docker
+      directives:
+        description: Install Docker Desktop
+        allowPrerelease: true
+      settings:
+       id: Docker.DockerDesktop
+    ### Install Microsoft Visual Studio Code
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: vscode
+      directives:
+        description: Install Microsoft Visual Studio Code
+        allowPrerelease: true
+      settings:
+        id: Microsoft.VisualStudioCode
+        ensure: Present
+    ### Install VS Code Extension
+    ### -------------------------------------
+    - resource: PSDscResources/Script
+      id: vscodeextensions
+      dependsOn:
+        - vscode
+        - docker
+      directives:
+        description: Install VS Code Extensions
+      settings:
+        SetScript: |
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+          code --install-extension ms-azuretools.azure-dev
+          code --install-extension ms-vscode-remote.remote-wsl
+          code --install-extension ms-vscode-remote.remote-containers
+          code --install-extension ms-azuretools.vscode-docker
+          code --install-extension ms-dotnettools.csdevkit
+          code --install-extension ms-dotnettools.dotnet-maui
+        GetScript: return $false
+        TestScript: return $false
+ 
