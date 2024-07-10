@@ -18,16 +18,37 @@ on:
 
 jobs:  
   test:
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-      - name: Setup .NET (global.json)
+
+      - name: Setup .NET
         uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.x'
+
       - name: Update Workloads
         run: dotnet workload update
+
       - name: Install Workloads
         run: dotnet workload install aspire
+
       - name: Build 
         run: dotnet build eShop.Web.slnf
+        
+      - name: Build Catalog API
+        run: dotnet build src/Catalog.API/Catalog.API.csproj --configuration Release
+
       - name: Test
         run: dotnet test eShop.Web.slnf
+
+      - name: Test Catalog API
+        run: dotnet test src/Catalog.API/Catalog.API.csproj --configuration Release --logger:trx
+
+      - name: Publish test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: TestResults
+          path: '**/*.trx'
