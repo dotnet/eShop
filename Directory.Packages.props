@@ -4,7 +4,7 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
     <AspnetVersion>8.0.7</AspnetVersion>
     <MicrosoftExtensionsVersion>8.6.0</MicrosoftExtensionsVersion>
-    <EfVersion>8.0.6</EfVersion>
+    <EfVersion>8.0.7</EfVersion>
     <AspireVersion>8.0.2</AspireVersion>
     <AspireUnstablePackagesVersion>8.0.0-preview.8.24258.2</AspireUnstablePackagesVersion>
     <GrpcVersion>2.63.0</GrpcVersion>
