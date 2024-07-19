@@ -18,14 +18,20 @@ var webhooksDb = postgres.AddDatabase("webhooksdb");
 
 var launchProfileName = ShouldUseHttpForEndpoints() ? "http" : "https";
 
+// To configure Azure Monitor Application Insights, add the following:
+// var insights = builder.AddConnectionString("myInsightsResource", "APPLICATIONINSIGHTS_CONNECTION_STRING");
+// You also need to add .WithReference(insights) to each service that should be monitored.
+
 // Services
 var identityApi = builder.AddProject<Projects.Identity_API>("identity-api", launchProfileName)
     .WithExternalHttpEndpoints()
+    // .WithReference(insights)  // Sample reference to Azure Monitor Application Insights. Copy/paste for each service.
     .WithReference(identityDb);
 
 var identityEndpoint = identityApi.GetEndpoint(launchProfileName);
 
 var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
+    .WithReference(insights)
     .WithReference(redis)
     .WithReference(rabbitMq)
     .WithEnvironment("Identity__Url", identityEndpoint);
