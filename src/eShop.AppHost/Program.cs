@@ -25,7 +25,7 @@ var launchProfileName = ShouldUseHttpForEndpoints() ? "http" : "https";
 // Services
 var identityApi = builder.AddProject<Projects.Identity_API>("identity-api", launchProfileName)
     .WithExternalHttpEndpoints()
-    // .WithReference(insights)  // Sample reference to Azure Monitor Application Insights. Copy/paste for each service.
+//  .WithReference(insights)    // Sample reference to Azure Monitor Application Insights. Copy/paste for each service.
     .WithReference(identityDb);
 
 var identityEndpoint = identityApi.GetEndpoint(launchProfileName);
