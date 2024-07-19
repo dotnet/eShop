@@ -31,7 +31,6 @@ var identityApi = builder.AddProject<Projects.Identity_API>("identity-api", laun
 var identityEndpoint = identityApi.GetEndpoint(launchProfileName);
 
 var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
-    .WithReference(insights)
     .WithReference(redis)
     .WithReference(rabbitMq)
     .WithEnvironment("Identity__Url", identityEndpoint);
