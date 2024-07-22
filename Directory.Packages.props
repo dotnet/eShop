@@ -41,7 +41,7 @@
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="MSTest.TestAdapter" Version="3.4.3" />
-    <PackageVersion Include="MSTest.TestFramework" Version="3.4.3" />
+    <PackageVersion Include="MSTest.TestFramework" Version="3.5.0" />
     <!-- Version together with EF -->
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EfVersion)" />
