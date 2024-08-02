@@ -8,6 +8,7 @@
     <TrimmerSingleWarn>false</TrimmerSingleWarn>
     <!-- But ignore the single warn files marked below to suppress their known warnings. -->
     <NoWarn>$(NoWarn);IL2104</NoWarn>
+    
   </PropertyGroup>
 
   <Target Name="ConfigureTrimming"
@@ -16,6 +17,8 @@
     <ItemGroup>
       <!-- https://github.com/rabbitmq/rabbitmq-dotnet-client/issues/1410 is tracking fixing the one EventSource warning in RabbitMQ. -->
       <IlcArg Include="--singlewarnassembly:RabbitMQ.Client" />
+      <!-- https://github.com/DuendeSoftware/Support/issues/1352 is tracking fixing the NU3042 warning from the v7.0.6 upgrade. -->
+      <IlcArg Include="--singlewarnassembly:Duende.IdentityServer" />
     </ItemGroup>
   </Target>
 
