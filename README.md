@@ -35,8 +35,29 @@ Or
 - From Dev Home go to `Machine Configuration -> Clone repositories`. Enter the URL for this repository. In the confirmation screen look for the section `Configuration File Detected` and click `Run File`.
 
 #### Mac, Linux, & Windows without Visual Studio
-- Install the latest [.NET 8 SDK](https://dot.net/download?cid=eshop)
-- Install the [.NET Aspire workload](https://learn.microsoft.com/dotnet/aspire/fundamentals/setup-tooling?tabs=dotnet-cli%2Cunix#install-net-aspire) with the following commands:
+
+1. Install the SDK required by the eShop repo using the following command:
+
+```bash
+$ ./install-dotnet.sh
+```
+
+```powershell
+> .\install-dotnet.ps1
+```
+
+2. Configure your .NET environment to use the locally installed version of .NET.
+
+```bash
+$ source activate.sh
+```
+
+```powershell
+> .\activate-dotnet.ps1
+```
+
+3. Install the [.NET Aspire workload](https://learn.microsoft.com/dotnet/aspire/fundamentals/setup-tooling?tabs=dotnet-cli%2Cunix#install-net-aspire) with the following commands:
+
 ```powershell
 dotnet workload update
 dotnet workload install aspire

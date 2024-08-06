@@ -491,3 +491,6 @@ $RECYCLE.BIN/
 /playwright/.auth/
 /user.json
 .azure
+
+# Locally-installed .NET SDKs
+.dotnet/
