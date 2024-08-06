@@ -39,24 +39,24 @@ Or
 1. Install the SDK required by the eShop repo using the following command:
 
 ```bash
-$ ./install-dotnet.sh
+./install-dotnet.sh
 ```
 
 ```powershell
-> .\install-dotnet.ps1
+.\install-dotnet.ps1
 ```
 
-2. Configure your .NET environment to use the locally installed version of .NET.
+1. Configure your .NET environment to use the locally installed version of .NET.
 
 ```bash
-$ source activate.sh
+source activate.sh
 ```
 
 ```powershell
-> .\activate-dotnet.ps1
+.\activate-dotnet.ps1
 ```
 
-3. Install the [.NET Aspire workload](https://learn.microsoft.com/dotnet/aspire/fundamentals/setup-tooling?tabs=dotnet-cli%2Cunix#install-net-aspire) with the following commands:
+1. Install the [.NET Aspire workload](https://learn.microsoft.com/dotnet/aspire/fundamentals/setup-tooling?tabs=dotnet-cli%2Cunix#install-net-aspire) with the following commands:
 
 ```powershell
 dotnet workload update
