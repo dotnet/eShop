@@ -1,5 +1,6 @@
 ﻿namespace eShop.Ordering.UnitTests.Application;
 
+[TestClass]
 public class IdentifiedCommandHandlerTest
 {
     private readonly IRequestManager _requestManager;
@@ -13,7 +14,7 @@ public class IdentifiedCommandHandlerTest
         _loggerMock = Substitute.For<ILogger<IdentifiedCommandHandler<CreateOrderCommand, bool>>>();
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Handler_sends_command_when_order_no_exists()
     {
         // Arrange
@@ -31,11 +32,11 @@ public class IdentifiedCommandHandlerTest
         var result = await handler.Handle(fakeOrderCmd, CancellationToken.None);
 
         // Assert
-        Assert.True(result);
+        Assert.IsTrue(result);
         await _mediator.Received().Send(Arg.Any<IRequest<bool>>(), default);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Handler_sends_no_command_when_order_already_exists()
     {
         // Arrange

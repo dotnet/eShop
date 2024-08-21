@@ -2,33 +2,33 @@
 
 public record Orderitem
 {
-    public string productname { get; init; }
-    public int units { get; init; }
-    public double unitprice { get; init; }
-    public string pictureurl { get; init; }
+    public string ProductName { get; init; }
+    public int Units { get; init; }
+    public double UnitPrice { get; init; }
+    public string PictureUrl { get; init; }
 }
 
 public record Order
 {
-    public int ordernumber { get; init; }
-    public DateTime date { get; init; }
-    public string status { get; init; }
-    public string description { get; init; }
-    public string street { get; init; }
-    public string city { get; init; }
-    public string state { get; init; }
-    public string zipcode { get; init; }
-    public string country { get; init; }
-    public List<Orderitem> orderitems { get; set; }
-    public decimal total { get; set; }
+    public int OrderNumber { get; init; }
+    public DateTime Date { get; init; }
+    public string Status { get; init; }
+    public string Description { get; init; }
+    public string Street { get; init; }
+    public string City { get; init; }
+    public string State { get; init; }
+    public string Zipcode { get; init; }
+    public string Country { get; init; }
+    public List<Orderitem> OrderItems { get; set; }
+    public decimal Total { get; set; }
 }
 
 public record OrderSummary
 {
-    public int ordernumber { get; init; }
-    public DateTime date { get; init; }
-    public string status { get; init; }
-    public double total { get; init; }
+    public int OrderNumber { get; init; }
+    public DateTime Date { get; init; }
+    public string Status { get; init; }
+    public double Total { get; init; }
 }
 
 public record CardType

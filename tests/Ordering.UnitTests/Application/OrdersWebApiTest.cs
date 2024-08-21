@@ -5,6 +5,7 @@ using eShop.Ordering.API.Application.Queries;
 using Order = eShop.Ordering.API.Application.Queries.Order;
 using NSubstitute.ExceptionExtensions;
 
+[TestClass]
 public class OrdersWebApiTest
 {
     private readonly IMediator _mediatorMock;
@@ -20,7 +21,7 @@ public class OrdersWebApiTest
         _loggerMock = Substitute.For<ILogger<OrderServices>>();
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Cancel_order_with_requestId_success()
     {
         // Arrange
@@ -32,10 +33,10 @@ public class OrdersWebApiTest
         var result = await OrdersApi.CancelOrderAsync(Guid.NewGuid(), new CancelOrderCommand(1), orderServices);
 
         // Assert
-        Assert.IsType<Ok>(result.Result);
+        Assert.IsInstanceOfType<Ok>(result.Result);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Cancel_order_bad_request()
     {
         // Arrange
@@ -47,10 +48,10 @@ public class OrdersWebApiTest
         var result = await OrdersApi.CancelOrderAsync(Guid.Empty, new CancelOrderCommand(1), orderServices);
 
         // Assert
-        Assert.IsType<BadRequest<string>>(result.Result);
+        Assert.IsInstanceOfType<BadRequest<string>>(result.Result);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Ship_order_with_requestId_success()
     {
         // Arrange
@@ -62,11 +63,11 @@ public class OrdersWebApiTest
         var result = await OrdersApi.ShipOrderAsync(Guid.NewGuid(), new ShipOrderCommand(1), orderServices);
 
         // Assert
-        Assert.IsType<Ok>(result.Result);
+        Assert.IsInstanceOfType<Ok>(result.Result);
 
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Ship_order_bad_request()
     {
         // Arrange
@@ -78,10 +79,10 @@ public class OrdersWebApiTest
         var result = await OrdersApi.ShipOrderAsync(Guid.Empty, new ShipOrderCommand(1), orderServices);
 
         // Assert
-        Assert.IsType<BadRequest<string>>(result.Result);
+        Assert.IsInstanceOfType<BadRequest<string>>(result.Result);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Get_orders_success()
     {
         // Arrange
@@ -98,10 +99,10 @@ public class OrdersWebApiTest
         var result = await OrdersApi.GetOrdersByUserAsync(orderServices);
 
         // Assert
-        Assert.IsType<Ok<IEnumerable<OrderSummary>>>(result);
+        Assert.IsInstanceOfType<Ok<IEnumerable<OrderSummary>>>(result);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Get_order_success()
     {
         // Arrange
@@ -115,11 +116,11 @@ public class OrdersWebApiTest
         var result = await OrdersApi.GetOrderAsync(fakeOrderId, orderServices);
 
         // Assert
-        var okResult = Assert.IsType<Ok<Order>>(result.Result);
-        Assert.Same(fakeDynamicResult, okResult.Value);
+        Assert.IsInstanceOfType<Ok<Order>>(result.Result);
+        Assert.AreSame(fakeDynamicResult, ((Ok<Order>)result.Result).Value);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Get_order_fails()
     {
         // Arrange
@@ -134,10 +135,10 @@ public class OrdersWebApiTest
         var result = await OrdersApi.GetOrderAsync(fakeOrderId, orderServices);
 
         // Assert
-        Assert.IsType<NotFound>(result.Result);
+        Assert.IsInstanceOfType<NotFound>(result.Result);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Get_cardTypes_success()
     {
         // Arrange
@@ -149,7 +150,7 @@ public class OrdersWebApiTest
         var result = await OrdersApi.GetCardTypesAsync(_orderQueriesMock);
 
         // Assert
-        Assert.IsType<Ok<IEnumerable<CardType>>>(result);
-        Assert.Same(fakeDynamicResult, result.Value);
+        Assert.IsInstanceOfType<Ok<IEnumerable<CardType>>>(result);
+        Assert.AreSame(fakeDynamicResult, result.Value);
     }
 }

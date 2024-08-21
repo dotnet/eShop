@@ -6,9 +6,9 @@ namespace eShop.ClientApp.Animations;
 public class FadeToAnimation : AnimationBase
 {
     public static readonly BindableProperty OpacityProperty =
-     BindableProperty.Create(nameof(Opacity), typeof(double), typeof(FadeToAnimation), 0.0d,
-     propertyChanged: (bindable, oldValue, newValue) =>
-     ((FadeToAnimation)bindable).Opacity = (double)newValue);
+        BindableProperty.Create(nameof(Opacity), typeof(double), typeof(FadeToAnimation), 0.0d,
+            propertyChanged: (bindable, oldValue, newValue) =>
+                ((FadeToAnimation)bindable).Opacity = (double)newValue);
 
     public double Opacity
     {
@@ -33,7 +33,7 @@ public class FadeToAnimation : AnimationBase
             throw new NullReferenceException("Null Target property.");
         }
 
-        return Target.FadeTo(0, 0, null);
+        return Target.FadeTo(0, 0);
     }
 }
 
@@ -46,9 +46,9 @@ public class FadeInAnimation : AnimationBase
     }
 
     public static readonly BindableProperty DirectionProperty =
-     BindableProperty.Create(nameof(Direction), typeof(FadeDirection), typeof(FadeInAnimation), FadeDirection.Up,
-     propertyChanged: (bindable, oldValue, newValue) =>
-     ((FadeInAnimation)bindable).Direction = (FadeDirection)newValue);
+        BindableProperty.Create(nameof(Direction), typeof(FadeDirection), typeof(FadeInAnimation), FadeDirection.Up,
+            propertyChanged: (bindable, oldValue, newValue) =>
+                ((FadeInAnimation)bindable).Direction = (FadeDirection)newValue);
 
     public FadeDirection Direction
     {
@@ -75,7 +75,7 @@ public class FadeInAnimation : AnimationBase
             throw new NullReferenceException("Null Target property.");
         }
 
-        Target.Dispatcher.Dispatch(() => Target.FadeTo(0, 0, null));
+        Target.Dispatcher.Dispatch(() => Target.FadeTo(0, 0));
 
         return Task.CompletedTask;
     }
@@ -84,12 +84,12 @@ public class FadeInAnimation : AnimationBase
     {
         var animation = new Animation();
 
-        animation.WithConcurrent((f) => Target.Opacity = f, 0, 1, Microsoft.Maui.Easing.CubicOut);
+        animation.WithConcurrent(f => Target.Opacity = f, 0, 1, Microsoft.Maui.Easing.CubicOut);
 
         animation.WithConcurrent(
-          (f) => Target.TranslationY = f,
-          Target.TranslationY + ((Direction == FadeDirection.Up) ? 50 : -50), Target.TranslationY,
-          Microsoft.Maui.Easing.CubicOut, 0, 1);
+            f => Target.TranslationY = f,
+            Target.TranslationY + (Direction == FadeDirection.Up ? 50 : -50), Target.TranslationY,
+            Microsoft.Maui.Easing.CubicOut);
 
         return animation;
     }
@@ -104,9 +104,9 @@ public class FadeOutAnimation : AnimationBase
     }
 
     public static readonly BindableProperty DirectionProperty =
-     BindableProperty.Create(nameof(Direction), typeof(FadeDirection), typeof(FadeOutAnimation), FadeDirection.Up,
-     propertyChanged: (bindable, oldValue, newValue) =>
-     ((FadeOutAnimation)bindable).Direction = (FadeDirection)newValue);
+        BindableProperty.Create(nameof(Direction), typeof(FadeDirection), typeof(FadeOutAnimation), FadeDirection.Up,
+            propertyChanged: (bindable, oldValue, newValue) =>
+                ((FadeOutAnimation)bindable).Direction = (FadeDirection)newValue);
 
     public FadeDirection Direction
     {
@@ -133,22 +133,22 @@ public class FadeOutAnimation : AnimationBase
             throw new NullReferenceException("Null Target property.");
         }
 
-        Target.Dispatcher.Dispatch(() => Target.FadeTo(0, 0, null));
+        Target.Dispatcher.Dispatch(() => Target.FadeTo(0, 0));
 
         return Task.CompletedTask;
     }
 
     internal Animation FadeOut()
     {
-        Animation animation = new ();
+        Animation animation = new();
 
         animation.WithConcurrent(
-             (f) => Target.Opacity = f,
-             1, 0);
+            f => Target.Opacity = f,
+            1, 0);
 
         animation.WithConcurrent(
-              (f) => Target.TranslationY = f,
-              Target.TranslationY, Target.TranslationY + ((Direction == FadeDirection.Up) ? 50 : -50));
+            f => Target.TranslationY = f,
+            Target.TranslationY, Target.TranslationY + (Direction == FadeDirection.Up ? 50 : -50));
 
         return animation;
     }

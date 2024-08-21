@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using eShop.ClientApp.Models.Basket;
 using eShop.ClientApp.Models.Catalog;
@@ -9,6 +9,8 @@ namespace eShop.ClientApp.Services.FixUri;
 
 public class FixUriService : IFixUriService
 {
+    private const string ApiVersion = "api-version=1.0";
+    
     private readonly ISettingsService _settingsService;
 
     private readonly Regex IpRegex = new(@"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b");
@@ -27,20 +29,11 @@ public class FixUriService : IFixUriService
 
         try
         {
-            if (!_settingsService.UseMocks && _settingsService.IdentityEndpointBase != GlobalSetting.DefaultEndpoint)
+            if (!_settingsService.UseMocks && _settingsService.GatewayCatalogEndpointBase != _settingsService.DefaultEndpoint)
             {
                 foreach (var catalogItem in catalogItems)
                 {
-                    MatchCollection serverResult = IpRegex.Matches(catalogItem.PictureUri);
-                    MatchCollection localResult = IpRegex.Matches(_settingsService.IdentityEndpointBase);
-
-                    if (serverResult.Count != -1 && localResult.Count != -1)
-                    {
-                        var serviceIp = serverResult[0].Value;
-                        var localIp = localResult[0].Value;
-
-                        catalogItem.PictureUri = catalogItem.PictureUri.Replace(serviceIp, localIp);
-                    }
+                    catalogItem.PictureUri = Path.Combine(_settingsService.GatewayCatalogEndpointBase, $"api/catalog/items/{catalogItem.Id}/pic?{ApiVersion}");
                 }
             }
         }
@@ -59,12 +52,12 @@ public class FixUriService : IFixUriService
 
         try
         {
-            if (!_settingsService.UseMocks && _settingsService.IdentityEndpointBase != GlobalSetting.DefaultEndpoint)
+            if (!_settingsService.UseMocks && _settingsService.IdentityEndpointBase != _settingsService.DefaultEndpoint)
             {
                 foreach (var basketItem in basketItems)
                 {
-                    MatchCollection serverResult = IpRegex.Matches(basketItem.PictureUrl);
-                    MatchCollection localResult = IpRegex.Matches(_settingsService.IdentityEndpointBase);
+                    var serverResult = IpRegex.Matches(basketItem.PictureUrl);
+                    var localResult = IpRegex.Matches(_settingsService.IdentityEndpointBase);
 
                     if (serverResult.Count != -1 && localResult.Count != -1)
                     {
@@ -90,12 +83,12 @@ public class FixUriService : IFixUriService
 
         try
         {
-            if (!_settingsService.UseMocks && _settingsService.IdentityEndpointBase != GlobalSetting.DefaultEndpoint)
+            if (!_settingsService.UseMocks && _settingsService.IdentityEndpointBase != _settingsService.DefaultEndpoint)
             {
                 foreach (var campaignItem in campaignItems)
                 {
-                    MatchCollection serverResult = IpRegex.Matches(campaignItem.PictureUri);
-                    MatchCollection localResult = IpRegex.Matches(_settingsService.IdentityEndpointBase);
+                    var serverResult = IpRegex.Matches(campaignItem.PictureUri);
+                    var localResult = IpRegex.Matches(_settingsService.IdentityEndpointBase);
 
                     if (serverResult.Count != -1 && localResult.Count != -1)
                     {

@@ -2,5 +2,5 @@
 
 public interface ILocationService
 {
-    Task UpdateUserLocation(Models.Location.Location newLocReq, string token);
+    Task UpdateUserLocation(Models.Location.Location newLocReq);
 }

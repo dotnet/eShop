@@ -14,22 +14,22 @@ public class OrderQueries(OrderingContext context)
 
         return new Order
         {
-            ordernumber = order.Id,
-            date = order.OrderDate,
-            description = order.Description,
-            city = order.Address.City,
-            country = order.Address.Country,
-            state = order.Address.State,
-            street = order.Address.Street,
-            zipcode = order.Address.ZipCode,
-            status = order.OrderStatus.ToString(),
-            total = order.GetTotal(),
-            orderitems = order.OrderItems.Select(oi => new Orderitem
+            OrderNumber = order.Id,
+            Date = order.OrderDate,
+            Description = order.Description,
+            City = order.Address.City,
+            Country = order.Address.Country,
+            State = order.Address.State,
+            Street = order.Address.Street,
+            Zipcode = order.Address.ZipCode,
+            Status = order.OrderStatus.ToString(),
+            Total = order.GetTotal(),
+            OrderItems = order.OrderItems.Select(oi => new Orderitem
             {
-                productname = oi.ProductName,
-                units = oi.Units,
-                unitprice = (double)oi.UnitPrice,
-                pictureurl = oi.PictureUrl
+                ProductName = oi.ProductName,
+                Units = oi.Units,
+                UnitPrice = (double)oi.UnitPrice,
+                PictureUrl = oi.PictureUrl
             }).ToList()
         };
     }
@@ -40,10 +40,10 @@ public class OrderQueries(OrderingContext context)
             .Where(o => o.Buyer.IdentityGuid == userId)  
             .Select(o => new OrderSummary
             {
-                ordernumber = o.Id,
-                date = o.OrderDate,
-                status = o.OrderStatus.ToString(),
-                total =(double) o.OrderItems.Sum(oi => oi.UnitPrice* oi.Units)
+                OrderNumber = o.Id,
+                Date = o.OrderDate,
+                Status = o.OrderStatus.ToString(),
+                Total =(double) o.OrderItems.Sum(oi => oi.UnitPrice* oi.Units)
             })
             .ToListAsync();
     } 

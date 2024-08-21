@@ -6,14 +6,7 @@ public abstract partial class ViewModelBase : ObservableObject, IViewModelBase
 {
     private long _isBusy;
 
-    public bool IsBusy => Interlocked.Read(ref _isBusy) > 0;
-
-    [ObservableProperty]
-    private bool _isInitialized;
-
-    public INavigationService NavigationService { get; }
-
-    public IAsyncRelayCommand InitializeAsyncCommand { get; }
+    [ObservableProperty] private bool _isInitialized;
 
     public ViewModelBase(INavigationService navigationService)
     {
@@ -29,6 +22,12 @@ public abstract partial class ViewModelBase : ObservableObject, IViewModelBase
                 AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
     }
 
+    public bool IsBusy => Interlocked.Read(ref _isBusy) > 0;
+
+    public INavigationService NavigationService { get; }
+
+    public IAsyncRelayCommand InitializeAsyncCommand { get; }
+
     public virtual void ApplyQueryAttributes(IDictionary<string, object> query)
     {
     }
@@ -38,7 +37,7 @@ public abstract partial class ViewModelBase : ObservableObject, IViewModelBase
         return Task.CompletedTask;
     }
 
-    public async Task IsBusyFor(Func<Task> unitOfWork)
+    protected async Task IsBusyFor(Func<Task> unitOfWork)
     {
         Interlocked.Increment(ref _isBusy);
         OnPropertyChanged(nameof(IsBusy));
@@ -54,4 +53,3 @@ public abstract partial class ViewModelBase : ObservableObject, IViewModelBase
         }
     }
 }
-

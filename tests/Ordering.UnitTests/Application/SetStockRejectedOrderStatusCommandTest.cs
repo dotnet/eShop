@@ -2,9 +2,10 @@
 
 namespace eShop.Ordering.UnitTests.Application;
 
+[TestClass]
 public class SetStockRejectedOrderStatusCommandTest
 {
-    [Fact]
+    [TestMethod]
     public void Set_Stock_Rejected_OrderStatusCommand_Check_Serialization()
     {
         // Arrange
@@ -15,15 +16,15 @@ public class SetStockRejectedOrderStatusCommandTest
         var deserializedCommand = JsonSerializer.Deserialize<SetStockRejectedOrderStatusCommand>(json);
 
         //Assert
-        Assert.Equal(command.OrderNumber, deserializedCommand.OrderNumber);
+        Assert.AreEqual(command.OrderNumber, deserializedCommand.OrderNumber);
 
         //Assert for List<int>
-        Assert.NotNull(deserializedCommand.OrderStockItems);
-        Assert.Equal(command.OrderStockItems.Count, deserializedCommand.OrderStockItems.Count);
+        Assert.IsNotNull(deserializedCommand.OrderStockItems);
+        Assert.AreEqual(command.OrderStockItems.Count, deserializedCommand.OrderStockItems.Count);
 
         for (int i = 0; i < command.OrderStockItems.Count; i++)
         {
-            Assert.Equal(command.OrderStockItems[i], deserializedCommand.OrderStockItems[i]);
+            Assert.AreEqual(command.OrderStockItems[i], deserializedCommand.OrderStockItems[i]);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using eShop.ClientApp.Models.Orders;
+using eShop.ClientApp.Models.Orders;
 using eShop.ClientApp.Services;
 using eShop.ClientApp.Services.AppEnvironment;
 using eShop.ClientApp.Services.Settings;
@@ -9,20 +9,16 @@ namespace eShop.ClientApp.ViewModels;
 [QueryProperty(nameof(OrderNumber), "OrderNumber")]
 public partial class OrderDetailViewModel : ViewModelBase
 {
-    private readonly ISettingsService _settingsService;
     private readonly IAppEnvironmentService _appEnvironmentService;
+    private readonly ISettingsService _settingsService;
 
-    [ObservableProperty]
-    private Order _order;
+    [ObservableProperty] private bool _isSubmittedOrder;
 
-    [ObservableProperty]
-    private bool _isSubmittedOrder;
+    [ObservableProperty] private Order _order;
 
-    [ObservableProperty]
-    private string _orderStatusText;
+    [ObservableProperty] private int _orderNumber;
 
-    [ObservableProperty]
-    private int _orderNumber;
+    [ObservableProperty] private string _orderStatusText;
 
     public OrderDetailViewModel(
         IAppEnvironmentService appEnvironmentService,
@@ -39,28 +35,25 @@ public partial class OrderDetailViewModel : ViewModelBase
             async () =>
             {
                 // Get order detail info
-                var authToken = _settingsService.AuthAccessToken;
-                Order = await _appEnvironmentService.OrderService.GetOrderAsync(OrderNumber, authToken);
-                IsSubmittedOrder = Order.OrderStatus == OrderStatus.Submitted;
-                OrderStatusText = Order.OrderStatus.ToString().ToUpper();
+                Order = await _appEnvironmentService.OrderService.GetOrderAsync(OrderNumber);
+                IsSubmittedOrder = Order.OrderStatus.Equals("Submitted", StringComparison.OrdinalIgnoreCase);
+                OrderStatusText = Order.OrderStatus;
             });
     }
 
     [RelayCommand]
     private async Task ToggleCancelOrderAsync()
     {
-        var authToken = _settingsService.AuthAccessToken;
-
-        var result = await _appEnvironmentService.OrderService.CancelOrderAsync(Order.OrderNumber, authToken);
+        var result = await _appEnvironmentService.OrderService.CancelOrderAsync(Order.OrderNumber);
 
         if (result)
         {
-            OrderStatusText = OrderStatus.Cancelled.ToString().ToUpper();
+            OrderStatusText = "Cancelled";
         }
         else
         {
-            Order = await _appEnvironmentService.OrderService.GetOrderAsync(Order.OrderNumber, authToken);
-            OrderStatusText = Order.OrderStatus.ToString().ToUpper();
+            Order = await _appEnvironmentService.OrderService.GetOrderAsync(Order.OrderNumber);
+            OrderStatusText = Order.OrderStatus;
         }
 
         IsSubmittedOrder = false;

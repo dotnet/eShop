@@ -1,58 +1,51 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using eShop.ClientApp.Services;
-using eShop.ClientApp.Services.Identity;
+using eShop.ClientApp.Services.AppEnvironment;
 using eShop.ClientApp.Services.OpenUrl;
 using eShop.ClientApp.Services.Settings;
 using eShop.ClientApp.Validations;
 using eShop.ClientApp.ViewModels.Base;
-using IdentityModel.Client;
 
 namespace eShop.ClientApp.ViewModels;
 
 public partial class LoginViewModel : ViewModelBase
 {
-    private readonly ISettingsService _settingsService;
+    private readonly IAppEnvironmentService _appEnvironmentService;
     private readonly IOpenUrlService _openUrlService;
-    private readonly IIdentityService _identityService;
+    private readonly ISettingsService _settingsService;
 
-    [ObservableProperty]
-    private ValidatableObject<string> _userName = new();
+    [ObservableProperty] private bool _isLogin;
 
-    [ObservableProperty]
-    ValidatableObject<string> _password = new();
+    [ObservableProperty] private bool _isMock;
 
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(MockSignInCommand))]
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(MockSignInCommand))]
     private bool _isValid;
 
-    [ObservableProperty]
-    private bool _isMock;
+    [ObservableProperty] private string _loginUrl;
 
-    [ObservableProperty]
-    private bool _isLogin;
+    [ObservableProperty] private ValidatableObject<string> _password = new();
 
-    [ObservableProperty]
-    private string _loginUrl;
+    [ObservableProperty] private ValidatableObject<string> _userName = new();
 
     public LoginViewModel(
-        IOpenUrlService openUrlService, IIdentityService identityService,
+        IOpenUrlService openUrlService, IAppEnvironmentService appEnvironmentService,
         INavigationService navigationService, ISettingsService settingsService)
         : base(navigationService)
     {
         _settingsService = settingsService;
         _openUrlService = openUrlService;
-        _identityService = identityService;
+        _appEnvironmentService = appEnvironmentService;
 
         InvalidateMock();
     }
 
-    public override void ApplyQueryAttributes(IDictionary<string, object> query)
+    public override async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         base.ApplyQueryAttributes(query);
 
-        if (query.ValueAsBool("Logout") == true)
+        if (query.ValueAsBool("Logout"))
         {
-            PerformLogout();
+            await PerformLogoutAsync();
         }
     }
 
@@ -67,7 +60,7 @@ public partial class LoginViewModel : ViewModelBase
         await IsBusyFor(
             async () =>
             {
-                bool isAuthenticated = false;
+                var isAuthenticated = false;
 
                 try
                 {
@@ -82,8 +75,6 @@ public partial class LoginViewModel : ViewModelBase
 
                 if (isAuthenticated)
                 {
-                    _settingsService.AuthAccessToken = GlobalSetting.Instance.AuthToken;
-
                     await NavigationService.NavigateToAsync("//Main/Catalog");
                 }
             });
@@ -95,73 +86,30 @@ public partial class LoginViewModel : ViewModelBase
         await IsBusyFor(
             async () =>
             {
-                await Task.Delay(10);
+                var loginSuccess = await _appEnvironmentService.IdentityService.SignInAsync();
 
-                LoginUrl = _identityService.CreateAuthorizationRequest();
-
-                IsValid = true;
-                IsLogin = true;
+                if (loginSuccess)
+                {
+                    await NavigationService.NavigateToAsync("//Main/Catalog");
+                }
             });
     }
 
     [RelayCommand]
     private Task RegisterAsync()
     {
-        return _openUrlService.OpenUrl(GlobalSetting.Instance.RegisterWebsite);
+        return _openUrlService.OpenUrl(_settingsService.RegistrationEndpoint);
     }
 
     [RelayCommand]
-    private void PerformLogout()
+    private async Task PerformLogoutAsync()
     {
-        var authIdToken = _settingsService.AuthIdToken;
-        var logoutRequest = _identityService.CreateLogoutRequest(authIdToken);
-
-        if (!string.IsNullOrEmpty(logoutRequest))
-        {
-            // Logout
-            LoginUrl = logoutRequest;
-        }
-
-        if (_settingsService.UseMocks)
-        {
-            _settingsService.AuthAccessToken = string.Empty;
-            _settingsService.AuthIdToken = string.Empty;
-        }
+        await _appEnvironmentService.IdentityService.SignOutAsync();
 
         _settingsService.UseFakeLocation = false;
 
         UserName.Value = string.Empty;
         Password.Value = string.Empty;
-    }
-
-    [RelayCommand]
-    private async Task NavigateAsync(string url)
-    {
-        var unescapedUrl = System.Net.WebUtility.UrlDecode(url);
-
-        if (unescapedUrl.Equals(GlobalSetting.Instance.LogoutCallback, StringComparison.OrdinalIgnoreCase))
-        {
-            _settingsService.AuthAccessToken = string.Empty;
-            _settingsService.AuthIdToken = string.Empty;
-            IsLogin = false;
-            LoginUrl = _identityService.CreateAuthorizationRequest();
-        }
-        else if (unescapedUrl.Contains(GlobalSetting.Instance.Callback, StringComparison.OrdinalIgnoreCase))
-        {
-            var authResponse = new AuthorizeResponse(url);
-            if (!string.IsNullOrWhiteSpace(authResponse.Code))
-            {
-                var userToken = await _identityService.GetTokenAsync(authResponse.Code);
-                string accessToken = userToken.AccessToken;
-
-                if (!string.IsNullOrWhiteSpace(accessToken))
-                {
-                    _settingsService.AuthAccessToken = accessToken;
-                    _settingsService.AuthIdToken = authResponse.IdentityToken;
-                    await NavigationService.NavigateToAsync("//Main/Catalog");
-                }
-            }
-        }
     }
 
     [RelayCommand]
@@ -178,12 +126,12 @@ public partial class LoginViewModel : ViewModelBase
 
     private void AddValidations()
     {
-        UserName.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A username is required." });
-        Password.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A password is required." });
+        UserName.Validations.Add(new IsNotNullOrEmptyRule<string> {ValidationMessage = "A username is required."});
+        Password.Validations.Add(new IsNotNullOrEmptyRule<string> {ValidationMessage = "A password is required."});
     }
 
     public void InvalidateMock()
     {
-        IsMock = _settingsService.UseMocks;
+        IsMock = false; //_settingsService.UseMocks;
     }
 }

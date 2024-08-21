@@ -5,11 +5,9 @@ namespace eShop.ClientApp.Animations;
 [ContentProperty("Animations")]
 public class StoryBoard : AnimationBase
 {
-    public List<AnimationBase> Animations { get; }
-
     public StoryBoard()
     {
-        Animations = new();
+        Animations = new List<AnimationBase>();
     }
 
     public StoryBoard(List<AnimationBase> animations)
@@ -17,12 +15,16 @@ public class StoryBoard : AnimationBase
         Animations = animations;
     }
 
+    public List<AnimationBase> Animations { get; }
+
     protected override async Task BeginAnimation()
     {
         foreach (var animation in Animations)
         {
             if (animation.Target == null)
+            {
                 animation.Target = Target;
+            }
 
             await animation.Begin();
         }
@@ -33,7 +35,9 @@ public class StoryBoard : AnimationBase
         foreach (var animation in Animations)
         {
             if (animation.Target == null)
+            {
                 animation.Target = Target;
+            }
 
             await animation.Reset();
         }

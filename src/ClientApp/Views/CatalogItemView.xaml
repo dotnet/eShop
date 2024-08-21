@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<views:ContentPageBase
+    x:Class="eShop.ClientApp.Views.CatalogItemView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:animations="clr-namespace:eShop.ClientApp.Animations"
+    xmlns:triggers="clr-namespace:eShop.ClientApp.Triggers"
+    xmlns:viewmodels="clr-namespace:eShop.ClientApp.ViewModels"
+    xmlns:views="clr-namespace:eShop.ClientApp.Views"
+    Padding="24"
+    x:DataType="viewmodels:CatalogItemViewModel"
+    BackgroundColor="#aa000000"
+    Shell.NavBarIsVisible="False"
+    Shell.PresentationMode="ModalNotAnimated">
+    <views:ContentPageBase.Resources>
+        <ResourceDictionary>
+            <animations:StoryBoard x:Key="DisplayAnimation" Target="{x:Reference ContentContainer}">
+                <animations:FadeInAnimation Direction="Up" Duration="600" />
+            </animations:StoryBoard>
+        </ResourceDictionary>
+    </views:ContentPageBase.Resources>
+    <views:ContentPageBase.Triggers>
+        <EventTrigger Event="Appearing">
+            <triggers:BeginAnimation Animation="{StaticResource DisplayAnimation}" />
+        </EventTrigger>
+    </views:ContentPageBase.Triggers>
+    <Border
+        x:Name="ContentContainer"
+        BackgroundColor="Gray"
+        StrokeShape="RoundRectangle 8,8,8,8"
+        StrokeThickness="1">
+        <ScrollView>
+        <Grid
+            Padding="16"
+            BackgroundColor="White"
+            ColumnDefinitions="*,Auto"
+            RowDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto"
+            RowSpacing="8">
+            <Image
+                Grid.Row="0"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Margin="-16,-16,-16,0"
+                Aspect="AspectFill"
+                Source="{Binding CatalogItem.PictureUri, Mode=OneWay}" />
+
+            <ImageButton
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="16"
+                Aspect="AspectFill"
+                BackgroundColor="White"
+                Command="{Binding DismissCommand, Mode=OneTime}"
+                CornerRadius="16"
+                HeightRequest="32"
+                HorizontalOptions="Start"
+                Source="arrow_left.png"
+                VerticalOptions="Start"
+                WidthRequest="32" />
+            <Label
+                Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                FontAttributes="Bold"
+                FontSize="{StaticResource ExtraBigSize}"
+                Style="{StaticResource LargeSizeFontStyle}"
+                Text="{Binding CatalogItem.Name, Mode=OneWay}" />
+            <Label
+                Grid.Row="2"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Style="{StaticResource MediumSizeFontStyle}"
+                Text="{Binding CatalogItem.CatalogBrand.Brand, Mode=OneWay}" />
+            <Label
+                Grid.Row="3"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Text="{Binding CatalogItem.Description, Mode=OneWay}" />
+            <Label
+                Grid.Row="4"
+                Grid.Column="0"
+                Text="{Binding CatalogItem.Price, StringFormat='{0:C2}', Mode=OneWay}"
+                VerticalTextAlignment="Center" />
+
+            <Button
+                Grid.Row="4"
+                Grid.Column="1"
+                Margin="8"
+                BackgroundColor="White"
+                BorderColor="Black"
+                BorderWidth="2"
+                Command="{Binding AddCatalogItemCommand, Mode=OneTime}"
+                CornerRadius="8"
+                ImageSource="cart.png"
+                Text="Add to shopping bag"
+                TextColor="Black" />
+        </Grid>
+        </ScrollView>
+    </Border>
+</views:ContentPageBase>

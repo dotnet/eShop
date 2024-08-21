@@ -87,7 +87,7 @@ public class OrderingContext : DbContext, IUnitOfWork
         }
         finally
         {
-            if (_currentTransaction != null)
+            if (HasActiveTransaction)
             {
                 _currentTransaction.Dispose();
                 _currentTransaction = null;
@@ -103,7 +103,7 @@ public class OrderingContext : DbContext, IUnitOfWork
         }
         finally
         {
-            if (_currentTransaction != null)
+            if (HasActiveTransaction)
             {
                 _currentTransaction.Dispose();
                 _currentTransaction = null;

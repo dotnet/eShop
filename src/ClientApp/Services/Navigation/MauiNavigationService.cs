@@ -1,21 +1,23 @@
-﻿using eShop.ClientApp.Services.Settings;
+using eShop.ClientApp.Models.User;
+using eShop.ClientApp.Services.AppEnvironment;
 
 namespace eShop.ClientApp.Services;
 
 public class MauiNavigationService : INavigationService
 {
-    private readonly ISettingsService _settingsService;
+    private readonly IAppEnvironmentService _appEnvironmentService;
 
-    public MauiNavigationService(ISettingsService settingsService)
+    public MauiNavigationService(IAppEnvironmentService appEnvironmentService)
     {
-        _settingsService = settingsService;
+        _appEnvironmentService = appEnvironmentService;
     }
 
-    public Task InitializeAsync() =>
-        NavigateToAsync(
-            string.IsNullOrEmpty(_settingsService.AuthAccessToken)
-                ? "//Login"
-                : "//Main/Catalog");
+    public async Task InitializeAsync()
+    {
+        var user = await _appEnvironmentService.IdentityService.GetUserInfoAsync();
+
+        await NavigateToAsync(user == UserInfo.Default ? "//Login" : "//Main/Catalog");
+    }
 
     public Task NavigateToAsync(string route, IDictionary<string, object> routeParameters = null)
     {
@@ -26,6 +28,8 @@ public class MauiNavigationService : INavigationService
             : Shell.Current.GoToAsync(shellNavigation);
     }
 
-    public Task PopAsync() =>
-        Shell.Current.GoToAsync("..");
+    public Task PopAsync()
+    {
+        return Shell.Current.GoToAsync("..");
+    }
 }

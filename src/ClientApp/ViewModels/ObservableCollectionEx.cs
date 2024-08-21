@@ -6,7 +6,7 @@ namespace eShop.ClientApp.ViewModels;
 
 public class ObservableCollectionEx<T> : ObservableCollection<T>
 {
-    public ObservableCollectionEx() : base()
+    public ObservableCollectionEx()
     {
     }
 
@@ -52,4 +52,3 @@ public class ObservableCollectionEx<T> : ObservableCollection<T>
         OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
     }
 }
-

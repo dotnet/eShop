@@ -4,17 +4,19 @@ using Order = eShop.Ordering.API.Application.Queries.Order;
 
 public static class OrdersApi
 {
-    public static RouteGroupBuilder MapOrdersApi(this RouteGroupBuilder app)
+    public static RouteGroupBuilder MapOrdersApiV1(this IEndpointRouteBuilder app)
     {
-        app.MapPut("/cancel", CancelOrderAsync);
-        app.MapPut("/ship", ShipOrderAsync);
-        app.MapGet("{orderId:int}", GetOrderAsync);
-        app.MapGet("/", GetOrdersByUserAsync);
-        app.MapGet("/cardtypes", GetCardTypesAsync);
-        app.MapPost("/draft", CreateOrderDraftAsync);
-        app.MapPost("/", CreateOrderAsync);
+        var api = app.MapGroup("api/orders").HasApiVersion(1.0);
 
-        return app;
+        api.MapPut("/cancel", CancelOrderAsync);
+        api.MapPut("/ship", ShipOrderAsync);
+        api.MapGet("{orderId:int}", GetOrderAsync);
+        api.MapGet("/", GetOrdersByUserAsync);
+        api.MapGet("/cardtypes", GetCardTypesAsync);
+        api.MapPost("/draft", CreateOrderDraftAsync);
+        api.MapPost("/", CreateOrderAsync);
+
+        return api;
     }
 
     public static async Task<Results<Ok, BadRequest<string>, ProblemHttpResult>> CancelOrderAsync(
@@ -118,12 +120,14 @@ public static class OrdersApi
         CreateOrderRequest request,
         [AsParameters] OrderServices services)
     {
+        
+        //mask the credit card number
+        
         services.Logger.LogInformation(
-            "Sending command: {CommandName} - {IdProperty}: {CommandId} ({@Command})",
+            "Sending command: {CommandName} - {IdProperty}: {CommandId}",
             request.GetGenericTypeName(),
             nameof(request.UserId),
-            request.UserId,
-            request);
+            request.UserId); //don't log the request as it has CC number
 
         if (requestId == Guid.Empty)
         {
@@ -133,9 +137,10 @@ public static class OrdersApi
 
         using (services.Logger.BeginScope(new List<KeyValuePair<string, object>> { new("IdentifiedCommandId", requestId) }))
         {
+            var maskedCCNumber = request.CardNumber.Substring(request.CardNumber.Length - 4).PadLeft(request.CardNumber.Length, 'X');
             var createOrderCommand = new CreateOrderCommand(request.Items, request.UserId, request.UserName, request.City, request.Street,
                 request.State, request.Country, request.ZipCode,
-                request.CardNumber, request.CardHolderName, request.CardExpiration,
+                maskedCCNumber, request.CardHolderName, request.CardExpiration,
                 request.CardSecurityNumber, request.CardTypeId);
 
             var requestCreateOrder = new IdentifiedCommand<CreateOrderCommand, bool>(createOrderCommand, requestId);
