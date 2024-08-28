@@ -3,7 +3,6 @@ global using Asp.Versioning.Conventions;
 global using System.Data.Common;
 global using Npgsql;
 global using System.Runtime.Serialization;
-global using Dapper;
 global using FluentValidation;
 global using MediatR;
 global using Microsoft.AspNetCore.Mvc;
