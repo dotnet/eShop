@@ -16,7 +16,12 @@ public class BasketItem : IValidatableObject
 
         if (Quantity < 1)
         {
-            results.Add(new ValidationResult("Invalid number of units", new[] { "Quantity" }));
+            results.Add(new ValidationResult($"Invalid number of units. Minimum value is 1.", new[] { "Quantity" }));
+        }
+
+        if (Quantity > 100)
+        {
+            results.Add(new ValidationResult($"Invalid number of units. Maximum value is 100.", new[] { "Quantity" }));
         }
 
         return results;
