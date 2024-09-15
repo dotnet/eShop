@@ -10,10 +10,11 @@ public class Buyer
 
     public string Name { get; private set; }
 
+#Region Relation
     private List<PaymentMethod> _paymentMethods;
 
     public IEnumerable<PaymentMethod> PaymentMethods => _paymentMethods.AsReadOnly();
-
+#EndRegion 
     protected Buyer()
     {
 
