@@ -64,7 +64,7 @@ public static partial class Extensions
                     options.ApplyApiVersionInfo(openApi.GetRequiredValue("Document:Title"), openApi.GetRequiredValue("Document:Description"));
                     options.ApplyAuthorizationChecks([.. scopes.Keys]);
                     options.ApplySecuritySchemeDefinitions();
-                    options.ApplyOperationDefaultValues();
+                    options.ApplyOperationDeprecatedStatus();
                 });
             }
         }
