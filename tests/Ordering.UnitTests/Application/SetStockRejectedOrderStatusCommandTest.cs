@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using eShop.Ordering.API.Application.Commands.SetStockRejectedOrderStatus;
 
 namespace eShop.Ordering.UnitTests.Application;
 

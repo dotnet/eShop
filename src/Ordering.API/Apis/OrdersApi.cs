@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using eShop.Ordering.API.Application.Commands.CancelOrder;
+using eShop.Ordering.API.Application.Commands.CreateOrder;
+using eShop.Ordering.API.Application.Commands.CreateOrderDraft;
+using eShop.Ordering.API.Application.Commands.Identified;
+using eShop.Ordering.API.Application.Commands.ShipOrder;
+using Microsoft.AspNetCore.Http.HttpResults;
 using CardType = eShop.Ordering.API.Application.Queries.CardType;
 using Order = eShop.Ordering.API.Application.Queries.Order;
 

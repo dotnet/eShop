@@ -1,4 +1,8 @@
-﻿namespace eShop.Ordering.API.Application.Commands;
+﻿using eShop.Ordering.API.Application.Commands.CancelOrder;
+using eShop.Ordering.API.Application.Commands.CreateOrder;
+using eShop.Ordering.API.Application.Commands.ShipOrder;
+
+namespace eShop.Ordering.API.Application.Commands.Identified;
 
 /// <summary>
 /// Provides a base implementation for handling duplicate request and ensuring idempotent updates, in the cases where

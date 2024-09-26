@@ -1,4 +1,6 @@
-﻿namespace eShop.Ordering.API.Application.IntegrationEvents.EventHandling;
+﻿using eShop.Ordering.API.Application.Commands.SetAwaitingValidationOrderStatus;
+
+namespace eShop.Ordering.API.Application.IntegrationEvents.EventHandling;
 
 public class GracePeriodConfirmedIntegrationEventHandler(
     IMediator mediator,
