@@ -26,7 +26,6 @@ public static partial class Extensions
 
         if (app.Environment.IsDevelopment())
         {
-            var authSection = openApiSection.GetSection("Auth");
             app.MapScalarApiReference();
             app.MapGet("/", () => Results.Redirect("/scalar/v1")).ExcludeFromDescription();
         }
@@ -70,18 +69,5 @@ public static partial class Extensions
         }
 
         return builder;
-    }
-
-    internal static T GetService<T>(this IServiceCollection services)
-    {
-        var descriptor = services.LastOrDefault(d => typeof(T).IsAssignableFrom(d.ServiceType) || d.ServiceType == typeof(T));
-        if (descriptor is { ImplementationInstance: T instance })
-        {
-            return instance;
-        }
-        else
-        {
-            return (T)descriptor!.ImplementationFactory!(services.BuildServiceProvider());
-        }
     }
 }
