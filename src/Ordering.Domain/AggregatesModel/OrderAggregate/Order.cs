@@ -148,7 +148,7 @@ public class Order
         }
 
         OrderStatus = OrderStatus.Cancelled;
-        Description = $"The order was cancelled.";
+        Description = "The order was cancelled.";
         AddDomainEvent(new OrderCancelledDomainEvent(this));
     }
 
