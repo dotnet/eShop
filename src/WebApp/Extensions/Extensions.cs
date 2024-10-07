@@ -107,7 +107,7 @@ public static class Extensions
         {
             builder.Services.AddKernel();
             builder.AddAzureOpenAIClient("openai");
-            builder.Services.AddAzureOpenAIChatCompletion(deploymentName);
+            //builder.Services.AddAzureOpenAIChatCompletion(deploymentName);
         }
     }
 

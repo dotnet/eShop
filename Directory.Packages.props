@@ -5,9 +5,9 @@
     <AspnetVersion>9.0.0-rc.1.24452.1</AspnetVersion>
     <MicrosoftExtensionsVersion>9.0.0-rc.1.24431.7</MicrosoftExtensionsVersion>
     <EfVersion>9.0.0-preview.7.24405.3</EfVersion>
-    <AspireVersion>8.2.0</AspireVersion>
-    <AspireUnstablePackagesVersion>8.0.0-preview.8.24258.2</AspireUnstablePackagesVersion>
-    <GrpcVersion>2.65.0</GrpcVersion>
+    <AspireVersion>9.0.0-preview.4.24503.4</AspireVersion>
+    <AspireUnstablePackagesVersion>9.0.0-preview.4.24503.4</AspireUnstablePackagesVersion>
+    <GrpcVersion>2.66.0</GrpcVersion>
     <DuendeVersion>7.0.6</DuendeVersion>
     <ApiVersioningVersion>8.1.0</ApiVersioningVersion>
   </PropertyGroup>
@@ -85,11 +85,11 @@
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageVersion Include="MediatR" Version="12.4.0" />
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
-    <PackageVersion Include="Polly.Core" Version="8.4.1" />
+    <PackageVersion Include="Polly.Core" Version="8.4.2" />
     <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
     <PackageVersion Include="xunit" Version="2.9.1" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
-    <PackageVersion Include="Yarp.ReverseProxy" Version="2.1.0" />
+    <PackageVersion Include="Yarp.ReverseProxy" Version="2.2.0" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
     <PackageVersion Include="Scalar.AspNetCore" Version="1.1.2"/>
   </ItemGroup>
