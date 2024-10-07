@@ -18,35 +18,55 @@ var webhooksDb = postgres.AddDatabase("webhooksdb");
 
 var launchProfileName = ShouldUseHttpForEndpoints() ? "http" : "https";
 
+// Uncomment to configure Azure Monitor Application Insights
+
+// var appInsights = (builder.Configuration.GetConnectionString("myAppInsightsResource") is not null)?
+//     builder.AddConnectionString("myAppInsightsResource","APPLICATIONINSIGHTS_CONNECTION_STRING")
+//     : null;
+
+// Copy/Paste this code to secrets.json and replace the value with your Application Insights Connection String
+// {
+//     "ConnectionStrings": {
+//          "myAppInsightsResource": "REPLACE_WITH_YOUR_CONNECTION_STRING" 
+//     }
+// }
+
 // Services
 var identityApi = builder.AddProject<Projects.Identity_API>("identity-api", launchProfileName)
+//  .WithReference(appInsights ?? throw new InvalidOperationException("App Insights Connection String is missing"))
     .WithExternalHttpEndpoints()
     .WithReference(identityDb);
 
 var identityEndpoint = identityApi.GetEndpoint(launchProfileName);
 
 var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
+//  .WithReference(appInsights ?? throw new InvalidOperationException("App Insights Connection String is missing"))
     .WithReference(redis)
     .WithReference(rabbitMq)
     .WithEnvironment("Identity__Url", identityEndpoint);
 
 var catalogApi = builder.AddProject<Projects.Catalog_API>("catalog-api")
+//  .WithReference(appInsights ?? throw new InvalidOperationException("App Insights Connection String is missing"))
     .WithReference(rabbitMq)
     .WithReference(catalogDb);
 
 var orderingApi = builder.AddProject<Projects.Ordering_API>("ordering-api")
+//  .WithReference(appInsights ?? throw new InvalidOperationException("App Insights Connection String is missing"))
     .WithReference(rabbitMq)
     .WithReference(orderDb)
     .WithEnvironment("Identity__Url", identityEndpoint);
 
 builder.AddProject<Projects.OrderProcessor>("order-processor")
+//  .WithReference(appInsights ?? throw new InvalidOperationException("App Insights Connection String is missing"))
     .WithReference(rabbitMq)
     .WithReference(orderDb);
 
 builder.AddProject<Projects.PaymentProcessor>("payment-processor")
+//  .WithReference(appInsights ?? throw new InvalidOperationException("App Insights Connection String is missing"))
     .WithReference(rabbitMq);
 
 var webHooksApi = builder.AddProject<Projects.Webhooks_API>("webhooks-api")
+//  .WithReference(appInsights ?? throw new InvalidOperationException("App Insights Connection String is missing"))
     .WithReference(rabbitMq)
     .WithReference(webhooksDb)
     .WithEnvironment("Identity__Url", identityEndpoint);

@@ -100,6 +100,15 @@ public static partial class Extensions
             builder.Services.ConfigureOpenTelemetryTracerProvider(tracing => tracing.AddOtlpExporter());
         }
 
+        // Uncomment to send telemetry Azure Monitor Application Insights
+        
+        // if (!string.IsNullOrEmpty(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))
+        // {
+        //     builder.Services.AddOpenTelemetry().UseAzureMonitor();
+        // }
+        
+        // Under eShop.ServiceDefaults, add the Nuget Package "Azure.Monitor.OpenTelemetry.AspNetCore" to the project
+
         return builder;
     }
 
