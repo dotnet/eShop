@@ -19,6 +19,14 @@ public static class Extensions
 {
     public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
+
+        builder.Services.AddDistributedMemoryCache();
+
+        //Session registration
+        builder.Services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(60);
+        });
         builder.AddAuthenticationServices();
 
         builder.AddRabbitMqEventBus("EventBus")
