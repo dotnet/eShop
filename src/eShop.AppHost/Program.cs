@@ -6,10 +6,12 @@ var builder = DistributedApplication.CreateBuilder(args);
 builder.AddForwardedHeaders();
 
 var redis = builder.AddRedis("redis");
-var rabbitMq = builder.AddRabbitMQ("eventbus");
+var rabbitMq = builder.AddRabbitMQ("eventbus")
+    .WithLifetime(ContainerLifetime.Persistent);
 var postgres = builder.AddPostgres("postgres")
     .WithImage("ankane/pgvector")
-    .WithImageTag("latest");
+    .WithImageTag("latest")
+    .WithLifetime(ContainerLifetime.Persistent);
 
 var catalogDb = postgres.AddDatabase("catalogdb");
 var identityDb = postgres.AddDatabase("identitydb");
@@ -27,27 +29,29 @@ var identityEndpoint = identityApi.GetEndpoint(launchProfileName);
 
 var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
     .WithReference(redis)
-    .WithReference(rabbitMq)
+    .WithReference(rabbitMq).WaitFor(rabbitMq)
     .WithEnvironment("Identity__Url", identityEndpoint);
 
 var catalogApi = builder.AddProject<Projects.Catalog_API>("catalog-api")
-    .WithReference(rabbitMq)
+    .WithReference(rabbitMq).WaitFor(rabbitMq)
     .WithReference(catalogDb);
 
 var orderingApi = builder.AddProject<Projects.Ordering_API>("ordering-api")
-    .WithReference(rabbitMq)
-    .WithReference(orderDb)
+    .WithReference(rabbitMq).WaitFor(rabbitMq)
+    .WithReference(orderDb).WaitFor(orderDb)
+    .WithHttpHealthCheck("/health")
     .WithEnvironment("Identity__Url", identityEndpoint);
 
 builder.AddProject<Projects.OrderProcessor>("order-processor")
-    .WithReference(rabbitMq)
-    .WithReference(orderDb);
+    .WithReference(rabbitMq).WaitFor(rabbitMq)
+    .WithReference(orderDb)
+    .WaitFor(orderingApi); // wait for the orderingApi to be ready because that contains the EF migrations
 
 builder.AddProject<Projects.PaymentProcessor>("payment-processor")
-    .WithReference(rabbitMq);
+    .WithReference(rabbitMq).WaitFor(rabbitMq);
 
 var webHooksApi = builder.AddProject<Projects.Webhooks_API>("webhooks-api")
-    .WithReference(rabbitMq)
+    .WithReference(rabbitMq).WaitFor(rabbitMq)
     .WithReference(webhooksDb)
     .WithEnvironment("Identity__Url", identityEndpoint);
 
@@ -68,7 +72,7 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
     .WithReference(basketApi)
     .WithReference(catalogApi)
     .WithReference(orderingApi)
-    .WithReference(rabbitMq)
+    .WithReference(rabbitMq).WaitFor(rabbitMq)
     .WithEnvironment("IdentityUrl", identityEndpoint);
 
 // set to true if you want to use OpenAI
