@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using System.ComponentModel;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Pgvector.EntityFrameworkCore;
 
 namespace eShop.Catalog.API;
@@ -10,25 +11,62 @@ public static class CatalogApi
         var api = app.MapGroup("api/catalog").HasApiVersion(1.0);
 
         // Routes for querying catalog items.
-        api.MapGet("/items", GetAllItems);
-        api.MapGet("/items/by", GetItemsByIds);
-        api.MapGet("/items/{id:int}", GetItemById);
-        api.MapGet("/items/by/{name:minlength(1)}", GetItemsByName);
-        api.MapGet("/items/{catalogItemId:int}/pic", GetItemPictureById);
+        api.MapGet("/items", GetAllItems)
+            .WithSummary("List catalog items")
+            .WithDescription("Get a paginated list of items in the catalog.")
+            .WithTags("Items");
+        api.MapGet("/items/by", GetItemsByIds)
+            .WithSummary("Batch get catalog items")
+            .WithDescription("Get multiple items from the catalog")
+            .WithTags("Items");
+        api.MapGet("/items/{id:int}", GetItemById)
+            .WithSummary("Get catalog item")
+            .WithDescription("Get an item from the catalog")
+            .WithTags("Items");
+        api.MapGet("/items/by/{name:minlength(1)}", GetItemsByName)
+            .WithSummary("Get catalog items by name")
+            .WithDescription("Get a paginated list of catalog items with the specified name.")
+            .WithTags("Items");
+        api.MapGet("/items/{id:int}/pic", GetItemPictureById)
+            .WithSummary("Get catalog item picture")
+            .WithDescription("Get the picture for a catalog item")
+            .WithTags("Items");
 
         // Routes for resolving catalog items using AI.
-        api.MapGet("/items/withsemanticrelevance/{text:minlength(1)}", GetItemsBySemanticRelevance);
+        api.MapGet("/items/withsemanticrelevance/{text:minlength(1)}", GetItemsBySemanticRelevance)
+            .WithSummary("Search catalog for relevant items")
+            .WithDescription("Search the catalog for items related to the specified text")
+            .WithTags("Search");
 
         // Routes for resolving catalog items by type and brand.
-        api.MapGet("/items/type/{typeId}/brand/{brandId?}", GetItemsByBrandAndTypeId);
-        api.MapGet("/items/type/all/brand/{brandId:int?}", GetItemsByBrandId);
-        api.MapGet("/catalogtypes", async (CatalogContext context) => await context.CatalogTypes.OrderBy(x => x.Type).ToListAsync());
-        api.MapGet("/catalogbrands", async (CatalogContext context) => await context.CatalogBrands.OrderBy(x => x.Brand).ToListAsync());
+        api.MapGet("/items/type/{typeId}/brand/{brandId?}", GetItemsByBrandAndTypeId)
+            .WithSummary("Get catalog items by type and brand")
+            .WithDescription("Get catalog items of the specified type and brand")
+            .WithTags("Types");
+        api.MapGet("/items/type/all/brand/{brandId:int?}", GetItemsByBrandId)
+            .WithSummary("List catalog items by brand")
+            .WithDescription("Get a list of catalog items for the specified brand")
+            .WithTags("Brands");
+        api.MapGet("/catalogtypes", async (CatalogContext context) => await context.CatalogTypes.OrderBy(x => x.Type).ToListAsync())
+            .WithSummary("List catalog item types")
+            .WithDescription("Get a list of the types of catalog items")
+            .WithTags("Types");
+        api.MapGet("/catalogbrands", async (CatalogContext context) => await context.CatalogBrands.OrderBy(x => x.Brand).ToListAsync())
+            .WithSummary("List catalog item brands")
+            .WithDescription("Get a list of the brands of catalog items")
+            .WithTags("Brands");
 
         // Routes for modifying catalog items.
-        api.MapPut("/items", UpdateItem);
-        api.MapPost("/items", CreateItem);
-        api.MapDelete("/items/{id:int}", DeleteItemById);
+        api.MapPut("/items", UpdateItem)
+            .WithSummary("Create or replace a catalog item")
+            .WithDescription("Create or replace a catalog item")
+            .WithTags("Items");
+        api.MapPost("/items", CreateItem)
+            .WithSummary("Create a catalog item")
+            .WithDescription("Create a new item in the catalog");
+        api.MapDelete("/items/{id:int}", DeleteItemById)
+            .WithSummary("Delete catalog item")
+            .WithDescription("Delete the specified catalog item");
 
         return app;
     }
@@ -100,9 +138,9 @@ public static class CatalogApi
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
-    public static async Task<Results<NotFound, PhysicalFileHttpResult>> GetItemPictureById(CatalogContext context, IWebHostEnvironment environment, int catalogItemId)
+    public static async Task<Results<NotFound, PhysicalFileHttpResult>> GetItemPictureById(CatalogContext context, IWebHostEnvironment environment, int id)
     {
-        var item = await context.CatalogItems.FindAsync(catalogItemId);
+        var item = await context.CatalogItems.FindAsync(id);
 
         if (item is null)
         {
@@ -121,6 +159,7 @@ public static class CatalogApi
     public static async Task<Results<BadRequest<string>, RedirectToRouteHttpResult, Ok<PaginatedItems<CatalogItem>>>> GetItemsBySemanticRelevance(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
+        [Description("The text string to use when search for related items in the catalog")]
         string text)
     {
         var pageSize = paginationRequest.PageSize;
@@ -168,7 +207,9 @@ public static class CatalogApi
     public static async Task<Ok<PaginatedItems<CatalogItem>>> GetItemsByBrandAndTypeId(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
+        [Description("The type of items to return")]
         int typeId,
+        [Description("The brand of items to return")]
         int? brandId)
     {
         var pageSize = paginationRequest.PageSize;
