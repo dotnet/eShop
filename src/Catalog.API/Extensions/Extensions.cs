@@ -31,7 +31,12 @@ public static class Extensions
 
         if (builder.Configuration["AI:Ollama:Endpoint"] is string ollamaEndpoint && !string.IsNullOrWhiteSpace(ollamaEndpoint))
         {
-            builder.Services.AddSingleton<IEmbeddingGenerator<string, Embedding<float>>>(new OllamaEmbeddingGenerator(new Uri(ollamaEndpoint), builder.Configuration["AI:Ollama:EmbeddingName"]));
+            builder.Services.AddEmbeddingGenerator<string, Embedding<float>>(b => b
+                .UseOpenTelemetry()
+                .UseLogging()
+                .Use(new OllamaEmbeddingGenerator(
+                    new Uri(ollamaEndpoint),
+                    builder.Configuration["AI:Ollama:EmbeddingModel"])));
         }
         else if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("openai")))
         {
@@ -39,7 +44,7 @@ public static class Extensions
             builder.Services.AddEmbeddingGenerator<string, Embedding<float>>(b => b
                 .UseOpenTelemetry()
                 .UseLogging()
-                .Use(b.Services.GetRequiredService<OpenAIClient>().AsEmbeddingGenerator(builder.Configuration["AI:OpenAI:EmbeddingName"]!)));
+                .Use(b.Services.GetRequiredService<OpenAIClient>().AsEmbeddingGenerator(builder.Configuration["AI:OpenAI:EmbeddingModel"]!)));
         }
 
         builder.Services.AddScoped<ICatalogAI, CatalogAI>();

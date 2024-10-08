@@ -76,11 +76,11 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
     .WithEnvironment("IdentityUrl", identityEndpoint);
 
 // set to true if you want to use OpenAI
-bool useOpenAI = false;
+bool useOpenAI = true;
 if (useOpenAI)
 {
     const string openAIName = "openai";
-    const string textEmbeddingName = "text-embedding-3-small";
+    const string textEmbeddingModelName = "text-embedding-3-small";
     const string chatModelName = "gpt-4o-mini";
 
     // to use an existing OpenAI resource, add the following to the AppHost user secrets:
@@ -103,12 +103,12 @@ if (useOpenAI)
         // }
         openAI = builder.AddAzureOpenAI(openAIName)
             .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-4o-mini", "0718")) // TODO: Deployment version number
-            .AddDeployment(new AzureOpenAIDeployment(textEmbeddingName, "text-embedding-3-small", "1"));
+            .AddDeployment(new AzureOpenAIDeployment(textEmbeddingModelName, "text-embedding-3-small", "1"));
     }
 
     catalogApi
         .WithReference(openAI)
-        .WithEnvironment("AI__OPENAI__EMBEDDINGNAME", textEmbeddingName);
+        .WithEnvironment("AI__OPENAI__EMBEDDINGMODEL", textEmbeddingModelName);
 
     webApp
         .WithReference(openAI)

@@ -32,7 +32,7 @@ public class ChatState
 
         if (_logger.IsEnabled(LogLevel.Debug))
         {
-            _logger.LogDebug("ChatName: {model}", chatClient.Metadata.ModelId);
+            _logger.LogDebug("ChatModel: {model}", chatClient.Metadata.ModelId);
         }
 
         _chatClient = chatClient;

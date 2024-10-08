@@ -98,17 +98,29 @@ public static class Extensions
 
     private static void AddAIServices(this IHostApplicationBuilder builder)
     {
-        var openAIOptions = builder.Configuration.GetSection("AI").Get<AIOptions>()?.OpenAI;
-        var deploymentName = openAIOptions?.ChatModel;
-
-        if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("openai")) && !string.IsNullOrWhiteSpace(deploymentName))
+        string? ollamaEndpoint = builder.Configuration["AI:Ollama:Endpoint"];
+        if (!string.IsNullOrWhiteSpace(ollamaEndpoint))
         {
-            builder.AddOpenAIClientFromConfiguration("openai");
             builder.Services.AddChatClient(b => b
                 .UseFunctionInvocation()
                 .UseOpenTelemetry()
                 .UseLogging()
-                .Use(b.Services.GetRequiredService<OpenAIClient>().AsChatClient(builder.Configuration["AI:OpenAI:ChatModel"] ?? "gpt-4o-mini")));
+                .Use(new OllamaChatClient(
+                    new Uri(ollamaEndpoint),
+                    builder.Configuration["AI:Ollama:ChatModel"] ?? "llama3.1")));
+        }
+        else
+        {
+            var chatModel = builder.Configuration.GetSection("AI").Get<AIOptions>()?.OpenAI?.ChatModel;
+            if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("openai")) && !string.IsNullOrWhiteSpace(chatModel))
+            {
+                builder.AddOpenAIClientFromConfiguration("openai");
+                builder.Services.AddChatClient(b => b
+                    .UseFunctionInvocation()
+                    .UseOpenTelemetry()
+                    .UseLogging()
+                    .Use(b.Services.GetRequiredService<OpenAIClient>().AsChatClient(chatModel ?? "gpt-4o-mini")));
+            }
         }
     }
 
