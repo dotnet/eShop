@@ -1,5 +1,6 @@
 ﻿using eShop.Catalog.API.Services;
-using Microsoft.SemanticKernel;
+using Microsoft.Extensions.AI;
+using OpenAI;
 
 public static class Extensions
 {
@@ -28,17 +29,19 @@ public static class Extensions
         builder.Services.AddOptions<CatalogOptions>()
             .BindConfiguration(nameof(CatalogOptions));
 
-        if (builder.Configuration["AI:Onnx:EmbeddingModelPath"] is string modelPath &&
-            builder.Configuration["AI:Onnx:EmbeddingVocabPath"] is string vocabPath)
+        if (builder.Configuration["AI:Ollama:EmbeddingName"] is string ollamaEmbeddingModel)
         {
-            builder.Services.AddBertOnnxTextEmbeddingGeneration(modelPath, vocabPath);
+            builder.Services.AddSingleton<IEmbeddingGenerator<string, Embedding<float>>>(new OllamaEmbeddingGenerator(new Uri("http://localhost:11434"), ollamaEmbeddingModel));
         }
         else if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("openai")))
         {
-            builder.AddAzureOpenAIClient("openai");
-            //builder.Services.AddOpenAITextEmbeddingGeneration(builder.Configuration["AIOptions:OpenAI:EmbeddingName"] ?? "text-embedding-3-small");
+            builder.AddOpenAIClientFromConfiguration("openai");
+            builder.Services.AddEmbeddingGenerator<string, Embedding<float>>(b => b
+                .UseOpenTelemetry()
+                .UseLogging()
+                .Use(b.Services.GetRequiredService<OpenAIClient>().AsEmbeddingGenerator(builder.Configuration["AI:OpenAI:EmbeddingName"]!)));
         }
 
-        builder.Services.AddSingleton<ICatalogAI, CatalogAI>();
+        builder.Services.AddScoped<ICatalogAI, CatalogAI>();
     }
 }

@@ -6,14 +6,12 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
-using Microsoft.SemanticKernel.TextGeneration;
 using eShop.WebApp.Services.OrderStatus.IntegrationEvents;
 using eShop.Basket.API.Grpc;
+using OpenAI;
 
 public static class Extensions
 {
@@ -105,9 +103,12 @@ public static class Extensions
 
         if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("openai")) && !string.IsNullOrWhiteSpace(deploymentName))
         {
-            builder.Services.AddKernel();
-            builder.AddAzureOpenAIClient("openai");
-            //builder.Services.AddAzureOpenAIChatCompletion(deploymentName);
+            builder.AddOpenAIClientFromConfiguration("openai");
+            builder.Services.AddChatClient(b => b
+                .UseFunctionInvocation()
+                .UseOpenTelemetry()
+                .UseLogging()
+                .Use(b.Services.GetRequiredService<OpenAIClient>().AsChatClient(builder.Configuration["AI:OpenAI:ChatModel"] ?? "gpt-4o-mini")));
         }
     }
 

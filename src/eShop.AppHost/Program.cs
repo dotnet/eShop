@@ -81,7 +81,7 @@ if (useOpenAI)
 {
     const string openAIName = "openai";
     const string textEmbeddingName = "text-embedding-3-small";
-    const string chatModelName = "gpt-35-turbo-16k";
+    const string chatModelName = "gpt-4o-mini";
 
     // to use an existing OpenAI resource, add the following to the AppHost user secrets:
     // "ConnectionStrings": {
@@ -102,7 +102,7 @@ if (useOpenAI)
         //   "Location": "<location>"
         // }
         openAI = builder.AddAzureOpenAI(openAIName)
-            .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-35-turbo", "0613"))
+            .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-4o-mini", "0718")) // TODO: Deployment version number
             .AddDeployment(new AzureOpenAIDeployment(textEmbeddingName, "text-embedding-3-small", "1"));
     }
 
