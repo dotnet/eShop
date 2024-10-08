@@ -7,15 +7,17 @@
   },
   "servers": [
     {
-      "url": "http://localhost:57688"
+      "url": "http://localhost:52090"
     }
   ],
   "paths": {
     "/api/catalog/items": {
       "get": {
         "tags": [
-          "Catalog"
+          "Items"
         ],
+        "summary": "List catalog items",
+        "description": "Get a paginated list of items in the catalog.",
         "parameters": [
           {
             "name": "PageSize",
@@ -69,8 +71,10 @@
       },
       "put": {
         "tags": [
-          "Catalog"
+          "Items"
         ],
+        "summary": "Create or replace a catalog item",
+        "description": "Create or replace a catalog item",
         "parameters": [
           {
             "name": "api-version",
@@ -110,6 +114,8 @@
         "tags": [
           "Catalog"
         ],
+        "summary": "Create a catalog item",
+        "description": "Create a new item in the catalog",
         "parameters": [
           {
             "name": "api-version",
@@ -139,8 +145,10 @@
     "/api/catalog/items/by": {
       "get": {
         "tags": [
-          "Catalog"
+          "Items"
         ],
+        "summary": "Batch get catalog items",
+        "description": "Get multiple items from the catalog",
         "parameters": [
           {
             "name": "ids",
@@ -182,8 +190,10 @@
     "/api/catalog/items/{id}": {
       "get": {
         "tags": [
-          "Catalog"
+          "Items"
         ],
+        "summary": "Get catalog item",
+        "description": "Get an item from the catalog",
         "parameters": [
           {
             "name": "id",
@@ -233,6 +243,8 @@
         "tags": [
           "Catalog"
         ],
+        "summary": "Delete catalog item",
+        "description": "Delete the specified catalog item",
         "parameters": [
           {
             "name": "id",
@@ -265,8 +277,10 @@
     "/api/catalog/items/by/{name}": {
       "get": {
         "tags": [
-          "Catalog"
+          "Items"
         ],
+        "summary": "Get catalog items by name",
+        "description": "Get a paginated list of catalog items with the specified name.",
         "parameters": [
           {
             "name": "PageSize",
@@ -318,14 +332,16 @@
         }
       }
     },
-    "/api/catalog/items/{catalogItemId}/pic": {
+    "/api/catalog/items/{id}/pic": {
       "get": {
         "tags": [
-          "Catalog"
+          "Items"
         ],
+        "summary": "Get catalog item picture",
+        "description": "Get the picture for a catalog item",
         "parameters": [
           {
-            "name": "catalogItemId",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -352,8 +368,10 @@
     "/api/catalog/items/withsemanticrelevance/{text}": {
       "get": {
         "tags": [
-          "Catalog"
+          "Search"
         ],
+        "summary": "Search catalog for relevant items",
+        "description": "Search the catalog for items related to the specified text",
         "parameters": [
           {
             "name": "PageSize",
@@ -376,6 +394,7 @@
           {
             "name": "text",
             "in": "path",
+            "description": "The text string to use when search for related items in the catalog",
             "required": true,
             "schema": {
               "minLength": 1,
@@ -418,8 +437,10 @@
     "/api/catalog/items/type/{typeId}/brand/{brandId}": {
       "get": {
         "tags": [
-          "Catalog"
+          "Types"
         ],
+        "summary": "Get catalog items by type and brand",
+        "description": "Get catalog items of the specified type and brand",
         "parameters": [
           {
             "name": "PageSize",
@@ -442,6 +463,7 @@
           {
             "name": "typeId",
             "in": "path",
+            "description": "The type of items to return",
             "required": true,
             "schema": {
               "type": "integer",
@@ -451,6 +473,7 @@
           {
             "name": "brandId",
             "in": "path",
+            "description": "The brand of items to return",
             "required": true,
             "schema": {
               "type": "integer",
@@ -483,8 +506,10 @@
     "/api/catalog/items/type/all/brand/{brandId}": {
       "get": {
         "tags": [
-          "Catalog"
+          "Brands"
         ],
+        "summary": "List catalog items by brand",
+        "description": "Get a list of catalog items for the specified brand",
         "parameters": [
           {
             "name": "PageSize",
@@ -539,8 +564,10 @@
     "/api/catalog/catalogtypes": {
       "get": {
         "tags": [
-          "Catalog"
+          "Types"
         ],
+        "summary": "List catalog item types",
+        "description": "Get a list of the types of catalog items",
         "parameters": [
           {
             "name": "api-version",
@@ -559,7 +586,20 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/CatalogType2"
+                    "required": [
+                      "type"
+                    ],
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "type": {
+                        "type": "string",
+                        "nullable": true
+                      }
+                    }
                   }
                 }
               }
@@ -571,8 +611,10 @@
     "/api/catalog/catalogbrands": {
       "get": {
         "tags": [
-          "Catalog"
+          "Brands"
         ],
+        "summary": "List catalog item brands",
+        "description": "Get a list of the brands of catalog items",
         "parameters": [
           {
             "name": "api-version",
@@ -591,7 +633,20 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/CatalogBrand2"
+                    "required": [
+                      "brand"
+                    ],
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "brand": {
+                        "type": "string",
+                        "nullable": true
+                      }
+                    }
                   }
                 }
               }
@@ -619,22 +674,6 @@
           }
         },
         "nullable": true
-      },
-      "CatalogBrand2": {
-        "required": [
-          "brand"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "brand": {
-            "type": "string",
-            "nullable": true
-          }
-        }
       },
       "CatalogItem": {
         "required": [
@@ -710,22 +749,6 @@
         },
         "nullable": true
       },
-      "CatalogType2": {
-        "required": [
-          "type"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "type": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
       "PaginatedItemsOfCatalogItem": {
         "required": [
           "pageIndex",
@@ -760,7 +783,19 @@
   },
   "tags": [
     {
+      "name": "Items"
+    },
+    {
       "name": "Catalog"
+    },
+    {
+      "name": "Search"
+    },
+    {
+      "name": "Types"
+    },
+    {
+      "name": "Brands"
     }
   ]
 }
