@@ -103,7 +103,7 @@ public static class Extensions
         {
             builder.Services.AddChatClient(b => b
                 .UseFunctionInvocation()
-                .UseOpenTelemetry()
+                .UseOpenTelemetry(configure: t => t.EnableSensitiveData = true)
                 .UseLogging()
                 .Use(new OllamaChatClient(
                     new Uri(ollamaEndpoint),
@@ -117,7 +117,7 @@ public static class Extensions
                 builder.AddOpenAIClientFromConfiguration("openai");
                 builder.Services.AddChatClient(b => b
                     .UseFunctionInvocation()
-                    .UseOpenTelemetry()
+                    .UseOpenTelemetry(configure: t => t.EnableSensitiveData = true)
                     .UseLogging()
                     .Use(b.Services.GetRequiredService<OpenAIClient>().AsChatClient(chatModel ?? "gpt-4o-mini")));
             }
