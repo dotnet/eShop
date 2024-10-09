@@ -1,3 +1,32 @@
 extends: spectral:oas
 rules:
   info-contact: off
+  operation-operationId: off
+
+  success-response:
+    description: All operations should have a success response.
+    message: Operation is missing a success response.
+    severity: warn
+    given: $.paths.*.*.responses
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          anyOf:
+            - required: ["200"]
+            - required: ["201"]
+            - required: ["204"]
+
+  error-response:
+    description: All operations should have a error response.
+    message: Operation is missing a error response.
+    severity: warn
+    given: $.paths.*.*.responses
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          anyOf:
+            - required: ["400"]
+            - required: ["404"]
+
