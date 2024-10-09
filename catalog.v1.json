@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:62050"
+      "url": "http://localhost:50845"
     }
   ],
   "paths": {
@@ -22,6 +22,7 @@
           {
             "name": "PageSize",
             "in": "query",
+            "description": "Number of items to return in a single page of results",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -31,6 +32,7 @@
           {
             "name": "PageIndex",
             "in": "query",
+            "description": "The index of the page of results to return",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -40,9 +42,11 @@
           {
             "name": "api-version",
             "in": "query",
+            "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "1.0"
             }
           }
         ],
@@ -79,9 +83,11 @@
           {
             "name": "api-version",
             "in": "query",
+            "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "1.0"
             }
           }
         ],
@@ -120,9 +126,11 @@
           {
             "name": "api-version",
             "in": "query",
+            "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "1.0"
             }
           }
         ],
@@ -163,6 +171,7 @@
           {
             "name": "ids",
             "in": "query",
+            "description": "List of ids for catalog items to return",
             "schema": {
               "type": "array",
               "items": {
@@ -174,9 +183,11 @@
           {
             "name": "api-version",
             "in": "query",
+            "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "1.0"
             }
           }
         ],
@@ -218,6 +229,7 @@
           {
             "name": "id",
             "in": "path",
+            "description": "The catalog item id",
             "required": true,
             "schema": {
               "type": "integer",
@@ -227,9 +239,11 @@
           {
             "name": "api-version",
             "in": "query",
+            "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "1.0"
             }
           }
         ],
@@ -269,6 +283,7 @@
           {
             "name": "id",
             "in": "path",
+            "description": "The id of the catalog item to delete",
             "required": true,
             "schema": {
               "type": "integer",
@@ -278,9 +293,11 @@
           {
             "name": "api-version",
             "in": "query",
+            "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "1.0"
             }
           }
         ],
@@ -305,6 +322,7 @@
           {
             "name": "PageSize",
             "in": "query",
+            "description": "Number of items to return in a single page of results",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -314,6 +332,7 @@
           {
             "name": "PageIndex",
             "in": "query",
+            "description": "The index of the page of results to return",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -323,6 +342,7 @@
           {
             "name": "name",
             "in": "path",
+            "description": "The name of the item to return",
             "required": true,
             "schema": {
               "minLength": 1,
@@ -332,9 +352,11 @@
           {
             "name": "api-version",
             "in": "query",
+            "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "1.0"
             }
           }
         ],
@@ -373,6 +395,7 @@
           {
             "name": "id",
             "in": "path",
+            "description": "The catalog item id",
             "required": true,
             "schema": {
               "type": "integer",
@@ -382,9 +405,11 @@
           {
             "name": "api-version",
             "in": "query",
+            "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "1.0"
             }
           }
         ],
@@ -471,6 +496,7 @@
           {
             "name": "PageSize",
             "in": "query",
+            "description": "Number of items to return in a single page of results",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -480,6 +506,7 @@
           {
             "name": "PageIndex",
             "in": "query",
+            "description": "The index of the page of results to return",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -499,9 +526,11 @@
           {
             "name": "api-version",
             "in": "query",
+            "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "1.0"
             }
           }
         ],
@@ -540,6 +569,7 @@
           {
             "name": "PageSize",
             "in": "query",
+            "description": "Number of items to return in a single page of results",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -549,6 +579,7 @@
           {
             "name": "PageIndex",
             "in": "query",
+            "description": "The index of the page of results to return",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -578,9 +609,11 @@
           {
             "name": "api-version",
             "in": "query",
+            "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "1.0"
             }
           }
         ],
@@ -619,6 +652,7 @@
           {
             "name": "PageSize",
             "in": "query",
+            "description": "Number of items to return in a single page of results",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -628,6 +662,7 @@
           {
             "name": "PageIndex",
             "in": "query",
+            "description": "The index of the page of results to return",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -637,6 +672,7 @@
           {
             "name": "brandId",
             "in": "path",
+            "description": "The brand of items to return",
             "required": true,
             "schema": {
               "type": "integer",
@@ -646,9 +682,11 @@
           {
             "name": "api-version",
             "in": "query",
+            "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "1.0"
             }
           }
         ],
@@ -687,9 +725,11 @@
           {
             "name": "api-version",
             "in": "query",
+            "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "1.0"
             }
           }
         ],
@@ -744,9 +784,11 @@
           {
             "name": "api-version",
             "in": "query",
+            "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "1.0"
             }
           }
         ],

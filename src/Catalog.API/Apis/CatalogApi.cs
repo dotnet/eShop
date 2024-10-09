@@ -106,7 +106,7 @@ public static class CatalogApi
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public static async Task<Ok<List<CatalogItem>>> GetItemsByIds(
         [AsParameters] CatalogServices services,
-        int[] ids)
+        [Description("List of ids for catalog items to return")] int[] ids)
     {
         var items = await services.Context.CatalogItems.Where(item => ids.Contains(item.Id)).ToListAsync();
         return TypedResults.Ok(items);
@@ -114,7 +114,7 @@ public static class CatalogApi
 
     public static async Task<Results<Ok<CatalogItem>, NotFound, ValidationProblem>> GetItemById(
         [AsParameters] CatalogServices services,
-        int id)
+        [Description("The catalog item id")] int id)
     {
         if (id <= 0)
         {
@@ -135,7 +135,7 @@ public static class CatalogApi
     public static async Task<Ok<PaginatedItems<CatalogItem>>> GetItemsByName(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
-        string name)
+        [Description("The name of the item to return")] string name)
     {
         var pageSize = paginationRequest.PageSize;
         var pageIndex = paginationRequest.PageIndex;
@@ -156,7 +156,10 @@ public static class CatalogApi
     [ProducesResponseType<byte[]>(StatusCodes.Status200OK, "application/octet-stream", 
         [ "image/png", "image/gif", "image/jpeg", "image/bmp", "image/tiff",
           "image/wmf", "image/jp2", "image/svg+xml", "image/webp" ])]
-    public static async Task<Results<PhysicalFileHttpResult,NotFound>> GetItemPictureById(CatalogContext context, IWebHostEnvironment environment, int id)
+    public static async Task<Results<PhysicalFileHttpResult,NotFound>> GetItemPictureById(
+        CatalogContext context,
+        IWebHostEnvironment environment,
+        [Description("The catalog item id")] int id)
     {
         var item = await context.CatalogItems.FindAsync(id);
 
@@ -178,8 +181,7 @@ public static class CatalogApi
     public static async Task<Results<Ok<PaginatedItems<CatalogItem>>, RedirectToRouteHttpResult>> GetItemsBySemanticRelevance(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
-        [Description("The text string to use when search for related items in the catalog")]
-        string text)
+        [Description("The text string to use when search for related items in the catalog")] string text)
     {
         var pageSize = paginationRequest.PageSize;
         var pageIndex = paginationRequest.PageIndex;
@@ -227,10 +229,8 @@ public static class CatalogApi
     public static async Task<Ok<PaginatedItems<CatalogItem>>> GetItemsByBrandAndTypeId(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
-        [Description("The type of items to return")]
-        int typeId,
-        [Description("The brand of items to return")]
-        int? brandId)
+        [Description("The type of items to return")] int typeId,
+        [Description("The brand of items to return")] int? brandId)
     {
         var pageSize = paginationRequest.PageSize;
         var pageIndex = paginationRequest.PageIndex;
@@ -257,7 +257,7 @@ public static class CatalogApi
     public static async Task<Ok<PaginatedItems<CatalogItem>>> GetItemsByBrandId(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
-        int? brandId)
+        [Description("The brand of items to return")] int? brandId)
     {
         var pageSize = paginationRequest.PageSize;
         var pageIndex = paginationRequest.PageIndex;
@@ -348,7 +348,7 @@ public static class CatalogApi
 
     public static async Task<Results<NoContent, NotFound>> DeleteItemById(
         [AsParameters] CatalogServices services,
-        int id)
+        [Description("The id of the catalog item to delete")] int id)
     {
         var item = services.Context.CatalogItems.SingleOrDefault(x => x.Id == id);
 
