@@ -76,7 +76,7 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
     .WithEnvironment("IdentityUrl", identityEndpoint);
 
 // set to true if you want to use OpenAI
-bool useOpenAI = true;
+bool useOpenAI = false;
 if (useOpenAI)
 {
     const string openAIName = "openai";
