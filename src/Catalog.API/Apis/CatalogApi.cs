@@ -18,63 +18,76 @@ public static class CatalogApi
 
         // Routes for querying catalog items.
         api.MapGet("/items", GetAllItems)
+            .WithName("ListItems")
             .WithSummary("List catalog items")
             .WithDescription("Get a paginated list of items in the catalog.")
             .WithTags("Items");
         api.MapGet("/items/by", GetItemsByIds)
+            .WithName("BatchGetItems")
             .WithSummary("Batch get catalog items")
             .WithDescription("Get multiple items from the catalog")
             .WithTags("Items");
         api.MapGet("/items/{id:int}", GetItemById)
+            .WithName("GetItem")
             .WithSummary("Get catalog item")
             .WithDescription("Get an item from the catalog")
             .WithTags("Items");
         api.MapGet("/items/by/{name:minlength(1)}", GetItemsByName)
+            .WithName("GetItemsByName")
             .WithSummary("Get catalog items by name")
             .WithDescription("Get a paginated list of catalog items with the specified name.")
             .WithTags("Items");
         api.MapGet("/items/{id:int}/pic", GetItemPictureById)
+            .WithName("GetItemPicture")
             .WithSummary("Get catalog item picture")
             .WithDescription("Get the picture for a catalog item")
             .WithTags("Items");
 
         // Routes for resolving catalog items using AI.
         api.MapGet("/items/withsemanticrelevance/{text:minlength(1)}", GetItemsBySemanticRelevance)
+            .WithName("GetRelevantItems")
             .WithSummary("Search catalog for relevant items")
             .WithDescription("Search the catalog for items related to the specified text")
             .WithTags("Search");
 
         // Routes for resolving catalog items by type and brand.
         api.MapGet("/items/type/{typeId}/brand/{brandId?}", GetItemsByBrandAndTypeId)
+            .WithName("GetItemsByTypeAndBrand")
             .WithSummary("Get catalog items by type and brand")
             .WithDescription("Get catalog items of the specified type and brand")
             .WithTags("Types");
         api.MapGet("/items/type/all/brand/{brandId:int?}", GetItemsByBrandId)
+            .WithName("GetItemsByBrand")
             .WithSummary("List catalog items by brand")
             .WithDescription("Get a list of catalog items for the specified brand")
             .WithTags("Brands");
         api.MapGet("/catalogtypes",
             [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")] 
             async (CatalogContext context) => await context.CatalogTypes.OrderBy(x => x.Type).ToListAsync())
+            .WithName("ListItemTypes")
             .WithSummary("List catalog item types")
             .WithDescription("Get a list of the types of catalog items")
             .WithTags("Types");
         api.MapGet("/catalogbrands",
             [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
             async (CatalogContext context) => await context.CatalogBrands.OrderBy(x => x.Brand).ToListAsync())
+            .WithName("ListItemBrands")
             .WithSummary("List catalog item brands")
             .WithDescription("Get a list of the brands of catalog items")
             .WithTags("Brands");
 
         // Routes for modifying catalog items.
         api.MapPut("/items", UpdateItem)
+            .WithName("UpdateItem")
             .WithSummary("Create or replace a catalog item")
             .WithDescription("Create or replace a catalog item")
             .WithTags("Items");
         api.MapPost("/items", CreateItem)
+            .WithName("CreateItem")
             .WithSummary("Create a catalog item")
             .WithDescription("Create a new item in the catalog");
         api.MapDelete("/items/{id:int}", DeleteItemById)
+            .WithName("DeleteItem")
             .WithSummary("Delete catalog item")
             .WithDescription("Delete the specified catalog item");
 
