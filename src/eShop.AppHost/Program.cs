@@ -1,5 +1,4 @@
 ﻿using eShop.AppHost;
-using Microsoft.Extensions.Configuration;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -79,40 +78,7 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
 bool useOpenAI = false;
 if (useOpenAI)
 {
-    const string openAIName = "openai";
-    const string textEmbeddingModelName = "text-embedding-3-small";
-    const string chatModelName = "gpt-4o-mini";
-
-    // to use an existing OpenAI resource, add the following to the AppHost user secrets:
-    // "ConnectionStrings": {
-    //   "openai": "Key=<API Key>" (to use https://api.openai.com/)
-    //     -or-
-    //   "openai": "Endpoint=https://<name>.openai.azure.com/" (to use Azure OpenAI)
-    // }
-    IResourceBuilder<IResourceWithConnectionString> openAI;
-    if (builder.Configuration.GetConnectionString(openAIName) is not null)
-    {
-        openAI = builder.AddConnectionString(openAIName);
-    }
-    else
-    {
-        // to use Azure provisioning, add the following to the AppHost user secrets:
-        // "Azure": {
-        //   "SubscriptionId": "<your subscription ID>"
-        //   "Location": "<location>"
-        // }
-        openAI = builder.AddAzureOpenAI(openAIName)
-            .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-4o-mini", "2024-07-18"))
-            .AddDeployment(new AzureOpenAIDeployment(textEmbeddingModelName, "text-embedding-3-small", "1", skuCapacity: 20)); // 20k tokens per minute are needed to seed the initial embeddings
-    }
-
-    catalogApi
-        .WithReference(openAI)
-        .WithEnvironment("AI__OPENAI__EMBEDDINGMODEL", textEmbeddingModelName);
-
-    webApp
-        .WithReference(openAI)
-        .WithEnvironment("AI__OPENAI__CHATMODEL", chatModelName); ;
+    builder.AddOpenAI(catalogApi, webApp);
 }
 
 // Wire up the callback urls (self referencing)
