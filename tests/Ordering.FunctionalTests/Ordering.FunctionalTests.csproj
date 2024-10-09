@@ -6,7 +6,7 @@
     <IsPackable>false</IsPackable>
     <IsAspireHost>true</IsAspireHost>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Http.Client" />
     <PackageReference Include="Aspire.Hosting.AppHost" />
@@ -20,10 +20,10 @@
     </PackageReference>
     <PackageReference Include="xunit" />
   </ItemGroup>
- 
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\Ordering.API\Ordering.API.csproj" IsAspireProjectResource="false" />
-    <ProjectReference Include="..\..\src\Identity.API\Identity.API.csproj" />
+    <ProjectReference Include="..\..\src\Identity.API\Identity.API.csproj" IsAspireProjectResource="true" />
     <ProjectReference Include="..\..\src\Ordering.Domain\Ordering.Domain.csproj" IsAspireProjectResource="false" />
     <ProjectReference Include="..\..\src\Ordering.Infrastructure\Ordering.Infrastructure.csproj" IsAspireProjectResource="false" />
   </ItemGroup>
