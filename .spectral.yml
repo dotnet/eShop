@@ -30,3 +30,11 @@ rules:
             - required: ["400"]
             - required: ["404"]
 
+  parameter-description:
+    description: All parameters should have a description
+    message: Parameter is missing a description.
+    severity: warn
+    given: $.paths.*.*.parameters[*]
+    then:
+      field: description
+      function: truthy
