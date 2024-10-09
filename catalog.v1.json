@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:50845"
+      "url": "http://localhost:52892"
     }
   ],
   "paths": {
@@ -18,6 +18,7 @@
         ],
         "summary": "List catalog items",
         "description": "Get a paginated list of items in the catalog.",
+        "operationId": "ListItems",
         "parameters": [
           {
             "name": "PageSize",
@@ -79,6 +80,7 @@
         ],
         "summary": "Create or replace a catalog item",
         "description": "Create or replace a catalog item",
+        "operationId": "UpdateItem",
         "parameters": [
           {
             "name": "api-version",
@@ -122,6 +124,7 @@
         ],
         "summary": "Create a catalog item",
         "description": "Create a new item in the catalog",
+        "operationId": "CreateItem",
         "parameters": [
           {
             "name": "api-version",
@@ -167,6 +170,7 @@
         ],
         "summary": "Batch get catalog items",
         "description": "Get multiple items from the catalog",
+        "operationId": "BatchGetItems",
         "parameters": [
           {
             "name": "ids",
@@ -225,6 +229,7 @@
         ],
         "summary": "Get catalog item",
         "description": "Get an item from the catalog",
+        "operationId": "GetItem",
         "parameters": [
           {
             "name": "id",
@@ -279,6 +284,7 @@
         ],
         "summary": "Delete catalog item",
         "description": "Delete the specified catalog item",
+        "operationId": "DeleteItem",
         "parameters": [
           {
             "name": "id",
@@ -318,6 +324,7 @@
         ],
         "summary": "Get catalog items by name",
         "description": "Get a paginated list of catalog items with the specified name.",
+        "operationId": "GetItemsByName",
         "parameters": [
           {
             "name": "PageSize",
@@ -391,6 +398,7 @@
         ],
         "summary": "Get catalog item picture",
         "description": "Get the picture for a catalog item",
+        "operationId": "GetItemPicture",
         "parameters": [
           {
             "name": "id",
@@ -492,6 +500,7 @@
         ],
         "summary": "Search catalog for relevant items",
         "description": "Search the catalog for items related to the specified text",
+        "operationId": "GetRelevantItems",
         "parameters": [
           {
             "name": "PageSize",
@@ -565,6 +574,7 @@
         ],
         "summary": "Get catalog items by type and brand",
         "description": "Get catalog items of the specified type and brand",
+        "operationId": "GetItemsByTypeAndBrand",
         "parameters": [
           {
             "name": "PageSize",
@@ -648,6 +658,7 @@
         ],
         "summary": "List catalog items by brand",
         "description": "Get a list of catalog items for the specified brand",
+        "operationId": "GetItemsByBrand",
         "parameters": [
           {
             "name": "PageSize",
@@ -721,6 +732,7 @@
         ],
         "summary": "List catalog item types",
         "description": "Get a list of the types of catalog items",
+        "operationId": "ListItemTypes",
         "parameters": [
           {
             "name": "api-version",
@@ -780,6 +792,7 @@
         ],
         "summary": "List catalog item brands",
         "description": "Get a list of the brands of catalog items",
+        "operationId": "ListItemBrands",
         "parameters": [
           {
             "name": "api-version",
