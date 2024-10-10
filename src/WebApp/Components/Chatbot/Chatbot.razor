@@ -1,7 +1,6 @@
 ﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.SemanticKernel
-@using Microsoft.SemanticKernel.ChatCompletion
+@using Microsoft.Extensions.AI
 @using eShop.WebApp.Chatbot
 @inject IJSRuntime JS
 @inject NavigationManager Nav
@@ -18,11 +17,11 @@
     <div class="chatbot-chat" @ref="chat">
         @if (chatState is not null)
         {
-            foreach (var message in chatState.Messages.Where(m => m.Role == AuthorRole.Assistant || m.Role == AuthorRole.User))
+            foreach (var message in chatState.Messages.Where(m => m.Role == ChatRole.Assistant || m.Role == ChatRole.User))
             {
-                if (!string.IsNullOrEmpty(message.Content))
+                if (!string.IsNullOrEmpty(message.Text))
                 {
-                    <p @key="@message" class="message message-@message.Role">@MessageProcessor.AllowImages(message.Content)</p>
+                    <p @key="@message" class="message message-@message.Role">@MessageProcessor.AllowImages(message.Text)</p>
                 }
             }
         }
@@ -54,11 +53,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var kernel = ServiceProvider.GetService<Kernel>();
-        if (kernel is not null)
+        var client = ServiceProvider.GetService<IChatClient>();
+        if (client is not null)
         {
             AuthenticationState auth = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            chatState = new ChatState(CatalogService, BasketState, auth.User, ProductImages, kernel, LoggerFactory);
+            chatState = new ChatState(CatalogService, BasketState, auth.User, ProductImages, LoggerFactory, client);
         }
         else
         {

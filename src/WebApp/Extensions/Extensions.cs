@@ -6,14 +6,12 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
-using Microsoft.SemanticKernel.TextGeneration;
 using eShop.WebApp.Services.OrderStatus.IntegrationEvents;
 using eShop.Basket.API.Grpc;
+using OpenAI;
 
 public static class Extensions
 {
@@ -100,14 +98,29 @@ public static class Extensions
 
     private static void AddAIServices(this IHostApplicationBuilder builder)
     {
-        var openAIOptions = builder.Configuration.GetSection("AI").Get<AIOptions>()?.OpenAI;
-        var deploymentName = openAIOptions?.ChatModel;
-
-        if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("openai")) && !string.IsNullOrWhiteSpace(deploymentName))
+        string? ollamaEndpoint = builder.Configuration["AI:Ollama:Endpoint"];
+        if (!string.IsNullOrWhiteSpace(ollamaEndpoint))
         {
-            builder.Services.AddKernel();
-            builder.AddAzureOpenAIClient("openai");
-            builder.Services.AddAzureOpenAIChatCompletion(deploymentName);
+            builder.Services.AddChatClient(b => b
+                .UseFunctionInvocation()
+                .UseOpenTelemetry(configure: t => t.EnableSensitiveData = true)
+                .UseLogging()
+                .Use(new OllamaChatClient(
+                    new Uri(ollamaEndpoint),
+                    builder.Configuration["AI:Ollama:ChatModel"] ?? "llama3.1")));
+        }
+        else
+        {
+            var chatModel = builder.Configuration.GetSection("AI").Get<AIOptions>()?.OpenAI?.ChatModel;
+            if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("openai")) && !string.IsNullOrWhiteSpace(chatModel))
+            {
+                builder.AddOpenAIClientFromConfiguration("openai");
+                builder.Services.AddChatClient(b => b
+                    .UseFunctionInvocation()
+                    .UseOpenTelemetry(configure: t => t.EnableSensitiveData = true)
+                    .UseLogging()
+                    .Use(b.Services.GetRequiredService<OpenAIClient>().AsChatClient(chatModel ?? "gpt-4o-mini")));
+            }
         }
     }
 
