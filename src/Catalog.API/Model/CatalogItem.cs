@@ -44,6 +44,11 @@ public class CatalogItem
     /// </summary>
     public bool OnReorder { get; set; }
 
+    public decimal? SalePrice { get; set; }
+    public bool IsOnSale { get; set; }
+    public decimal? DiscountPercentage { get; set; }
+    public string Geography { get; set; }
+
     public CatalogItem() { }
 
 

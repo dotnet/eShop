@@ -15,6 +15,7 @@ public partial class CatalogViewModel : ViewModelBase
 
     private readonly ObservableCollectionEx<CatalogItem> _products = new();
     private readonly ObservableCollectionEx<CatalogTypeSelectionViewModel> _types = new();
+    private readonly ObservableCollectionEx<string> _geographies = new();
 
     [ObservableProperty] private int _badgeCount;
 
@@ -34,6 +35,12 @@ public partial class CatalogViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(ApplyFilterCommand))]
     private CatalogType? _selectedType;
 
+    [ObservableProperty]
+    private bool _showOnlySaleItems;
+
+    [ObservableProperty]
+    private string? _selectedGeography;
+
     public CatalogViewModel(
         IAppEnvironmentService appEnvironmentService,
         INavigationService navigationService)
@@ -44,6 +51,7 @@ public partial class CatalogViewModel : ViewModelBase
         _products = new ObservableCollectionEx<CatalogItem>();
         _brands = new ObservableCollectionEx<CatalogBrandSelectionViewModel>();
         _types = new ObservableCollectionEx<CatalogTypeSelectionViewModel>();
+        _geographies = new ObservableCollectionEx<string>();
 
         WeakReferenceMessenger.Default
             .Register<CatalogViewModel, ProductCountChangedMessage>(
@@ -62,6 +70,8 @@ public partial class CatalogViewModel : ViewModelBase
 
     public IReadOnlyList<CatalogTypeSelectionViewModel> Types => _types;
 
+    public IReadOnlyList<string> Geographies => _geographies;
+
     public override async Task InitializeAsync()
     {
         if (_initialized)
@@ -73,10 +83,11 @@ public partial class CatalogViewModel : ViewModelBase
         await IsBusyFor(
             async () =>
             {
-                // Get Catalog, Brands and Types
+                // Get Catalog, Brands, Types, and Geographies
                 var products = await _appEnvironmentService.CatalogService.GetCatalogAsync();
                 var brands = await _appEnvironmentService.CatalogService.GetCatalogBrandAsync();
                 var types = await _appEnvironmentService.CatalogService.GetCatalogTypeAsync();
+                var geographies = products.Select(p => p.Geography).Distinct().ToList();
                 var basket = await _appEnvironmentService.BasketService.GetBasketAsync();
 
                 BadgeCount = basket.ItemCount;
@@ -84,6 +95,7 @@ public partial class CatalogViewModel : ViewModelBase
                 _products.ReloadData(products);
                 _brands.ReloadData(brands.Select(x => new CatalogBrandSelectionViewModel {Value = x}));
                 _types.ReloadData(types.Select(x => new CatalogTypeSelectionViewModel {Value = x}));
+                _geographies.ReloadData(geographies);
             });
     }
 
@@ -193,6 +205,32 @@ public partial class CatalogViewModel : ViewModelBase
     private async Task ViewBasket()
     {
         await NavigationService.NavigateToAsync("Basket");
+    }
+
+    [RelayCommand]
+    private async Task ToggleSaleItemsAsync()
+    {
+        ShowOnlySaleItems = !ShowOnlySaleItems;
+        await IsBusyFor(
+            async () =>
+            {
+                var products = ShowOnlySaleItems
+                    ? await _appEnvironmentService.CatalogService.GetItemsOnSaleAsync()
+                    : await _appEnvironmentService.CatalogService.GetCatalogAsync();
+                _products.ReloadData(products);
+            });
+    }
+
+    [RelayCommand]
+    private async Task FilterItemsByGeographyAsync(string geography)
+    {
+        SelectedGeography = geography;
+        await IsBusyFor(
+            async () =>
+            {
+                var filteredProducts = await _appEnvironmentService.CatalogService.GetItemsByGeographyAsync(geography);
+                _products.ReloadData(filteredProducts);
+            });
     }
 }
 

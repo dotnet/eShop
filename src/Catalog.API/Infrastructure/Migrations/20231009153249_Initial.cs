@@ -65,7 +65,11 @@ namespace eShop.Catalog.API.Infrastructure.Migrations
                     RestockThreshold = table.Column<int>(type: "integer", nullable: false),
                     MaxStockThreshold = table.Column<int>(type: "integer", nullable: false),
                     Embedding = table.Column<Vector>(type: "vector(384)", nullable: true),
-                    OnReorder = table.Column<bool>(type: "boolean", nullable: false)
+                    OnReorder = table.Column<bool>(type: "boolean", nullable: false),
+                    SalePrice = table.Column<decimal>(type: "numeric", nullable: true),
+                    IsOnSale = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    DiscountPercentage = table.Column<decimal>(type: "numeric", nullable: true),
+                    Geography = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {

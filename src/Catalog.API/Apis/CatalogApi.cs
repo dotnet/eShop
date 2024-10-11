@@ -30,6 +30,11 @@ public static class CatalogApi
         api.MapPost("/items", CreateItem);
         api.MapDelete("/items/{id:int}", DeleteItemById);
 
+        // New routes for sale-related operations
+        api.MapGet("/items/onsale", GetItemsOnSale);
+        api.MapPut("/items/{id:int}/saleprice", UpdateSalePrice);
+        api.MapGet("/items/geography/{geography}", GetItemsByGeography);
+
         return app;
     }
 
@@ -294,6 +299,41 @@ public static class CatalogApi
         services.Context.CatalogItems.Remove(item);
         await services.Context.SaveChangesAsync();
         return TypedResults.NoContent();
+    }
+
+    public static async Task<Ok<List<CatalogItem>>> GetItemsOnSale(
+        [AsParameters] CatalogServices services)
+    {
+        var items = await services.Context.CatalogItems.Where(item => item.IsOnSale).ToListAsync();
+        return TypedResults.Ok(items);
+    }
+
+    public static async Task<Results<NoContent, NotFound>> UpdateSalePrice(
+        [AsParameters] CatalogServices services,
+        int id,
+        decimal salePrice)
+    {
+        var item = await services.Context.CatalogItems.SingleOrDefaultAsync(i => i.Id == id);
+
+        if (item == null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        item.SalePrice = salePrice;
+        item.IsOnSale = true;
+        item.DiscountPercentage = ((item.Price - salePrice) / item.Price) * 100;
+
+        await services.Context.SaveChangesAsync();
+        return TypedResults.NoContent();
+    }
+
+    public static async Task<Ok<List<CatalogItem>>> GetItemsByGeography(
+        [AsParameters] CatalogServices services,
+        string geography)
+    {
+        var items = await services.Context.CatalogItems.Where(item => item.Geography == geography).ToListAsync();
+        return TypedResults.Ok(items);
     }
 
     private static string GetImageMimeTypeFromImageFileExtension(string extension) => extension switch

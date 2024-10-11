@@ -35,7 +35,7 @@
             Padding="16"
             BackgroundColor="White"
             ColumnDefinitions="*,Auto"
-            RowDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto"
+            RowDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
             RowSpacing="8">
             <Image
                 Grid.Row="0"
@@ -82,9 +82,25 @@
                 Grid.Column="0"
                 Text="{Binding CatalogItem.Price, StringFormat='{0:C2}', Mode=OneWay}"
                 VerticalTextAlignment="Center" />
-
+            <Label
+                Grid.Row="5"
+                Grid.Column="0"
+                Text="{Binding CatalogItem.SalePrice, StringFormat='{0:C2}', Mode=OneWay}"
+                VerticalTextAlignment="Center"
+                TextColor="Red" />
+            <Label
+                Grid.Row="6"
+                Grid.Column="0"
+                Text="{Binding CatalogItem.DiscountPercentage, StringFormat='{0}%', Mode=OneWay}"
+                VerticalTextAlignment="Center"
+                TextColor="Green" />
+            <Label
+                Grid.Row="7"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Text="{Binding CatalogItem.Geography, Mode=OneWay}" />
             <Button
-                Grid.Row="4"
+                Grid.Row="8"
                 Grid.Column="1"
                 Margin="8"
                 BackgroundColor="White"

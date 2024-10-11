@@ -45,7 +45,11 @@ public partial class CatalogItemViewModel : ViewModelBase
                     ProductName = CatalogItem.Name,
                     PictureUrl = CatalogItem.PictureUri,
                     UnitPrice = CatalogItem.Price,
-                    Quantity = 1
+                    Quantity = 1,
+                    SalePrice = CatalogItem.SalePrice,
+                    IsOnSale = CatalogItem.IsOnSale,
+                    DiscountPercentage = CatalogItem.DiscountPercentage,
+                    Geography = CatalogItem.Geography
                 });
 
             var basketUpdate = await _appEnvironmentService.BasketService.UpdateBasketAsync(basket);

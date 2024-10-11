@@ -211,6 +211,11 @@
                                     <Label HorizontalOptions="Fill" Text="Loading" />
                                 </BindableLayout.EmptyView>
                             </FlexLayout>
+                            <Label FontAttributes="Bold" Style="{StaticResource MediumSizeFontStyle}">Geographies</Label>
+                            <Picker
+                                ItemsSource="{Binding Geographies, Mode=OneWay}"
+                                SelectedItem="{Binding SelectedGeography, Mode=TwoWay}"
+                                Title="Select Geography" />
                             <HorizontalStackLayout HorizontalOptions="End">
                                 <Button
                                     Command="{Binding ClearFilterCommand}"
@@ -227,6 +232,13 @@
             </mct:Expander.Content>
         </mct:Expander>
 
+        <Button
+            Grid.Row="1"
+            Text="Toggle Sale Items"
+            Command="{Binding ToggleSaleItemsCommand, Mode=OneTime}"
+            HorizontalOptions="Center"
+            VerticalOptions="End"
+            Margin="16" />
 
         <!--  INDICATOR  -->
         <ActivityIndicator

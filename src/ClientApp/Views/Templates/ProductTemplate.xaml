@@ -25,6 +25,24 @@
                 <Setter Property="Margin" Value="0, 6, 0, 12" />
             </Style>
 
+            <Style x:Key="SalePriceStyle" TargetType="{x:Type Label}">
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontFamily" Value="Montserrat-Regular" />
+                <Setter Property="FontSize" Value="{StaticResource MidMediumSize}" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="Margin" Value="0, 6, 0, 12" />
+                <Setter Property="TextColor" Value="Red" />
+            </Style>
+
+            <Style x:Key="DiscountPercentageStyle" TargetType="{x:Type Label}">
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontFamily" Value="Montserrat-Regular" />
+                <Setter Property="FontSize" Value="{StaticResource MidMediumSize}" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="Margin" Value="0, 6, 0, 12" />
+                <Setter Property="TextColor" Value="Green" />
+            </Style>
+
         </ResourceDictionary>
     </ContentView.Resources>
     <ContentView.Content>
@@ -66,6 +84,28 @@
                 MaxLines="1"
                 Style="{StaticResource ProductPriceStyle}"
                 Text="{Binding Price, Mode=OneTime, StringFormat='${0:N2}'}"
+                VerticalTextAlignment="Center" />
+            <!--  SALE PRICE  -->
+            <Label
+                Grid.Row="2"
+                Grid.Column="0"
+                Style="{StaticResource SalePriceStyle}"
+                Text="{Binding SalePrice, Mode=OneTime, StringFormat='${0:N2}'}"
+                VerticalTextAlignment="Center" />
+            <!--  DISCOUNT PERCENTAGE  -->
+            <Label
+                Grid.Row="2"
+                Grid.Column="1"
+                Style="{StaticResource DiscountPercentageStyle}"
+                Text="{Binding DiscountPercentage, Mode=OneTime, StringFormat='{0}%'}"
+                VerticalTextAlignment="Center" />
+            <!--  GEOGRAPHY  -->
+            <Label
+                Grid.Row="3"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Style="{StaticResource ProductNameStyle}"
+                Text="{Binding Geography, Mode=OneTime}"
                 VerticalTextAlignment="Center" />
         </Grid>
     </ContentView.Content>

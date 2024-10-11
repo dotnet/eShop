@@ -12,4 +12,8 @@ public class CatalogItem
     public CatalogBrand CatalogBrand { get; set; }
     public int CatalogTypeId { get; set; }
     public CatalogType CatalogType { get; set; }
+    public decimal? SalePrice { get; set; }
+    public bool IsOnSale { get; set; }
+    public decimal? DiscountPercentage { get; set; }
+    public string Geography { get; set; }
 }
