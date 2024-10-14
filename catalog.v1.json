@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:52892"
+      "url": "http://localhost:60903"
     }
   ],
   "paths": {
@@ -269,9 +269,9 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -938,41 +938,6 @@
           }
         },
         "nullable": true
-      },
-      "HttpValidationProblemDetails": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "nullable": true
-          },
-          "title": {
-            "type": "string",
-            "nullable": true
-          },
-          "status": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "detail": {
-            "type": "string",
-            "nullable": true
-          },
-          "instance": {
-            "type": "string",
-            "nullable": true
-          },
-          "errors": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        }
       },
       "PaginatedItemsOfCatalogItem": {
         "required": [
