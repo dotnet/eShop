@@ -6,7 +6,7 @@
 @implements IDisposable
 
 <a aria-label="cart" href="cart">
-    <img role="presentation" src="icons/cart.svg" />
+    <img role="presentation" src="@Assets["icons/cart.svg"]" />
     @if (basketItems?.Count > 0)
     {
         <span class="cart-badge">@TotalQuantity</span>

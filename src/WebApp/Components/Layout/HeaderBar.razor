@@ -3,14 +3,14 @@
 <div class="eshop-header @(IsCatalog? "home" : "")">
     <div class="eshop-header-hero">
         @{
-            var headerImage = IsCatalog ? "images/header-home.webp" : "images/header.webp";
+            var headerImage = IsCatalog ? Assets["images/header-home.webp"] : Assets["images/header.webp"];
         }
         <img role="presentation" src="@headerImage" />
     </div>
     <div class="eshop-header-container">
         <nav class="eshop-header-navbar">
             <a class="logo logo-header" href="">
-                <img alt="AdventureWorks" src="images/logo-header.svg" class="logo logo-header" />
+                <img alt="AdventureWorks" src="@Assets["images/logo-header.svg"]" class="logo logo-header" />
             </a>
             
             <UserMenu />
