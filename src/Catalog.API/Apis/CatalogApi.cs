@@ -1,11 +1,7 @@
 ﻿using System.ComponentModel;
-using System.Reflection;
-using Grpc.Core;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.VisualBasic;
 using Pgvector.EntityFrameworkCore;
 
 namespace eShop.Catalog.API;
@@ -62,7 +58,7 @@ public static class CatalogApi
             .WithDescription("Get a list of catalog items for the specified brand")
             .WithTags("Brands");
         api.MapGet("/catalogtypes",
-            [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")] 
+            [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
             async (CatalogContext context) => await context.CatalogTypes.OrderBy(x => x.Type).ToListAsync())
             .WithName("ListItemTypes")
             .WithSummary("List catalog item types")
@@ -94,8 +90,6 @@ public static class CatalogApi
         return app;
     }
 
-    static DefaultProblemDetailsFactory problemDetailsFactory = new DefaultProblemDetailsFactory(null);
-
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public static async Task<Ok<PaginatedItems<CatalogItem>>> GetAllItems(
         [AsParameters] PaginationRequest paginationRequest,
@@ -125,13 +119,17 @@ public static class CatalogApi
         return TypedResults.Ok(items);
     }
 
-    public static async Task<Results<Ok<CatalogItem>, NotFound, ValidationProblem>> GetItemById(
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    public static async Task<Results<Ok<CatalogItem>, NotFound, BadRequest<ProblemDetails>>> GetItemById(
+        HttpContext httpContext,
         [AsParameters] CatalogServices services,
         [Description("The catalog item id")] int id)
     {
         if (id <= 0)
         {
-            return TypedResults.ValidationProblem(null, "Id is not valid");
+            return TypedResults.BadRequest<ProblemDetails>(new (){
+                Detail = "Id is not valid"
+            });
         }
 
         var item = await services.Context.CatalogItems.Include(ci => ci.CatalogBrand).SingleOrDefaultAsync(ci => ci.Id == id);
@@ -166,7 +164,7 @@ public static class CatalogApi
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
-    [ProducesResponseType<byte[]>(StatusCodes.Status200OK, "application/octet-stream", 
+    [ProducesResponseType<byte[]>(StatusCodes.Status200OK, "application/octet-stream",
         [ "image/png", "image/gif", "image/jpeg", "image/bmp", "image/tiff",
           "image/wmf", "image/jp2", "image/svg+xml", "image/webp" ])]
     public static async Task<Results<PhysicalFileHttpResult,NotFound>> GetItemPictureById(
@@ -302,9 +300,9 @@ public static class CatalogApi
 
         if (catalogItem == null)
         {
-            var problemDetails = problemDetailsFactory.CreateProblemDetails(httpContext,
-                detail: $"Item with id {productToUpdate.Id} not found.", statusCode: 404);
-            return TypedResults.NotFound(problemDetails);
+            return TypedResults.NotFound<ProblemDetails>(new (){
+                Detail = $"Item with id {productToUpdate.Id} not found."
+            });
         }
 
         // Update current product
