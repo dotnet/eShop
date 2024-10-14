@@ -124,4 +124,17 @@ public static class Extensions
         var user = authState.User;
         return user.FindFirst("name")?.Value;
     }
+
+    public static WebApplication AddInteractivityDelay(this WebApplication app)
+    {
+        app.Use(async (context, next) =>
+        {
+            if (context.Request.Path.StartsWithSegments("/_blazor"))
+            {
+                await Task.Delay(1000);
+            }
+            await next();
+        });
+        return app;
+    }
 }
