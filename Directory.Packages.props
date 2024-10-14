@@ -5,7 +5,7 @@
     <AspnetVersion>9.0.0-rc.2.24474.3</AspnetVersion>
     <MicrosoftExtensionsVersion>9.0.0-rc.2.24473.5</MicrosoftExtensionsVersion>
     <EfVersion>9.0.0-rc.1.24451.1</EfVersion>
-    <AspireVersion>9.0.0-rc.1.24509.13</AspireVersion>
+    <AspireVersion>9.0.0-rc.1.24511.1</AspireVersion>
     <AspireUnstablePackagesVersion>9.0.0-preview.4.24509.13</AspireUnstablePackagesVersion>
     <GrpcVersion>2.66.0</GrpcVersion>
     <DuendeVersion>7.0.6</DuendeVersion>
