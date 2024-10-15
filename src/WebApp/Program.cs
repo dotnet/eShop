@@ -12,7 +12,7 @@ builder.AddApplicationServices();
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
-app.AddInteractivityDelay();
+//app.AddInteractivityDelay();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
