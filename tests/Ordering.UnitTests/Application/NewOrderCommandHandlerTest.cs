@@ -1,4 +1,5 @@
-﻿using eShop.Ordering.API.Application.IntegrationEvents;
+﻿using eShop.Ordering.API.Application.Commands.CreateOrder;
+using eShop.Ordering.API.Application.IntegrationEvents;
 using eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
 
 namespace eShop.Ordering.UnitTests.Application;

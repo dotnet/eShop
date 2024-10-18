@@ -1,4 +1,6 @@
-﻿namespace eShop.Ordering.API.Application.Commands;
+﻿using eShop.Ordering.API.Application.Commands.Identified;
+
+namespace eShop.Ordering.API.Application.Commands.SetStockConfirmedOrderStatus;
 
 // Regular CommandHandler
 public class SetStockConfirmedOrderStatusCommandHandler : IRequestHandler<SetStockConfirmedOrderStatusCommand, bool>
