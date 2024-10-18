@@ -38,8 +38,10 @@ internal static class Extensions
         IResourceBuilder<ProjectResource> webApp)
     {
         const string openAIName = "openai";
-        const string textEmbeddingModelName = "text-embedding-3-small";
-        const string chatModelName = "gpt-4o-mini";
+        const string textEmbeddingAzureDeployName = "text-embedding-3-small"; // unique identifier for specific deployment within Azure OpenAI resource
+        const string textEmbeddingModelName = textEmbeddingAzureDeployName; // actual OpenAI model used in deployment
+        const string chatModelAzureDeployName = "gpt-4o-mini";
+        const string chatModelName = chatModelAzureDeployName;
 
         // to use an existing OpenAI resource, add the following to the AppHost user secrets:
         // "ConnectionStrings": {
@@ -61,8 +63,8 @@ internal static class Extensions
             //   "Location": "<location>"
             // }
             openAI = builder.AddAzureOpenAI(openAIName)
-                .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-4o-mini", "2024-07-18"))
-                .AddDeployment(new AzureOpenAIDeployment(textEmbeddingModelName, "text-embedding-3-small", "1", skuCapacity: 20)); // 20k tokens per minute are needed to seed the initial embeddings
+                .AddDeployment(new AzureOpenAIDeployment(chatModelAzureDeployName, chatModelName, "2024-07-18"))
+                .AddDeployment(new AzureOpenAIDeployment(textEmbeddingAzureDeployName, textEmbeddingModelName, "1", skuCapacity: 20)); // 20k tokens per minute are needed to seed the initial embeddings
         }
 
         catalogApi
