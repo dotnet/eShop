@@ -64,6 +64,7 @@ public static partial class Extensions
                     options.ApplyAuthorizationChecks([.. scopes.Keys]);
                     options.ApplySecuritySchemeDefinitions();
                     options.ApplyOperationDeprecatedStatus();
+                    options.ApplyApiVersionDescription();
                 });
             }
         }

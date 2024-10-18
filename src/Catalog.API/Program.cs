@@ -14,6 +14,8 @@ var app = builder.Build();
 
 app.MapDefaultEndpoints();
 
+app.UseStatusCodePages();
+
 app.NewVersionedApi("Catalog")
    .MapCatalogApiV1();
 

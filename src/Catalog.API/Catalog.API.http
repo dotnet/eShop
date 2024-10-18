@@ -1,6 +1,10 @@
 ﻿@Catalog.API_HostAddress = http://localhost:5222
 @ApiVersion = 1.0
 
+GET {{Catalog.API_HostAddress}}/openapi/v1.json
+
+###
+
 GET {{Catalog.API_HostAddress}}/api/catalog/items?api-version={{ApiVersion}}
 
 ###
@@ -8,3 +12,28 @@ GET {{Catalog.API_HostAddress}}/api/catalog/items?api-version={{ApiVersion}}
 GET {{Catalog.API_HostAddress}}/api/catalog/items/type/1/brand/2?api-version={{ApiVersion}}
 
 ###
+
+# A request with an unknown API version returns a 400 ProblemDetails response
+
+GET {{Catalog.API_HostAddress}}/api/catalog/items/463/pic?api-version=99
+
+###
+
+# A request with an unknown item id returns a 404 NotFound with empty response body
+
+GET {{Catalog.API_HostAddress}}/api/catalog/items/463/pic?api-version={{ApiVersion}}
+
+###
+
+PUT {{Catalog.API_HostAddress}}/api/catalog/items?api-version={{ApiVersion}}
+content-type: application/json
+
+{
+  "id": 999,
+  "name": "Item1",
+  "price": 100,
+  "description": "Description1",
+  "pictureFileName": "item1.png",
+  "catalogTypeId": 1,
+  "catalogBrandId": 2
+}
