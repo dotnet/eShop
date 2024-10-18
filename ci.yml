@@ -38,5 +38,8 @@ extends:
             workspace:
               clean: all
             steps:
+              - task: UseDotNet@2
+                inputs:
+                  useGlobalJson: true
               - script: dotnet build eShop.Web.slnf
                 displayName: Build Step
