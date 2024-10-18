@@ -1,0 +1,45 @@
+# Configure which branches trigger builds
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+
+variables:
+  - name: TeamName
+    value: dotnet-aspire
+
+resources:
+  repositories:
+    # Repo: 1ESPipelineTemplates/1ESPipelineTemplates
+    - repository: 1esPipelines
+      type: git
+      name: 1ESPipelineTemplates/1ESPipelineTemplates
+      ref: refs/tags/release
+extends:
+  template: v1/1ES.Official.PipelineTemplate.yml@1esPipelines
+  parameters:
+    sdl:
+      policheck:
+        enabled: true
+      tsa:
+        enabled: true
+    pool:
+      name: NetCore1ESPool-Svc-Internal
+      image: windows.vs2019.amd64
+      os: windows
+    stages:
+      - stage: buildStage
+        displayName: Build Stage
+        jobs:
+          - job: Build
+            displayName: Windows Build
+            timeoutInMinutes: 90
+            workspace:
+              clean: all
+            steps:
+              - task: UseDotNet@2
+                inputs:
+                  useGlobalJson: true
+              - script: dotnet build eShop.Web.slnf
+                displayName: Build Step
