@@ -17,7 +17,7 @@
             Grid.Row="0"
             ItemsSource="{Binding BasketItems}"
             SelectionChangedCommand="{Binding AddCommand}"
-            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}">
+            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}, x:DataType=CollectionView}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <templates:BasketItemTemplate />
