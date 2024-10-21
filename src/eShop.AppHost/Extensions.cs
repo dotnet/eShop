@@ -64,7 +64,7 @@ internal static class Extensions
             // }
             openAI = builder.AddAzureOpenAI(openAIName)
                 .AddDeployment(new AzureOpenAIDeployment(chatModelAzureDeploymentName, chatModelName, "2024-07-18"))
-                .AddDeployment(new AzureOpenAIDeployment(textEmbeddingAzureDeployName, textEmbeddingModelName, "1", skuCapacity: 20)); // 20k tokens per minute are needed to seed the initial embeddings
+                .AddDeployment(new AzureOpenAIDeployment(textEmbeddingAzureDeploymentName, textEmbeddingModelName, "1", skuCapacity: 20)); // 20k tokens per minute are needed to seed the initial embeddings
         }
 
         catalogApi
