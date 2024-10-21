@@ -23,10 +23,6 @@ jobs:
     - uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
-    - name: Install Aspire
-      run: |
-        dotnet workload update
-        dotnet workload install aspire
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
