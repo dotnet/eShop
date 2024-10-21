@@ -35,13 +35,7 @@ Or
 - From Dev Home go to `Machine Configuration -> Clone repositories`. Enter the URL for this repository. In the confirmation screen look for the section `Configuration File Detected` and click `Run File`.
 
 #### Mac, Linux, & Windows without Visual Studio
-- Install the latest [.NET 9 RC 1 SDK](https://dot.net/download?cid=eshop)
-- Install the [.NET Aspire workload](https://learn.microsoft.com/dotnet/aspire/fundamentals/setup-tooling?tabs=dotnet-cli%2Cunix#install-net-aspire) with the following commands:
-```powershell
-dotnet workload update
-dotnet workload install aspire
-dotnet restore eShop.Web.slnf
-```
+- Install the latest [.NET 9 RC 2 SDK](https://dot.net/download?cid=eshop)
 
 Or
 
