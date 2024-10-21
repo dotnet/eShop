@@ -38,10 +38,10 @@ internal static class Extensions
         IResourceBuilder<ProjectResource> webApp)
     {
         const string openAIName = "openai";
-        const string textEmbeddingAzureDeploymentName = "text-embedding-3-small"; // unique identifier for specific deployment within Azure OpenAI resource
-        const string textEmbeddingModelName = textEmbeddingAzureDeployName; // actual OpenAI model used in deployment
-        const string chatModelAzureDeploymentName = "gpt-4o-mini";
-        const string chatModelName = chatModelAzureDeployName;
+        const string textEmbeddingModelName = "text-embedding-3-small"; // name of actual OpenAI model used in deployment 
+        const string textEmbeddingAzureDeploymentName = textEmbeddingModelName; // unique identifier for specific deployment within Azure OpenAI resource
+        const string chatModelName = "gpt-4o-mini";
+        const string chatModelAzureDeploymentName = chatModelName;
 
         // to use an existing OpenAI resource, add the following to the AppHost user secrets:
         // "ConnectionStrings": {
