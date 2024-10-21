@@ -60,7 +60,7 @@
             x:Name="HeaderImage"
             Grid.RowSpan="2"
             Margin="0,60,0,0"
-            Aspect="AspectFit"
+            Aspect="AspectFill"
             Source="header_home.png"
             VerticalOptions="Start" />
 
