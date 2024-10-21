@@ -8,6 +8,8 @@
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Temporarily disable security warnings for transitive packages. -->
+    <NoWarn>NU1901;NU1902;NU1903;NU1904</NoWarn>
   </PropertyGroup>
 
 </Project>

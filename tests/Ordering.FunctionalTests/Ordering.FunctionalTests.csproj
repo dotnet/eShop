@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0-rc.1.24511.1" />
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <IsPublishable>false</IsPublishable>
     <IsPackable>false</IsPackable>
     <IsAspireHost>true</IsAspireHost>

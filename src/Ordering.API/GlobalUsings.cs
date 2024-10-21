@@ -1,6 +1,5 @@
 ﻿global using Asp.Versioning.Conventions;
 global using System.Runtime.Serialization;
-global using Dapper;
 global using FluentValidation;
 global using MediatR;
 global using Microsoft.AspNetCore.Mvc;
@@ -29,4 +28,3 @@ global using eShop.Ordering.Infrastructure;
 global using eShop.Ordering.Infrastructure.Idempotency;
 global using eShop.Ordering.Infrastructure.Repositories;
 global using eShop.ServiceDefaults;
-global using Swashbuckle.AspNetCore.SwaggerGen;
