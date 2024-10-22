@@ -1,3 +1,4 @@
+#nullable enable
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -17,7 +18,7 @@ public class RequestProvider(HttpMessageHandler _messageHandler) : IRequestProvi
             },
             LazyThreadSafetyMode.ExecutionAndPublication);
 
-    public async Task<TResult> GetAsync<TResult>(string uri, string token = "") where TResult : class
+    public async Task<TResult?> GetAsync<TResult>(string uri, string token = "")
     {
         var httpClient = GetOrCreateHttpClient(token);
         using var response = await httpClient.GetAsync(uri).ConfigureAwait(false);
@@ -29,8 +30,7 @@ public class RequestProvider(HttpMessageHandler _messageHandler) : IRequestProvi
         return result;
     }
 
-    public async Task<TResult> PostAsync<TRequest, TResult>(string uri, TRequest data, string token = "", string header = "")
-        where TResult : class
+    public async Task<TResult?> PostAsync<TRequest, TResult>(string uri, TRequest data, string token = "", string header = "")
     {
         var httpClient = GetOrCreateHttpClient(token);
 
@@ -38,8 +38,8 @@ public class RequestProvider(HttpMessageHandler _messageHandler) : IRequestProvi
         {
             AddHeaderParameter(httpClient, header);
         }
-        
-        var requestContent = JsonContent.Create(data, EShopJsonSerializerContext.Default.GetTypeInfo(typeof(TRequest)));
+
+        var requestContent = SerializeToJson(data);
         using HttpResponseMessage response = await httpClient.PostAsync(uri, requestContent).ConfigureAwait(false);
 
         await HandleResponse(response).ConfigureAwait(false);
@@ -49,7 +49,6 @@ public class RequestProvider(HttpMessageHandler _messageHandler) : IRequestProvi
     }
 
     public async Task<bool> PostAsync<TRequest>(string uri, TRequest data, string token = "", string header = "")
-        where TRequest : class
     {
         var httpClient = GetOrCreateHttpClient(token);
 
@@ -58,7 +57,7 @@ public class RequestProvider(HttpMessageHandler _messageHandler) : IRequestProvi
             AddHeaderParameter(httpClient, header);
         }
 
-        var requestContent = JsonContent.Create(data, EShopJsonSerializerContext.Default.GetTypeInfo(typeof(TRequest)));
+        var requestContent = SerializeToJson(data);
         using var response = await httpClient.PostAsync(uri, requestContent).ConfigureAwait(false);
 
         await HandleResponse(response).ConfigureAwait(false);
@@ -66,8 +65,8 @@ public class RequestProvider(HttpMessageHandler _messageHandler) : IRequestProvi
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<TResult> PostAsync<TResult>(string uri, string data, string clientId, string clientSecret)
-        where TResult : class
+    public async Task<TResult?> PostAsync<TResult>(string uri, string data, string clientId, string clientSecret)
+       
     {
         var httpClient = GetOrCreateHttpClient(string.Empty);
 
@@ -86,8 +85,7 @@ public class RequestProvider(HttpMessageHandler _messageHandler) : IRequestProvi
         return result;
     }
 
-    public async Task<TResult> PutAsync<TResult>(string uri, TResult data, string token = "", string header = "")
-        where TResult : class
+    public async Task<TResult?> PutAsync<TResult>(string uri, TResult data, string token = "", string header = "")
     {
         var httpClient = GetOrCreateHttpClient(token);
 
@@ -96,7 +94,7 @@ public class RequestProvider(HttpMessageHandler _messageHandler) : IRequestProvi
             AddHeaderParameter(httpClient, header);
         }
 
-        var requestContent = JsonContent.Create(data, EShopJsonSerializerContext.Default.GetTypeInfo(typeof(TResult)));
+        var requestContent = SerializeToJson(data);
         using HttpResponseMessage response = await httpClient.PutAsync(uri, requestContent).ConfigureAwait(false);
 
         await HandleResponse(response).ConfigureAwait(false);
@@ -168,9 +166,16 @@ public class RequestProvider(HttpMessageHandler _messageHandler) : IRequestProvi
         }
     }
 
-    private static async Task<T> ReadFromJsonAsync<T>(HttpContent content) where T : class
+    private static async Task<T?> ReadFromJsonAsync<T>(HttpContent content)
     {
         using var contentStream = await content.ReadAsStreamAsync().ConfigureAwait(false);
-        return await JsonSerializer.DeserializeAsync(contentStream, typeof(T), EShopJsonSerializerContext.Default).ConfigureAwait(false) as T;
+        var data = await JsonSerializer.DeserializeAsync(contentStream, typeof(T), EShopJsonSerializerContext.Default).ConfigureAwait(false);
+        return (T?)data;
+    }
+
+    private static JsonContent SerializeToJson<T>(T data)
+    {
+        var typeInfo = EShopJsonSerializerContext.Default.GetTypeInfo(typeof(T)) ?? throw new InvalidOperationException($"Missing type info for {typeof(T)}");
+        return JsonContent.Create(data, typeInfo);
     }
 }
