@@ -1,5 +1,4 @@
 ﻿using Asp.Versioning;
-using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -26,7 +25,11 @@ public static partial class Extensions
 
         if (app.Environment.IsDevelopment())
         {
-            app.MapScalarApiReference();
+            app.MapScalarApiReference(options =>
+            {
+                // Disable default fonts to avoid download unnecessary fonts
+                options.DefaultFonts = false;
+            });
             app.MapGet("/", () => Results.Redirect("/scalar/v1")).ExcludeFromDescription();
         }
 
@@ -64,6 +67,13 @@ public static partial class Extensions
                     options.ApplyAuthorizationChecks([.. scopes.Keys]);
                     options.ApplySecuritySchemeDefinitions();
                     options.ApplyOperationDeprecatedStatus();
+                    // Clear out the default servers so we can fallback to
+                    // whatever ports have been allocated for the service by Aspire
+                    options.AddDocumentTransformer((document, context, cancellationToken) =>
+                    {
+                        document.Servers = [];
+                        return Task.CompletedTask;
+                    });
                 });
             }
         }
