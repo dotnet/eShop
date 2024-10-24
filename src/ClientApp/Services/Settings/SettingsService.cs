@@ -35,7 +35,7 @@ public class SettingsService : ISettingsService
     public async Task SetUserTokenAsync(UserToken userToken)
     {
         await SecureStorage
-            .SetAsync(UserAccessToken, userToken is not null ? JsonSerializer.Serialize(userToken) : string.Empty)
+            .SetAsync(UserAccessToken, userToken is not null ? JsonSerializer.Serialize(userToken, EShopJsonSerializerContext.Default.UserToken) : string.Empty)
             .ConfigureAwait(false);
     }
 
@@ -43,7 +43,7 @@ public class SettingsService : ISettingsService
     {
         var userToken = await SecureStorage.GetAsync(UserAccessToken).ConfigureAwait(false);
 
-        return string.IsNullOrEmpty(userToken) ? default : JsonSerializer.Deserialize<UserToken>(userToken);
+        return string.IsNullOrEmpty(userToken) ? default : JsonSerializer.Deserialize(userToken, EShopJsonSerializerContext.Default.UserToken);
     }
 
     public bool UseMocks

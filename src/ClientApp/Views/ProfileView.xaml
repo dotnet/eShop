@@ -40,7 +40,7 @@
             ItemsSource="{Binding Orders}"
             SelectedItem="{Binding SelectedOrder, Mode=TwoWay}"
             SelectionChangedCommand="{Binding OrderDetailCommand}"
-            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}"
+            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}, x:DataType=CollectionView}"
             SelectionMode="Single">
             <CollectionView.ItemTemplate>
                 <DataTemplate>

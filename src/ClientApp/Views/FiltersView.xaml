@@ -28,14 +28,14 @@
                 <Picker
                     Title="BRAND"
                     ios:Picker.UpdateMode="WhenFinished"
-                    ItemDisplayBinding="{Binding Brand}"
+                    ItemDisplayBinding="{Binding Value.Brand, x:DataType=viewmodels:CatalogBrandSelectionViewModel}"
                     ItemsSource="{Binding Brands}"
                     SelectedItem="{Binding SelectedBrand, Mode=TwoWay}" />
                 <!--  TYPE  -->
                 <Picker
                     Title="TYPE"
                     ios:Picker.UpdateMode="WhenFinished"
-                    ItemDisplayBinding="{Binding Type}"
+                    ItemDisplayBinding="{Binding Value.Type, x:DataType=viewmodels:CatalogTypeSelectionViewModel}"
                     ItemsSource="{Binding Types}"
                     SelectedItem="{Binding SelectedType, Mode=TwoWay}" />
                 <Button Command="{Binding FilterCommand}" Text="Apply">

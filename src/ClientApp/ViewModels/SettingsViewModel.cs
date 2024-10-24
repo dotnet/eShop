@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Input;
 using eShop.ClientApp.Services;
@@ -78,7 +78,7 @@ public class SettingsViewModel : ViewModelBase
         UseAzureServices = !_settingsService.UseMocks;
     }
 
-    public static string TitleUseAzureServices => "Use Microservices/Containers from eShop";
+    public string TitleUseAzureServices => "Use Microservices/Containers from eShop";
 
     public string DescriptionUseAzureServices => !UseAzureServices
         ? "Currently using mock services that are simulated objects that mimic the behavior of real services using a controlled approach. Toggle on to configure the use of microserivces/containers."
