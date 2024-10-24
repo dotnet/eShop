@@ -27,8 +27,6 @@ public static partial class Extensions
         {
             app.MapScalarApiReference(options =>
             {
-                // Empty CDN url to support loading JavaScript assets from NuGet package
-                options.CdnUrl = string.Empty;
                 // Disable default fonts to avoid download unnecessary fonts
                 options.DefaultFonts = false;
             });
