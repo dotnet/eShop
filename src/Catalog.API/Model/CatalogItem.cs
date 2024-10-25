@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Catalog.API.Model;
+
 using Pgvector;
 
 namespace eShop.Catalog.API.Model;
@@ -8,22 +10,118 @@ public class CatalogItem
 {
     public int Id { get; set; }
 
-    [Required]
+
     public string Name { get; set; }
+
+    [JsonPropertyName("productNameEn")]
+    [MaxLength(250)]
+    public string OriginName { get; set; }
+
+    [MaxLength(200)]
+    public string NameEN { get; set; }
+
+    [MaxLength(200)]
+    public string NameDE { get; set; }
+
+    [JsonPropertyName("description")]
+
+    [MaxLength(5000)]
 
     public string Description { get; set; }
 
+    [MaxLength(5000)]
+    public string DescriptionDE { get; set; }
+
+    [MaxLength(5000)]
+    public string DescriptionEN { get; set; }
+
+
+
+    [JsonPropertyName("productWeight")]
+    public string ProductWeight { get; set; }
+
+    [JsonPropertyName("productType")]
+    public string ProducctType { get; set; }
+
+
+
+    [JsonPropertyName("categoryId")]
+    public string CategoryId { get; set; }
+
+    [MaxLength(200)]
+    [JsonPropertyName("categoryName")]
+    public string CategoryNameEN { get; set; }
+
+    [MaxLength(200)]
+    public string CategoryNameDE { get; set; }
+
+
+    [JsonPropertyName("productSku")]
+    public string ProductSKU { get; set; }
+
+
+    [JsonPropertyName("productKeyEn")]
+    public string ProductKeyEN { get; set; }
+
+    public string ProductKenDE { get; set; }
+
+
+
     public decimal Price { get; set; }
+
+    [JsonPropertyName("sellPrice")]
+
+    public string OriginPrice { get; set; }
+
+
+    [JsonPropertyName("suggestSellPrice")]
+    public string SuggestSellPrice { get; set; }
+
+    public int PriceAligmentAlgorithm()
+    {
+        return 0;
+    }
+
+
+    [JsonPropertyName("ListedNum")]
+    public int ListedNum { get; set; }
 
     public string PictureFileName { get; set; }
 
+
+    [JsonPropertyName("productImageSet")]
+    public ICollection<OriginalImages> OriginalImages { get; } = new List<OriginalImages>();
+
+    public ICollection<EnchancedImages> EnhancedImages { get; } = new List<EnchancedImages>();
+
+    public List<CatalogFeature> CatalogFeatures { get; set; } 
+
+    public List<CatalogKit> CatalogKits { get; set; }
+
+    public ICollection<CatalogItemVariant> CatalogItemVariants { get; } = new List<CatalogItemVariant>();
+
+
+    [JsonPropertyName("packingWeight")]
+    public string PackingWeight { get; set; }
+
+
+    [JsonPropertyName("packingNameEn")]
+    public string PackingNameEN { get; set; }
+
+    public string PackingNameDE { get; set; }
+
+
+    public string PackingNameSetEN { get; set; }
+
+    public string PackingNameSetDE { get; set; }
+
     public int CatalogTypeId { get; set; }
 
-    public CatalogType CatalogType { get; set; }
+    //public CatalogType CatalogType { get; set; }
 
     public int CatalogBrandId { get; set; }
 
-    public CatalogBrand CatalogBrand { get; set; }
+    //public CatalogBrand CatalogBrand { get; set; }
 
     // Quantity in stock
     public int AvailableStock { get; set; }
