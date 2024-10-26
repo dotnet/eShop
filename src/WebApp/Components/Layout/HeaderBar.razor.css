@@ -4,13 +4,83 @@
     margin: auto;
 }
 
-.eshop-header.home .eshop-header-container {
-    height: 38rem;
-    margin-bottom: 0;
+    .eshop-header.home .eshop-header-container {
+        margin-bottom: 2rem;
+    }
+
+/*.dark .secondary-nav-container {
+    background-color: rgba(0,0,0, 0.2);
+}*/
+
+.secondary-nav-container {
+    width: 100%;
+    position: relative;
 }
 
+    .secondary-nav-container::before {
+        background-color: var(--neutral-layer-4);
+        content: "";
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0.3;
+        position: absolute;
+    }
+
+.secondary-nav {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    color: var(--neutral-foreground-hint);
+    margin-bottom: 2.4rem;
+    justify-content: space-between;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.secondary-nav-item {
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    position: relative;
+    flex: 1 0 auto;
+    justify-content: center;
+}
+
+
+    .secondary-nav-item::after {
+        display: block;
+        position: absolute;
+        content: "";
+        height: 1rem;
+        width: 1px;
+        background: var(--neutral-foreground-hint);
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+
+    .secondary-nav-item:first-child {
+        padding-left: 0;
+        justify-content: flex-start;
+    }
+
+    .secondary-nav-item:last-child {
+        padding-right: 0;
+        justify-content: flex-end;
+    }
+
+
+        .secondary-nav-item:last-child::after {
+            display: none;
+        }
+
+
+
 .eshop-header .eshop-header-container {
-    height: 15rem;
     margin-bottom: 4rem;
 }
 
@@ -28,60 +98,60 @@
     margin: 0 10rem;
 }
 
-.eshop-header-intro {
-    position: absolute;
-    max-width: 48rem;
-    bottom: 3rem;
-    white-space: nowrap;
-}
-
-.eshop-header-intro h1 {
-    color: #000;
-    font-size: 3.5rem;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 100%;
-    margin: 0;
-}
-
-.eshop-header-intro p {
-    color: #000;
-    font-size: 2rem;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 125%;
-    margin: 0;
-}
-
-.eshop-header .logo-header {
-    color: black;
-    margin-right: auto;
-    width: 20vw;
+.eshop-header-navbar {
     height: auto;
-    max-width: 250px;
-    min-width: 100px;
 }
+
+.eshop-header-intro {
+    display: none;
+}
+
+    .eshop-header-intro h1 {
+        color: #000;
+        font-size: 3.5rem;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 100%;
+        margin: 0;
+    }
+
+    .eshop-header-intro p {
+        color: #000;
+        font-size: 2rem;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 125%;
+        margin: 0;
+    }
+
 
 .eshop-header-navbar {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
-    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
     gap: 1.5rem;
 }
 
-@media only screen and (max-width: 480px) { 
+.eshop-header-nav {
+    text-decoration: none;
+    color: var(--neutral-foreground-rest);
+    /*color: #2a446b;*/
+}
+
+@media only screen and (max-width: 480px) {
     .eshop-header-hero {
         height: 18rem;
     }
 
-    .eshop-header-hero img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-    }
+        .eshop-header-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
 
     .eshop-header .eshop-header-container {
         height: 15rem;
@@ -98,20 +168,20 @@
     }
 
     .eshop-header-intro {
-        white-space: wrap;
+        white-space: nowrap;
         bottom: 0;
     }
 
-    .eshop-header-intro h1 {
-        font-size: 2rem;
-    }
-    
-    .eshop-header-intro p {
-        font-size: 1.5rem;
-    }
+        .eshop-header-intro h1 {
+            font-size: 2rem;
+        }
+
+        .eshop-header-intro p {
+            font-size: 1.5rem;
+        }
 }
 
-@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+@media only screen and (min-width: 481px) and (max-width: 1024px) {
     .eshop-header.home .eshop-header-hero {
         height: 24rem;
     }
@@ -138,14 +208,14 @@
     }
 
     .eshop-header-intro {
-        white-space: wrap;
+        white-space: nowrap;
     }
 
-    .eshop-header-intro h1 {
-        font-size: 2rem;
-    }
-    
-    .eshop-header-intro p {
-        font-size: 1.5rem;
-    }
+        .eshop-header-intro h1 {
+            font-size: 2rem;
+        }
+
+        .eshop-header-intro p {
+            font-size: 1.5rem;
+        }
 }

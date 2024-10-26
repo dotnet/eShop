@@ -1,15 +1,14 @@
-﻿@using Microsoft.FluentUI.AspNetCore.Components
+﻿﻿@using Microsoft.FluentUI.AspNetCore.Components
+@using Microsoft.FluentUI.AspNetCore.Components.DesignTokens
 @using eShop.WebApp.Components.Chatbot
-
+@using System.Diagnostics
 
 
 @inherits LayoutComponentBase
 
-<HeaderBar />
+
 @Body
 
-<ShowChatbotButton />
-<FooterBar />
 
 
 <FluentToastProvider />
@@ -18,11 +17,11 @@
 <FluentMessageBarProvider />
 <FluentMenuProvider />
 
-<div id="blazor-error-ui">
+@* <div id="blazor-error-ui">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
-</div>
+</div> *@
 
 @code {
 

@@ -1,246 +1,328 @@
-/* plus-jakarta-sans-200 - latin */
-@font-face {
+/* plus-jakarta-sans-200 - latin 
+*/ /*@font-face {
     font-display: swap;
     font-family: 'Plus Jakarta Sans';
     font-style: normal;
     font-weight: 200;
     src: url('../fonts/plus-jakarta-sans-v8-latin-200.woff2') format('woff2');
-}
+}*/
 
 /* plus-jakarta-sans-200italic - latin */
-@font-face {
+/*@font-face {
     font-display: swap; 
     font-family: 'Plus Jakarta Sans';
     font-style: italic;
     font-weight: 200;
     src: url('../fonts/plus-jakarta-sans-v8-latin-200italic.woff2') format('woff2');
-}
+}*/
 
 /* plus-jakarta-sans-300 - latin */
-@font-face {
+/*@font-face {
     font-display: swap; 
     font-family: 'Plus Jakarta Sans';
     font-style: normal;
     font-weight: 300;
     src: url('../fonts/plus-jakarta-sans-v8-latin-300.woff2') format('woff2');
-}
+}*/
 
 /* plus-jakarta-sans-300italic - latin */
-@font-face {
+/*@font-face {
     font-display: swap; 
     font-family: 'Plus Jakarta Sans';
     font-style: italic;
     font-weight: 300;
     src: url('../fonts/plus-jakarta-sans-v8-latin-300italic.woff2') format('woff2'); 
-}
+}*/
 
 /* plus-jakarta-sans-regular - latin */
-@font-face {
+/*@font-face {
     font-display: swap; 
     font-family: 'Plus Jakarta Sans';
     font-style: normal;
     font-weight: 400;
     src: url('../fonts/plus-jakarta-sans-v8-latin-regular.woff2') format('woff2'); 
-}
-  
-/* plus-jakarta-sans-italic - latin */
-@font-face {
+}*/
+/*  
+ plus-jakarta-sans-italic - latin */
+/*@font-face {
     font-display: swap; 
     font-family: 'Plus Jakarta Sans';
     font-style: italic;
     font-weight: 400;
     src: url('../fonts/plus-jakarta-sans-v8-latin-italic.woff2') format('woff2'); 
-}
+}*/
 
 /* plus-jakarta-sans-500 - latin */
-@font-face {
+/*@font-face {
     font-display: swap; 
     font-family: 'Plus Jakarta Sans';
     font-style: normal;
     font-weight: 500;
     src: url('../fonts/plus-jakarta-sans-v8-latin-500.woff2') format('woff2'); 
-}
+}*/
 
 /* plus-jakarta-sans-500italic - latin */
-@font-face {
+/*@font-face {
     font-display: swap; 
     font-family: 'Plus Jakarta Sans';
     font-style: italic;
     font-weight: 500;
     src: url('../fonts/plus-jakarta-sans-v8-latin-500italic.woff2') format('woff2'); 
-}
+}*/
 
 /* plus-jakarta-sans-600 - latin */
-@font-face {
+/*@font-face {
     font-display: swap; 
     font-family: 'Plus Jakarta Sans';
     font-style: normal;
     font-weight: 600;
     src: url('../fonts/plus-jakarta-sans-v8-latin-600.woff2') format('woff2'); 
-}
+}*/
 
 /* plus-jakarta-sans-600italic - latin */
-@font-face {
+/*@font-face {
     font-display: swap; 
     font-family: 'Plus Jakarta Sans';
     font-style: italic;
     font-weight: 600;
     src: url('../fonts/plus-jakarta-sans-v8-latin-600italic.woff2') format('woff2'); 
-}
+}*/
 
 /* plus-jakarta-sans-700 - latin */
-@font-face {
+/*@font-face {
     font-display: swap; 
     font-family: 'Plus Jakarta Sans';
     font-style: normal;
     font-weight: 700;
     src: url('../fonts/plus-jakarta-sans-v8-latin-700.woff2') format('woff2'); 
-}
-
-/* plus-jakarta-sans-700italic - latin */
-@font-face {
+}*/
+/*
+ plus-jakarta-sans-700italic - latin */
+/*@font-face {
     font-display: swap; 
     font-family: 'Plus Jakarta Sans';
     font-style: italic;
     font-weight: 700;
     src: url('../fonts/plus-jakarta-sans-v8-latin-700italic.woff2') format('woff2'); 
-}
+}*/
 
 /* plus-jakarta-sans-800 - latin */
-@font-face {
+/*@font-face {
     font-display: swap; 
     font-family: 'Plus Jakarta Sans';
     font-style: normal;
     font-weight: 800;
     src: url('../fonts/plus-jakarta-sans-v8-latin-800.woff2') format('woff2'); 
-}
+}*/
 
 /* plus-jakarta-sans-800italic - latin */
-@font-face {
+/*@font-face {
     font-display: swap; 
     font-family: 'Plus Jakarta Sans';
     font-style: italic;
     font-weight: 800;
     src: url('../fonts/plus-jakarta-sans-v8-latin-800italic.woff2') format('woff2'); 
-}
+}*/
+
+
 
 /* open-sans-300 - latin */
-@font-face {
+/*@font-face {
     font-display: swap;
     font-family: 'Open Sans';
     font-style: normal;
     font-weight: 300;
     src: url('../fonts/open-sans-v36-latin-300.woff2') format('woff2');
-}
+}*/
 
 /* open-sans-300italic - latin */
-@font-face {
+/*@font-face {
     font-display: swap;
     font-family: 'Open Sans';
     font-style: italic;
     font-weight: 300;
     src: url('../fonts/open-sans-v36-latin-300italic.woff2') format('woff2');
-}
+}*/
 
 /* open-sans-regular - latin */
-@font-face {
+/*@font-face {
     font-display: swap;
     font-family: 'Open Sans';
     font-style: normal;
     font-weight: 400;
     src: url('../fonts/open-sans-v36-latin-regular.woff2') format('woff2');
-}
+}*/
 
 /* open-sans-italic - latin */
-@font-face {
+/*@font-face {
     font-display: swap;
     font-family: 'Open Sans';
     font-style: italic;
     font-weight: 400;
     src: url('../fonts/open-sans-v36-latin-italic.woff2') format('woff2');
-}
+}*/
 
 /* open-sans-500 - latin */
-@font-face {
+/*@font-face {
     font-display: swap;
     font-family: 'Open Sans';
     font-style: normal;
     font-weight: 500;
     src: url('../fonts/open-sans-v36-latin-500.woff2') format('woff2');
-}
-  
+}*/
+
 /* open-sans-500italic - latin */
-@font-face {
+/*@font-face {
     font-display: swap;
     font-family: 'Open Sans';
     font-style: italic;
     font-weight: 500;
     src: url('../fonts/open-sans-v36-latin-500italic.woff2') format('woff2');
-}
+}*/
 
 /* open-sans-600 - latin */
-@font-face {
+/*@font-face {
     font-display: swap;
     font-family: 'Open Sans';
     font-style: normal;
     font-weight: 600;
     src: url('../fonts/open-sans-v36-latin-600.woff2') format('woff2');
-}
+}*/
 
 /* open-sans-600italic - latin */
-@font-face {
+/*@font-face {
     font-display: swap;
     font-family: 'Open Sans';
     font-style: italic;
     font-weight: 600;
     src: url('../fonts/open-sans-v36-latin-600italic.woff2') format('woff2');
-}
+}*/
 
 /* open-sans-700 - latin */
-@font-face {
+/*@font-face {
     font-display: swap;
     font-family: 'Open Sans';
     font-style: normal;
     font-weight: 700;
     src: url('../fonts/open-sans-v36-latin-700.woff2') format('woff2');
-}
+}*/
 
 /* open-sans-700italic - latin */
-@font-face {
+/*@font-face {
     font-display: swap;
     font-family: 'Open Sans';
     font-style: italic;
     font-weight: 700;
     src: url('../fonts/open-sans-v36-latin-700italic.woff2') format('woff2');
-}
+}*/
 
 /* open-sans-800 - latin */
-@font-face {
+/*@font-face {
     font-display: swap;
     font-family: 'Open Sans';
     font-style: normal;
     font-weight: 800;
     src: url('../fonts/open-sans-v36-latin-800.woff2') format('woff2');
-}
+}*/
 
 /* open-sans-800italic - latin */
-@font-face {
+/*@font-face {
     font-display: swap;
     font-family: 'Open Sans';
     font-style: italic;
     font-weight: 800;
     src: url('../fonts/open-sans-v36-latin-800italic.woff2') format('woff2');
+}*/
+
+
+/*body {
+   
+}*/
+/*html, body {
+    height: 100%;
+}*/
+
+
+
+:root {
+    --season-gradient: linear-gradient(to right, #56ccf2, #2f80ed); /* Blue gradient */
+    --season-gradient-opacity: radial-gradient(#56ccf2, transparent);
+    /*background: linear-gradient(to right, #a8e063, #56ab2f);*/ /* Green gradient */
+    /*background: linear-gradient(to right, #ff7e5f, #feb47b);*/ /* Orange to yellow  */
+    --dark-bg: radial-gradient(90.68% 40.04% at 80.38% 45.37%,#29dff80f 0%,#4473eb00 100%),radial-gradient(31.2% 31.19% at 49.79% 29.97%,#237bff14 0%,#4473eb00 100%),radial-gradient(circle at 44.03% 100%,#a151ff1a 0%,#ff2fde00 50%),linear-gradient(#232527 0% 100%);
+    --light-bg: radial-gradient(circle at 80% 32%,#44ebc314 0%,#7ad8dd14 15%,#4473eb05 40%),radial-gradient(31.2% 31.19% at 49.79% 29.97%,#4473eb14 0%,#4473eb00 100%),radial-gradient(circle at 40% 95%,#8230ff0f 0%,#8230ff00 50%),linear-gradient(#ecf0f799 0% 100%);
 }
 
-body {
-    font-family: 'Plus Jakarta Sans';
+
+h1, h2, h3, h4, h5, h6 {
+    /*font-family: 'Plus Jakarta Sans', sans-serif !important;*/
 }
+
+.thin-text-300 {
+    font-weight: 200;
+}
+
+.bold-text-800 {
+    font-weight: 800;
+}
+
+.main-header {
+    font-size: 46px;
+    line-height: 56px;
+    margin-bottom: 24px;
+}
+
+
+
+body {
+}
+
+.backgradient, .backgradient-pin {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+    .backgradient-pin.dark {
+        background: var(--dark-bg);
+    }
+
+
 
 .container {
     position: relative;
-    max-width: 120rem;
-    margin: auto;
+    max-width: 992px;
+    margin: 0 auto;
 }
+
+.adaptive-image {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+}
+
+.flex-v-center {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+}
+
+.btn {
+    height: 40px;
+    width: 162px;
+}
+
+.description {
+    font-size: 18px;
+    line-height: 24px;
+    color: var(--hint) !important;
+}
+
 
 .button {
     display: flex;
@@ -253,16 +335,16 @@ body {
     text-decoration: none;
 }
 
-.button.button-primary {
-    background: #000;
-    color: #FFF;
-}
+    .button.button-primary {
+        background: #000;
+        color: #FFF;
+    }
 
-.button.button.button-secondary {
-    border: 1px solid #444;
-    background: #FFF;
-    color: #000;
-}
+    .button.button.button-secondary {
+        border: 1px solid #444;
+        background: #FFF;
+        color: #000;
+    }
 
 h1:focus {
     outline: none;
@@ -289,3 +371,38 @@ h1:focus {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+
+.box-shadow {
+    box-shadow: rgba(0, 0, 0, 0.14) 0px 1px 2px, rgba(0, 0, 0, 0.12) 0px 0px 2px;
+}
+
+.winter-background {
+    background: linear-gradient(140.02deg, rgb(40, 50, 102) -2.33%, rgb(53, 23, 64) 84.75%);
+}
+
+
+.fluent-grid {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+
+.full-height, .full-height div {
+    height: 100%;
+}
+
+.custom-button {
+    border-bottom: 5px solid black;
+}
+
+
+
+.logo-header {
+    color: black;
+    margin-right: auto;
+    width: 13vw;
+    height: auto;
+    max-width: 250px;
+    min-width: 100px;
+}

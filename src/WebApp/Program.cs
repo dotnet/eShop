@@ -1,11 +1,14 @@
 ﻿using eShop.WebApp.Components;
 using eShop.ServiceDefaults;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+builder.Services.AddFluentUIComponents();
+builder.Services.AddDataGridEntityFrameworkAdapter();
 
 builder.AddApplicationServices();
 

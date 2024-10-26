@@ -1,0 +1,92 @@
+﻿﻿
+@page "/admin"
+@using Microsoft.FluentUI.AspNetCore.Components
+
+@layout AdminLayout
+@attribute [Authorize(Roles = "Admin")]
+@inject IDialogService DialogService
+@inject ThemeState ThemeState
+
+
+
+
+<FluentLayout Style="margin-top: 10px;">
+    <FluentStack Orientation="Orientation.Horizontal" Width="100%">
+       
+            <FluentNavMenu Width="250">
+            @if (ThemeState.IsDark)
+            {
+                <a class="logo logo-header" href="/admin">
+
+                    <img id="logo" alt="Lazy Loading" src="@(ThemeState.IsDark ? "images/logofordark.png" : "images/logoforlight.png" )" class="logo logo-header" />
+
+                </a>
+            }
+            else
+            {
+                <a class="logo logo-header" href="/admin">
+
+                    <img id="logo" alt="Lazy Loading" src="images/logoforlight.png" class="logo logo-header" />
+                        
+                </a>
+            }
+                <FluentMenuButton @ref=menubuttonm Text="+ Add New" IconStart="null" OnMenuChanged="HandleOnMenuChanged">
+                    <FluentMenuItem Id="AddProduct"> Product</FluentMenuItem>
+                </FluentMenuButton>
+            </FluentNavMenu>
+        
+
+      
+            <FluentBodyContent>
+                <ProducTable> </ProducTable>
+            </FluentBodyContent>
+        
+    </FluentStack>
+
+
+</FluentLayout>
+
+
+@code {
+    private FluentMenuButton menubuttonm = new();
+
+    private async Task HandleOnMenuChanged(MenuChangeEventArgs args)
+    {
+        Console.WriteLine(args.Id + args.Value);
+        if (args.Id == "AddProduct")
+        {
+            await OpenDialogAsync(args.Value);
+            Console.WriteLine("LoL Dialog");
+        }
+    }
+
+
+    private bool _trapFocus = true;
+    private bool _modal = true;
+
+    private async Task OpenDialogAsync(string? title)
+    {
+        Console.WriteLine($"Open dialog centered");
+
+        DialogParameters parameters = new()
+            {
+                Title = title,
+                PrimaryAction = "Add",
+                PrimaryActionEnabled = false,
+                SecondaryAction = "Cancel",
+                Width = "500px",
+                TrapFocus = _trapFocus,
+                Modal = _modal,
+                PreventScroll = true
+            };
+
+        IDialogReference dialog = await DialogService.ShowDialogAsync<AddProductDialog>(parameters);
+        DialogResult? result = await dialog.Result;
+
+        
+        Console.WriteLine($"Dialog closed - Canceled: {result.Cancelled}");
+        
+    }
+  
+}
+

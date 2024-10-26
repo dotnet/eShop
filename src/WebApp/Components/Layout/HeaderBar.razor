@@ -1,27 +1,78 @@
 ﻿@using Microsoft.AspNetCore.Components.Endpoints
+@using System.Diagnostics
+@using Microsoft.FluentUI.AspNetCore.Components
+@using eShop.WebApp.Components.UI
+
+@inject ThemeState ThemeState
+@inject IJSRuntime JS
+@rendermode InteractiveServer
+
 
 <div class="eshop-header @(IsCatalog? "home" : "")">
-    <div class="eshop-header-hero">
+    @*  <div class="eshop-header-hero">
         @{
             var headerImage = IsCatalog ? "images/header-home.webp" : "images/header.webp";
         }
         <img role="presentation" src="@headerImage" />
-    </div>
-    <div class="eshop-header-container">
+    </div> *@
+    <div class="container">
+
         <nav class="eshop-header-navbar">
-            <a class="logo logo-header" href="">
-                <img alt="AdventureWorks" src="images/logo-header.svg" class="logo logo-header" />
+            @if (ThemeState.IsDark)
+            {
+                <a class="logo logo-header" href="/">
+
+                    <img id="logo" alt="Lazy Loading" src="@(ThemeState.IsDark ? "images/logofordark.png" : "images/logoforlight.png" )" class="logo logo-header" />
+
+                </a>
+            }
+            else
+            {
+                <a class="logo logo-header" href="/">
+
+                    <img id="logo" alt="AdventureWorks" src="images/white_bg_logo-removebg-preview.png" class="logo logo-header" />
+
+                </a>
+            }
+            <a class="eshop-header-nav" href="">
+                Home
             </a>
-            
+            <a class="eshop-header-nav" href="">
+                About
+            </a>
+            <a class="eshop-header-nav" href="">
+                Contact Us
+            </a>
+            <a class="eshop-header-nav" href="">
+                Blog
+            </a>
+            <Search />
             <UserMenu />
             <CartMenu />
         </nav>
-        <div class="eshop-header-intro">
+        @* <div class="eshop-header-intro">
             <h1><SectionOutlet SectionName="page-header-title" /></h1>
             <p><SectionOutlet SectionName="page-header-subtitle" /></p>
-        </div>
+        </div> *@
     </div>
 </div>
+
+<div class="secondary-nav-container">
+    <div class="container">
+        <FluentGrid AdaptiveRendering="true">
+            <FluentGridItem xs="12">
+                <ul class="secondary-nav">
+                    @*       <li class="secondary-nav-item "><FluentIcon CustomColor="var(--neutral-foreground-hint)" Color="@Color.Custom" Style="margin-right: 8px" Icon="@(Icons.Regular.Size20.ConferenceRoom)" />Indoor</li>
+                    <li class="secondary-nav-item "><FluentIcon CustomColor="var(--neutral-foreground-hint)" Color="@Color.Custom" Style="margin-right: 8px" Icon="@(Icons.Regular.Size20.StreetSign)" />Outdoor</li>
+                    <li class="secondary-nav-item "><FluentIcon CustomColor="var(--neutral-foreground-hint)" Color="@Color.Custom" Style="margin-right: 8px" Icon="@(Icons.Regular.Size20.VehicleBicycle)" />Specific</li>
+                    <li class="secondary-nav-item "><FluentIcon CustomColor="var(--neutral-foreground-hint)" Color="@Color.Custom" Style="margin-right: 8px" Icon="@(Icons.Regular.Size20.HeartPulse)" />Wellness</li>
+                    <li class="secondary-nav-item "><FluentIcon CustomColor="var(--neutral-foreground-hint)" Color="@Color.Custom" Style="margin-right: 8px" Icon="@(Icons.Regular.Size20.Accessibility)" />BodyPart</li> *@
+                </ul>
+            </FluentGridItem>
+        </FluentGrid>
+    </div>
+</div>
+
 
 @code {
     [CascadingParameter]
@@ -30,4 +81,31 @@
     // We can use Endpoint Metadata to determine the page currently being visited
     private Type? PageComponentType => HttpContext?.GetEndpoint()?.Metadata.OfType<ComponentTypeMetadata>().FirstOrDefault()?.Type;
     private bool IsCatalog => PageComponentType == typeof(Pages.Catalog.Catalog);
+
+
+    // private bool _isdark { get; set; }
+
+    // void OnLoaded(LoadedEventArgs e)
+    // {
+    //     _isdark = e.IsDark;
+    //     StateHasChanged();
+    // }
+
+    private async Task OnLuminanceChanged()
+    {
+        await JS.InvokeVoidAsync("changeTheme");
+    }
+
+
+    protected override void OnInitialized()
+    {
+        ThemeState.OnChange += async () => await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ThemeState.OnChange -= async () => await InvokeAsync(StateHasChanged);
+    }
+
+
 }

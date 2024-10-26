@@ -1,0 +1,42 @@
+﻿@using Microsoft.FluentUI.AspNetCore.Components
+@implements IDialogContentComponent
+
+<FluentMessageBarProvider Section="" MaxMessageCount="1" />
+
+@* <p>Your lastname is @Content.Lastname and you are @Content.Age years young </p> *@
+
+<FluentTextField @bind-Value="@SKU" Immediate="true">Product SKU</FluentTextField>
+@* <FluentTextField @bind-Value="@Content.Lastname">Your lastname:</FluentTextField>
+<FluentNumberField @bind-Value="@Content.Age">Your age:</FluentNumberField> *@
+@* @if (Dialog != null)
+{
+    <FluentStack Orientation="Orientation.Vertical" Style="border: 1px solid red; padding: 10px">
+        <span>This section is visible only when component is hosted inside a Dialog</span>
+        <FluentButton OnClick="@(() => ToggleDialogPrimaryActionButton(true))">Enable Dialog Primary Action</FluentButton>
+        <FluentButton OnClick="@(() => ToggleDialogPrimaryActionButton(false))">Disable Dialog Primary Action</FluentButton>
+    </FluentStack>
+} *@
+
+@code {
+    // [Parameter]
+    // public SimplePerson Content { get; set; } = default!;
+
+    [CascadingParameter]
+    public FluentDialog? Dialog { get; set; }
+
+    private string? _SKU;
+    public string? SKU { 
+        get => _SKU; 
+        set 
+        { 
+            _SKU = value; Console.WriteLine(value); 
+            if (value != null && value.Length > 0) Dialog!.TogglePrimaryActionButton(true);
+            else Dialog!.TogglePrimaryActionButton(false);
+        } 
+    }
+
+    private void ToggleDialogPrimaryActionButton(bool enable)
+    {
+        // Dialog!.TogglePrimaryActionButton(enable);
+    }
+}

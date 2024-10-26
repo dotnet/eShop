@@ -1,0 +1,26 @@
+﻿﻿@using Microsoft.FluentUI.AspNetCore.Components
+
+
+<div>
+    <FluentCard Width="100%" Height="auto" Style="background: transparent; padding:0; border:none; border-radius: 0; width: 100%;">
+        <img class="blog-card-image" src="@ImageSrc" alt="Waterproof backpack" />
+        <div class="product-card-inner">
+            <h3 class="blog-card-title">@Title</h3>
+            <p class="blog-card-description"> @Description</p>
+            <FluentButton Appearance="Appearance.Outline" Class="btn">Read More</FluentButton>
+        </div>
+    </FluentCard>
+</div>
+@code {
+    [Parameter]
+    public string? PostId { get; set; }
+
+    [Parameter]
+    public string? ImageSrc { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Description { get; set; }
+}

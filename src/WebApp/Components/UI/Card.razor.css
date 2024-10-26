@@ -1,0 +1,64 @@
+﻿﻿.product-card {
+    background: var(--fill-color);
+    border-radius: 20px;
+    width: calc(20% - 20px);
+    box-shadow: 0 0 2px rgba(0,0,0,0.24), 0 2px 4px rgba(0,0,0,0.28);
+}
+
+.product-card-image {
+    width: 80%;
+    display: block;
+    margin: 20px auto;
+}
+
+.card-title {
+    text-align: center;
+}
+
+.custom-button::before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    border-radius: calc(var(--control-corner-radius)* 1px);
+    box-shadow: inset -.5px .5px 1px #00f52c,inset -.5px .5px #03fa6e,inset .5px -.5px .5px #2a446b66;
+    background-image: linear-gradient(48deg,#24adff 26.23%,#75FA99 71.64%,#59FA4D 84.17%,#A0FF78 91.97%);
+    z-index: -1;
+}
+
+.custom-button {
+    position: relative;
+    display: flex;
+    max-width: 280px;
+    margin: 0 auto;
+    height: 40px;
+    align-items: center;
+    padding: 0;
+    background: transparent;
+    border: none;
+    padding: 1px;
+    box-shadow: -.188px .179px .669px #0000000f,-.827px .786px 1.385px #00000017,-1.03px 0.929px 1.763px #0000001f,-2.909px 2.715px 4.415px #00000024,-6.577px 6.251px 9.956px #0000002b,-10.148px 9.645px 17px #0000003b
+}
+
+.custom-buttom-inner {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    padding: 0 12px;
+    box-shadow: inset -1px 1px 2px #55FA8980,inset 1px -1px 2px #7ac8fb4d;
+    border-radius: calc(var(--control-corner-radius)* 1px);
+    background: #1c1e1f;
+    color: white;
+}
+
+
+.card-price {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}

@@ -1,0 +1,175 @@
+﻿﻿
+@page "/"
+﻿@using Microsoft.FluentUI.AspNetCore.Components
+
+@using eShop.WebApp.Components.UI
+
+<div class="main-banner">
+
+    <div class="container">
+        <FluentGrid AdaptiveRendering="true">
+            <FluentGridItem xs="12" sm="5">
+                <div class="card flex-v-center">
+                    <strong class="main-banner-badge">Exclusive offer</strong>
+                    <h1 class="main-header thin-text-300">Winter Outdoor <strong class="bold-text-800">Kit</strong></h1>
+                    <p class="description main-banner-description">Don’t let winter slow you down – gear up and move with confidence, whether you’re running or enjoying other outdoor activities!</p>
+                    <FluentButton Class="btn">Buy Now</FluentButton>
+                </div>
+            </FluentGridItem>
+            <FluentGridItem xs="12" sm="7">
+                <div class="card">
+                    <img class="adaptive-image" src="/images/Untitled-3.png" />
+                </div>
+            </FluentGridItem>
+           
+        </FluentGrid>
+    </div>
+    
+    <div class="animated-line"></div>
+</div>
+<div class="banners">
+   
+    <div>
+        <FluentGrid AdaptiveRendering="true">
+            <FluentGridItem xs="12" sm="6" Style="min-height: 526px; padding: 0; border-right: 1px solid rgba(255,255,255, .3);">
+                 <FluentGrid AdaptiveRendering="true" Class="full-height">
+                     <FluentGridItem xs="12" sm="12" Style="height: 60%; padding-bottom:0;">
+                        <div class="card flex-v-center banner-background-2" style="border-bottom: 1px solid rgba(255,255,255, .3)">
+                           <h2 class="main-header-3 main-banner-space-m">Dream Essentials</h2>
+                            <p class="description description-m ">Don’t let winter slow you down – gear up and move with confidence</p>
+                            <a href="#">See Details</a>
+                        </div>
+                        <div class="hr-modern"></div>
+                    </FluentGridItem>
+               
+                    <FluentGridItem xs="12" sm="6" Style="height: 40%;">
+                        <div class="card flex-v-center banner-background-3">
+                           <h2 class="main-header-5 main-banner-space-s">Smart Perfomance</h2>
+                            <p class="description description-s ">Don’t let winter slow you down – gear up and move with confidence</p>
+                            <a href="#">See Details</a>
+                        </div>
+                    </FluentGridItem>
+                    <FluentGridItem xs="12" sm="6" Style="height: 40%; border-left: 1px solid rgba(255,255,255, .3); padding-left: 0">
+                         <div class="card flex-v-center banner-background-4">
+                           <h2 class="main-header-5 main-banner-space-s">Serenity Kit</h2>
+                            <p class="description description-s ">Don’t let winter slow you down – gear up and move with confidence</p>
+                            <a href="#">See Details</a>
+                        </div>
+                    </FluentGridItem>
+                 </FluentGrid>
+            </FluentGridItem>
+            <FluentGridItem xs="12" sm="6">
+                <FluentGrid AdaptiveRendering="true" Class="full-height">
+                    <FluentGridItem xs="12" sm="12" Style="padding:0">
+                        <div class="card flex-v-center banner-background-1" style="height: 100%" >
+                            <h2 class="main-header-2 main-banner-space-m  thin-text-300">Indoor HIIT  <strong class="bold-text-800">Kit</strong></h2>
+                            <p class="description description-m main-banner-space-m " style="max-width: 300px">Don’t let winter slow you down – gear up and move with confidence, whether you’re running or enjoying other outdoor activities!</p>
+                            <FluentButton Appearance="Appearance.Outline" Class="btn">Buy Now</FluentButton>
+                        </div>
+                    </FluentGridItem>
+                </FluentGrid>
+            </FluentGridItem>
+           
+        </FluentGrid>
+    </div>
+</div>
+<div class="container section">
+  
+        
+<FluentGrid AdaptiveRendering="true">
+    <FluentGridItem xs="12">
+        <div class="main-header-4">Browse By Category</div>
+    </FluentGridItem>
+    <FluentGridItem xs="12">
+        <ul class="tile-nav">
+          @*   <li class="tile-nav-item "><FluentIcon CustomColor="var(--neutral-foreground-hint)" Color="@Color.Custom" Style="margin-bottom: 8px" Icon="@(Icons.Regular.Size20.ConferenceRoom)" />Indoor</li>
+            <li class="tile-nav-item "><FluentIcon CustomColor="var(--neutral-foreground-hint)" Color="@Color.Custom" Style="margin-bottom: 8px" Icon="@(Icons.Regular.Size20.StreetSign)" />Outdoor</li>
+            <li class="tile-nav-item "><FluentIcon CustomColor="var(--neutral-foreground-hint)" Color="@Color.Custom" Style="margin-bottom: 8px" Icon="@(Icons.Regular.Size20.VehicleBicycle)" />Specific</li>
+            <li class="tile-nav-item "><FluentIcon CustomColor="var(--neutral-foreground-hint)" Color="@Color.Custom" Style="margin-bottom: 8px" Icon="@(Icons.Regular.Size20.HeartPulse)" />Wellness</li>
+            <li class="tile-nav-item "><FluentIcon CustomColor="var(--neutral-foreground-hint)" Color="@Color.Custom" Style="margin-bottom: 8px" Icon="@(Icons.Regular.Size20.Accessibility)" />BodyPart</li> *@
+        </ul>
+    </FluentGridItem>
+</FluentGrid>
+</div>
+
+<div class="container">
+    @* TODO: fetch by tags *@
+    <FluentTabs ActiveTabId="tab-1">
+        <FluentTab Id="tab-1">
+        <Header>
+           
+           <span class="tab-header">   New Arrivals</span>  
+        </Header>
+        <Content>
+    @*TODO:  Replace with dynamicly passing by tags *@
+    <FluentGrid AdaptiveRendering="true">
+        <FluentGridItem xs="12" sm="3">
+           <Card></Card>
+        </FluentGridItem>
+          <FluentGridItem xs="12" sm="3">
+           <Card></Card>
+        </FluentGridItem>
+          <FluentGridItem xs="12" sm="3">
+           <Card></Card>
+        </FluentGridItem>
+          <FluentGridItem xs="12" sm="3">
+           <Card></Card>
+        </FluentGridItem>
+          <FluentGridItem xs="12" sm="3">
+           <Card></Card>
+        </FluentGridItem>
+          <FluentGridItem xs="12" sm="3">
+           <Card></Card>
+        </FluentGridItem>
+          <FluentGridItem xs="12" sm="3">
+           <Card></Card>
+        </FluentGridItem>
+          <FluentGridItem xs="12" sm="3">
+           <Card></Card>
+        </FluentGridItem>
+    </FluentGrid>
+        </Content>
+    </FluentTab>
+    <FluentTab Id="tab-2">
+        <Header >
+           
+          <span class="tab-header">    Seasonal </span>
+        </Header>
+        <Content>
+            Content 1
+        </Content>
+    </FluentTab>
+        <FluentTab Id="tab-3">
+        <Header>
+            <span class="tab-header"> Best Sellers</span>
+           
+        </Header>
+        <Content>
+            Content 2
+        </Content>
+    </FluentTab>
+    </FluentTabs>
+
+</div>
+<div class="section" style="padding-bottom:0; padding-top: 80px">
+    <div class="reset-paddings" style="background: linear-gradient(to right, transparent, rgba(0,0,0,.8));">
+      @*   TODO: rewrite to dynamic later *@
+        <div class="blog-section">
+            <div class="blog-item">
+                <BlogCard ImageSrc="/images/winterkitblog.jpeg" Title="Conquer the Cold" Description="Release Your Inner Winter Warrior with Our Ultimate Jogging Kit!"></BlogCard> 
+            </div >
+            <div class="blog-item" >
+                <BlogCard  ImageSrc="/images/hiitblog.jpeg" Title="Unleash the Beast" Description=" Transform Your Living Room into a HIIT Powerhouse!"></BlogCard>
+            </div>
+            <div class="blog-item" >
+                <BlogCard  ImageSrc="/images/sleepkitblogdark.jpeg" Title="Unlock Perfect Sleep" Description="The Ultimate Sleep Kit You Didn’t Know You Needed"></BlogCard>
+            </div>
+            <div class="blog-item" >
+                <BlogCard  ImageSrc="/images/gadgetblogpost.jpeg" Title="Revolutionize Workout" Description="The Ultimate Fitness Gadget Kit You Didn’t Know You Needed"></BlogCard>
+            </div>   
+        </div>
+    </div>
+</div> 
+@code {
+
+}

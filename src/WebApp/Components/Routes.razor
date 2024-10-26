@@ -1,6 +1,30 @@
-﻿<Router AppAssembly="@typeof(Program).Assembly">
+﻿@using Microsoft.FluentUI.AspNetCore.Components
+@inject IJSRuntime JS
+@inject ThemeState ThemeState
+@rendermode InteractiveServer
+
+<div class="@(_isdark ? "backgradient-pin dark" : "backgradient-pin light")"></div>
+<FluentDesignTheme StorageName="theme" CustomColor="#03fa6e" OnLoaded="OnLoaded" OnLuminanceChanged="OnLuminanceChanged" />
+<Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
 </Router>
+
+@code {
+    private bool _isdark { get; set; }
+
+    void OnLoaded(LoadedEventArgs e)
+    {
+        _isdark = e.IsDark;
+        ThemeState.SetIsDark(e.IsDark);
+        StateHasChanged();
+
+    }
+
+    private async Task OnLuminanceChanged()
+    {
+        await JS.InvokeVoidAsync("changeTheme");
+    }
+}

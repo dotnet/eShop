@@ -1,0 +1,19 @@
+﻿﻿.blog-card {
+    padding: 0;
+    background: none;
+    border: none;
+}
+
+.blog-card-title {
+    font-weight: 300;
+}
+
+.blog-card-image {
+    display: block;
+    max-width: 100%;
+    width: 100%;
+}
+
+.product-card-inner {
+    padding: 20px 30px 40px 30px;
+}

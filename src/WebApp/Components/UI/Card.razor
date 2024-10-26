@@ -1,0 +1,21 @@
+﻿﻿@using Microsoft.FluentUI.AspNetCore.Components
+
+
+<FluentCard Width="100%" Height="auto" class="product-card">
+    <img class="product-card-image" src="/images/others/backpack.png" alt="Waterproof backpack" />
+    <p class="card-title"> Waterproof backpack</p>
+    <div class="card-price">@price.ToString("C")</div>
+    <button class="custom-button">
+        <div class="custom-buttom-inner">
+            Add to card
+        </div>
+
+    </button>
+</FluentCard>
+
+
+@code {
+    [Parameter]
+    public string? ProductSKU { get; set; } 
+    private decimal price = 999.99m;
+}

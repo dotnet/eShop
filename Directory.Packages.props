@@ -40,6 +40,8 @@
     <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.0.0-preview.8.24460.1" />
+    <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.10.2" />
+    <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components.DataGrid.EntityFrameworkAdapter" Version="4.10.2" />
     <PackageVersion Include="MSTest.TestAdapter" Version="3.5.2" />
     <PackageVersion Include="MSTest.TestFramework" Version="3.5.2" />
     <!-- Version together with EF -->
@@ -93,6 +95,6 @@
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.2.0" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="1.2.18"/>
+    <PackageVersion Include="Scalar.AspNetCore" Version="1.2.18" />
   </ItemGroup>
 </Project>
