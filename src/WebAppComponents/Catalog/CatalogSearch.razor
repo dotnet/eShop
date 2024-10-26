@@ -31,7 +31,7 @@
                 <div class="catalog-search-group-tags">
                     <a href="@TypeUri(null)"
                     class="catalog-search-tag @(ItemTypeId == null ? "active " : "")">
-                    All
+                        All
                     </a>
                     @foreach (var itemType in catalogItemTypes)
                     {
@@ -47,19 +47,19 @@
 }
 
 @code {
-    IEnumerable<CatalogBrand>? catalogBrands;
-    IEnumerable<CatalogItemType>? catalogItemTypes;
+    IEnumerable<CatalogBrand>? catalogBrands = null;
+    IEnumerable<CatalogItemType>? catalogItemTypes = null;
     [Parameter] public int? BrandId { get; set; }
     [Parameter] public int? ItemTypeId { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        var brandsTask = CatalogService.GetBrands();
-        var itemTypesTask = CatalogService.GetTypes();
-        await Task.WhenAll(brandsTask, itemTypesTask);
-        catalogBrands = brandsTask.Result;
-        catalogItemTypes = itemTypesTask.Result;
-    }
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     var brandsTask = CatalogService.GetBrands();
+    //     var itemTypesTask = CatalogService.GetTypes();
+    //     await Task.WhenAll(brandsTask, itemTypesTask);
+    //     catalogBrands = brandsTask.Result;
+    //     catalogItemTypes = itemTypesTask.Result;
+    // }
 
     private string BrandUri(int? brandId) => Nav.GetUriWithQueryParameters(new Dictionary<string, object?>()
     {
