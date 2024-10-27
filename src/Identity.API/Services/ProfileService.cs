@@ -19,9 +19,11 @@
             if (user == null)
                 throw new ArgumentException("Invalid subject identifier");
 
-            var claims = GetClaimsFromUser(user);
+            var claims =  await GetClaimsFromUser(user, _userManager);
             context.IssuedClaims = claims.ToList();
         }
+
+
 
         public async Task IsActiveAsync(IsActiveContext context)
         {
@@ -52,7 +54,7 @@
             }
         }
 
-        private IEnumerable<Claim> GetClaimsFromUser(ApplicationUser user)
+        private  async Task<IEnumerable<Claim>> GetClaimsFromUser(ApplicationUser user, UserManager<ApplicationUser> mng)
         {
             var claims = new List<Claim>
             {
@@ -111,6 +113,10 @@
                     new Claim(JwtClaimTypes.PhoneNumberVerified, user.PhoneNumberConfirmed ? "true" : "false", ClaimValueTypes.Boolean)
                 });
             }
+
+            //JwtClaimTypes.Role
+            var roles = await mng.GetRolesAsync(user);
+            claims.AddRange(roles.Select(role => new Claim(JwtClaimTypes.Role, role)));
 
             return claims;
         }

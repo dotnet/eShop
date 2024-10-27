@@ -8,6 +8,7 @@
 <AuthorizeView>
     <Authorized>
         <h3>@context.User.Identity?.Name</h3>
+        @context.User.IsInRole("Administrator")
         <div class="dropdown-menu">
             <span class="dropdown-button"><img role="presentation" src="icons/user.svg" /></span>
             <div class="dropdown-content">
@@ -18,6 +19,8 @@
                 </form>
             </div>
         </div>
+       
+
     </Authorized>
     <NotAuthorized>
         <a aria-label="Sign in" href="@Pages.User.LogIn.Url(Nav)"><img role="presentation" src="icons/user.svg" /></a>

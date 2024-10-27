@@ -68,7 +68,14 @@ public static class Extensions
         var sessionCookieLifetime = configuration.GetValue("SessionCookieLifetimeMinutes", 60);
 
         // Add Authentication services
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            //options.AddPolicy("AdminOnly", policy =>
+            //    policy.RequireClaim("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", "Administrator"));
+
+            options.AddPolicy("AdminOnly", policy =>
+               policy.RequireRole("Administrator"));
+        });
         services.AddAuthentication(options =>
         {
             options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -90,6 +97,10 @@ public static class Extensions
             options.Scope.Add("profile");
             options.Scope.Add("orders");
             options.Scope.Add("basket");
+            //options.TokenValidationParameters = new TokenValidationParameters
+            //{
+            //    RoleClaimType = JwtClaimTypes.Role // Specify the role claim type
+            //};
         });
 
         // Blazor auth services

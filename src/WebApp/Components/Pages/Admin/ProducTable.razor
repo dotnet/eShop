@@ -39,11 +39,6 @@
 
             var response = await Http.GetFromJsonAsync<FoodRecallQueryResult>(url, req.CancellationToken);
 
-            // Simulate a slow data retrieval process
-            if (req.Count is null)
-            {
-                await Task.Delay(2500);
-            }
             return GridItemsProviderResult.From(
                 items: response!.Results,
                 totalItemCount: response!.Meta.Results.Total);

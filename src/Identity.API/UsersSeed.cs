@@ -1,7 +1,10 @@
 ﻿
 namespace eShop.Identity.API;
 
-public class UsersSeed(ILogger<UsersSeed> logger, UserManager<ApplicationUser> userManager) : IDbSeeder<ApplicationDbContext>
+public class UsersSeed(ILogger<UsersSeed> logger, 
+    UserManager<ApplicationUser> userManager,
+    RoleManager<IdentityRole> roleManager
+    ) : IDbSeeder<ApplicationDbContext>
 {
     public async Task SeedAsync(ApplicationDbContext context)
     {
@@ -94,5 +97,45 @@ public class UsersSeed(ILogger<UsersSeed> logger, UserManager<ApplicationUser> u
                 logger.LogDebug("bob already exists");
             }
         }
+
+
+       
+        var exists = await roleManager.RoleExistsAsync("Administrator");
+        if (!exists)
+        {
+            var admin = new IdentityRole
+            {
+                Name = "Administrator"
+            };
+            await roleManager.CreateAsync(admin);
+            logger.LogInformation("Created Administrator role");
+        }
+
+        var adminRole = await roleManager.FindByNameAsync("Administrator");
+        //var userMgr = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var user = await userManager.FindByNameAsync("alice");
+
+        if (user != null)
+        {
+
+            var isAdmin = await userManager.IsInRoleAsync(user, "Administrator");
+            if (!isAdmin)
+            {
+                await userManager.AddToRoleAsync(user, "Administrator");
+                logger.LogDebug("alice added to Administator role");
+            } else
+            {
+                logger.LogDebug("alice already  have Administrator role");
+            }
+
+            //var claims = await userMgr.GetClaimsAsync(user);
+            //if (!claims.Any(c => c.Type == "location"))
+            //{
+            //    var locationClaim = new Claim("location", "Philadelphia");
+            //    await userMgr.AddClaimAsync(user, locationClaim);
+            //}
+
+        }
     }
 }
+

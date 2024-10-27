@@ -1,9 +1,9 @@
 ﻿﻿
 @page "/admin"
 @using Microsoft.FluentUI.AspNetCore.Components
-
+@rendermode InteractiveServer
 @layout AdminLayout
-@attribute [Authorize(Roles = "Admin")]
+@attribute [Authorize(Roles = "Administrator")]
 @inject IDialogService DialogService
 @inject ThemeState ThemeState
 
@@ -31,7 +31,7 @@
                 </a>
             }
                 <FluentMenuButton @ref=menubuttonm Text="+ Add New" IconStart="null" OnMenuChanged="HandleOnMenuChanged">
-                    <FluentMenuItem Id="AddProduct"> Product</FluentMenuItem>
+                    <FluentMenuItem Id="AddProduct">Product</FluentMenuItem>
                 </FluentMenuButton>
             </FluentNavMenu>
         
@@ -45,8 +45,6 @@
 
 
 </FluentLayout>
-
-
 @code {
     private FluentMenuButton menubuttonm = new();
 

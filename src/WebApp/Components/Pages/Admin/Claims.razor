@@ -1,0 +1,39 @@
+﻿@page "/user-claims"
+@using Microsoft.AspNetCore.Components.Authorization;
+@using System.Security.Claims
+
+@inject AuthenticationStateProvider AuthenticationStateProvider;
+
+<AuthorizeView>
+    <Authorized>
+        <h3>Claims for @context.User.Identity?.Name</h3>
+        <ul>
+            @if (userClaims != null)
+            {
+                @foreach (var claim in userClaims)
+                {
+                    <li><strong>@claim.Type:</strong> @claim.Value</li>
+                }
+            }
+        </ul>
+    </Authorized>
+    <NotAuthorized>
+        <h3>You are not authorized to view this content.</h3>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+    private IEnumerable<Claim>? userClaims;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            userClaims = user.Claims;
+        }
+    }
+}
