@@ -61,7 +61,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="8.0.70" />
         <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.70" />
-        <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.70" />
+        <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.92" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
     </ItemGroup>
