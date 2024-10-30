@@ -74,7 +74,6 @@
         <Image
             Grid.Row="0"
             Grid.Column="0"
-            Grid.ColumnSpan="0"
             Aspect="AspectFit"
             WidthRequest="250"
             HorizontalOptions="Center"
