@@ -41,7 +41,7 @@
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.0.0-preview.8.24460.1" />
     <PackageVersion Include="MSTest.TestAdapter" Version="3.6.2" />
-    <PackageVersion Include="MSTest.TestFramework" Version="3.6.1" />
+    <PackageVersion Include="MSTest.TestFramework" Version="3.6.2" />
     <!-- Version together with EF -->
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0-rc.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0-rc.2.24474.1" />
@@ -89,10 +89,10 @@
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
     <PackageVersion Include="Polly.Core" Version="8.4.2" />
     <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
-    <PackageVersion Include="xunit" Version="2.9.1" />
+    <PackageVersion Include="xunit" Version="2.9.2" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.2.0" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="1.2.18"/>
+    <PackageVersion Include="Scalar.AspNetCore" Version="1.2.23"/>
   </ItemGroup>
 </Project>
