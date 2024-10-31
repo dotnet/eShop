@@ -41,8 +41,11 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
+                MaximumHeightRequest="500"
                 Margin="-16,-16,-16,0"
-                Aspect="AspectFill"
+                Aspect="AspectFit"
+                HorizontalOptions="Center"
+                VerticalOptions="Start"
                 Source="{Binding CatalogItem.PictureUri, Mode=OneWay}" />
 
             <ImageButton
