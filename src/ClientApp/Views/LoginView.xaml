@@ -34,7 +34,7 @@
             <triggers:BeginAnimation Animation="{StaticResource LoginAnimation}" />
         </EventTrigger>
     </ContentPage.Triggers>
-    <!--  AUTH  -->
+
     <Grid
         x:Name="LoginPanel"
         ColumnSpacing="0"
@@ -47,41 +47,16 @@
             Aspect="AspectFill"
             Grid.RowSpan="4"
             Source="header.png" />
-        <!--  BANNER  -->
-        <!--<ScrollView
-            x:Name="BannerScroll"
-            Grid.Row="0"
-            Grid.RowSpan="4"
-            Grid.Column="0"
-            HorizontalScrollBarVisibility="Never"
-            InputTransparent="True"
-            Orientation="Both"
-            VerticalScrollBarVisibility="Never">
-        </ScrollView>-->
-        <!--<ContentView
-            Grid.Row="0"
-            Grid.Column="0"
-            HeightRequest="40"
-            VerticalOptions="Start">
-            <ContentView.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Offset="0.0" Color="White" />
-                    <GradientStop Offset="0.75" Color="#8CFFFFFF" />
-                    <GradientStop Offset="1.0" Color="Transparent" />
-                </LinearGradientBrush>
-            </ContentView.Background>
-        </ContentView>-->
+
         <Image
             Grid.Row="0"
             Grid.Column="0"
-            Grid.ColumnSpan="0"
             Aspect="AspectFit"
             WidthRequest="250"
             HorizontalOptions="Center"
             Source="logo_header.png"
             VerticalOptions="Center" />
 
-        <!--  SETTINGS  -->
         <ImageButton
             Grid.Row="0"
             Margin="16,60"
@@ -90,29 +65,16 @@
             Source="{StaticResource SettingsIconDarkImageSource}"
             VerticalOptions="Start" />
 
-        <!--  LOG IN BUTTON  -->
         <Button
-            Grid.Row="2"
-            Grid.Column="0"
-            Margin="8"
-            BackgroundColor="Black"
-            Command="{Binding SignInCommand}"
-            CornerRadius="16"
-            Text="Login"
-            TextColor="White" />
+              Grid.Row="2"
+              Grid.Column="0"
+              Margin="8"
+              BackgroundColor="Black"
+              Command="{Binding SignInCommand}"
+              CornerRadius="16"
+              Text="Login"
+              TextColor="White" />
 
-        <!--  REGISTER BUTTON  -->
-        <!--  <Button  -->
-        <!--  BackgroundColor="Transparent"  -->
-        <!--  Command="{Binding RegisterCommand}"  -->
-        <!--  CornerRadius="8"  -->
-        <!--  Grid.Row="3"  -->
-        <!--  HorizontalOptions="Center"  -->
-        <!--  Margin="0,0,0,8"  -->
-        <!--  Text="Register"  -->
-        <!--  TextColor="Black" />  -->
-
-        <!--  INDICATOR  -->
         <ActivityIndicator
             HorizontalOptions="Center"
             IsRunning="{Binding IsBusy}"
