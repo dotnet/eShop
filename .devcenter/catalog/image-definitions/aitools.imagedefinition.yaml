@@ -1,6 +1,6 @@
 $schema: "1.0"
-name: "aitools-image"
-description: "This definition is for the eShop AI engineering environment"
+name: "frontend-image-advanced"
+description: "This definition is for the eShop frontend engineering environment"
 
 image: "microsoftvisualstudio_windowsplustools_base-win11-gen2"
 enableScheduledRefresh: true
@@ -18,7 +18,7 @@ tasks:
     parameters:
       repositoryUrl: https://github.com/contoso-co/eshop.git
       directory: z:\workspaces
-  ### Run the DSC configuration for the AI engineering environment
+  ### Run the DSC configuration for the frontend engineering environment
   - name: winget
     parameters:
-      configurationFile: 'z:\workspaces\eshop\.configurations\ai-eng.dsc.yaml'
+      configurationFile: 'z:\workspaces\eshop\.configurations\maui.dsc.yaml'
