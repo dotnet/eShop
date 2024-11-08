@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch App Host",
+      "name": "Launch App Host (HTTP)",
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
@@ -13,7 +13,13 @@
       "args": [],
       "cwd": "${workspaceFolder}/src/eShop.AppHost",
       "console": "internalConsole",
-      "stopAtEntry": false
+      "stopAtEntry": false,
+      "launchSettingsProfile": "http",
+      "env": {
+        "ESHOP_USE_HTTP_ENDPOINTS": "1",
+        "ASPIRE_ALLOW_UNSECURED_TRANSPORT": "true",
+		    "DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS ": "true"
+      },
     }
   ]
 }

@@ -28,30 +28,39 @@
 		}
 	},
 
+  // "containerEnv": {
+	// 	"ASPIRE_ALLOW_UNSECURED_TRANSPORT": "true",
+	// 	"DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS ": "true"
+	// },	
+
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [5000, 5001],
-	// "portsAttributes": {
-	//		"5001": {
-	//			"protocol": "https"
-	//		}
-	// }
-
-	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "dotnet dev-certs https --trust && dotnet workload restore",
-	"portsAttributes": {
+	"forwardPorts": [5243, 5223, 5045,  7298, 18848, 19888],
+  "portsAttributes": {
 		"5243": {
-			"label": "Identity"
+			"label": "Identity HTTPS"
+		},
+		"5223": {
+			"label": "Identity HTTP"
+		},
+		"5045": {
+			"label": "Web App HTTP"
 		},
 		"7298": {
-			"label": "Web App"
+			"label": "Web App HTTPS"
+		},
+		"18848": {
+			"label": "Dashboard HTTP"
 		},
 		"19888": {
-			"label": "Aspire Dashboard"
+			"label": "Dashboard HTTPS"
 		}
 	},
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "dotnet dev-certs https --trust && dotnet workload restore",	
 
 	// Configure tool-specific properties.
 	// "customizations": {},
