@@ -28,11 +28,6 @@
 		}
 	},
 
-  // "containerEnv": {
-	// 	"ASPIRE_ALLOW_UNSECURED_TRANSPORT": "true",
-	// 	"DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS ": "true"
-	// },	
-
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
