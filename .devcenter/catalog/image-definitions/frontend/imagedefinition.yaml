@@ -29,7 +29,7 @@ tasks:
 
   - name: powershell
     parameters:
-      command: ^
+      command: |
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
           code --install-extension github.copilot
           code --install-extension github.copilot-chat        
