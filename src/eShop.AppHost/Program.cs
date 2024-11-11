@@ -1,6 +1,6 @@
 ﻿using eShop.AppHost;
 
-var builder = DistributedApplication.CreateBuilder(args);
+var builder = DistributedApplication.CreateBuilder(args).WithCodespaces();
 
 builder.AddForwardedHeaders();
 

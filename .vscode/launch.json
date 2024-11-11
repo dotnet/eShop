@@ -1,0 +1,25 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "eShop.Web (HTTP)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/src/eShop.AppHost/bin/Debug/net9.0/eShop.AppHost.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/eShop.AppHost",
+      "console": "internalConsole",
+      "stopAtEntry": false,
+      "launchSettingsProfile": "http",
+      "env": {
+        "ESHOP_USE_HTTP_ENDPOINTS": "1",
+        "ASPIRE_ALLOW_UNSECURED_TRANSPORT": "true",
+		    "DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS ": "true"
+      },
+    }
+  ]
+}
