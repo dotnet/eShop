@@ -8,6 +8,11 @@ A reference .NET application implementing an e-commerce website using a services
 
 ## Getting Started
 
+This version of eShop is based on .NET 9. 
+
+Previous eShop versions:
+* [.NET 8](https://github.com/dotnet/eShop/tree/release/8.0)
+
 ### Prerequisites
 
 - Clone the eShop repository: https://github.com/dotnet/eshop
