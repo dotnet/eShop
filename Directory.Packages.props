@@ -39,7 +39,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.0.0-preview.8.24460.1" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.0.0-preview.9.24507.7" />
     <PackageVersion Include="MSTest.TestAdapter" Version="3.6.1" />
     <PackageVersion Include="MSTest.TestFramework" Version="3.6.2" />
     <!-- Version together with EF -->
@@ -56,10 +56,10 @@
     <!-- Xabaril packages -->
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="8.0.1" />
     <!-- AI -->
-    <PackageVersion Include="Microsoft.Extensions.AI" Version="9.0.0-preview.9.24507.7" />
-    <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="9.0.0-preview.9.24507.7" />
-    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="9.0.0-preview.9.24507.7" />
-    <PackageVersion Include="Microsoft.Extensions.AI.Ollama" Version="9.0.0-preview.9.24507.7" />
+    <PackageVersion Include="Microsoft.Extensions.AI" Version="9.0.0-preview.9.24525.1" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="9.0.0-preview.9.24525.1" />
+    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="9.0.0-preview.9.24525.1" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Ollama" Version="9.0.0-preview.9.24525.1" />
     <!-- Open Telemetry -->
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.0" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
