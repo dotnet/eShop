@@ -1,5 +1,5 @@
 $schema: "1.0"
-name: "AI-development"
+name: "frontend-image"
 description: "This definition is for the eShop frontend engineering environment"
 
 image: "microsoftvisualstudio_windowsplustools_base-win11-gen2"
