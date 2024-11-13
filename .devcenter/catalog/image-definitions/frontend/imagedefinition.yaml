@@ -19,11 +19,6 @@ tasks:
       package:  Microsoft.Azd
 
   - name: winget
-    description: Install Docker Desktop
-    parameters:
-      package:  Docker.DockerDesktop
-
-  - name: winget
     description: Install Visual Studio Code
     parameters:
       package:  Microsoft.VisualStudioCode

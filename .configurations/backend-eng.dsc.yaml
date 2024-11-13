@@ -5,6 +5,9 @@ properties:
   ### RESOURCES: System Configuration
   ########################################
   resources:
+    ########################################
+    ### OS Configurations
+    ########################################
     ### Enable: Developer Mode
     ### -------------------------------------
     - resource: Microsoft.Windows.Developer/DeveloperMode
@@ -13,11 +16,9 @@ properties:
         allowPrerelease: true
       settings:
         Ensure: Present
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      directives:
-        allowPrerelease: true
-      settings:
-        id: Git.Git
+    ########################################
+    ### Install CLIs, SDKs & Tools
+    ########################################
     ### Install Docker Desktop
     ### -------------------------------------
     - resource: Microsoft.WinGet.DSC/WinGetPackage
@@ -26,28 +27,26 @@ properties:
         description: Install Docker Desktop
         allowPrerelease: true
       settings:
-        id: Docker.DockerDesktop
-    ### Install Microsoft Visual Studio Code
+       id: Docker.DockerDesktop
+    ### Install Visual Sudio
     ### -------------------------------------
     - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: vscode
+      id: vscommunity
       directives:
-        description: Install Microsoft Visual Studio Code
-        allowPrerelease: true
+       description: Install Visual Studio 2022 Community
+       allowPrerelease: true
       settings:
-        id: Microsoft.VisualStudioCode
-        ensure: Present
-    ### Install VS Code Extension
+        id: Microsoft.VisualStudio.2022.Community.Preview
+    ### Install VS Workloads
     ### -------------------------------------
-    - resource: PSDscResources/Script
-      id: vscodeextensions
+    - resource: Microsoft.VisualStudio.DSC/VSComponents
       directives:
-        description: Install Python Extension for VS Code
+        description: Install required VS workloads from vsconfig file
+        allowPrerelease: true
+      dependsOn:
+        - vscommunity
       settings:
-        SetScript: |
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
-          code --install-extension github.copilot
-          code --install-extension ms-azuretools.vscode-docker
-          code --install-extension ms-dotnettools.csdevkit
-        GetScript: return $false
-        TestScript: return $false
+        productId: Microsoft.VisualStudio.Product.Community
+        channelId: VisualStudio.17.Preview
+        components: [Microsoft.VisualStudio.Workload.NetWeb, Microsoft.VisualStudio.Workload.NetCrossPlat, aspire]
+        includeRecommended: true
