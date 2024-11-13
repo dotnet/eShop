@@ -58,7 +58,7 @@ public sealed class CatalogAI : ICatalogAI
         {
             long timestamp = Stopwatch.GetTimestamp();
 
-            var embedding = (await _embeddingGenerator.GenerateAsync(text))[0].Vector;
+            var embedding = (await _embeddingGenerator.GenerateAsync(new[] { text }))[0].Vector;
             embedding = embedding[0..EmbeddingDimensions];
 
             if (_logger.IsEnabled(LogLevel.Trace))
