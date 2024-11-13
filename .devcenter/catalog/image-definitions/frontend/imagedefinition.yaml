@@ -2,7 +2,7 @@ $schema: "1.0"
 name: "AI-development"
 description: "This definition is for the eShop frontend engineering environment"
 
-image: "microsoftvisualstudio_windowsplustools_base-win11-gen2"
+image: microsoftwindowsdesktop_windows-ent-cpc_win11-24H2-ent-cpc
 
 tasks:
   ### Clone the eShop repository into the Workspaces directory
