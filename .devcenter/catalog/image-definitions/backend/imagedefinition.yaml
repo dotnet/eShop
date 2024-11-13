@@ -10,7 +10,7 @@ tasks:
   - name: git-clone
     description: Clone this repository into z:\Workspaces
     parameters:
-      repositoryUrl: https://github.com/contoso-co/eshop.git
+      repositoryUrl: https://github.com/dhruvchand/contoso-co-eShop.git
       directory: z:\workspaces
   ### Run the DSC configuration for the backend engineering environment
   - name: winget
