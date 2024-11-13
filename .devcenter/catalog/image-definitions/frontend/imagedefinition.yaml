@@ -1,8 +1,9 @@
 $schema: "1.0"
-name: "AI-development"
+name: "backend-eng"
 description: "This definition is for the eShop frontend engineering environment"
 
-image: microsoftwindowsdesktop_windows-ent-cpc_win11-24H2-ent-cpc
+extends:
+  imageDefinition: ContosoBaseImageDefinition
 
 tasks:
   ### Clone the eShop repository into the Workspaces directory
