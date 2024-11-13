@@ -1,5 +1,5 @@
 $schema: "1.0"
-name: "backend-eng"
+name: "frontend-eng"
 description: "This definition is for the eShop frontend engineering environment"
 
 extends:
