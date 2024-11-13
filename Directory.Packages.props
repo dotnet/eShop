@@ -7,7 +7,7 @@
     <AspireVersion>9.0.0</AspireVersion>
     <AspireUnstablePackagesVersion>9.0.0-preview.5.24551.3</AspireUnstablePackagesVersion>
     <GrpcVersion>2.67.0-pre1</GrpcVersion>
-    <DuendeVersion>7.0.6</DuendeVersion>
+    <DuendeVersion>7.0.8</DuendeVersion>
     <ApiVersioningVersion>8.1.0</ApiVersioningVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -40,12 +40,12 @@
     <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.0.0" />
-    <PackageVersion Include="MSTest.TestAdapter" Version="3.6.1" />
-    <PackageVersion Include="MSTest.TestFramework" Version="3.6.2" />
+    <PackageVersion Include="MSTest.TestAdapter" Version="3.6.3" />
+    <PackageVersion Include="MSTest.TestFramework" Version="3.6.3" />
     <!-- Version together with EF -->
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0-rc.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0-rc.2.24474.1" />
-    <PackageVersion Include="NSubstitute" Version="5.1.0" />
+    <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
     <PackageVersion Include="Pgvector" Version="0.3.0" />
     <PackageVersion Include="Pgvector.EntityFrameworkCore" Version="0.2.1" />
@@ -87,12 +87,12 @@
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageVersion Include="MediatR" Version="12.4.1" />
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
-    <PackageVersion Include="Polly.Core" Version="8.4.2" />
+    <PackageVersion Include="Polly.Core" Version="8.5.0" />
     <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
     <PackageVersion Include="xunit" Version="2.9.2" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.2.0" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="1.2.34"/>
+    <PackageVersion Include="Scalar.AspNetCore" Version="1.2.36"/>
   </ItemGroup>
 </Project>
