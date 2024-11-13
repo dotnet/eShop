@@ -15,8 +15,8 @@ tasks:
   ### Run the DSC configuration for the backend engineering environment
   - name: winget
     parameters:
-      configurationFile: 'z:\workspaces\eshop\.configurations\backend-eng.dsc.yaml'
+      configurationFile: 'z:\workspaces\contoso-co-eShop\.configurations\backend-eng.dsc.yaml'
 userTasks:
   - name: winget
     parameters:
-      configurationFile: 'z:\workspaces\eshop\.configurations\backend-eng.postcreate.dsc.yaml'
+      configurationFile: 'z:\workspaces\contoso-co-eShop\.configurations\backend-eng.postcreate.dsc.yaml'
