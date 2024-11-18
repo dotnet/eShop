@@ -26,6 +26,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>
+    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="9.1.0" />
+    <PackageVersion Include="CommunityToolkit.Aspire.OllamaSharp" Version="9.1.0" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="$(AspireVersion)" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery.Yarp" Version="$(AspireVersion)" />
     <!-- Version together with Asp.Versioning -->
@@ -97,6 +99,6 @@
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.2.0" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="1.2.44"/>
+    <PackageVersion Include="Scalar.AspNetCore" Version="1.2.36" />
   </ItemGroup>
 </Project>
