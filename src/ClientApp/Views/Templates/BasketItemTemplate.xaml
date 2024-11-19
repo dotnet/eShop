@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-
 <SwipeView
     x:Class="eShop.ClientApp.Views.Templates.BasketItemTemplate"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -36,7 +35,7 @@
         <SwipeItems>
             <SwipeItem
                 BackgroundColor="Red"
-                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BasketViewModel}}, Path=DeleteCommand}"
+                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BasketViewModel}}, Path=DeleteCommand, x:DataType=vm:BasketViewModel}"
                 CommandParameter="{Binding}"
                 Text="Delete" />
         </SwipeItems>
@@ -102,7 +101,7 @@
             <!--  DELETE BUTTON IF ON DESKTOP  -->
             <Button
                 Grid.Row="2"
-                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BasketViewModel}}, Path=DeleteCommand}"
+                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BasketViewModel}}, Path=DeleteCommand, x:DataType=vm:BasketViewModel}"
                 CommandParameter="{Binding}"
                 HorizontalOptions="Start"
                 IsVisible="{OnIdiom False,
