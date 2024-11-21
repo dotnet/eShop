@@ -5,27 +5,21 @@ description: "This definition is for the eShop frontend engineering environment"
 
 tasks:
   ### Clone the eShop repository into the Workspaces directory
-  - name: winget
+  - name: ~/winget
     parameters:
       downloadUrl: 'https://raw.githubusercontent.com/contoso-co/common-eng-sys/main/dsc-configurations/common-config.dsc.yaml'
 
-  - name: git-clone
-    description: Clone this repository into z:\Workspaces
-    parameters:
-      repositoryUrl: https://github.com/contoso-co/eshop.git
-      directory: z:\workspaces
-
-  - name: winget
+  - name: ~/winget
     description: Install AZD
     parameters:
       package:  Microsoft.Azd
 
-  - name: winget
+  - name: ~/winget
     description: Install Visual Studio Code
     parameters:
       package:  Microsoft.VisualStudioCode
 
-  - name: powershell
+  - name: ~/powershell
     parameters:
       command: |
         $env:Path = [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User') 

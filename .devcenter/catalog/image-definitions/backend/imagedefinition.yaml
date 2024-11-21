@@ -5,20 +5,15 @@ description: "This definition is for the eShop backend engineering environment"
 
 tasks:
   ### Clone the eShop repository into the Workspaces directory
-  - name: winget
+  - name: ~/winget
     parameters:
       downloadUrl: 'https://raw.githubusercontent.com/contoso-co/common-eng-sys/main/dsc-configurations/common-config.dsc.yaml'
 
-  - name: git-clone
-    description: Clone this repository into z:\Workspaces
-    parameters:
-      repositoryUrl: https://github.com/dhruvchand/contoso-co-eShop.git
-      directory: z:\workspaces
   ### Run the DSC configuration for the backend engineering environment
-  - name: winget
+  - name: ~/winget
     parameters:
       configurationFile: 'z:\workspaces\contoso-co-eShop\.configurations\backend-eng.dsc.yaml'
 userTasks:
-  - name: winget
+  - name: ~/winget
     parameters:
       configurationFile: 'z:\workspaces\contoso-co-eShop\.configurations\backend-eng.postcreate.dsc.yaml'
