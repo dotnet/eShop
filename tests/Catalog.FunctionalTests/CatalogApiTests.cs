@@ -127,7 +127,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     public async Task GetCatalogItemWithExactName()
     {
         // Act
-        var response = await _httpClient.GetAsync("api/catalog/items/by/Wanderer%20Black%20Hiking%20Boots?PageSize=5&PageIndex=0");
+        var response = await _httpClient.GetAsync("api/catalog/items?name=Wanderer%20Black%20Hiking%20Boots&PageSize=5&PageIndex=0");
 
         // Arrange
         response.EnsureSuccessStatusCode();
@@ -147,7 +147,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     public async Task GetCatalogItemWithPartialName()
     {
        // Act
-       var response = await _httpClient.GetAsync("api/catalog/items/by/Alpine?PageSize=5&PageIndex=0");
+       var response = await _httpClient.GetAsync("api/catalog/items?name=Alpine&PageSize=5&PageIndex=0");
 
         // Arrange
         response.EnsureSuccessStatusCode();

@@ -28,11 +28,6 @@ public static class CatalogApi
             .WithSummary("Get catalog item")
             .WithDescription("Get an item from the catalog")
             .WithTags("Items");
-        api.MapGet("/items/by/{name:minlength(1)}", GetItemsByName)
-            .WithName("GetItemsByName")
-            .WithSummary("Get catalog items by name")
-            .WithDescription("Get a paginated list of catalog items with the specified name.")
-            .WithTags("Items");
         api.MapGet("/items/{id:int}/pic", GetItemPictureById)
             .WithName("GetItemPicture")
             .WithSummary("Get catalog item picture")
@@ -83,6 +78,7 @@ public static class CatalogApi
     public static async Task<Ok<PaginatedItems<CatalogItem>>> GetAllItems(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
+        [Description("The name of the item to return")] string name,
         [Description("The type of items to return")] int? type,
         [Description("The brand of items to return")] int? brand)
     {
@@ -91,6 +87,10 @@ public static class CatalogApi
 
         var root = (IQueryable<CatalogItem>)services.Context.CatalogItems;
 
+        if (name is not null)
+        {
+            root = root.Where(c => c.Name.StartsWith(name));
+        }
         if (type is not null)
         {
             root = root.Where(c => c.CatalogTypeId == type);
@@ -143,28 +143,6 @@ public static class CatalogApi
         return TypedResults.Ok(item);
     }
 
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
-    public static async Task<Ok<PaginatedItems<CatalogItem>>> GetItemsByName(
-        [AsParameters] PaginationRequest paginationRequest,
-        [AsParameters] CatalogServices services,
-        [Description("The name of the item to return")] string name)
-    {
-        var pageSize = paginationRequest.PageSize;
-        var pageIndex = paginationRequest.PageIndex;
-
-        var totalItems = await services.Context.CatalogItems
-            .Where(c => c.Name.StartsWith(name))
-            .LongCountAsync();
-
-        var itemsOnPage = await services.Context.CatalogItems
-            .Where(c => c.Name.StartsWith(name))
-            .Skip(pageSize * pageIndex)
-            .Take(pageSize)
-            .ToListAsync();
-
-        return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
-    }
-
     [ProducesResponseType<byte[]>(StatusCodes.Status200OK, "application/octet-stream",
         [ "image/png", "image/gif", "image/jpeg", "image/bmp", "image/tiff",
           "image/wmf", "image/jp2", "image/svg+xml", "image/webp" ])]
@@ -200,7 +178,7 @@ public static class CatalogApi
 
         if (!services.CatalogAI.IsEnabled)
         {
-            return await GetItemsByName(paginationRequest, services, text);
+            return await GetAllItems(paginationRequest, services, text, null, null);
         }
 
         // Create an embedding for the input search
