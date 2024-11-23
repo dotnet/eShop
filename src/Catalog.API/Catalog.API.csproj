@@ -10,12 +10,20 @@
     <Compile Include="..\Shared\MigrateDbContextExtensions.cs" Link="Extensions\MigrateDbContextExtensions.cs" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)</OpenApiDocumentsDirectory>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Http" />
     <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Server">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
 

@@ -1,0 +1,761 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "eShop - Catalog HTTP API",
+    "description": "The Catalog Microservice HTTP API. This is a Data-Driven/CRUD microservice sample",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/catalog/items": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "PageIndex",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedItemsOfCatalogItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CatalogItem"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CatalogItem"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/api/catalog/items/by": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CatalogItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/catalog/items/{id}": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogItem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/catalog/items/by/{name}": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "PageIndex",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedItemsOfCatalogItem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/catalog/items/{catalogItemId}/pic": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "catalogItemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/catalog/items/withsemanticrelevance/{text}": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "PageIndex",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "text",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedItemsOfCatalogItem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/catalog/items/type/{typeId}/brand/{brandId}": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "PageIndex",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "typeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "brandId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedItemsOfCatalogItem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/catalog/items/type/all/brand/{brandId}": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "PageIndex",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "brandId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedItemsOfCatalogItem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/catalog/catalogtypes": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CatalogType2"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/catalog/catalogbrands": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CatalogBrand2"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CatalogBrand": {
+        "required": [
+          "brand"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "brand": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "nullable": true
+      },
+      "CatalogBrand2": {
+        "required": [
+          "brand"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "brand": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CatalogItem": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "pictureFileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "catalogTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "catalogType": {
+            "$ref": "#/components/schemas/CatalogType"
+          },
+          "catalogBrandId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "catalogBrand": {
+            "$ref": "#/components/schemas/CatalogBrand"
+          },
+          "availableStock": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "restockThreshold": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxStockThreshold": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "onReorder": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CatalogType": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "nullable": true
+      },
+      "CatalogType2": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "PaginatedItemsOfCatalogItem": {
+        "required": [
+          "pageIndex",
+          "pageSize",
+          "count",
+          "data"
+        ],
+        "type": "object",
+        "properties": {
+          "pageIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CatalogItem"
+            },
+            "nullable": true
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Catalog"
+    }
+  ]
+}
