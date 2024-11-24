@@ -50,7 +50,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         // Act - 2
         var priorAvailableStock = itemToUpdate.AvailableStock;
         itemToUpdate.AvailableStock -= 1;
-        response = await _httpClient.PutAsJsonAsync("/api/catalog/items", itemToUpdate);
+        response = await _httpClient.PutAsJsonAsync("/api/catalog/items/1", itemToUpdate);
         response.EnsureSuccessStatusCode();
 
         // Act - 3
@@ -77,7 +77,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var priorAvailableStock = itemToUpdate.AvailableStock;
         itemToUpdate.AvailableStock -= 1;
         itemToUpdate.Price = 1.99m;
-        response = await _httpClient.PutAsJsonAsync("/api/catalog/items", itemToUpdate);
+        response = await _httpClient.PutAsJsonAsync("/api/catalog/items/1", itemToUpdate);
         response.EnsureSuccessStatusCode();
 
         // Act - 3

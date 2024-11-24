@@ -58,15 +58,14 @@ public static class CatalogApi
             .WithTags("Brands");
 
         // Routes for modifying catalog items.
-        api.MapPut("/items", UpdateItem)
-            .WithName("UpdateItem")
-            .WithSummary("Create or replace a catalog item")
-            .WithDescription("Create or replace a catalog item")
-            .WithTags("Items");
         api.MapPost("/items", CreateItem)
             .WithName("CreateItem")
             .WithSummary("Create a catalog item")
             .WithDescription("Create a new item in the catalog");
+        api.MapPut("/items/{id:int}", UpdateItem)
+            .WithName("UpdateItem")
+            .WithSummary("Replace a catalog item")
+            .WithDescription("Replace a catalog item");
         api.MapDelete("/items/{id:int}", DeleteItemById)
             .WithName("DeleteItem")
             .WithSummary("Delete catalog item")
@@ -224,11 +223,20 @@ public static class CatalogApi
     }
 
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
-    public static async Task<Results<Created, NotFound<ProblemDetails>>> UpdateItem(
+    public static async Task<Results<Created, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> UpdateItem(
+        [Description("The id of the catalog item to delete")] int id,
         HttpContext httpContext,
         [AsParameters] CatalogServices services,
         CatalogItem productToUpdate)
     {
+        if (id != productToUpdate.Id)
+        {
+            return TypedResults.BadRequest<ProblemDetails>(new ()
+            {
+                Detail = "The id in the URL does not match the id in the request body.",
+            });
+        }
+
         var catalogItem = await services.Context.CatalogItems.SingleOrDefaultAsync(i => i.Id == productToUpdate.Id);
 
         if (catalogItem == null)
