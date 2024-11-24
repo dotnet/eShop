@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -35,7 +36,7 @@ public static class CatalogApi
             .WithTags("Items");
 
         // Routes for resolving catalog items using AI.
-        api.MapGet("/items/withsemanticrelevance/{text:minlength(1)}", GetItemsBySemanticRelevance)
+        api.MapGet("/items/withsemanticrelevance", GetItemsBySemanticRelevance)
             .WithName("GetRelevantItems")
             .WithSummary("Search catalog for relevant items")
             .WithDescription("Search the catalog for items related to the specified text")
@@ -167,12 +168,19 @@ public static class CatalogApi
         return TypedResults.PhysicalFile(path, mimetype, lastModified: lastModified);
     }
 
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
-    public static async Task<Results<Ok<PaginatedItems<CatalogItem>>, RedirectToRouteHttpResult>> GetItemsBySemanticRelevance(
+    public static async Task<Results<Ok<PaginatedItems<CatalogItem>>, BadRequest<ProblemDetails>, RedirectToRouteHttpResult>> GetItemsBySemanticRelevance(
+        HttpContext httpContext,
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
-        [Description("The text string to use when search for related items in the catalog")] string text)
+        [Description("The text string to use when search for related items in the catalog"), Required, MinLength(1)] string text)
     {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return TypedResults.BadRequest<ProblemDetails>(new (){
+                Detail = "The text parameter is required.",
+            });
+        }
+
         var pageSize = paginationRequest.PageSize;
         var pageIndex = paginationRequest.PageIndex;
 

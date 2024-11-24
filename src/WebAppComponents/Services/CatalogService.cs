@@ -30,7 +30,7 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
 
     public Task<CatalogResult> GetCatalogItemsWithSemanticRelevance(int page, int take, string text)
     {
-        var url = $"{remoteServiceBaseUrl}items/withsemanticrelevance/{HttpUtility.UrlEncode(text)}?pageIndex={page}&pageSize={take}";
+        var url = $"{remoteServiceBaseUrl}items/withsemanticrelevance?text={HttpUtility.UrlEncode(text)}&pageIndex={page}&pageSize={take}";
         var result = httpClient.GetFromJsonAsync<CatalogResult>(url);
         return result!;
     }

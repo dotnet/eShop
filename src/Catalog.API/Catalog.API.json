@@ -440,7 +440,7 @@
         }
       }
     },
-    "/api/catalog/items/withsemanticrelevance/{text}": {
+    "/api/catalog/items/withsemanticrelevance": {
       "get": {
         "tags": [
           "Search"
@@ -471,7 +471,7 @@
           },
           {
             "name": "text",
-            "in": "path",
+            "in": "query",
             "description": "The text string to use when search for related items in the catalog",
             "required": true,
             "schema": {
@@ -504,7 +504,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
                 }
