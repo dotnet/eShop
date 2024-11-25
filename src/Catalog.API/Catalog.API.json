@@ -554,7 +554,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/CatalogType2"
+                    "$ref": "#/components/schemas/CatalogType"
                   }
                 }
               }
@@ -586,7 +586,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/CatalogBrand2"
+                    "$ref": "#/components/schemas/CatalogBrand"
                   }
                 }
               }
@@ -599,23 +599,6 @@
   "components": {
     "schemas": {
       "CatalogBrand": {
-        "required": [
-          "brand"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "brand": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "nullable": true
-      },
-      "CatalogBrand2": {
         "required": [
           "brand"
         ],
@@ -646,16 +629,14 @@
             "nullable": true
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "price": {
             "type": "number",
             "format": "double"
           },
           "pictureFileName": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "catalogTypeId": {
             "type": "integer",
@@ -689,23 +670,6 @@
         }
       },
       "CatalogType": {
-        "required": [
-          "type"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "type": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "nullable": true
-      },
-      "CatalogType2": {
         "required": [
           "type"
         ],
