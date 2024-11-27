@@ -12,7 +12,7 @@
   <ItemGroup>
 
     <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.10" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.10" />
     <PackageReference Include="Microsoft.Maui.Controls.Maps" Version="9.0.10" />
     
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
