@@ -6,7 +6,7 @@
     <MicrosoftExtensionsVersion>9.0.0</MicrosoftExtensionsVersion>
     <AspireVersion>9.0.0</AspireVersion>
     <AspireUnstablePackagesVersion>9.0.0-preview.5.24551.3</AspireUnstablePackagesVersion>
-    <GrpcVersion>2.67.0-pre1</GrpcVersion>
+    <GrpcVersion>2.67.0</GrpcVersion>
     <DuendeVersion>7.0.8</DuendeVersion>
     <ApiVersioningVersion>8.1.0</ApiVersioningVersion>
   </PropertyGroup>
@@ -74,7 +74,7 @@
     <PackageVersion Include="Duende.IdentityServer.EntityFramework.Storage" Version="$(DuendeVersion)" />
     <PackageVersion Include="Duende.IdentityServer.Storage" Version="$(DuendeVersion)" />
     <!-- VS Test -->
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <!-- Scaffolding -->
     <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0-rc.1.23461.3" />
     <!-- Grpc -->
@@ -93,6 +93,6 @@
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.2.0" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="1.2.36"/>
+    <PackageVersion Include="Scalar.AspNetCore" Version="1.2.44"/>
   </ItemGroup>
 </Project>
