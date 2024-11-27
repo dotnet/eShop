@@ -6,7 +6,7 @@
     <MicrosoftExtensionsVersion>9.0.0</MicrosoftExtensionsVersion>
     <AspireVersion>9.0.0</AspireVersion>
     <AspireUnstablePackagesVersion>9.0.0-preview.5.24551.3</AspireUnstablePackagesVersion>
-    <GrpcVersion>2.67.0-pre1</GrpcVersion>
+    <GrpcVersion>2.67.0</GrpcVersion>
     <DuendeVersion>7.0.8</DuendeVersion>
     <ApiVersioningVersion>8.1.0</ApiVersioningVersion>
   </PropertyGroup>
