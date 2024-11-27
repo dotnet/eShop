@@ -4,7 +4,6 @@ image: microsoftwindowsdesktop_windows-ent-cpc_win11-24H2-ent-cpc
 description: "This definition is for the eShop frontend engineering environment"
 
 tasks:
-  ### Clone the eShop repository into the Workspaces directory
   - name: ~/winget
     parameters:
       downloadUrl: 'https://raw.githubusercontent.com/contoso-co/common-eng-sys/main/dsc-configurations/common-config.dsc.yaml'
