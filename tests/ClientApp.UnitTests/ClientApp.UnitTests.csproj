@@ -15,7 +15,7 @@
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.10" />
     <PackageReference Include="Microsoft.Maui.Controls.Maps" Version="9.0.10" />
     
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     
     <PackageReference Include="coverlet.collector" Version="6.0.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
