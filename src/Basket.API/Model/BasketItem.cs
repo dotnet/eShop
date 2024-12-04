@@ -19,6 +19,12 @@ public class BasketItem : IValidatableObject
             results.Add(new ValidationResult("Invalid number of units", new[] { "Quantity" }));
         }
 
+        // Ensure that Quantity is not larger than 100
+        if (Quantity > 100)
+        {
+            results.Add(new ValidationResult("The quantity cannot exceed 100", new[] { "Quantity" }));
+        }
+
         return results;
     }
 }
