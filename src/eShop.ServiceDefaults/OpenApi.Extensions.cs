@@ -67,6 +67,7 @@ public static partial class Extensions
                     options.ApplyAuthorizationChecks([.. scopes.Keys]);
                     options.ApplySecuritySchemeDefinitions();
                     options.ApplyOperationDeprecatedStatus();
+                    options.ApplyApiVersionDescription();
                     // Clear out the default servers so we can fallback to
                     // whatever ports have been allocated for the service by Aspire
                     options.AddDocumentTransformer((document, context, cancellationToken) =>

@@ -149,6 +149,22 @@ internal static class OpenApiOptionsExtensions
         return options;
     }
 
+    public static OpenApiOptions ApplyApiVersionDescription(this OpenApiOptions options)
+    {
+        options.AddOperationTransformer((operation, context, cancellationToken) =>
+        {
+            // Find parameter named "api-version" and add a description to it
+            var apiVersionParameter = operation.Parameters.FirstOrDefault(p => p.Name == "api-version");
+            if (apiVersionParameter is not null)
+            {
+                apiVersionParameter.Description = "The API version, in the format 'major.minor'.";
+                apiVersionParameter.Schema.Example = new OpenApiString("1.0");
+            }
+            return Task.CompletedTask;
+        });
+        return options;
+    }
+
     private static IOpenApiAny? CreateOpenApiAnyFromObject(object value)
     {
         return value switch
