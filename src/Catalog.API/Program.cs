@@ -3,7 +3,7 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-if (Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider")
+if (builder.Environment.IsBuild())
 {
     // Add a dummy DB context
     builder.Services.AddDbContext<CatalogContext>();
