@@ -177,6 +177,27 @@ internal static class OpenApiOptionsExtensions
         };
     }
 
+    // This extension method adds a schema transformer that sets "nullable" to false for all optional properties.
+    public static OpenApiOptions ApplySchemaNullableFalse(this OpenApiOptions options)
+    {
+        options.AddSchemaTransformer((schema, context, cancellationToken) =>
+        {
+            if (schema.Properties is not null)
+            {
+                foreach (var property in schema.Properties)
+                {
+                    if (schema.Required?.Contains(property.Key) != true)
+                    {
+                        property.Value.Nullable = false;
+                    }
+                }
+            }
+
+            return Task.CompletedTask;
+        });
+        return options;
+    }
+
     private class SecuritySchemeDefinitionsTransformer(IConfiguration configuration) : IOpenApiDocumentTransformer
     {
         public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
