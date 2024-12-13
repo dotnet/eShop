@@ -3,16 +3,8 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-if (builder.Environment.IsBuild())
-{
-    // Add a dummy DB context
-    builder.Services.AddDbContext<CatalogContext>();
-}
-else
-{
-    builder.AddServiceDefaults();
-    builder.AddApplicationServices();
-}
+builder.AddServiceDefaults();
+builder.AddApplicationServices();
 builder.Services.AddProblemDetails();
 
 var withApiVersioning = builder.Services.AddApiVersioning();
