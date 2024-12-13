@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning.Builder;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
