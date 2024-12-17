@@ -101,12 +101,10 @@ public static class Extensions
         if (builder.Configuration["OllamaEnabled"] is string ollamaEnabled && bool.Parse(ollamaEnabled))
         {
             builder.AddKeyedOllamaSharpChatClient("chat");
-            builder.Services.AddChatClient(b => b
+            builder.Services.AddChatClient(b => b.GetRequiredKeyedService<IChatClient>("chat"))
                 .UseFunctionInvocation()
                 .UseOpenTelemetry(configure: t => t.EnableSensitiveData = true)
-                .UseLogging()
-                // Use the OllamaSharp chat client
-                .Use(b.Services.GetRequiredKeyedService<IChatClient>("chat")));
+                .UseLogging();
         }
         else
         {

@@ -86,19 +86,17 @@ if (useOllama)
 {
     var ollama = builder.AddOllama("ollama")
         .WithDataVolume()
+        .WithGPUSupport()
         .WithOpenWebUI();
     var embeddings = ollama.AddModel("embedding", "all-minilm");
     var chat = ollama.AddModel("chat", "llama3.1");
 
-    // WaitFor blocked pending: https://github.com/CommunityToolkit/Aspire/issues/256
     catalogApi.WithReference(embeddings)
         .WithEnvironment("OllamaEnabled", "true")
-        //.WaitFor(embeddings)
-        ;
+        .WaitFor(embeddings);
     webApp.WithReference(chat)
         .WithEnvironment("OllamaEnabled", "true")
-        //.WaitFor(chat)
-        ;
+        .WaitFor(chat);
 }
 
 // Wire up the callback urls (self referencing)
