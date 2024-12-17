@@ -149,6 +149,22 @@ internal static class OpenApiOptionsExtensions
         return options;
     }
 
+    public static OpenApiOptions ApplyApiVersionDescription(this OpenApiOptions options)
+    {
+        options.AddOperationTransformer((operation, context, cancellationToken) =>
+        {
+            // Find parameter named "api-version" and add a description to it
+            var apiVersionParameter = operation.Parameters.FirstOrDefault(p => p.Name == "api-version");
+            if (apiVersionParameter is not null)
+            {
+                apiVersionParameter.Description = "The API version, in the format 'major.minor'.";
+                apiVersionParameter.Schema.Example = new OpenApiString("1.0");
+            }
+            return Task.CompletedTask;
+        });
+        return options;
+    }
+
     private static IOpenApiAny? CreateOpenApiAnyFromObject(object value)
     {
         return value switch
@@ -159,6 +175,27 @@ internal static class OpenApiOptionsExtensions
             string s => new OpenApiString(s),
             _ => null
         };
+    }
+
+    // This extension method adds a schema transformer that sets "nullable" to false for all optional properties.
+    public static OpenApiOptions ApplySchemaNullableFalse(this OpenApiOptions options)
+    {
+        options.AddSchemaTransformer((schema, context, cancellationToken) =>
+        {
+            if (schema.Properties is not null)
+            {
+                foreach (var property in schema.Properties)
+                {
+                    if (schema.Required?.Contains(property.Key) != true)
+                    {
+                        property.Value.Nullable = false;
+                    }
+                }
+            }
+
+            return Task.CompletedTask;
+        });
+        return options;
     }
 
     private class SecuritySchemeDefinitionsTransformer(IConfiguration configuration) : IOpenApiDocumentTransformer

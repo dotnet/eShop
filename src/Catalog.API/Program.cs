@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning.Builder;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ builder.AddDefaultOpenApi(withApiVersioning);
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
+
+app.UseStatusCodePages();
 
 app.NewVersionedApi("Catalog")
    .MapCatalogApiV1();
