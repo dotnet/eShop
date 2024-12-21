@@ -39,8 +39,8 @@ public static class Extensions
 
         if (builder.Configuration["OllamaEnabled"] is string ollamaEnabled && bool.Parse(ollamaEnabled))
         {
-            builder.AddKeyedOllamaSharpEmbeddingGenerator("embedding");
-            builder.Services.AddEmbeddingGenerator(b => b.GetRequiredKeyedService<IEmbeddingGenerator<string, Embedding<float>>>("embedding"))
+            builder.AddOllamaSharpEmbeddingGenerator("embedding");
+            builder.Services.AddEmbeddingGenerator(b => b.GetRequiredService<IEmbeddingGenerator<string, Embedding<float>>>())
                 .UseOpenTelemetry()
                 .UseLogging();
         }
