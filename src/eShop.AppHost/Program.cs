@@ -84,19 +84,7 @@ if (useOpenAI)
 bool useOllama = false;
 if (useOllama)
 {
-    var ollama = builder.AddOllama("ollama")
-        .WithDataVolume()
-        .WithGPUSupport()
-        .WithOpenWebUI();
-    var embeddings = ollama.AddModel("embedding", "all-minilm");
-    var chat = ollama.AddModel("chat", "llama3.1");
-
-    catalogApi.WithReference(embeddings)
-        .WithEnvironment("OllamaEnabled", "true")
-        .WaitFor(embeddings);
-    webApp.WithReference(chat)
-        .WithEnvironment("OllamaEnabled", "true")
-        .WaitFor(chat);
+    builder.AddOllama(catalogApi, webApp);
 }
 
 // Wire up the callback urls (self referencing)
