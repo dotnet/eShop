@@ -26,6 +26,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>
+    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="9.1.0" />
+    <PackageVersion Include="CommunityToolkit.Aspire.OllamaSharp" Version="9.1.0" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="$(AspireVersion)" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery.Yarp" Version="$(AspireVersion)" />
     <!-- Version together with Asp.Versioning -->

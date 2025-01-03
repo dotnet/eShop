@@ -19,6 +19,7 @@
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Http.Client" />
     <PackageReference Include="Aspire.Azure.AI.OpenAI" />
+    <PackageReference Include="CommunityToolkit.Aspire.OllamaSharp" />
     <PackageReference Include="Microsoft.Extensions.ServiceDiscovery.Yarp" />
     <PackageReference Include="Microsoft.Extensions.AI" />
     <PackageReference Include="Microsoft.Extensions.AI.OpenAI" />
