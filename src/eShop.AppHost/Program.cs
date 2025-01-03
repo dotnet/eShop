@@ -81,6 +81,12 @@ if (useOpenAI)
     builder.AddOpenAI(catalogApi, webApp);
 }
 
+bool useOllama = false;
+if (useOllama)
+{
+    builder.AddOllama(catalogApi, webApp);
+}
+
 // Wire up the callback urls (self referencing)
 webApp.WithEnvironment("CallBackUrl", webApp.GetEndpoint(launchProfileName));
 webhooksClient.WithEnvironment("CallBackUrl", webhooksClient.GetEndpoint(launchProfileName));

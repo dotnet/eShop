@@ -75,4 +75,28 @@ internal static class Extensions
 
         return builder;
     }
+
+    /// <summary>
+    /// Configures eShop projects to use Ollama for text embedding and chat.
+    /// </summary>
+    public static IDistributedApplicationBuilder AddOllama(this IDistributedApplicationBuilder builder,
+        IResourceBuilder<ProjectResource> catalogApi,
+        IResourceBuilder<ProjectResource> webApp)
+    {
+        var ollama = builder.AddOllama("ollama")
+            .WithDataVolume()
+            .WithGPUSupport()
+            .WithOpenWebUI();
+        var embeddings = ollama.AddModel("embedding", "all-minilm");
+        var chat = ollama.AddModel("chat", "llama3.1");
+
+        catalogApi.WithReference(embeddings)
+            .WithEnvironment("OllamaEnabled", "true")
+            .WaitFor(embeddings);
+        webApp.WithReference(chat)
+            .WithEnvironment("OllamaEnabled", "true")
+            .WaitFor(chat);
+
+        return builder;
+    }
 }
