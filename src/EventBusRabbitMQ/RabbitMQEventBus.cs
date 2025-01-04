@@ -170,7 +170,7 @@ public sealed class RabbitMQEventBus(
         {
             logger.LogWarning(ex, "Error Processing message \"{Message}\"", message);
 
-            activity.SetExceptionTags(ex);
+            activity?.SetExceptionTags(ex);
         }
 
         // Even on exception we take the message off the queue.
@@ -196,7 +196,7 @@ public sealed class RabbitMQEventBus(
 
         // Deserialize the event
         var integrationEvent = DeserializeMessage(message, eventType);
-        
+
         // REVIEW: This could be done in parallel
 
         // Get all the handlers using the event type as the key

@@ -22,7 +22,12 @@ class GrantUrlTesterService(IHttpClientFactory factory, ILogger<IGrantUrlTesterS
             var tokenReceived = response.Headers.TryGetValues("X-eshop-whtoken", out var tokenValues) ? tokenValues.FirstOrDefault() : null;
             var tokenExpected = string.IsNullOrWhiteSpace(token) ? null : token;
 
-            logger.LogInformation("Response code is {StatusCode} for url {Url} and token in header was {TokenReceived} (expected token was {TokenExpected})", response.StatusCode, url, tokenReceived, tokenExpected);
+            logger.LogInformation(
+                "Response code is {StatusCode} for url {Url} and token in header was {TokenReceived} (expected token was {TokenExpected})",
+                response.StatusCode,
+                url,
+                tokenReceived,
+                tokenExpected);
 
             return response.IsSuccessStatusCode && tokenReceived == tokenExpected;
         }

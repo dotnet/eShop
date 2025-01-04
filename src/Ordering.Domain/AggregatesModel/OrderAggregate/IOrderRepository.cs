@@ -1,8 +1,7 @@
 ﻿namespace eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
 
-//This is just the RepositoryContracts or Interface defined at the Domain Layer
-//as requisite for the Order Aggregate
-
+// This defines the Repository Contracts or Interfaces at the Domain Layer,
+// as a requirement for the Order Aggregate.
 public interface IOrderRepository : IRepository<Order>
 {
     Order Add(Order order);

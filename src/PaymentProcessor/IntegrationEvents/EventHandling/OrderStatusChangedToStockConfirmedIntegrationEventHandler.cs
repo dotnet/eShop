@@ -27,7 +27,10 @@ public class OrderStatusChangedToStockConfirmedIntegrationEventHandler(
             orderPaymentIntegrationEvent = new OrderPaymentFailedIntegrationEvent(@event.OrderId);
         }
 
-        logger.LogInformation("Publishing integration event: {IntegrationEventId} - ({@IntegrationEvent})", orderPaymentIntegrationEvent.Id, orderPaymentIntegrationEvent);
+        logger.LogInformation(
+            "Publishing integration event: {IntegrationEventId} - ({@IntegrationEvent})",
+            orderPaymentIntegrationEvent.Id,
+            orderPaymentIntegrationEvent);
 
         await eventBus.PublishAsync(orderPaymentIntegrationEvent);
     }

@@ -28,7 +28,8 @@ internal static class MigrateDbContextExtensions
         return services.AddMigration<TContext>((context, sp) => sp.GetRequiredService<IDbSeeder<TContext>>().SeedAsync(context));
     }
 
-    private static async Task MigrateDbContextAsync<TContext>(this IServiceProvider services, Func<TContext, IServiceProvider, Task> seeder) where TContext : DbContext
+    private static async Task MigrateDbContextAsync<TContext>(this IServiceProvider services, Func<TContext, IServiceProvider, Task> seeder) 
+        where TContext : DbContext
     {
         using var scope = services.CreateScope();
         var scopeServices = scope.ServiceProvider;

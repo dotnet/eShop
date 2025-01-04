@@ -42,7 +42,10 @@ public sealed class CatalogAI : ICatalogAI
 
             if (_logger.IsEnabled(LogLevel.Trace))
             {
-                _logger.LogTrace("Generated {EmbeddingsCount} embeddings in {ElapsedMilliseconds}s", results.Count, Stopwatch.GetElapsedTime(timestamp).TotalSeconds);
+                _logger.LogTrace(
+                    "Generated {EmbeddingsCount} embeddings in {ElapsedMilliseconds}s",
+                    results.Count,
+                    Stopwatch.GetElapsedTime(timestamp).TotalSeconds);
             }
 
             return results;

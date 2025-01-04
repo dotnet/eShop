@@ -9,7 +9,9 @@ public class OrderStatusChangedToPaidIntegrationEventHandler(
     {
         var subscriptions = await retriever.GetSubscriptionsOfType(WebhookType.OrderPaid);
 
-        logger.LogInformation("Received OrderStatusChangedToShippedIntegrationEvent and got {SubscriptionsCount} subscriptions to process", subscriptions.Count());
+        logger.LogInformation(
+            "Received OrderStatusChangedToShippedIntegrationEvent and got {SubscriptionsCount} subscriptions to process", 
+            subscriptions.Count());
 
         var whook = new WebhookData(WebhookType.OrderPaid, @event);
 

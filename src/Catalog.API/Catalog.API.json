@@ -74,7 +74,7 @@
           "Items"
         ],
         "summary": "Create or replace a catalog item",
-        "description": "Create or replace a catalog item",
+        "description": "Create or replace a catalog item.",
         "operationId": "UpdateItem",
         "parameters": [
           {
@@ -118,7 +118,7 @@
           "Catalog"
         ],
         "summary": "Create a catalog item",
-        "description": "Create a new item in the catalog",
+        "description": "Create a new item in the catalog.",
         "operationId": "CreateItem",
         "parameters": [
           {
@@ -164,13 +164,13 @@
           "Items"
         ],
         "summary": "Batch get catalog items",
-        "description": "Get multiple items from the catalog",
+        "description": "Get multiple items from the catalog.",
         "operationId": "BatchGetItems",
         "parameters": [
           {
             "name": "ids",
             "in": "query",
-            "description": "List of ids for catalog items to return",
+            "description": "List of ids for catalog items to return.",
             "schema": {
               "type": "array",
               "items": {
@@ -223,13 +223,13 @@
           "Items"
         ],
         "summary": "Get catalog item",
-        "description": "Get an item from the catalog",
+        "description": "Get an item from the catalog.",
         "operationId": "GetItem",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "The catalog item id",
+            "description": "The catalog item id.",
             "required": true,
             "schema": {
               "type": "integer",
@@ -278,7 +278,7 @@
           "Catalog"
         ],
         "summary": "Delete catalog item",
-        "description": "Delete the specified catalog item",
+        "description": "Delete the specified catalog item.",
         "operationId": "DeleteItem",
         "parameters": [
           {
@@ -344,7 +344,7 @@
           {
             "name": "name",
             "in": "path",
-            "description": "The name of the item to return",
+            "description": "The name of the item to return.",
             "required": true,
             "schema": {
               "minLength": 1,
@@ -392,13 +392,13 @@
           "Items"
         ],
         "summary": "Get catalog item picture",
-        "description": "Get the picture for a catalog item",
+        "description": "Get the picture for a catalog item.",
         "operationId": "GetItemPicture",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "The catalog item id",
+            "description": "The catalog item id.",
             "required": true,
             "schema": {
               "type": "integer",
@@ -494,7 +494,7 @@
           "Search"
         ],
         "summary": "Search catalog for relevant items",
-        "description": "Search the catalog for items related to the specified text",
+        "description": "Search the catalog for items related to the specified text.",
         "operationId": "GetRelevantItems",
         "parameters": [
           {
@@ -520,7 +520,7 @@
           {
             "name": "text",
             "in": "path",
-            "description": "The text string to use when search for related items in the catalog",
+            "description": "The text string to use when search for related items in the catalog.",
             "required": true,
             "schema": {
               "minLength": 1,
@@ -568,7 +568,7 @@
           "Types"
         ],
         "summary": "Get catalog items by type and brand",
-        "description": "Get catalog items of the specified type and brand",
+        "description": "Get catalog items of the specified type and brand.",
         "operationId": "GetItemsByTypeAndBrand",
         "parameters": [
           {
@@ -594,7 +594,7 @@
           {
             "name": "typeId",
             "in": "path",
-            "description": "The type of items to return",
+            "description": "The type of items to return.",
             "required": true,
             "schema": {
               "type": "integer",
@@ -604,7 +604,7 @@
           {
             "name": "brandId",
             "in": "path",
-            "description": "The brand of items to return",
+            "description": "The brand of items to return.",
             "required": true,
             "schema": {
               "type": "integer",
@@ -652,7 +652,7 @@
           "Brands"
         ],
         "summary": "List catalog items by brand",
-        "description": "Get a list of catalog items for the specified brand",
+        "description": "Get a list of catalog items for the specified brand.",
         "operationId": "GetItemsByBrand",
         "parameters": [
           {
@@ -678,7 +678,7 @@
           {
             "name": "brandId",
             "in": "path",
-            "description": "The brand of items to return",
+            "description": "The brand of items to return.",
             "required": true,
             "schema": {
               "type": "integer",
@@ -726,7 +726,7 @@
           "Types"
         ],
         "summary": "List catalog item types",
-        "description": "Get a list of the types of catalog items",
+        "description": "Get a list of the types of catalog items.",
         "operationId": "ListItemTypes",
         "parameters": [
           {
@@ -773,7 +773,7 @@
           "Brands"
         ],
         "summary": "List catalog item brands",
-        "description": "Get a list of the brands of catalog items",
+        "description": "Get a list of the brands of catalog items.",
         "operationId": "ListItemBrands",
         "parameters": [
           {

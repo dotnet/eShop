@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using eShop.Basket.API.Repositories;
-using eShop.Basket.API.Extensions;
 using eShop.Basket.API.Model;
+using eShop.Basket.API.Repositories;
 
 namespace eShop.Basket.API.Grpc;
 
@@ -69,10 +68,12 @@ public class BasketService(
     }
 
     [DoesNotReturn]
-    private static void ThrowNotAuthenticated() => throw new RpcException(new Status(StatusCode.Unauthenticated, "The caller is not authenticated."));
+    private static void ThrowNotAuthenticated()
+        => throw new RpcException(new Status(StatusCode.Unauthenticated, "The caller is not authenticated."));
 
     [DoesNotReturn]
-    private static void ThrowBasketDoesNotExist(string userId) => throw new RpcException(new Status(StatusCode.NotFound, $"Basket with buyer id {userId} does not exist"));
+    private static void ThrowBasketDoesNotExist(string userId)
+        => throw new RpcException(new Status(StatusCode.NotFound, $"Basket with buyer id {userId} does not exist"));
 
     private static CustomerBasketResponse MapToCustomerBasketResponse(CustomerBasket customerBasket)
     {

@@ -38,7 +38,7 @@ public class NewOrderRequestHandlerTest
 
         var LoggerMock = Substitute.For<ILogger<CreateOrderCommandHandler>>();
         //Act
-        var handler = new CreateOrderCommandHandler(_mediator, _orderingIntegrationEventService, _orderRepositoryMock, _identityServiceMock, LoggerMock);
+        var handler = new CreateOrderCommandHandler(_orderingIntegrationEventService, _orderRepositoryMock, LoggerMock);
         var cltToken = new CancellationToken();
         var result = await handler.Handle(fakeOrderCmd, cltToken);
 

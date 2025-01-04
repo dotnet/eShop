@@ -1,5 +1,4 @@
-﻿global using Asp.Versioning;
-global using Asp.Versioning.Conventions;
+﻿global using Asp.Versioning.Conventions;
 global using eShop.Catalog.API;
 global using eShop.Catalog.API.Infrastructure;
 global using eShop.Catalog.API.Infrastructure.EntityConfigurations;
