@@ -8,9 +8,10 @@ namespace eShop.Catalog.API;
 
 public static class CatalogApi
 {
-    public static IEndpointRouteBuilder MapCatalogApiV1(this IEndpointRouteBuilder app)
+    public static IEndpointRouteBuilder MapCatalogApi(this IEndpointRouteBuilder app)
     {
-        var api = app.MapGroup("api/catalog").HasApiVersion(1.0);
+        // EndpointRouteBuilder for endpoints in both v1 and v2
+        var api = app.NewVersionedApi("Catalog").MapGroup("api/catalog").HasApiVersion(1.0).HasApiVersion(2.0);
 
         // Routes for querying catalog items.
         api.MapGet("/items", GetAllItems)

@@ -17,8 +17,7 @@ app.MapDefaultEndpoints();
 
 app.UseStatusCodePages();
 
-app.NewVersionedApi("Catalog")
-   .MapCatalogApiV1();
+app.MapCatalogApi();
 
 app.UseDefaultOpenApi();
 app.Run();

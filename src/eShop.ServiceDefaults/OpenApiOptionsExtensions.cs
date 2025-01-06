@@ -3,6 +3,7 @@ using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -158,7 +159,14 @@ internal static class OpenApiOptionsExtensions
             if (apiVersionParameter is not null)
             {
                 apiVersionParameter.Description = "The API version, in the format 'major.minor'.";
-                apiVersionParameter.Schema.Example = new OpenApiString("1.0");
+                switch (context.DocumentName) {
+                    case "v1":
+                        apiVersionParameter.Schema.Example = new OpenApiString("1.0");
+                        break;
+                    case "v2":
+                        apiVersionParameter.Schema.Example = new OpenApiString("2.0");
+                        break;
+                }
             }
             return Task.CompletedTask;
         });
