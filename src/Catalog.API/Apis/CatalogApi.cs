@@ -10,11 +10,24 @@ public static class CatalogApi
 {
     public static IEndpointRouteBuilder MapCatalogApi(this IEndpointRouteBuilder app)
     {
-        // EndpointRouteBuilder for endpoints in both v1 and v2
-        var api = app.NewVersionedApi("Catalog").MapGroup("api/catalog").HasApiVersion(1.0).HasApiVersion(2.0);
+        // RouteGroupBuilder for catalog endpoints
+        // var vapi = app.NewVersionedApi("Catalog").MapGroup("api/catalog");
+        // var api = vapi.HasApiVersion(1.0).HasApiVersion(2.0);
+        // var v1 = vapi.HasApiVersion(1.0);
+        // var v2 = vapi.HasApiVersion(2.0);
+
+        var vApi = app.NewVersionedApi("Catalog");
+        var api = vApi.MapGroup("api/catalog").HasApiVersion(1, 0).HasApiVersion(2, 0);
+        var v1 = vApi.MapGroup("api/catalog").HasApiVersion(1, 0);
+        var v2 = vApi.MapGroup("api/catalog").HasApiVersion(2, 0);
 
         // Routes for querying catalog items.
-        api.MapGet("/items", GetAllItems)
+        v1.MapGet("/items", GetAllItemsV1)
+            // .WithName("ListItems")
+            .WithSummary("List catalog items")
+            .WithDescription("Get a paginated list of items in the catalog.")
+            .WithTags("Items");
+        v2.MapGet("/items", GetAllItems)
             .WithName("ListItems")
             .WithSummary("List catalog items")
             .WithDescription("Get a paginated list of items in the catalog.")
@@ -89,6 +102,15 @@ public static class CatalogApi
             .WithDescription("Delete the specified catalog item");
 
         return app;
+    }
+
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    public static async Task<Ok<PaginatedItems<CatalogItem>>> GetAllItemsV1(
+        [AsParameters] PaginationRequest paginationRequest,
+        [AsParameters] CatalogServices services)
+    {
+
+        return await GetAllItems(paginationRequest, services);
     }
 
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
