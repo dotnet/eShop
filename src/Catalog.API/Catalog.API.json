@@ -431,50 +431,6 @@
       }
     },
     "/api/catalog/items": {
-      "put": {
-        "tags": [
-          "Items"
-        ],
-        "summary": "Create or replace a catalog item",
-        "description": "Create or replace a catalog item",
-        "operationId": "UpdateItem",
-        "parameters": [
-          {
-            "name": "api-version",
-            "in": "query",
-            "description": "The API version, in the format 'major.minor'.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "1.0"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CatalogItem"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": [
           "Catalog"
@@ -572,6 +528,59 @@
             "description": "Bad Request",
             "content": {
               "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Items"
+        ],
+        "summary": "Create or replace a catalog item",
+        "description": "Create or replace a catalog item",
+        "parameters": [
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The API version, in the format 'major.minor'.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "1.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CatalogItem"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
                 }

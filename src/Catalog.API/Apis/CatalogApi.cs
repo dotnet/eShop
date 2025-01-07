@@ -87,7 +87,12 @@ public static class CatalogApi
             .WithTags("Brands");
 
         // Routes for modifying catalog items.
-        api.MapPut("/items", UpdateItem)
+        v1.MapPut("/items", UpdateItemV1)
+            // .WithName("UpdateItem")
+            .WithSummary("Create or replace a catalog item")
+            .WithDescription("Create or replace a catalog item")
+            .WithTags("Items");
+        v2.MapPut("/items/{id:int}", UpdateItem)
             .WithName("UpdateItem")
             .WithSummary("Create or replace a catalog item")
             .WithDescription("Create or replace a catalog item")
@@ -332,8 +337,23 @@ public static class CatalogApi
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
-    public static async Task<Results<Created, NotFound<ProblemDetails>>> UpdateItem(
+    public static async Task<Results<Created, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> UpdateItemV1(
         HttpContext httpContext,
+        [AsParameters] CatalogServices services,
+        CatalogItem productToUpdate)
+    {
+        if (productToUpdate?.Id == null)
+        {
+            return TypedResults.BadRequest<ProblemDetails>(new (){
+                Detail = "Item id must be provided in the request body."
+            });
+        }
+        return await UpdateItem(httpContext, productToUpdate.Id, services, productToUpdate);
+    }
+
+    public static async Task<Results<Created, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> UpdateItem(
+        HttpContext httpContext,
+        [Description("The id of the catalog item to delete")] int id,
         [AsParameters] CatalogServices services,
         CatalogItem productToUpdate)
     {
