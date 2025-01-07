@@ -42,7 +42,7 @@ public static class CatalogApi
             .WithSummary("Get catalog item")
             .WithDescription("Get an item from the catalog")
             .WithTags("Items");
-        api.MapGet("/items/by/{name:minlength(1)}", GetItemsByName)
+        v1.MapGet("/items/by/{name:minlength(1)}", GetItemsByName)
             .WithName("GetItemsByName")
             .WithSummary("Get catalog items by name")
             .WithDescription("Get a paginated list of catalog items with the specified name.")
@@ -61,12 +61,12 @@ public static class CatalogApi
             .WithTags("Search");
 
         // Routes for resolving catalog items by type and brand.
-        api.MapGet("/items/type/{typeId}/brand/{brandId?}", GetItemsByBrandAndTypeId)
+        v1.MapGet("/items/type/{typeId}/brand/{brandId?}", GetItemsByBrandAndTypeId)
             .WithName("GetItemsByTypeAndBrand")
             .WithSummary("Get catalog items by type and brand")
             .WithDescription("Get catalog items of the specified type and brand")
             .WithTags("Types");
-        api.MapGet("/items/type/all/brand/{brandId:int?}", GetItemsByBrandId)
+        v1.MapGet("/items/type/all/brand/{brandId:int?}", GetItemsByBrandId)
             .WithName("GetItemsByBrand")
             .WithSummary("List catalog items by brand")
             .WithDescription("Get a list of catalog items for the specified brand")
@@ -110,21 +110,39 @@ public static class CatalogApi
         [AsParameters] CatalogServices services)
     {
 
-        return await GetAllItems(paginationRequest, services);
+        return await GetAllItems(paginationRequest, services, null, null, null);
     }
 
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public static async Task<Ok<PaginatedItems<CatalogItem>>> GetAllItems(
         [AsParameters] PaginationRequest paginationRequest,
-        [AsParameters] CatalogServices services)
+        [AsParameters] CatalogServices services,
+        [Description("The name of the item to return")] string name,
+        [Description("The type of items to return")] int? type,
+        [Description("The brand of items to return")] int? brand)
     {
         var pageSize = paginationRequest.PageSize;
         var pageIndex = paginationRequest.PageIndex;
 
-        var totalItems = await services.Context.CatalogItems
+        var root = (IQueryable<CatalogItem>)services.Context.CatalogItems;
+
+        if (name is not null)
+        {
+            root = root.Where(c => c.Name.StartsWith(name));
+        }
+        if (type is not null)
+        {
+            root = root.Where(c => c.CatalogTypeId == type);
+        }
+        if (brand is not null)
+        {
+            root = root.Where(c => c.CatalogBrandId == brand);
+        }
+
+        var totalItems = await root
             .LongCountAsync();
 
-        var itemsOnPage = await services.Context.CatalogItems
+        var itemsOnPage = await root
             .OrderBy(c => c.Name)
             .Skip(pageSize * pageIndex)
             .Take(pageSize)

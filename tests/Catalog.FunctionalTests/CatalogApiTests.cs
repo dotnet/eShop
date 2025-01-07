@@ -4,6 +4,7 @@ using Asp.Versioning;
 using Asp.Versioning.Http;
 using eShop.Catalog.API.Model;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace eShop.Catalog.FunctionalTests;
 
@@ -153,7 +154,12 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var _httpClient = CreateHttpClient(new ApiVersion(version));
 
         // Act
-        var response = await _httpClient.GetAsync("api/catalog/items/by/Wanderer%20Black%20Hiking%20Boots?PageSize=5&PageIndex=0");
+        var response = version switch
+        {
+            1.0 => await _httpClient.GetAsync("api/catalog/items/by/Wanderer%20Black%20Hiking%20Boots?PageSize=5&PageIndex=0"),
+            2.0 => await _httpClient.GetAsync("api/catalog/items?name=Wanderer%20Black%20Hiking%20Boots&PageSize=5&PageIndex=0"),
+            _ => throw new ArgumentOutOfRangeException(nameof(version), version, null)
+        };
 
         // Arrange
         response.EnsureSuccessStatusCode();
@@ -176,7 +182,12 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var _httpClient = CreateHttpClient(new ApiVersion(version));
 
         // Act
-        var response = await _httpClient.GetAsync("api/catalog/items/by/Alpine?PageSize=5&PageIndex=0");
+        var response = version switch
+        {
+            1.0 => await _httpClient.GetAsync("api/catalog/items/by/Alpine?PageSize=5&PageIndex=0"),
+            2.0 => await _httpClient.GetAsync("api/catalog/items?name=Alpine&PageSize=5&PageIndex=0"),
+            _ => throw new ArgumentOutOfRangeException(nameof(version), version, null)
+        };
 
         // Arrange
         response.EnsureSuccessStatusCode();
@@ -239,7 +250,12 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var _httpClient = CreateHttpClient(new ApiVersion(version));
 
         // Act
-        var response = await _httpClient.GetAsync("api/catalog/items/type/3/brand/3?PageSize=5&PageIndex=0");
+        var response = version switch
+        {
+            1.0 => await _httpClient.GetAsync("api/catalog/items/type/3/brand/3?PageSize=5&PageIndex=0"),
+            2.0 => await _httpClient.GetAsync("api/catalog/items?type=3&brand=3&PageSize=5&PageIndex=0"),
+            _ => throw new ArgumentOutOfRangeException(nameof(version), version, null)
+        };
 
         // Arrange
         response.EnsureSuccessStatusCode();
@@ -263,7 +279,12 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var _httpClient = CreateHttpClient(new ApiVersion(version));
 
         // Act
-        var response = await _httpClient.GetAsync("api/catalog/items/type/all/brand/3?PageSize=5&PageIndex=0");
+        var response = version switch
+        {
+            1.0 => await _httpClient.GetAsync("api/catalog/items/type/all/brand/3?PageSize=5&PageIndex=0"),
+            2.0 => await _httpClient.GetAsync("api/catalog/items?brand=3&PageSize=5&PageIndex=0"),
+            _ => throw new ArgumentOutOfRangeException(nameof(version), version, null)
+        };
 
         // Arrange
         response.EnsureSuccessStatusCode();
