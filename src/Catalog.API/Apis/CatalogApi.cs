@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -54,7 +55,14 @@ public static class CatalogApi
             .WithTags("Items");
 
         // Routes for resolving catalog items using AI.
-        api.MapGet("/items/withsemanticrelevance/{text:minlength(1)}", GetItemsBySemanticRelevance)
+        v1.MapGet("/items/withsemanticrelevance/{text:minlength(1)}", GetItemsBySemanticRelevanceV1)
+            // .WithName("GetRelevantItems")
+            .WithSummary("Search catalog for relevant items")
+            .WithDescription("Search the catalog for items related to the specified text")
+            .WithTags("Search");
+
+                // Routes for resolving catalog items using AI.
+        v2.MapGet("/items/withsemanticrelevance", GetItemsBySemanticRelevance)
             .WithName("GetRelevantItems")
             .WithSummary("Search catalog for relevant items")
             .WithDescription("Search the catalog for items related to the specified text")
@@ -235,10 +243,20 @@ public static class CatalogApi
     }
 
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
-    public static async Task<Results<Ok<PaginatedItems<CatalogItem>>, RedirectToRouteHttpResult>> GetItemsBySemanticRelevance(
+    public static async Task<Results<Ok<PaginatedItems<CatalogItem>>, RedirectToRouteHttpResult>> GetItemsBySemanticRelevanceV1(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
         [Description("The text string to use when search for related items in the catalog")] string text)
+
+    {
+        return await GetItemsBySemanticRelevance(paginationRequest, services, text);
+    }
+
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    public static async Task<Results<Ok<PaginatedItems<CatalogItem>>, RedirectToRouteHttpResult>> GetItemsBySemanticRelevance(
+        [AsParameters] PaginationRequest paginationRequest,
+        [AsParameters] CatalogServices services,
+        [Description("The text string to use when search for related items in the catalog"), Required, MinLength(1)] string text)
     {
         var pageSize = paginationRequest.PageSize;
         var pageIndex = paginationRequest.PageIndex;

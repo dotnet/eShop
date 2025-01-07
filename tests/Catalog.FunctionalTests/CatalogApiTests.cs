@@ -238,7 +238,12 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var _httpClient = CreateHttpClient(new ApiVersion(version));
 
         // Act
-        var response = await _httpClient.GetAsync("api/catalog/items/withsemanticrelevance/Wanderer?PageSize=5&PageIndex=0");
+        var response = version switch
+        {
+            1.0 => await _httpClient.GetAsync("api/catalog/items/withsemanticrelevance/Wanderer?PageSize=5&PageIndex=0"),
+            2.0 => await _httpClient.GetAsync("api/catalog/items/withsemanticrelevance?text=Wanderer&PageSize=5&PageIndex=0"),
+            _ => throw new ArgumentOutOfRangeException(nameof(version), version, null)
+        };
 
         // Arrange
         response.EnsureSuccessStatusCode();

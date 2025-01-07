@@ -262,80 +262,6 @@
         }
       }
     },
-    "/api/catalog/items/withsemanticrelevance/{text}": {
-      "get": {
-        "tags": [
-          "Search"
-        ],
-        "summary": "Search catalog for relevant items",
-        "description": "Search the catalog for items related to the specified text",
-        "operationId": "GetRelevantItems",
-        "parameters": [
-          {
-            "name": "PageSize",
-            "in": "query",
-            "description": "Number of items to return in a single page of results",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
-          },
-          {
-            "name": "PageIndex",
-            "in": "query",
-            "description": "The index of the page of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
-          },
-          {
-            "name": "text",
-            "in": "path",
-            "description": "The text string to use when search for related items in the catalog",
-            "required": true,
-            "schema": {
-              "minLength": 1,
-              "type": "string"
-            }
-          },
-          {
-            "name": "api-version",
-            "in": "query",
-            "description": "The API version, in the format 'major.minor'.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "1.0"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedItemsOfCatalogItem"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/catalog/catalogtypes": {
       "get": {
         "tags": [
@@ -623,6 +549,79 @@
             "name": "name",
             "in": "path",
             "description": "The name of the item to return",
+            "required": true,
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The API version, in the format 'major.minor'.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "1.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedItemsOfCatalogItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/catalog/items/withsemanticrelevance/{text}": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Search catalog for relevant items",
+        "description": "Search the catalog for items related to the specified text",
+        "parameters": [
+          {
+            "name": "PageSize",
+            "in": "query",
+            "description": "Number of items to return in a single page of results",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "PageIndex",
+            "in": "query",
+            "description": "The index of the page of results to return",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "text",
+            "in": "path",
+            "description": "The text string to use when search for related items in the catalog",
             "required": true,
             "schema": {
               "minLength": 1,
@@ -973,13 +972,13 @@
       "name": "Catalog"
     },
     {
-      "name": "Search"
-    },
-    {
       "name": "Types"
     },
     {
       "name": "Brands"
+    },
+    {
+      "name": "Search"
     }
   ]
 }
