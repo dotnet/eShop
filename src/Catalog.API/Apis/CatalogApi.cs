@@ -122,7 +122,6 @@ public static class CatalogApi
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services)
     {
-
         return await GetAllItems(paginationRequest, services, null, null, null);
     }
 
