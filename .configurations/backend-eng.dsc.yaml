@@ -5,6 +5,22 @@ properties:
   ### RESOURCES: System Configuration
   ########################################
   resources:
+  # Ensure GitDsc module is installed
+  - resource: PSDesiredStateConfiguration/Module
+    name: InstallGitDscModule
+    properties:
+      Name: 'GitDsc'
+      Ensure: 'Present'
+      RepositorySourceLocation: 'https://www.powershellgallery.com/api/v2'
+
+  # Clone the Git repository
+  - resource: GitDsc/Git
+    name: CloneEshopRepo
+    properties:
+      DestinationPath: 'z:\workspaces'
+      RepositoryUrl: 'https://github.com/contoso-co/eshop.git'
+      Ensure: 'Present'
+
     ########################################
     ### OS Configurations
     ########################################
