@@ -12,11 +12,6 @@ public static class CatalogApi
     public static IEndpointRouteBuilder MapCatalogApi(this IEndpointRouteBuilder app)
     {
         // RouteGroupBuilder for catalog endpoints
-        // var vapi = app.NewVersionedApi("Catalog").MapGroup("api/catalog");
-        // var api = vapi.HasApiVersion(1.0).HasApiVersion(2.0);
-        // var v1 = vapi.HasApiVersion(1.0);
-        // var v2 = vapi.HasApiVersion(2.0);
-
         var vApi = app.NewVersionedApi("Catalog");
         var api = vApi.MapGroup("api/catalog").HasApiVersion(1, 0).HasApiVersion(2, 0);
         var v1 = vApi.MapGroup("api/catalog").HasApiVersion(1, 0);
@@ -24,12 +19,12 @@ public static class CatalogApi
 
         // Routes for querying catalog items.
         v1.MapGet("/items", GetAllItemsV1)
-            // .WithName("ListItems")
+            .WithName("ListItems")
             .WithSummary("List catalog items")
             .WithDescription("Get a paginated list of items in the catalog.")
             .WithTags("Items");
         v2.MapGet("/items", GetAllItems)
-            .WithName("ListItems")
+            .WithName("ListItems-V2")
             .WithSummary("List catalog items")
             .WithDescription("Get a paginated list of items in the catalog.")
             .WithTags("Items");
@@ -56,14 +51,14 @@ public static class CatalogApi
 
         // Routes for resolving catalog items using AI.
         v1.MapGet("/items/withsemanticrelevance/{text:minlength(1)}", GetItemsBySemanticRelevanceV1)
-            // .WithName("GetRelevantItems")
+            .WithName("GetRelevantItems")
             .WithSummary("Search catalog for relevant items")
             .WithDescription("Search the catalog for items related to the specified text")
             .WithTags("Search");
 
                 // Routes for resolving catalog items using AI.
         v2.MapGet("/items/withsemanticrelevance", GetItemsBySemanticRelevance)
-            .WithName("GetRelevantItems")
+            .WithName("GetRelevantItems-V2")
             .WithSummary("Search catalog for relevant items")
             .WithDescription("Search the catalog for items related to the specified text")
             .WithTags("Search");
@@ -96,12 +91,12 @@ public static class CatalogApi
 
         // Routes for modifying catalog items.
         v1.MapPut("/items", UpdateItemV1)
-            // .WithName("UpdateItem")
+            .WithName("UpdateItem")
             .WithSummary("Create or replace a catalog item")
             .WithDescription("Create or replace a catalog item")
             .WithTags("Items");
         v2.MapPut("/items/{id:int}", UpdateItem)
-            .WithName("UpdateItem")
+            .WithName("UpdateItem-V2")
             .WithSummary("Create or replace a catalog item")
             .WithDescription("Create or replace a catalog item")
             .WithTags("Items");
@@ -325,12 +320,12 @@ public static class CatalogApi
         [AsParameters] CatalogServices services,
         CatalogItem productToUpdate)
     {
-        var catalogItem = await services.Context.CatalogItems.SingleOrDefaultAsync(i => i.Id == productToUpdate.Id);
+        var catalogItem = await services.Context.CatalogItems.SingleOrDefaultAsync(i => i.Id == id);
 
         if (catalogItem == null)
         {
             return TypedResults.NotFound<ProblemDetails>(new (){
-                Detail = $"Item with id {productToUpdate.Id} not found."
+                Detail = $"Item with id {id} not found."
             });
         }
 
@@ -357,7 +352,7 @@ public static class CatalogApi
         {
             await services.Context.SaveChangesAsync();
         }
-        return TypedResults.Created($"/api/catalog/items/{productToUpdate.Id}");
+        return TypedResults.Created($"/api/catalog/items/{id}");
     }
 
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]

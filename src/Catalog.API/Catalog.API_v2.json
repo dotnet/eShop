@@ -165,7 +165,7 @@
         ],
         "summary": "Create or replace a catalog item",
         "description": "Create or replace a catalog item",
-        "operationId": "UpdateItem",
+        "operationId": "UpdateItem-V2",
         "parameters": [
           {
             "name": "id",
@@ -471,7 +471,7 @@
         ],
         "summary": "List catalog items",
         "description": "Get a paginated list of items in the catalog.",
-        "operationId": "ListItems",
+        "operationId": "ListItems-V2",
         "parameters": [
           {
             "name": "PageSize",
@@ -561,7 +561,7 @@
         ],
         "summary": "Search catalog for relevant items",
         "description": "Search the catalog for items related to the specified text",
-        "operationId": "GetRelevantItems",
+        "operationId": "GetRelevantItems-V2",
         "parameters": [
           {
             "name": "PageSize",
