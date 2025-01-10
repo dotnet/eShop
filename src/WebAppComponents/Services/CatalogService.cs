@@ -30,7 +30,7 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
 
     public Task<CatalogResult> GetCatalogItemsWithSemanticRelevance(int page, int take, string text)
     {
-        var url = $"{remoteServiceBaseUrl}items/withsemanticrelevance/{HttpUtility.UrlEncode(text)}?pageIndex={page}&pageSize={take}";
+        var url = $"{remoteServiceBaseUrl}items/withsemanticrelevance?text={HttpUtility.UrlEncode(text)}&pageIndex={page}&pageSize={take}";
         var result = httpClient.GetFromJsonAsync<CatalogResult>(url);
         return result!;
     }
@@ -51,24 +51,17 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
 
     private static string GetAllCatalogItemsUri(string baseUri, int pageIndex, int pageSize, int? brand, int? type)
     {
-        string filterQs;
+        string filterQs = string.Empty;
 
         if (type.HasValue)
         {
-            var brandQs = brand.HasValue ? brand.Value.ToString() : string.Empty;
-            filterQs = $"/type/{type.Value}/brand/{brandQs}";
-
+            filterQs += $"type={type.Value}&";
         }
-        else if (brand.HasValue)
+        if (brand.HasValue)
         {
-            var brandQs = brand.HasValue ? brand.Value.ToString() : string.Empty;
-            filterQs = $"/type/all/brand/{brandQs}";
-        }
-        else
-        {
-            filterQs = string.Empty;
+            filterQs += $"brand={brand.Value}&";
         }
 
-        return $"{baseUri}items{filterQs}?pageIndex={pageIndex}&pageSize={pageSize}";
+        return $"{baseUri}items?{filterQs}pageIndex={pageIndex}&pageSize={pageSize}";
     }
 }
