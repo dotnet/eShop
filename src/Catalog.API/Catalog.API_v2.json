@@ -3,7 +3,7 @@
   "info": {
     "title": "eShop - Catalog HTTP API",
     "description": "The Catalog Microservice HTTP API. This is a Data-Driven/CRUD microservice sample",
-    "version": "1.0"
+    "version": "2.0"
   },
   "paths": {
     "/api/catalog/items/by": {
@@ -34,7 +34,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "1.0"
+              "example": "2.0"
             }
           }
         ],
@@ -91,7 +91,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "1.0"
+              "example": "2.0"
             }
           }
         ],
@@ -146,7 +146,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "1.0"
+              "example": "2.0"
             }
           }
         ],
@@ -156,6 +156,70 @@
           },
           "404": {
             "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Items"
+        ],
+        "summary": "Create or replace a catalog item",
+        "description": "Create or replace a catalog item",
+        "operationId": "UpdateItem-V2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the catalog item to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The API version, in the format 'major.minor'.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CatalogItem"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           }
         }
       }
@@ -186,7 +250,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "1.0"
+              "example": "2.0"
             }
           }
         ],
@@ -278,7 +342,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "1.0"
+              "example": "2.0"
             }
           }
         ],
@@ -325,7 +389,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "1.0"
+              "example": "2.0"
             }
           }
         ],
@@ -372,7 +436,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "1.0"
+              "example": "2.0"
             }
           }
         ],
@@ -407,125 +471,7 @@
         ],
         "summary": "List catalog items",
         "description": "Get a paginated list of items in the catalog.",
-        "operationId": "ListItems",
-        "parameters": [
-          {
-            "name": "PageSize",
-            "in": "query",
-            "description": "Number of items to return in a single page of results",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
-          },
-          {
-            "name": "PageIndex",
-            "in": "query",
-            "description": "The index of the page of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
-          },
-          {
-            "name": "api-version",
-            "in": "query",
-            "description": "The API version, in the format 'major.minor'.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "1.0"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedItemsOfCatalogItem"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Items"
-        ],
-        "summary": "Create or replace a catalog item",
-        "description": "Create or replace a catalog item",
-        "operationId": "UpdateItem",
-        "parameters": [
-          {
-            "name": "api-version",
-            "in": "query",
-            "description": "The API version, in the format 'major.minor'.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "1.0"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CatalogItem"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/catalog/items/by/{name}": {
-      "get": {
-        "tags": [
-          "Items"
-        ],
-        "summary": "Get catalog items by name",
-        "description": "Get a paginated list of catalog items with the specified name.",
-        "operationId": "GetItemsByName",
+        "operationId": "ListItems-V2",
         "parameters": [
           {
             "name": "PageSize",
@@ -549,12 +495,28 @@
           },
           {
             "name": "name",
-            "in": "path",
+            "in": "query",
             "description": "The name of the item to return",
-            "required": true,
             "schema": {
-              "minLength": 1,
               "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "The type of items to return",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "brand",
+            "in": "query",
+            "description": "The brand of items to return",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           },
           {
@@ -564,7 +526,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "1.0"
+              "example": "2.0"
             }
           }
         ],
@@ -592,14 +554,14 @@
         }
       }
     },
-    "/api/catalog/items/withsemanticrelevance/{text}": {
+    "/api/catalog/items/withsemanticrelevance": {
       "get": {
         "tags": [
           "Search"
         ],
         "summary": "Search catalog for relevant items",
         "description": "Search the catalog for items related to the specified text",
-        "operationId": "GetRelevantItems",
+        "operationId": "GetRelevantItems-V2",
         "parameters": [
           {
             "name": "PageSize",
@@ -623,7 +585,7 @@
           },
           {
             "name": "text",
-            "in": "path",
+            "in": "query",
             "description": "The text string to use when search for related items in the catalog",
             "required": true,
             "schema": {
@@ -638,165 +600,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "1.0"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedItemsOfCatalogItem"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/catalog/items/type/{typeId}/brand/{brandId}": {
-      "get": {
-        "tags": [
-          "Types"
-        ],
-        "summary": "Get catalog items by type and brand",
-        "description": "Get catalog items of the specified type and brand",
-        "operationId": "GetItemsByTypeAndBrand",
-        "parameters": [
-          {
-            "name": "PageSize",
-            "in": "query",
-            "description": "Number of items to return in a single page of results",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
-          },
-          {
-            "name": "PageIndex",
-            "in": "query",
-            "description": "The index of the page of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
-          },
-          {
-            "name": "typeId",
-            "in": "path",
-            "description": "The type of items to return",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "brandId",
-            "in": "path",
-            "description": "The brand of items to return",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "api-version",
-            "in": "query",
-            "description": "The API version, in the format 'major.minor'.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "1.0"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedItemsOfCatalogItem"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/catalog/items/type/all/brand/{brandId}": {
-      "get": {
-        "tags": [
-          "Brands"
-        ],
-        "summary": "List catalog items by brand",
-        "description": "Get a list of catalog items for the specified brand",
-        "operationId": "GetItemsByBrand",
-        "parameters": [
-          {
-            "name": "PageSize",
-            "in": "query",
-            "description": "Number of items to return in a single page of results",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
-          },
-          {
-            "name": "PageIndex",
-            "in": "query",
-            "description": "The index of the page of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
-          },
-          {
-            "name": "brandId",
-            "in": "path",
-            "description": "The brand of items to return",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "api-version",
-            "in": "query",
-            "description": "The API version, in the format 'major.minor'.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "1.0"
+              "example": "2.0"
             }
           }
         ],

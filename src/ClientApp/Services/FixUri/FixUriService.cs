@@ -9,8 +9,8 @@ namespace eShop.ClientApp.Services.FixUri;
 
 public class FixUriService : IFixUriService
 {
-    private const string ApiVersion = "api-version=1.0";
-    
+    private const string ApiVersion = "api-version=2.0";
+
     private readonly ISettingsService _settingsService;
 
     private readonly Regex IpRegex = new(@"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b");
