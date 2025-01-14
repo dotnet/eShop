@@ -5,4 +5,4 @@ image: microsoftwindowsdesktop_windows-ent-cpc_win11-24H2-ent-cpc
 tasks:
   - name: ~/winget
     parameters:
-      downloadUrl: 'https://raw.githubusercontent.com/contoso-co/common-eng-sys/main/dsc-configurations/common-config.dsc.yaml'
+      downloadUrl: 'https://raw.githubusercontent.com/contoso-co/eShop/refs/heads/main/.configurations/common-config.dsc.yaml'
