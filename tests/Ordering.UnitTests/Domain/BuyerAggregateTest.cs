@@ -1,11 +1,12 @@
 ﻿namespace eShop.Ordering.UnitTests.Domain;
 
+[TestClass]
 public class BuyerAggregateTest
 {
     public BuyerAggregateTest()
     { }
 
-    [Fact]
+    [TestMethod]
     public void Create_buyer_item_success()
     {
         //Arrange    
@@ -16,10 +17,10 @@ public class BuyerAggregateTest
         var fakeBuyerItem = new Buyer(identity, name);
 
         //Assert
-        Assert.NotNull(fakeBuyerItem);
+        Assert.IsNotNull(fakeBuyerItem);
     }
 
-    [Fact]
+    [TestMethod]
     public void Create_buyer_item_fail()
     {
         //Arrange    
@@ -27,10 +28,10 @@ public class BuyerAggregateTest
         var name = "fakeUser";
 
         //Act - Assert
-        Assert.Throws<ArgumentNullException>(() => new Buyer(identity, name));
+        Assert.ThrowsException<ArgumentNullException>(() => new Buyer(identity, name));
     }
 
-    [Fact]
+    [TestMethod]
     public void add_payment_success()
     {
         //Arrange    
@@ -49,10 +50,10 @@ public class BuyerAggregateTest
         var result = fakeBuyerItem.VerifyOrAddPaymentMethod(cardTypeId, alias, cardNumber, securityNumber, cardHolderName, expiration, orderId);
 
         //Assert
-        Assert.NotNull(result);
+        Assert.IsNotNull(result);
     }
 
-    [Fact]
+    [TestMethod]
     public void create_payment_method_success()
     {
         //Arrange    
@@ -68,10 +69,10 @@ public class BuyerAggregateTest
         var result = new PaymentMethod(cardTypeId, alias, cardNumber, securityNumber, cardHolderName, expiration);
 
         //Assert
-        Assert.NotNull(result);
+        Assert.IsNotNull(result);
     }
 
-    [Fact]
+    [TestMethod]
     public void create_payment_method_expiration_fail()
     {
         //Arrange    
@@ -83,10 +84,10 @@ public class BuyerAggregateTest
         var expiration = DateTime.UtcNow.AddYears(-1);
 
         //Act - Assert
-        Assert.Throws<OrderingDomainException>(() => new PaymentMethod(cardTypeId, alias, cardNumber, securityNumber, cardHolderName, expiration));
+        Assert.ThrowsException<OrderingDomainException>(() => new PaymentMethod(cardTypeId, alias, cardNumber, securityNumber, cardHolderName, expiration));
     }
 
-    [Fact]
+    [TestMethod]
     public void payment_method_isEqualTo()
     {
         //Arrange    
@@ -102,10 +103,10 @@ public class BuyerAggregateTest
         var result = fakePaymentMethod.IsEqualTo(cardTypeId, cardNumber, expiration);
 
         //Assert
-        Assert.True(result);
+        Assert.IsTrue(result);
     }
 
-    [Fact]
+    [TestMethod]
     public void Add_new_PaymentMethod_raises_new_event()
     {
         //Arrange    
@@ -124,6 +125,6 @@ public class BuyerAggregateTest
         fakeBuyer.VerifyOrAddPaymentMethod(cardTypeId, alias, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration, orderId);
 
         //Assert
-        Assert.Equal(fakeBuyer.DomainEvents.Count, expectedResult);
+        Assert.AreEqual(fakeBuyer.DomainEvents.Count, expectedResult);
     }
 }

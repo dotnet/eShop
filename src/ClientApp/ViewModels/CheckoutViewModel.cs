@@ -79,7 +79,7 @@ public partial class CheckoutViewModel : ViewModelBase
                     CardHolderName = paymentInfo.CardHolderName,
                     CardNumber = paymentInfo.CardNumber,
                     CardSecurityNumber = paymentInfo.SecurityNumber,
-                    CardExpiration = DateTime.Now.AddYears(5),
+                    CardExpiration = DateTime.UtcNow.AddYears(5),
                     CardTypeId = paymentInfo.CardType.Id,
                     ShippingState = ShippingAddress.State,
                     ShippingCountry = ShippingAddress.Country,

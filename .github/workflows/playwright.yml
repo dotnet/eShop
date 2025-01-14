@@ -5,7 +5,7 @@ on:
     paths-ignore:
       - '**.md'
       - 'src/ClientApp/**'
-      - 'test/ClientApp.UnitTests/**'
+      - 'tests/ClientApp.UnitTests/**'
       - '.github/workflows/pr-validation-maui.yml'
   pull_request:
     branches: [ main ]
@@ -23,15 +23,16 @@ jobs:
     - uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
-    - name: Install Aspire
-      run: |
-        dotnet workload update
-        dotnet workload install aspire
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
     - name: Install dependencies
       run: npm ci
+    - name: Install .NET HTTPS Development Certificate
+      # if: matrix.os == 'ubuntu-latest'
+      run: |
+        dotnet tool update -g linux-dev-certs
+        dotnet linux-dev-certs install
     - name: Install Playwright Browsers
       run: npx playwright install chromium
     - name: Run Playwright tests

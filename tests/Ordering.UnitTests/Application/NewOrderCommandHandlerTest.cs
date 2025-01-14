@@ -3,6 +3,7 @@ using eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
 
 namespace eShop.Ordering.UnitTests.Application;
 
+[TestClass]
 public class NewOrderRequestHandlerTest
 {
     private readonly IOrderRepository _orderRepositoryMock;
@@ -19,7 +20,7 @@ public class NewOrderRequestHandlerTest
         _mediator = Substitute.For<IMediator>();
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Handle_return_false_if_order_is_not_persisted()
     {
         var buyerId = "1234";
@@ -42,14 +43,14 @@ public class NewOrderRequestHandlerTest
         var result = await handler.Handle(fakeOrderCmd, cltToken);
 
         //Assert
-        Assert.False(result);
+        Assert.IsFalse(result);
     }
 
-    [Fact]
+    [TestMethod]
     public void Handle_throws_exception_when_no_buyerId()
     {
         //Assert
-        Assert.Throws<ArgumentNullException>(() => new Buyer(string.Empty, string.Empty));
+        Assert.ThrowsException<ArgumentNullException>(() => new Buyer(string.Empty, string.Empty));
     }
 
     private Buyer FakeBuyer()

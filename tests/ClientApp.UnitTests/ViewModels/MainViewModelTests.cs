@@ -2,6 +2,7 @@
 
 namespace ClientApp.UnitTests.ViewModels;
 
+[TestClass]
 public class MainViewModelTests
 {
     private readonly INavigationService _navigationService;
@@ -11,17 +12,17 @@ public class MainViewModelTests
         _navigationService = new MockNavigationService();
     }
 
-    [Fact]
+    [TestMethod]
     public void SettingsCommandIsNotNullWhenViewModelInstantiatedTest()
     {
         var mainViewModel = new MainViewModel(_navigationService);
-        Assert.NotNull(mainViewModel.SettingsCommand);
+        Assert.IsNotNull(mainViewModel.SettingsCommand);
     }
 
-    [Fact]
+    [TestMethod]
     public void IsBusyPropertyIsFalseWhenViewModelInstantiatedTest()
     {
         var mainViewModel = new MainViewModel(_navigationService);
-        Assert.False(mainViewModel.IsBusy);
+        Assert.IsFalse(mainViewModel.IsBusy);
     }
 }

@@ -38,7 +38,7 @@
 
             <Style x:Key="CancelOrderButtonStyle" TargetType="{x:Type Button}">
                 <Setter Property="TextColor" Value="{StaticResource WhiteColor}" />
-                <Setter Property="BackgroundColor" Value="{StaticResource LightGreenColor}" />
+                <Setter Property="BackgroundColor" Value="{StaticResource HighlightColor}" />
 
             </Style>
 
@@ -183,7 +183,7 @@
                     <Label
                         Style="{StaticResource OrderTotalStyle}"
                         Text="{Binding Order.Total, StringFormat='${0:N2}'}"
-                        TextColor="{StaticResource GreenColor}" />
+                        TextColor="{StaticResource ImportantColor}" />
                 </VerticalStackLayout>
             </CollectionView.Footer>
         </CollectionView>
@@ -194,7 +194,7 @@
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
             VerticalOptions="Center"
-            Color="{StaticResource LightGreenColor}">
+            Color="{StaticResource HighlightColor}">
             <ActivityIndicator.WidthRequest>
                 <OnPlatform x:TypeArguments="x:Double">
                     <On Platform="iOS, Android" Value="100" />

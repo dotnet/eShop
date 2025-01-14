@@ -30,6 +30,7 @@
         BackgroundColor="Gray"
         StrokeShape="RoundRectangle 8,8,8,8"
         StrokeThickness="1">
+        <ScrollView>
         <Grid
             Padding="16"
             BackgroundColor="White"
@@ -40,8 +41,11 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
+                MaximumHeightRequest="500"
                 Margin="-16,-16,-16,0"
-                Aspect="AspectFill"
+                Aspect="AspectFit"
+                HorizontalOptions="Center"
+                VerticalOptions="Start"
                 Source="{Binding CatalogItem.PictureUri, Mode=OneWay}" />
 
             <ImageButton
@@ -95,5 +99,6 @@
                 Text="Add to shopping bag"
                 TextColor="Black" />
         </Grid>
+        </ScrollView>
     </Border>
 </views:ContentPageBase>

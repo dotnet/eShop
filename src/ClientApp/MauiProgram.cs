@@ -1,4 +1,4 @@
-using CommunityToolkit.Maui;
+﻿using CommunityToolkit.Maui;
 using eShop.ClientApp.Services;
 using eShop.ClientApp.Services.AppEnvironment;
 using eShop.ClientApp.Services.Basket;
@@ -13,6 +13,7 @@ using eShop.ClientApp.Services.Settings;
 using eShop.ClientApp.Services.Theme;
 using eShop.ClientApp.Views;
 using IdentityModel.OidcClient;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
@@ -33,14 +34,10 @@ public static class MauiProgram
             .ConfigureFonts(
                 fonts =>
                 {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                    fonts.AddFont("Font_Awesome_5_Free-Regular-400.otf", "FontAwesome-Regular");
-                    fonts.AddFont("Font_Awesome_5_Free-Solid-900.otf", "FontAwesome-Solid");
+                    fonts.AddFont("FontAwesomeRegular.otf", "FontAwesome-Regular");
+                    fonts.AddFont("FontAwesomeSolid.otf", "FontAwesome-Solid");
                     fonts.AddFont("Montserrat-Bold.ttf", "Montserrat-Bold");
                     fonts.AddFont("Montserrat-Regular.ttf", "Montserrat-Regular");
-                    fonts.AddFont("SourceSansPro-Regular.ttf", "SourceSansPro-Regular");
-                    fonts.AddFont("SourceSansPro-Solid.ttf", "SourceSansPro-Solid");
                 })
             .ConfigureEssentials(
                 essentials =>
@@ -52,10 +49,24 @@ public static class MauiProgram
 #if !WINDOWS
             .UseMauiMaps()
 #endif
+            .ConfigureHandlers()
             .RegisterAppServices()
             .RegisterViewModels()
             .RegisterViews()
             .Build();
+    }
+
+    public static MauiAppBuilder ConfigureHandlers(this MauiAppBuilder mauiAppBuilder)
+    {
+#if IOS || MACCATALYST
+        mauiAppBuilder.ConfigureMauiHandlers(handlers =>
+        {
+            handlers.AddHandler<Microsoft.Maui.Controls.CollectionView, Microsoft.Maui.Controls.Handlers.Items2.CollectionViewHandler2>();
+            handlers.AddHandler<Microsoft.Maui.Controls.CarouselView, Microsoft.Maui.Controls.Handlers.Items2.CarouselViewHandler2>();
+        });
+#endif
+
+        return mauiAppBuilder;
     }
 
     public static MauiAppBuilder RegisterAppServices(this MauiAppBuilder mauiAppBuilder)
@@ -64,8 +75,20 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<INavigationService, MauiNavigationService>();
         mauiAppBuilder.Services.AddSingleton<IDialogService, DialogService>();
         mauiAppBuilder.Services.AddSingleton<IOpenUrlService, OpenUrlService>();
-        mauiAppBuilder.Services.AddSingleton<IRequestProvider, RequestProvider>();
-        mauiAppBuilder.Services.AddSingleton<IIdentityService, IdentityService>();
+        mauiAppBuilder.Services.AddSingleton<IRequestProvider>(
+            sp =>
+            {
+                var debugHttpHandler = sp.GetKeyedService<HttpMessageHandler>("DebugHttpMessageHandler");
+                return new RequestProvider(debugHttpHandler);
+            });
+        mauiAppBuilder.Services.AddSingleton<IIdentityService, IdentityService>(
+            sp =>
+            {
+                var browser = sp.GetRequiredService<IBrowser>();
+                var settingsService = sp.GetRequiredService<ISettingsService>();
+                var debugHttpHandler = sp.GetKeyedService<HttpMessageHandler>("DebugHttpMessageHandler");
+                return new IdentityService(browser, settingsService, debugHttpHandler);
+            });
         mauiAppBuilder.Services.AddSingleton<IFixUriService, FixUriService>();
         mauiAppBuilder.Services.AddSingleton<ILocationService, LocationService>();
 
@@ -93,6 +116,33 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddTransient<IBrowser, MauiAuthenticationBrowser>();
 
 #if DEBUG
+        mauiAppBuilder.Services.AddKeyedSingleton<HttpMessageHandler>(
+            "DebugHttpMessageHandler",
+            (sp, key) =>
+            {
+#if ANDROID
+                var handler = new Xamarin.Android.Net.AndroidMessageHandler();
+                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+                {
+                    if (cert != null && cert.Issuer.Equals("CN=localhost", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                    
+                    return errors == System.Net.Security.SslPolicyErrors.None;
+                };
+                return handler;
+#elif IOS || MACCATALYST
+                var handler = new NSUrlSessionHandler
+                {
+                    TrustOverrideForUrl = (sender, url, trust) => url.StartsWith("https://localhost", StringComparison.OrdinalIgnoreCase),
+                };
+                return handler;
+#else
+                return null;
+#endif
+            });
+        
         mauiAppBuilder.Logging.AddDebug();
 #endif
 

@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true" ?>
-
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -67,7 +66,10 @@
     <FontImageSource
         x:Key="BasketIconImageSource"
         FontFamily="FontAwesome-Solid"
-        Glyph="{StaticResource BasketIcon}" />
+        Glyph="{StaticResource BasketIcon}"
+        Size="22"
+        Color="{AppThemeBinding Dark={StaticResource DarkFontColor},
+                                Light={StaticResource LightFontColor}}" />
 
     <FontImageSource
         x:Key="BasketIconForTitleImageSource"
@@ -315,10 +317,10 @@
     </Style>
 
     <Style ApplyToDerivedTypes="True" TargetType="TabBar">
-        <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource LightGreenColor}" />
+        <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource HighlightColor}" />
         <Setter Property="Shell.TabBarForegroundColor">
             <OnPlatform x:TypeArguments="Color">
-                <On Platform="WinUI" Value="{StaticResource LightGreenColor}" />
+                <On Platform="WinUI" Value="{StaticResource HighlightColor}" />
             </OnPlatform>
         </Setter>
         <Setter Property="Shell.TabBarUnselectedColor">

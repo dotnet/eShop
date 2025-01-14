@@ -28,7 +28,7 @@
                 <Setter Property="HorizontalOptions" Value="Start" />
                 <Setter Property="VerticalOptions" Value="Center" />
                 <Setter Property="Margin" Value="12, 0" />
-                <Setter Property="TextColor" Value="{StaticResource GreenColor}" />
+                <Setter Property="TextColor" Value="{StaticResource ImportantColor}" />
             </Style>
 
             <Style
