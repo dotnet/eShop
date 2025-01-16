@@ -1,6 +1,6 @@
 $schema: "1.0"
 name: "backend-eng"
-image: microsoftwindowsdesktop_windows-ent-cpc_win11-24H2-ent-cpc
+image: microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2
 description: "This definition is for the eShop backend engineering environment"
 
 tasks:
