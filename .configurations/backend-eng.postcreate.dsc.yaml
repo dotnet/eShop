@@ -13,7 +13,7 @@ properties:
         description: Install Postman
         allowPrerelease: true
       settings:
-       id: Postman.Postman
+       id: Bruno.Bruno
 
 
        
