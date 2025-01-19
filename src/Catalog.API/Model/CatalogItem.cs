@@ -32,7 +32,7 @@ public class CatalogItem
     public int RestockThreshold { get; set; }
 
 
-    // Maximum number of units that can be in-stock at any time (due to physicial/logistical constraints in warehouses)
+    // Maximum number of units that can be in-stock at any time (due to physical/logistical constraints in warehouses)
     public int MaxStockThreshold { get; set; }
 
     /// <summary>Optional embedding for the catalog item's description.</summary>
@@ -80,7 +80,7 @@ public class CatalogItem
 
     /// <summary>
     /// Increments the quantity of a particular item in inventory.
-    /// <param name="quantity"></param>
+    /// <param name="quantity">The quantity to add to stock.</param>
     /// <returns>int: Returns the quantity that has been added to stock</returns>
     /// </summary>
     public int AddStock(int quantity)
