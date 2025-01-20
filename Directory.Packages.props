@@ -86,7 +86,7 @@
     <!-- Grpc -->
     <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcVersion)" />
     <PackageVersion Include="Grpc.AspNetCore.Server.ClientFactory" Version="$(GrpcVersion)" />
-    <PackageVersion Include="Grpc.Tools" Version="2.67.0" PrivateAssets="All" />
+    <PackageVersion Include="Grpc.Tools" Version="2.69.0" PrivateAssets="All" />
     <!-- Miscellaneous -->
     <PackageVersion Include="Automapper" Version="13.0.1" />
     <PackageVersion Include="Dapper" Version="2.1.35" />
