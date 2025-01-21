@@ -5,23 +5,14 @@ properties:
   ### RESOURCES: System Configuration
   ########################################
   resources:
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: git
-      directives:
-        allowPrerelease: true
-      settings:
-        id: Microsoft.Git
     # Clone the Git repository
     - resource: PSDscResources/Script
-      dependsOn:
-        - git
       directives:
         description: Configure Git to use Default WAM account
       settings:
         SetScript: |
-          git clone --quiet https://github.com/contoso-co/eshop.git Z:\workspaces
+          git clone --quiet https://github.com/contoso-co/eshop.git "Z:\workspaces\eshop"
           
-
         GetScript: return $false
         TestScript: return $false
     ########################################

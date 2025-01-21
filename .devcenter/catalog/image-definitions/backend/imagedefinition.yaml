@@ -13,7 +13,7 @@ tasks:
   ### Run the DSC configuration for the backend engineering environment
   - name: winget
     parameters:
-      configurationFile: 'https://raw.githubusercontent.com/contoso-co/eShop/refs/heads/main/.configurations/backend-eng.dsc.yaml'
+      downloadUrl: 'https://raw.githubusercontent.com/contoso-co/eShop/refs/heads/main/.configurations/backend-eng.dsc.yaml'
 userTasks:
   - name: winget
     parameters:
