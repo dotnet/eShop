@@ -7,24 +7,18 @@ namespace eShop.Ordering.UnitTests.Application;
 public class NewOrderRequestHandlerTest
 {
     private readonly IOrderRepository _orderRepositoryMock;
-    private readonly IIdentityService _identityServiceMock;
-    private readonly IMediator _mediator;
     private readonly IOrderingIntegrationEventService _orderingIntegrationEventService;
 
     public NewOrderRequestHandlerTest()
     {
 
         _orderRepositoryMock = Substitute.For<IOrderRepository>();
-        _identityServiceMock = Substitute.For<IIdentityService>();
         _orderingIntegrationEventService = Substitute.For<IOrderingIntegrationEventService>();
-        _mediator = Substitute.For<IMediator>();
     }
 
     [TestMethod]
     public async Task Handle_return_false_if_order_is_not_persisted()
     {
-        var buyerId = "1234";
-
         var fakeOrderCmd = FakeOrderRequestWithBuyer(new Dictionary<string, object>
         { ["cardExpiration"] = DateTime.UtcNow.AddYears(1) });
 
@@ -34,11 +28,9 @@ public class NewOrderRequestHandlerTest
         _orderRepositoryMock.UnitOfWork.SaveChangesAsync(default)
             .Returns(Task.FromResult(1));
 
-        _identityServiceMock.GetUserIdentity().Returns(buyerId);
-
         var LoggerMock = Substitute.For<ILogger<CreateOrderCommandHandler>>();
         //Act
-        var handler = new CreateOrderCommandHandler(_mediator, _orderingIntegrationEventService, _orderRepositoryMock, _identityServiceMock, LoggerMock);
+        var handler = new CreateOrderCommandHandler(_orderRepositoryMock, _orderingIntegrationEventService, LoggerMock);
         var cltToken = new CancellationToken();
         var result = await handler.Handle(fakeOrderCmd, cltToken);
 
@@ -51,11 +43,6 @@ public class NewOrderRequestHandlerTest
     {
         //Assert
         Assert.ThrowsException<ArgumentNullException>(() => new Buyer(string.Empty, string.Empty));
-    }
-
-    private Buyer FakeBuyer()
-    {
-        return new Buyer(Guid.NewGuid().ToString(), "1");
     }
 
     private Order FakeOrder()
