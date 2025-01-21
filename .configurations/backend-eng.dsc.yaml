@@ -5,33 +5,25 @@ properties:
   ### RESOURCES: System Configuration
   ########################################
   resources:
-  # Ensure GitDsc module is installed
-  - resource: PSDesiredStateConfiguration/Module
-    name: InstallGitDscModule
-    properties:
-      Name: 'GitDsc'
-      Ensure: 'Present'
-      RepositorySourceLocation: 'https://www.powershellgallery.com/api/v2'
-
-  # Clone the Git repository
-  - resource: GitDsc/Git
-    name: CloneEshopRepo
-    properties:
-      DestinationPath: 'z:\workspaces'
-      RepositoryUrl: 'https://github.com/contoso-co/eshop.git'
-      Ensure: 'Present'
-
-    ########################################
-    ### OS Configurations
-    ########################################
-    ### Enable: Developer Mode
-    ### -------------------------------------
-    - resource: Microsoft.Windows.Developer/DeveloperMode
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: git
       directives:
-        description: Enable Developer Mode
         allowPrerelease: true
       settings:
-        Ensure: Present
+        id: Microsoft.Git
+    # Clone the Git repository
+    - resource: PSDscResources/Script
+      dependsOn:
+        - git
+      directives:
+        description: Configure Git to use Default WAM account
+      settings:
+        SetScript: |
+          git clone --quiet https://github.com/contoso-co/eshop.git Z:\workspaces
+          
+
+        GetScript: return $false
+        TestScript: return $false
     ########################################
     ### Install CLIs, SDKs & Tools
     ########################################
