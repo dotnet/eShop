@@ -11,9 +11,9 @@
 
   <ItemGroup>
 
-    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.10" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.10" />
-    <PackageReference Include="Microsoft.Maui.Controls.Maps" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.30" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.30" />
+    <PackageReference Include="Microsoft.Maui.Controls.Maps" Version="9.0.30" />
     
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     
@@ -22,9 +22,9 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     
-    <PackageReference Include="MSTest.TestAdapter" Version="3.6.3" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.7.2" />
     
-    <PackageReference Include="MSTest.TestFramework" Version="3.6.3" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.7.2" />
   </ItemGroup>
 
   <ItemGroup>
