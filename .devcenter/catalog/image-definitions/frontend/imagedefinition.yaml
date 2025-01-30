@@ -1,27 +1,24 @@
-# NOTE: As of 1/20/2025, a bug prevents the use of inbuilt tasks with the ~ syntax for building your image into an image definition. 
-# A bugfix is rolling out, and this issue will be resolved by 1/25/2024. 
-# In the mean time, you can still use these image definitions with inbuilt tasks on a pool directly without building an image.
 $schema: "1.0"
 name: "frontend-eng"
 image: microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2
 description: "This definition is for the eShop frontend engineering environment"
 
 tasks:
-  - name: winget
+  - name: ~/winget
     parameters:
       downloadUrl: 'https://raw.githubusercontent.com/contoso-co/common-eng-sys/msft-git/dsc-configurations/common-config.dsc.yaml'
 
-  - name: winget
+  - name: ~/winget
     description: Install AZD
     parameters:
       package:  Microsoft.Azd
 
-  - name: winget
+  - name: ~/winget
     description: Install Visual Studio Code
     parameters:
       package:  Microsoft.VisualStudioCode
 
-  - name: powershell
+  - name: ~/powershell
     parameters:
       command: |
         $env:Path = [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User') 

@@ -1,20 +1,17 @@
-# NOTE: As of 1/20/2025, a bug prevents the use of inbuilt tasks with the ~ syntax for building your image into an image definition. 
-# A bugfix is rolling out, and this issue will be resolved by 1/25/2024. 
-# In the mean time, you can still use these image definitions with inbuilt tasks on a pool directly without building an image.
 $schema: "1.0"
 name: "backend-eng"
 image: microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2
 description: "This definition is for the eShop backend engineering environment"
 
 tasks:
-  - name: winget
+  - name: ~/winget
     parameters:
       downloadUrl: 'https://raw.githubusercontent.com/contoso-co/common-eng-sys/msft-git/dsc-configurations/common-config.dsc.yaml'
   ### Run the DSC configuration for the backend engineering environment
-  - name: winget
+  - name: ~/winget
     parameters:
       downloadUrl: 'https://raw.githubusercontent.com/contoso-co/eShop/refs/heads/main/.configurations/backend-eng.dsc.yaml'
 userTasks:
-  - name: winget
+  - name: ~/winget
     parameters:
       configurationFile: 'z:\workspaces\eshop\.configurations\backend-eng.postcreate.dsc.yaml'
