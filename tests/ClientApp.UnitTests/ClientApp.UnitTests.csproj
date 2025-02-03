@@ -22,7 +22,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     
-    <PackageReference Include="MSTest.TestAdapter" Version="3.7.2" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.7.3" />
     
     <PackageReference Include="MSTest.TestFramework" Version="3.7.2" />
   </ItemGroup>
