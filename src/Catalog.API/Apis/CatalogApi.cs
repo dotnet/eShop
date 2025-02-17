@@ -163,7 +163,7 @@ public static class CatalogApi
         [AsParameters] CatalogServices services,
         [Description("List of ids for catalog items to return")] int[] ids)
     {
-        var items = await services.Context.CatalogItems.Where(item => ids.Contains(item.Id)).ToListAsync();
+        var items = await services.Context.CatalogItems.Where(item => ids.Any(x => x == item.Id)).ToListAsync();
         return TypedResults.Ok(items);
     }
 
