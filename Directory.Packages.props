@@ -99,6 +99,6 @@
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.2.0" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="1.2.72"/>
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.0.14"/>
   </ItemGroup>
 </Project>
