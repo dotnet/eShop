@@ -24,7 +24,7 @@
     
     <PackageReference Include="MSTest.TestAdapter" Version="3.7.2" />
     
-    <PackageReference Include="MSTest.TestFramework" Version="3.7.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.8.0" />
   </ItemGroup>
 
   <ItemGroup>
