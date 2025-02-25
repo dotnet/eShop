@@ -4,6 +4,7 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
     <AspnetVersion>9.0.2</AspnetVersion>
     <MicrosoftExtensionsVersion>9.0.2</MicrosoftExtensionsVersion>
+    <MicrosoftExtensionsAIVersion>9.3.0-preview.1.25114.11</MicrosoftExtensionsAIVersion>
     <AspireVersion>9.1.0</AspireVersion>
     <AspireUnstablePackagesVersion>9.1.0-preview.1.25121.10</AspireUnstablePackagesVersion>
     <GrpcVersion>2.67.0</GrpcVersion>
@@ -63,10 +64,10 @@
     <!-- Xabaril packages -->
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="9.0.0" />
     <!-- AI -->
-    <PackageVersion Include="Microsoft.Extensions.AI" Version="9.3.0-preview.1.25114.11" />
-    <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="9.3.0-preview.1.25114.11" />
-    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="9.3.0-preview.1.25114.11" />
-    <PackageVersion Include="Microsoft.Extensions.AI.Ollama" Version="9.3.0-preview.1.25114.11" />
+    <PackageVersion Include="Microsoft.Extensions.AI" Version="$(MicrosoftExtensionsAIVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="$(MicrosoftExtensionsAIVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="$(MicrosoftExtensionsAIVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Ollama" Version="$(MicrosoftExtensionsAIVersion)" />
     <!-- Open Telemetry -->
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.11.0" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.11.0" />
