@@ -1,7 +1,6 @@
 <Project>
 
   <PropertyGroup>
-    <LangVersion>preview</LangVersion>
     <WarnOnPackingNonPackableProject>false</WarnOnPackingNonPackableProject>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
