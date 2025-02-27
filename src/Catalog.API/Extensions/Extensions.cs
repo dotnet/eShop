@@ -40,10 +40,8 @@ public static class Extensions
 
         if (builder.Configuration["OllamaEnabled"] is string ollamaEnabled && bool.Parse(ollamaEnabled))
         {
-            builder.AddOllamaSharpEmbeddingGenerator("embedding");
-            builder.Services.AddEmbeddingGenerator(sp => (IEmbeddingGenerator<string, Embedding<float>>)sp.GetRequiredKeyedService<IOllamaApiClient>("embedding"))
-                .UseOpenTelemetry()
-                .UseLogging();
+            builder.AddOllamaApiClient("embedding")
+                .AddEmbeddingGenerator();
         }
         else if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("openai")))
         {
