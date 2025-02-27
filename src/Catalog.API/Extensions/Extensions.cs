@@ -1,5 +1,6 @@
 ﻿using eShop.Catalog.API.Services;
 using Microsoft.Extensions.AI;
+using OllamaSharp;
 using OpenAI;
 
 public static class Extensions
@@ -40,7 +41,7 @@ public static class Extensions
         if (builder.Configuration["OllamaEnabled"] is string ollamaEnabled && bool.Parse(ollamaEnabled))
         {
             builder.AddOllamaSharpEmbeddingGenerator("embedding");
-            builder.Services.AddEmbeddingGenerator(b => b.GetRequiredService<IEmbeddingGenerator<string, Embedding<float>>>())
+            builder.Services.AddEmbeddingGenerator(sp => (IEmbeddingGenerator<string, Embedding<float>>)sp.GetRequiredKeyedService<IOllamaApiClient>("embedding"))
                 .UseOpenTelemetry()
                 .UseLogging();
         }
@@ -49,8 +50,7 @@ public static class Extensions
             builder.AddOpenAIClientFromConfiguration("openai");
             builder.Services.AddEmbeddingGenerator(sp => sp.GetRequiredService<OpenAIClient>().AsEmbeddingGenerator(builder.Configuration["AI:OpenAI:EmbeddingModel"]!))
                 .UseOpenTelemetry()
-                .UseLogging()
-                .Build();
+                .UseLogging();
         }
 
         builder.Services.AddScoped<ICatalogAI, CatalogAI>();
