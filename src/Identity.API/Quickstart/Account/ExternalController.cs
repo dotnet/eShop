@@ -1,8 +1,7 @@
 namespace IdentityServerHost.Quickstart.UI;
 
-[SecurityHeaders]
-[AllowAnonymous]
-public class ExternalController : Controller
+
+public class ExternalController : AccountIdentityBaseApiController
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
