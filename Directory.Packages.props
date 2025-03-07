@@ -89,7 +89,7 @@
     <PackageVersion Include="Grpc.Net.ClientFactory" Version="$(GrpcVersion)" />
     <PackageVersion Include="Grpc.Tools" Version="2.69.0" PrivateAssets="All" />
     <!-- Miscellaneous -->
-    <PackageVersion Include="Automapper" Version="13.0.1" />
+    <PackageVersion Include="Automapper" Version="14.0.0" />
     <PackageVersion Include="Dapper" Version="2.1.35" />
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageVersion Include="Google.Protobuf" Version="3.29.3" />
