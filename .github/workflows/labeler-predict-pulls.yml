@@ -1,0 +1,44 @@
+name: "Labeler: Predict Pull Labels"
+
+on:
+  # Per to the following documentation:
+  # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#pull_request_target
+  #
+  # The `pull_request_target` event runs in the context of the base of the pull request, rather
+  # than in the context of the merge commit, as the `pull_request` event does. This prevents
+  # execution of unsafe code from the head of the pull request that could alter the repository
+  # or steal any secrets you use in your workflow. This event allows your workflow to do things
+  # like label or comment on pull requests from forks.
+  #
+  # Only automatically predict area labels when pull requests are first opened
+  pull_request_target:
+    types: opened
+    branches:
+      - 'main'
+      - 'release/**'
+
+  # Allow dispatching the workflow via the Actions UI, specifying ranges of numbers
+  workflow_dispatch:
+    inputs:
+      pull_numbers:
+        description: "Pull Numbers (comma-separated list of ranges)"
+        type: string
+      model_cache_key:
+        description: "The cache key suffix to use for loading the model"
+        type: string
+        required: true
+        default: "LIVE"
+
+jobs:
+  predict-pulls:
+    # Do not run the workflow on forks outside the 'dotnet' org
+    if: ${{ github.repository_owner == 'dotnet' && (inputs.pull_numbers || github.event.number) }}
+    permissions:
+      pull-requests: write
+    uses: dotnet/issue-labeler/.github/workflows/predict-pulls.yml@f0c098669828a134c0313adf3f58c1909e555d86 # v1.0.1
+    with:
+      model_cache_key: ${{ inputs.model_cache_key }}
+      pull_numbers: ${{ inputs.pull_numbers || github.event.number }}
+      label_prefix: "area-"
+      threshold: 0.40
+      default_label: "needs-area-label"

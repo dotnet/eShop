@@ -1,0 +1,60 @@
+name: "Labeler: Train Models"
+
+on:
+  # Dispatched via the Actions UI, stages new models for promotion consideration
+  # Each step of the workflow can be run independently: Download, Train, and Test
+  workflow_dispatch:
+    inputs:
+      download_issues:
+        description: "Issues: Download Data"
+        type: boolean
+        default: true
+      train_issues:
+        description: "Issues: Train Model"
+        type: boolean
+        default: true
+      test_issues:
+        description: "Issues: Test Model"
+        type: boolean
+        default: true
+      download_pulls:
+        description: "Pulls: Download Data"
+        type: boolean
+        default: true
+      train_pulls:
+        description: "Pulls: Train Model"
+        type: boolean
+        default: true
+      test_pulls:
+        description: "Pulls: Test Model"
+        type: boolean
+        default: true
+
+      data_limit:
+        description: "Max number of items to include in the model"
+        type: number
+
+      cache_key_suffix:
+        description: "The cache key suffix to use for staging data/models (use 'LIVE' to bypass staging)"
+        type: string
+        required: true
+        default: "staging"
+
+jobs:
+  labeler-train:
+    permissions:
+      issues: read
+      pull-requests: read
+      actions: write
+    uses: dotnet/issue-labeler/.github/workflows/train.yml@f0c098669828a134c0313adf3f58c1909e555d86 # v1.0.1
+    with:
+      download_issues: ${{ inputs.download_issues }}
+      train_issues: ${{ inputs.train_issues }}
+      test_issues: ${{ inputs.test_issues }}
+      download_pulls: ${{ inputs.download_pulls }}
+      train_pulls: ${{ inputs.train_pulls }}
+      test_pulls: ${{ inputs.test_pulls }}
+      data_limit: ${{ inputs.data_limit && fromJSON(inputs.data_limit) || 0 }}
+      cache_key_suffix: ${{ inputs.cache_key_suffix }}
+      label_prefix: "area-"
+      threshold: 0.40
