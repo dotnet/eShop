@@ -1,0 +1,32 @@
+name: "Labeler: Predict Issue Labels"
+
+on:
+  # Only automatically predict area labels when issues are originally opened
+  issues:
+    types: opened
+
+  # Allow dispatching the workflow via the Actions UI, specifying ranges of numbers
+  workflow_dispatch:
+    inputs:
+      issue_numbers:
+        description: "Issue Numbers (comma-separated list of ranges)"
+        type: string
+      model_cache_key:
+        description: "The cache key suffix to use for loading the model"
+        type: string
+        required: true
+        default: "LIVE"
+
+jobs:
+  predict-issues:
+    # Do not run the workflow on forks outside the 'dotnet' org
+    if: ${{ github.repository_owner == 'dotnet' && (inputs.issue_numbers || github.event.issue.number) }}
+    permissions:
+      issues: write
+    uses: dotnet/issue-labeler/.github/workflows/predict-issues.yml@f0c098669828a134c0313adf3f58c1909e555d86 # v1.0.1
+    with:
+      model_cache_key: ${{ inputs.model_cache_key }}
+      issue_numbers: ${{ inputs.issue_numbers || github.event.issue.number }}
+      label_prefix: "area-"
+      threshold: 0.40
+      default_label: "needs-area-label"

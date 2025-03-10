@@ -1,0 +1,42 @@
+name: "Labeler: Promote Models"
+
+on:
+  # Dispatched via the Actions UI, promotes the staged models from
+  # a staging slot into the prediction environment
+  workflow_dispatch:
+    inputs:
+      promote_issues:
+        description: "Issues: Promote Model"
+        type: boolean
+        required: true
+      promote_pulls:
+        description: "Pulls: Promote Model"
+        type: boolean
+        required: true
+      model_cache_key:
+        description: "The cache key suffix to promote into the 'LIVE' cache"
+        type: string
+        required: true
+        default: "staging"
+      backup_cache_key:
+        description: "The cache key suffix to use for backing up the currently promoted model"
+        type: string
+        default: "backup"
+
+permissions:
+  actions: write
+
+jobs:
+  labeler-promote-issues:
+    if: ${{ inputs.promote_issues }}
+    uses: dotnet/issue-labeler/.github/workflows/promote-issues.yml@f0c098669828a134c0313adf3f58c1909e555d86 # v1.0.1
+    with:
+      model_cache_key: ${{ inputs.model_cache_key }}
+      backup_cache_key: ${{ inputs.backup_cache_key }}
+
+  labeler-promote-pulls:
+    if: ${{ inputs.promote_pulls }}
+    uses: dotnet/issue-labeler/.github/workflows/promote-pulls.yml@f0c098669828a134c0313adf3f58c1909e555d86 # v1.0.1
+    with:
+      model_cache_key: ${{ inputs.model_cache_key }}
+      backup_cache_key: ${{ inputs.backup_cache_key }}
