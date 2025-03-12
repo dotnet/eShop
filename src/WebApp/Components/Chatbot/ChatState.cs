@@ -76,9 +76,9 @@ public class ChatState
         try
         {
             var response = await _chatClient.GetResponseAsync(Messages, _chatOptions);
-            if (!string.IsNullOrWhiteSpace(response.Message.Text))
+            if (!string.IsNullOrWhiteSpace(response.Text))
             {
-                Messages.Add(response.Message);
+                Messages.AddMessages(response);
             }
         }
         catch (Exception e)
