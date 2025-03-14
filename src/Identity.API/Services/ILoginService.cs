@@ -1,13 +1,12 @@
-﻿namespace eShop.Identity.API.Services
+﻿namespace eShop.Identity.API.Services;
+
+public interface ILoginService<T>
 {
-    public interface ILoginService<T>
-    {
-        Task<bool> ValidateCredentials(T user, string password);
+    Task<bool> ValidateCredentials(T user, string password);
 
-        Task<T> FindByUsername(string user);
+    Task<T> FindByUsername(string user);
 
-        Task SignIn(T user);
+    Task SignIn(T user);
 
-        Task SignInAsync(T user, AuthenticationProperties properties, string authenticationMethod = null);
-    }
+    Task SignInAsync(T user, AuthenticationProperties properties, string authenticationMethod = null);
 }
