@@ -1,0 +1,33 @@
+$schema: "1.0"
+name: "frontend-eng"
+image: microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2
+description: "This definition is for the eShop frontend engineering environment"
+
+tasks:
+  - name: ~/winget
+    parameters:
+      downloadUrl: 'https://raw.githubusercontent.com/contoso-co/common-eng-sys/main/dsc-configurations/common-config.dsc.yaml'
+
+  - name: ~/winget
+    description: Install AZD
+    parameters:
+      package:  Microsoft.Azd
+
+  - name: ~/winget
+    description: Install Visual Studio Code
+    parameters:
+      package:  Microsoft.VisualStudioCode
+
+  - name: ~/powershell
+    parameters:
+      command: |
+        $env:Path = [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User') 
+        code --install-extension github.copilot
+        code --install-extension github.copilot-chat        
+        code --install-extension GitHub.vscode-github-actions
+        code --install-extension ms-vscode-remote.remote-wsl
+        code --install-extension ms-vscode-remote.remote-containers
+        code --install-extension ms-azuretools.azure-dev
+        code --install-extension ms-azuretools.vscode-docker
+        code --install-extension ms-dotnettools.csdevkit
+        code --install-extension ms-dotnettools.dotnet-maui
