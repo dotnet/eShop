@@ -30,7 +30,7 @@ public static partial class Extensions
                 // Disable default fonts to avoid download unnecessary fonts
                 options.DefaultFonts = false;
             });
-            app.MapGet("/", () => Results.Redirect("/scalar/v1")).ExcludeFromDescription();
+            app.MapGet("/", () => Results.Redirect("/scalar/")).ExcludeFromDescription();
         }
 
         return app;
@@ -61,9 +61,11 @@ public static partial class Extensions
             string[] versions = ["v1", "v2"];
             foreach (var description in versions)
             {
+                var title = openApi.GetRequiredValue("Document:Title");
+                builder.Services.Configure<ScalarOptions>(options => options.AddDocument(description, $"{title} | {description}"));
                 builder.Services.AddOpenApi(description, options =>
                 {
-                    options.ApplyApiVersionInfo(openApi.GetRequiredValue("Document:Title"), openApi.GetRequiredValue("Document:Description"));
+                    options.ApplyApiVersionInfo(title, openApi.GetRequiredValue("Document:Description"));
                     options.ApplyAuthorizationChecks([.. scopes.Keys]);
                     options.ApplySecuritySchemeDefinitions();
                     options.ApplyOperationDeprecatedStatus();
