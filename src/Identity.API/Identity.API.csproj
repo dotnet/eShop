@@ -21,6 +21,14 @@
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <LibraryRestore>false</LibraryRestore>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LibraryRestore>true</LibraryRestore>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="Views\Account\AccessDenied.cshtml" />
     <None Include="Views\Account\LoggedOut.cshtml" />
