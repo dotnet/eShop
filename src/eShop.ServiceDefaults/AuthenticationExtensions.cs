@@ -45,8 +45,6 @@ public static class AuthenticationExtensions
 #else
             options.TokenValidationParameters.ValidIssuers = [identityUrl];
 #endif
-            
-            options.TokenValidationParameters.ValidateAudience = false;
         });
 
         services.AddAuthorization();
