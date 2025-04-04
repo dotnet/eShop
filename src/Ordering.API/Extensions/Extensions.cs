@@ -44,6 +44,7 @@
         services.AddSingleton<IValidator<CreateOrderCommand>, CreateOrderCommandValidator>();
         services.AddSingleton<IValidator<IdentifiedCommand<CreateOrderCommand, bool>>, IdentifiedCommandValidator>();
         services.AddSingleton<IValidator<ShipOrderCommand>, ShipOrderCommandValidator>();
+        services.AddSingleton<IValidator<CompleteOrderByShipmentCommand>, CompleteOrderByShipmentCommandValidator>();
 
         services.AddScoped<IOrderQueries, OrderQueries>();
         services.AddScoped<IBuyerRepository, BuyerRepository>();

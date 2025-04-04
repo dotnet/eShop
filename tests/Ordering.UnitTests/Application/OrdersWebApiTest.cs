@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Http.HttpResults;
 using eShop.Ordering.API.Application.Queries;
+using eShop.Ordering.API.Application.Commands;
 using Order = eShop.Ordering.API.Application.Queries.Order;
 using NSubstitute.ExceptionExtensions;
 
@@ -152,5 +153,35 @@ public class OrdersWebApiTest
         // Assert
         Assert.IsInstanceOfType<Ok<IEnumerable<CardType>>>(result);
         Assert.AreSame(fakeDynamicResult, result.Value);
+    }
+
+    [TestMethod]
+    public async Task Complete_order_with_requestId_success()
+    {
+        // Arrange
+        _mediatorMock.Send(Arg.Any<IdentifiedCommand<CompleteOrderByShipmentCommand, bool>>(), default)
+            .Returns(Task.FromResult(true));
+
+        // Act
+        var orderServices = new OrderServices(_mediatorMock, _orderQueriesMock, _identityServiceMock, _loggerMock);
+        var result = await OrdersApi.CompleteOrderByShipmentAsync(Guid.NewGuid(), new CompleteOrderByShipmentCommand(1, "123", "Carrier", DateTime.UtcNow), orderServices);
+
+        // Assert
+        Assert.IsInstanceOfType<Ok>(result.Result);
+    }
+
+    [TestMethod]
+    public async Task Complete_order_bad_request()
+    {
+        // Arrange
+        _mediatorMock.Send(Arg.Any<IdentifiedCommand<CompleteOrderByShipmentCommand, bool>>(), default)
+            .Returns(Task.FromResult(true));
+
+        // Act
+        var orderServices = new OrderServices(_mediatorMock, _orderQueriesMock, _identityServiceMock, _loggerMock);
+        var result = await OrdersApi.CompleteOrderByShipmentAsync(Guid.Empty, new CompleteOrderByShipmentCommand(1, "123", "Carrier", DateTime.UtcNow), orderServices);
+
+        // Assert
+        Assert.IsInstanceOfType<BadRequest<string>>(result.Result);
     }
 }

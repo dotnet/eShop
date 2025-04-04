@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using eShop.Ordering.API.Application.Commands;
+using Microsoft.AspNetCore.Http.HttpResults;
 using CardType = eShop.Ordering.API.Application.Queries.CardType;
 using Order = eShop.Ordering.API.Application.Queries.Order;
 
@@ -15,6 +16,7 @@ public static class OrdersApi
         api.MapGet("/cardtypes", GetCardTypesAsync);
         api.MapPost("/draft", CreateOrderDraftAsync);
         api.MapPost("/", CreateOrderAsync);
+        api.MapPut("/complete", CompleteOrderByShipmentAsync);
 
         return api;
     }
@@ -166,6 +168,39 @@ public static class OrdersApi
             return TypedResults.Ok();
         }
     }
+
+    public static async Task<Results<Ok, BadRequest<string>, ProblemHttpResult>> CompleteOrderByShipmentAsync(
+    [FromHeader(Name = "x-requestid")] Guid requestId,
+    CompleteOrderByShipmentCommand command,
+    [AsParameters] OrderServices services)
+    {
+        if (requestId == Guid.Empty)
+        {
+            return TypedResults.BadRequest("Empty GUID is not valid for request ID");
+        }
+
+        if (string.IsNullOrWhiteSpace(command.TrackingNumber))
+        {
+            return TypedResults.BadRequest("Shipment tracking number is required.");
+        }
+
+        var requestCompleteOrder = new IdentifiedCommand<CompleteOrderByShipmentCommand, bool>(command, requestId);
+
+        services.Logger.LogInformation(
+            "Completing order by shipment: {OrderId}, Tracking: {TrackingNumber}",
+            requestCompleteOrder.Command.OrderNumber,
+            requestCompleteOrder.Command.TrackingNumber);
+
+        var commandResult = await services.Mediator.Send(requestCompleteOrder);
+
+        if (!commandResult)
+        {
+            return TypedResults.Problem(detail: "Complete order failed to process.", statusCode: 500);
+        }
+
+        return TypedResults.Ok();
+    }
+   
 }
 
 public record CreateOrderRequest(
