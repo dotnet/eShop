@@ -108,7 +108,7 @@ public static class Extensions
             if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("openai")) && !string.IsNullOrWhiteSpace(chatModel))
             {
                 builder.AddOpenAIClientFromConfiguration("openai");
-                builder.Services.AddChatClient(sp => sp.GetRequiredService<OpenAIClient>().AsChatClient(chatModel ?? "gpt-4o-mini"))
+                builder.Services.AddChatClient(sp => sp.GetRequiredService<OpenAIClient>().GetChatClient(chatModel ?? "gpt-4o-mini").AsIChatClient())
                     .UseFunctionInvocation()
                     .UseOpenTelemetry(configure: t => t.EnableSensitiveData = true)
                     .UseLogging();
