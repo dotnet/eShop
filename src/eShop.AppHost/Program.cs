@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using eShop.AppHost;
+﻿using eShop.AppHost;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
