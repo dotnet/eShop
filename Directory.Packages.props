@@ -2,18 +2,19 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    <AspnetVersion>9.0.2</AspnetVersion>
-    <MicrosoftExtensionsVersion>9.0.3</MicrosoftExtensionsVersion>
-    <MicrosoftExtensionsAIVersion>9.3.0-preview.1.25161.3</MicrosoftExtensionsAIVersion>
-    <AspireVersion>9.1.0</AspireVersion>
-    <AspireUnstablePackagesVersion>9.1.0-preview.1.25121.10</AspireUnstablePackagesVersion>
-    <GrpcVersion>2.67.0</GrpcVersion>
+    <AspnetVersion>9.0.4</AspnetVersion>
+    <MicrosoftExtensionsVersion>9.0.4</MicrosoftExtensionsVersion>
+    <MicrosoftExtensionsAIVersion>9.4.0-preview.1.25207.5</MicrosoftExtensionsAIVersion>
+    <AspireVersion>9.2.0</AspireVersion>
+    <AspireUnstablePackagesVersion>9.2.0-preview.1.25209.2</AspireUnstablePackagesVersion>
+    <GrpcVersion>2.70.0</GrpcVersion>
     <DuendeVersion>7.1.1</DuendeVersion>
     <ApiVersioningVersion>8.1.0</ApiVersioningVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Version together with Aspire -->
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="$(AspireVersion)" />
+    <PackageVersion Include="Aspire.Hosting.Docker" Version="$(AspireUnstablePackagesVersion)" />
     <PackageVersion Include="Aspire.Hosting.Azure.CognitiveServices" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="$(AspireVersion)" />
@@ -38,20 +39,20 @@
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.QuickGrid" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.4" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="$(AspnetVersion)" />
 
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.2.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.4.0" />
 
     <PackageVersion Include="MSTest.TestFramework" Version="3.8.2" />
     <PackageVersion Include="MSTest.TestAdapter" Version="3.8.2" />
     <!-- Version together with EF -->
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
     <PackageVersion Include="Pgvector" Version="0.3.0" />
@@ -67,8 +68,8 @@
     <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="$(MicrosoftExtensionsAIVersion)" />
     <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="$(MicrosoftExtensionsAIVersion)" />
     <PackageVersion Include="Microsoft.Extensions.AI.Ollama" Version="$(MicrosoftExtensionsAIVersion)" />
-    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="9.2.1" />
-    <PackageVersion Include="CommunityToolkit.Aspire.OllamaSharp" Version="9.2.0-preview.1.250226-0510" />
+    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="9.3.0" />
+    <PackageVersion Include="CommunityToolkit.Aspire.OllamaSharp" Version="9.3.1-beta.259" />
     <!-- Open Telemetry -->
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.11.2" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.11.2" />
@@ -89,12 +90,12 @@
     <!-- Grpc -->
     <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcVersion)" />
     <PackageVersion Include="Grpc.Net.ClientFactory" Version="$(GrpcVersion)" />
-    <PackageVersion Include="Grpc.Tools" Version="2.70.0" PrivateAssets="All" />
+    <PackageVersion Include="Grpc.Tools" Version="2.71.0" PrivateAssets="All" />
     <!-- Miscellaneous -->
     <PackageVersion Include="Automapper" Version="14.0.0" />
     <PackageVersion Include="Dapper" Version="2.1.35" />
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
-    <PackageVersion Include="Google.Protobuf" Version="3.30.0" />
+    <PackageVersion Include="Google.Protobuf" Version="3.30.1" />
     <PackageVersion Include="MediatR" Version="12.4.1" />
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
     <PackageVersion Include="Polly.Core" Version="8.5.2" />

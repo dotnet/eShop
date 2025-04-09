@@ -78,9 +78,12 @@ internal static class Extensions
                     builder.AddParameter("openaiResourceGroup"));
             }
 
-            openAITyped
-                .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-4o-mini", "2024-07-18"))
-                .AddDeployment(new AzureOpenAIDeployment(textEmbeddingModelName, "text-embedding-3-small", "1", skuCapacity: 20)); // 20k tokens per minute are needed to seed the initial embeddings
+            openAITyped.AddDeployment(chatModelName, "gpt-4o-mini", "2024-07-18");
+            openAITyped.AddDeployment(textEmbeddingModelName, "text-embedding-3-small", "1")
+                .WithProperties(d =>
+                {
+                    d.SkuCapacity = 20; // 20k tokens per minute are needed to seed the initial embeddings
+                });
 
             openAI = openAITyped;
         }
