@@ -88,6 +88,13 @@ public static class CatalogApi
             .WithSummary("List catalog item brands")
             .WithDescription("Get a list of the brands of catalog items")
             .WithTags("Brands");
+        api.MapGet("/catalogbrands2",
+            [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+            async (CatalogContext context) => await context.CatalogBrands.OrderBy(x => x.Brand).ToListAsync())
+            .WithName("ListItemBrands")
+            .WithSummary("List catalog item brands")
+            .WithDescription("Get a list of the brands of catalog items")
+            .WithTags("Brands");
 
         // Routes for modifying catalog items.
         v1.MapPut("/items", UpdateItemV1)
