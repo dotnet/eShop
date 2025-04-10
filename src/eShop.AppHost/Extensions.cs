@@ -38,7 +38,11 @@ internal static class Extensions
         IResourceBuilder<ProjectResource> webApp)
     {
         const string openAIName = "openai";
+
+        const string textEmbeddingName = "textEmbeddingModel";
         const string textEmbeddingModelName = "text-embedding-3-small";
+
+        const string chatName = "chatModel";
         const string chatModelName = "gpt-4o-mini";
 
         // to use an existing OpenAI resource as a connection string, add the following to the AppHost user secrets:
@@ -47,10 +51,12 @@ internal static class Extensions
         //     -or-
         //   "openai": "Endpoint=https://<name>.openai.azure.com/" (to use Azure OpenAI)
         // }
-        IResourceBuilder<IResourceWithConnectionString> openAI;
-        if (builder.Configuration.GetConnectionString(openAIName) is not null)
+        if (builder.Configuration.GetConnectionString(openAIName) is string openAIConnectionString)
         {
-            openAI = builder.AddConnectionString(openAIName);
+            catalogApi.WithReference(
+                builder.AddConnectionString(textEmbeddingName, ReferenceExpression.Create($"{openAIConnectionString};Deployment={textEmbeddingModelName}")));
+            webApp.WithReference(
+                builder.AddConnectionString(chatName, ReferenceExpression.Create($"{openAIConnectionString};Deployment={chatModelName}")));
         }
         else
         {
@@ -61,7 +67,7 @@ internal static class Extensions
             //   "Location": "<location>"
             // }
 
-            var openAITyped = builder.AddAzureOpenAI(openAIName);
+            var openAI = builder.AddAzureOpenAI(openAIName);
 
             // to use an existing Azure OpenAI resource via provisioning, add the following to the AppHost user secrets:
             // "Parameters": {
@@ -73,25 +79,26 @@ internal static class Extensions
             if (builder.Configuration["Parameters:openaiName"] is not null &&
                 builder.Configuration["Parameters:openaiResourceGroup"] is not null)
             {
-                openAITyped.AsExisting(
+                openAI.AsExisting(
                     builder.AddParameter("openaiName"),
                     builder.AddParameter("openaiResourceGroup"));
             }
 
-            openAITyped
-                .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-4o-mini", "2024-07-18"))
-                .AddDeployment(new AzureOpenAIDeployment(textEmbeddingModelName, "text-embedding-3-small", "1", skuCapacity: 20)); // 20k tokens per minute are needed to seed the initial embeddings
+            var chat = openAI.AddDeployment(chatName, chatModelName, "2024-07-18")
+                .WithProperties(d =>
+                {
+                    d.DeploymentName = chatModelName;
+                });
+            var textEmbedding = openAI.AddDeployment(textEmbeddingName, textEmbeddingModelName, "1")
+                .WithProperties(d =>
+                {
+                    d.DeploymentName = textEmbeddingModelName;
+                    d.SkuCapacity = 20; // 20k tokens per minute are needed to seed the initial embeddings
+                });
 
-            openAI = openAITyped;
+            catalogApi.WithReference(textEmbedding);
+            webApp.WithReference(chat);
         }
-
-        catalogApi
-            .WithReference(openAI)
-            .WithEnvironment("AI__OPENAI__EMBEDDINGMODEL", textEmbeddingModelName);
-
-        webApp
-            .WithReference(openAI)
-            .WithEnvironment("AI__OPENAI__CHATMODEL", chatModelName);
 
         return builder;
     }

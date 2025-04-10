@@ -99,6 +99,10 @@ identityApi.WithEnvironment("BasketApiClient", basketApi.GetEndpoint("http"))
            .WithEnvironment("WebhooksWebClient", webhooksClient.GetEndpoint(launchProfileName))
            .WithEnvironment("WebAppClient", webApp.GetEndpoint(launchProfileName));
 
+// Starting in Aspire 9.2, we can use the new DockerComposePublisher to generate a docker-compose file.
+// In order to do so, run 'dotnet run --publisher docker-compose --output-path ./docker-compose' to try it out.
+builder.AddDockerComposePublisher();
+
 builder.Build().Run();
 
 // For test use only.
