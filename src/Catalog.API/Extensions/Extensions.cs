@@ -43,12 +43,10 @@ public static class Extensions
             builder.AddOllamaApiClient("embedding")
                 .AddEmbeddingGenerator();
         }
-        else if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("openai")))
+        else if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("textEmbeddingModel")))
         {
-            builder.AddOpenAIClientFromConfiguration("openai");
-            builder.Services.AddEmbeddingGenerator(sp => sp.GetRequiredService<OpenAIClient>().AsEmbeddingGenerator(builder.Configuration["AI:OpenAI:EmbeddingModel"]!))
-                .UseOpenTelemetry()
-                .UseLogging();
+            builder.AddOpenAIClientFromConfiguration("textEmbeddingModel")
+                .AddEmbeddingGenerator();
         }
 
         builder.Services.AddScoped<ICatalogAI, CatalogAI>();
