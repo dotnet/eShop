@@ -1,6 +1,6 @@
-﻿using eShop.Basket.API.Model;
+﻿using Inked.Basket.API.Model;
 
-namespace eShop.Basket.API.Repositories;
+namespace Inked.Basket.API.Repositories;
 
 public interface IBasketRepository
 {

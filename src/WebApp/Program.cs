@@ -1,5 +1,4 @@
-﻿using eShop.WebApp.Components;
-using eShop.ServiceDefaults;
+﻿using WebApp.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +27,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
+app.MapLoginAndLogout();
 
 app.MapForwarder("/product-images/{id}", "http://catalog-api", "/api/catalog/items/{id}/pic");
 

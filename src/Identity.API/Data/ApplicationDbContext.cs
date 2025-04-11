@@ -1,9 +1,8 @@
-﻿namespace eShop.Identity.API.Data;
+﻿namespace Inked.Identity.API.Data;
 
 /// <remarks>
-/// Add migrations using the following command inside the 'Identity.API' project directory:
-///
-/// dotnet ef migrations add [migration-name]
+///     Add migrations using the following command inside the 'Identity.API' project directory:
+///     dotnet ef migrations add [migration-name]
 /// </remarks>
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {

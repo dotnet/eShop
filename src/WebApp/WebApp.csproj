@@ -4,34 +4,34 @@
     <TargetFramework>net9.0</TargetFramework>
     <UserSecretsId>2d86f364-a439-47c5-9468-3b85a7d9a18e</UserSecretsId>
     <Nullable>enable</Nullable>
-    <RootNamespace>eShop.WebApp</RootNamespace>
 
     <!-- Disable RZ10021, which is failing due to a Razor bug, according to Mackinnon. -->
     <NoWarn>$(NoWarn);RZ10021</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\eShop.ServiceDefaults\eShop.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\EventBusRabbitMQ\EventBusRabbitMQ.csproj" />
-    <ProjectReference Include="..\WebAppComponents\WebAppComponents.csproj" />
+    <ProjectReference Include="..\inked.ServiceDefaults\inked.ServiceDefaults.csproj"/>
+    <ProjectReference Include="..\EventBusRabbitMQ\EventBusRabbitMQ.csproj"/>
+    <ProjectReference Include="..\Ordering.Domain\Ordering.Domain.csproj"/>
+    <ProjectReference Include="..\WebAppComponents\WebAppComponents.csproj"/>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asp.Versioning.Http.Client" />
-    <PackageReference Include="Aspire.Azure.AI.OpenAI" />
-    <PackageReference Include="CommunityToolkit.Aspire.OllamaSharp" />
-    <PackageReference Include="Microsoft.Extensions.ServiceDiscovery.Yarp" />
-    <PackageReference Include="Microsoft.Extensions.AI" />
-    <PackageReference Include="Microsoft.Extensions.AI.OpenAI" />
-    <PackageReference Include="Microsoft.Extensions.AI.Ollama" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
-    <PackageReference Include="Google.Protobuf" />
-    <PackageReference Include="Grpc.Net.ClientFactory" />
-    <PackageReference Include="Grpc.Tools" PrivateAssets="All" />
+    <PackageReference Include="Asp.Versioning.Http.Client"/>
+    <PackageReference Include="Aspire.Azure.AI.OpenAI"/>
+    <PackageReference Include="CommunityToolkit.Aspire.OllamaSharp"/>
+    <PackageReference Include="Microsoft.Extensions.ServiceDiscovery.Yarp"/>
+    <PackageReference Include="Microsoft.Extensions.AI"/>
+    <PackageReference Include="Microsoft.Extensions.AI.OpenAI"/>
+    <PackageReference Include="Microsoft.Extensions.AI.Ollama"/>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect"/>
+    <PackageReference Include="Google.Protobuf"/>
+    <PackageReference Include="Grpc.Net.ClientFactory"/>
+    <PackageReference Include="Grpc.Tools" PrivateAssets="All"/>
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\Basket.API\Proto\basket.proto" GrpcServices="Client" />
+    <Protobuf Include="..\Basket.API\Proto\basket.proto" GrpcServices="Client"/>
   </ItemGroup>
 
 </Project>

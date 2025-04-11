@@ -1,6 +1,6 @@
-﻿namespace eShop.Ordering.Infrastructure.EntityConfigurations;
+﻿namespace Inked.Ordering.Infrastructure.EntityConfigurations;
 
-class PaymentMethodEntityTypeConfiguration
+internal class PaymentMethodEntityTypeConfiguration
     : IEntityTypeConfiguration<PaymentMethod>
 {
     public void Configure(EntityTypeBuilder<PaymentMethod> paymentConfiguration)

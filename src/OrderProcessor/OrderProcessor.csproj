@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Npgsql" />
+    <PackageReference Include="Aspire.Npgsql"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\eShop.ServiceDefaults\eShop.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\EventBusRabbitMQ\EventBusRabbitMQ.csproj" />
+    <ProjectReference Include="..\inked.ServiceDefaults\inked.ServiceDefaults.csproj"/>
+    <ProjectReference Include="..\EventBusRabbitMQ\EventBusRabbitMQ.csproj"/>
   </ItemGroup>
 </Project>

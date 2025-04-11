@@ -1,11 +1,10 @@
-﻿using eShop.WebAppComponents.Catalog;
+﻿using Inked.WebAppComponents.Catalog;
 
-namespace eShop.WebApp.Services
+namespace Inked.WebApp.Services;
+
+public interface IBasketState
 {
-    public interface IBasketState
-    {
-        public Task<IReadOnlyCollection<BasketItem>> GetBasketItemsAsync();
+    public Task<IReadOnlyCollection<BasketItem>> GetBasketItemsAsync();
 
-        public Task AddAsync(CatalogItem item);
-    }
+    public Task AddAsync(CatalogItem item);
 }

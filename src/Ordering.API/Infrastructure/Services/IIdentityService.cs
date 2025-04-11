@@ -1,4 +1,4 @@
-﻿namespace eShop.Ordering.API.Infrastructure.Services;
+﻿namespace Inked.Ordering.API.Infrastructure.Services;
 
 public interface IIdentityService
 {
@@ -6,4 +6,3 @@ public interface IIdentityService
 
     string GetUserName();
 }
-

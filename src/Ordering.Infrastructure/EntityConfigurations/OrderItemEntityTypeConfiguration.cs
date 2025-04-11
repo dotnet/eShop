@@ -1,6 +1,6 @@
-﻿namespace eShop.Ordering.Infrastructure.EntityConfigurations;
+﻿namespace Inked.Ordering.Infrastructure.EntityConfigurations;
 
-class OrderItemEntityTypeConfiguration
+internal class OrderItemEntityTypeConfiguration
     : IEntityTypeConfiguration<OrderItem>
 {
     public void Configure(EntityTypeBuilder<OrderItem> orderItemConfiguration)

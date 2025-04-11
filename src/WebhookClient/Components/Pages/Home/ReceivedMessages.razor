@@ -8,9 +8,9 @@
 else if (messages.Any())
 {
     <QuickGrid Items="@messages">
-        <PropertyColumn Sortable="@true" Title="When" Property="@(hook => hook.When)" />
-        <PropertyColumn Sortable="@true" Title="Data" Property="@(hook => hook.Data)" />
-        <PropertyColumn Sortable="@true" Title="Token" Property="@(hook => hook.Token)" />
+        <PropertyColumn Sortable="@true" Title="When" Property="@(hook => hook.When)"/>
+        <PropertyColumn Sortable="@true" Title="Data" Property="@(hook => hook.Data)"/>
+        <PropertyColumn Sortable="@true" Title="Token" Property="@(hook => hook.Token)"/>
     </QuickGrid>
 }
 else
@@ -32,7 +32,9 @@ else
     }
 
     private async Task RefreshDataAsync()
-        => messages = (await HooksRepository.GetAll()).AsQueryable();
+    {
+        messages = (await HooksRepository.GetAll()).AsQueryable();
+    }
 
     private async Task OnMessageReceivedAsync()
     {
@@ -51,4 +53,5 @@ else
     {
         subscription?.Dispose();
     }
+
 }

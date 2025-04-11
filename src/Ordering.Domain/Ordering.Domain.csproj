@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" />
-    <PackageReference Include="System.Reflection.TypeExtensions" />
+    <PackageReference Include="MediatR"/>
+    <PackageReference Include="System.Reflection.TypeExtensions"/>
   </ItemGroup>
 
 </Project>

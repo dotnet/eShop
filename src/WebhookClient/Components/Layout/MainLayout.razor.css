@@ -10,12 +10,12 @@
     z-index: 1000;
 }
 
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
-    }
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
 
 header {
     background: #156082;
@@ -39,13 +39,13 @@ h1 a {
     text-decoration: none;
 }
 
-    h1 a:hover {
-        text-decoration: underline;
-    }
+h1 a:hover {
+    text-decoration: underline;
+}
 
-    .user-info {
-        margin-left: auto;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
+.user-info {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}

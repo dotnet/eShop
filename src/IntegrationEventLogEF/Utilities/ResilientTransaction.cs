@@ -1,12 +1,18 @@
-﻿namespace eShop.IntegrationEventLogEF.Utilities;
+﻿namespace Inked.IntegrationEventLogEF.Utilities;
 
 public class ResilientTransaction
 {
     private readonly DbContext _context;
-    private ResilientTransaction(DbContext context) =>
-        _context = context ?? throw new ArgumentNullException(nameof(context));
 
-    public static ResilientTransaction New(DbContext context) => new(context);
+    private ResilientTransaction(DbContext context)
+    {
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+    }
+
+    public static ResilientTransaction New(DbContext context)
+    {
+        return new ResilientTransaction(context);
+    }
 
     public async Task ExecuteAsync(Func<Task> action)
     {

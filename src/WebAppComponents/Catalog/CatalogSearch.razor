@@ -1,11 +1,12 @@
-﻿@inject CatalogService CatalogService
+﻿@using Inked.WebAppComponents.Catalog
+@inject CatalogService CatalogService
 @inject NavigationManager Nav
 
 @if (catalogBrands is not null && catalogItemTypes is not null)
 {
     <div class="catalog-search">
         <div class="catalog-search-header">
-            <img role="presentation" src="icons/filters.svg" />
+            <img role="presentation" src="icons/filters.svg"/>
             Filters
         </div>
         <div class="catalog-search-types">
@@ -13,13 +14,13 @@
                 <h3>Brand</h3>
                 <div class="catalog-search-group-tags">
                     <a href="@BrandUri(null)"
-                    class="catalog-search-tag @(BrandId == null ? "active " : "")">
+                       class="catalog-search-tag @(BrandId == null ? "active " : "")">
                         All
                     </a>
                     @foreach (var brand in catalogBrands)
                     {
                         <a href="@BrandUri(brand.Id)"
-                        class="catalog-search-tag @(BrandId == brand.Id ? "active " : "")">
+                           class="catalog-search-tag @(BrandId == brand.Id ? "active " : "")">
                             @brand.Brand
                         </a>
                     }
@@ -30,13 +31,13 @@
 
                 <div class="catalog-search-group-tags">
                     <a href="@TypeUri(null)"
-                    class="catalog-search-tag @(ItemTypeId == null ? "active " : "")">
-                    All
+                       class="catalog-search-tag @(ItemTypeId == null ? "active " : "")">
+                        All
                     </a>
                     @foreach (var itemType in catalogItemTypes)
                     {
                         <a href="@TypeUri(itemType.Id)"
-                        class="catalog-search-tag @(ItemTypeId == itemType.Id ? "active " : "")">
+                           class="catalog-search-tag @(ItemTypeId == itemType.Id ? "active " : "")">
                             @itemType.Type
                         </a>
                     }
@@ -61,15 +62,22 @@
         catalogItemTypes = itemTypesTask.Result;
     }
 
-    private string BrandUri(int? brandId) => Nav.GetUriWithQueryParameters(new Dictionary<string, object?>()
+    private string BrandUri(int? brandId)
     {
-        { "page", null },
-        { "brand", brandId },
-    });
+        return Nav.GetUriWithQueryParameters(new Dictionary<string, object?>
+        {
+            { "page", null },
+            { "brand", brandId }
+        });
+    }
 
-    private string TypeUri(int? typeId) => Nav.GetUriWithQueryParameters(new Dictionary<string, object?>()
+    private string TypeUri(int? typeId)
     {
-        { "page", null },
-        { "type", typeId },
-    });
+        return Nav.GetUriWithQueryParameters(new Dictionary<string, object?>
+        {
+            { "page", null },
+            { "type", typeId }
+        });
+    }
+
 }

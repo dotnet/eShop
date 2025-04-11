@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace eShop.WebhookClient.Services;
+namespace Inked.WebhookClient.Services;
 
 public class HooksRepository
 {
@@ -41,8 +41,14 @@ public class HooksRepository
 
     private class OnChangeSubscription(Func<Task> callback, HooksRepository owner) : IDisposable
     {
-        public Task NotifyAsync() => callback();
+        public void Dispose()
+        {
+            owner._onChangeSubscriptions.Remove(this, out _);
+        }
 
-        public void Dispose() => owner._onChangeSubscriptions.Remove(this, out _);
+        public Task NotifyAsync()
+        {
+            return callback();
+        }
     }
 }

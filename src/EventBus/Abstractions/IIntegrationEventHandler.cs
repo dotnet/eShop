@@ -1,11 +1,14 @@
-﻿namespace eShop.EventBus.Abstractions;
+﻿namespace Inked.EventBus.Abstractions;
 
 public interface IIntegrationEventHandler<in TIntegrationEvent> : IIntegrationEventHandler
     where TIntegrationEvent : IntegrationEvent
 {
-    Task Handle(TIntegrationEvent @event);
+    Task IIntegrationEventHandler.Handle(IntegrationEvent @event)
+    {
+        return Handle((TIntegrationEvent)@event);
+    }
 
-    Task IIntegrationEventHandler.Handle(IntegrationEvent @event) => Handle((TIntegrationEvent)@event);
+    Task Handle(TIntegrationEvent @event);
 }
 
 public interface IIntegrationEventHandler

@@ -1,14 +1,22 @@
-﻿namespace eShop.Ordering.API.Application.IntegrationEvents;
+﻿namespace Inked.Ordering.API.Application.IntegrationEvents;
 
-public class OrderingIntegrationEventService(IEventBus eventBus,
+public class OrderingIntegrationEventService(
+    IEventBus eventBus,
     OrderingContext orderingContext,
     IIntegrationEventLogService integrationEventLogService,
     ILogger<OrderingIntegrationEventService> logger) : IOrderingIntegrationEventService
 {
     private readonly IEventBus _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
-    private readonly OrderingContext _orderingContext = orderingContext ?? throw new ArgumentNullException(nameof(orderingContext));
-    private readonly IIntegrationEventLogService _eventLogService = integrationEventLogService ?? throw new ArgumentNullException(nameof(integrationEventLogService));
-    private readonly ILogger<OrderingIntegrationEventService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+    private readonly IIntegrationEventLogService _eventLogService = integrationEventLogService ??
+                                                                    throw new ArgumentNullException(
+                                                                        nameof(integrationEventLogService));
+
+    private readonly ILogger<OrderingIntegrationEventService> _logger =
+        logger ?? throw new ArgumentNullException(nameof(logger));
+
+    private readonly OrderingContext _orderingContext =
+        orderingContext ?? throw new ArgumentNullException(nameof(orderingContext));
 
     public async Task PublishEventsThroughEventBusAsync(Guid transactionId)
     {
@@ -16,7 +24,8 @@ public class OrderingIntegrationEventService(IEventBus eventBus,
 
         foreach (var logEvt in pendingLogEvents)
         {
-            _logger.LogInformation("Publishing integration event: {IntegrationEventId} - ({@IntegrationEvent})", logEvt.EventId, logEvt.IntegrationEvent);
+            _logger.LogInformation("Publishing integration event: {IntegrationEventId} - ({@IntegrationEvent})",
+                logEvt.EventId, logEvt.IntegrationEvent);
 
             try
             {
@@ -35,7 +44,8 @@ public class OrderingIntegrationEventService(IEventBus eventBus,
 
     public async Task AddAndSaveEventAsync(IntegrationEvent evt)
     {
-        _logger.LogInformation("Enqueuing integration event {IntegrationEventId} to repository ({@IntegrationEvent})", evt.Id, evt);
+        _logger.LogInformation("Enqueuing integration event {IntegrationEventId} to repository ({@IntegrationEvent})",
+            evt.Id, evt);
 
         await _eventLogService.SaveEventAsync(evt, _orderingContext.GetCurrentTransaction());
     }

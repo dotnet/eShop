@@ -9,7 +9,7 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 
-namespace eShop.ServiceDefaults;
+namespace inked.ServiceDefaults;
 
 internal static class OpenApiOptionsExtensions
 {
@@ -24,6 +24,7 @@ internal static class OpenApiOptionsExtensions
             {
                 return Task.CompletedTask;
             }
+
             document.Info.Version = apiDescription.ApiVersion.ToString();
             document.Info.Title = title;
             document.Info.Description = BuildDescription(apiDescription, description);
@@ -84,8 +85,8 @@ internal static class OpenApiOptionsExtensions
                     text.Append("\">");
                     text.Append(
                         StringSegment.IsNullOrEmpty(link.Title)
-                        ? link.LinkTarget.OriginalString
-                        : link.Title.ToString());
+                            ? link.LinkTarget.OriginalString
+                            : link.Title.ToString());
                     text.Append("</a></li>");
                 }
 
@@ -124,13 +125,7 @@ internal static class OpenApiOptionsExtensions
                 Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
             };
 
-            operation.Security = new List<OpenApiSecurityRequirement>
-            {
-                new()
-                {
-                    [oAuthScheme] = scopes
-                }
-            };
+            operation.Security = new List<OpenApiSecurityRequirement> { new() { [oAuthScheme] = scopes } };
 
             return Task.CompletedTask;
         });
@@ -157,7 +152,8 @@ internal static class OpenApiOptionsExtensions
             if (apiVersionParameter is not null)
             {
                 apiVersionParameter.Description = "The API version, in the format 'major.minor'.";
-                switch (context.DocumentName) {
+                switch (context.DocumentName)
+                {
                     case "v1":
                         apiVersionParameter.Schema.Example = new OpenApiString("1.0");
                         break;
@@ -166,6 +162,7 @@ internal static class OpenApiOptionsExtensions
                         break;
                 }
             }
+
             return Task.CompletedTask;
         });
         return options;
@@ -194,7 +191,8 @@ internal static class OpenApiOptionsExtensions
 
     private class SecuritySchemeDefinitionsTransformer(IConfiguration configuration) : IOpenApiDocumentTransformer
     {
-        public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
+        public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context,
+            CancellationToken cancellationToken)
         {
             var identitySection = configuration.GetSection("Identity");
             if (!identitySection.Exists())
@@ -202,23 +200,25 @@ internal static class OpenApiOptionsExtensions
                 return Task.CompletedTask;
             }
 
-            var identityUrlExternal = identitySection.GetRequiredValue("Url");
-            var scopes = identitySection.GetRequiredSection("Scopes").GetChildren().ToDictionary(p => p.Key, p => p.Value);
+            var identityUrlExternal = identitySection.GetRequiredValue<string>("Url");
+            var scopes = identitySection.GetRequiredSection("Scopes").GetChildren()
+                .ToDictionary(p => p.Key, p => p.Value);
             var securityScheme = new OpenApiSecurityScheme
             {
                 Type = SecuritySchemeType.OAuth2,
-                Flows = new OpenApiOAuthFlows()
+                Flows = new OpenApiOAuthFlows
                 {
-                    // TODO: Change this to use Authorization Code flow with PKCE
-                    Implicit = new OpenApiOAuthFlow()
+                    Implicit = new OpenApiOAuthFlow
                     {
-                        AuthorizationUrl = new Uri($"{identityUrlExternal}/connect/authorize"),
-                        TokenUrl = new Uri($"{identityUrlExternal}/connect/token"),
-                        Scopes = scopes,
+                        AuthorizationUrl =
+                            new Uri($"{identityUrlExternal}/realms/inked/protocol/openid-connect/auth"),
+                        TokenUrl = new Uri(
+                            $"{identityUrlExternal}/realms/inked/protocol/openid-connect/token"),
+                        Scopes = scopes
                     }
                 }
             };
-            document.Components ??= new();
+            document.Components ??= new OpenApiComponents();
             document.Components.SecuritySchemes.Add("oauth2", securityScheme);
             return Task.CompletedTask;
         }

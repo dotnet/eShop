@@ -133,7 +133,7 @@
     margin-left: auto;
 }
 
-@media only screen and (max-width: 480px) { 
+@media only screen and (max-width: 480px) {
     .cart {
         padding: 0 1rem;
         gap: 1rem;
@@ -154,10 +154,10 @@
     }
 }
 
-@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+@media only screen and (min-width: 481px) and (max-width: 1024px) {
     .cart {
         padding: 0 3rem;
         gap: 2rem;
         flex-direction: column-reverse;
-    } 
+    }
 }

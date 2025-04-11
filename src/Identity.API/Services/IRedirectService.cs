@@ -1,7 +1,6 @@
-﻿namespace eShop.Identity.API.Services
+﻿namespace Inked.Identity.API.Services;
+
+public interface IRedirectService
 {
-    public interface IRedirectService
-    {
-        string ExtractRedirectUriFromReturnUrl(string url);
-    }
+    string ExtractRedirectUriFromReturnUrl(string url);
 }

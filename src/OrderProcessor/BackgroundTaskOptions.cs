@@ -1,4 +1,4 @@
-﻿namespace eShop.OrderProcessor;
+﻿namespace Inked.OrderProcessor;
 
 public class BackgroundTaskOptions
 {

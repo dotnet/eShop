@@ -1,11 +1,11 @@
-﻿namespace eShop.Ordering.API.Application.DomainEventHandlers;
+﻿namespace Inked.Ordering.API.Application.DomainEventHandlers;
 
 public class OrderStatusChangedToPaidDomainEventHandler : INotificationHandler<OrderStatusChangedToPaidDomainEvent>
 {
-    private readonly IOrderRepository _orderRepository;
-    private readonly ILogger _logger;
     private readonly IBuyerRepository _buyerRepository;
+    private readonly ILogger _logger;
     private readonly IOrderingIntegrationEventService _orderingIntegrationEventService;
+    private readonly IOrderRepository _orderRepository;
 
     public OrderStatusChangedToPaidDomainEventHandler(
         IOrderRepository orderRepository,
@@ -16,7 +16,8 @@ public class OrderStatusChangedToPaidDomainEventHandler : INotificationHandler<O
         _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _buyerRepository = buyerRepository ?? throw new ArgumentNullException(nameof(buyerRepository));
-        _orderingIntegrationEventService = orderingIntegrationEventService ?? throw new ArgumentNullException(nameof(orderingIntegrationEventService));
+        _orderingIntegrationEventService = orderingIntegrationEventService ??
+                                           throw new ArgumentNullException(nameof(orderingIntegrationEventService));
     }
 
     public async Task Handle(OrderStatusChangedToPaidDomainEvent domainEvent, CancellationToken cancellationToken)

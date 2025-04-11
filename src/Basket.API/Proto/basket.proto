@@ -1,6 +1,6 @@
 ﻿syntax = "proto3";
 
-option csharp_namespace = "eShop.Basket.API.Grpc";
+option csharp_namespace = "Inked.Basket.API.Grpc";
 
 package BasketApi;
 

@@ -29,39 +29,39 @@ public static class WebHooksApi
             {
                 return TypedResults.Ok(subscription);
             }
+
             return TypedResults.NotFound($"Subscriptions {id} not found");
         });
 
         api.MapPost("/", async Task<Results<Created, BadRequest<string>>> (
-            WebhookSubscriptionRequest request,
-            IGrantUrlTesterService grantUrlTester,
-            WebhooksContext context,
-            ClaimsPrincipal user) =>
-        {
-            var grantOk = await grantUrlTester.TestGrantUrl(request.Url, request.GrantUrl, request.Token ?? string.Empty);
-
-            if (grantOk)
+                WebhookSubscriptionRequest request,
+                IGrantUrlTesterService grantUrlTester,
+                WebhooksContext context,
+                ClaimsPrincipal user) =>
             {
-                var subscription = new WebhookSubscription()
+                var grantOk =
+                    await grantUrlTester.TestGrantUrl(request.Url, request.GrantUrl, request.Token ?? string.Empty);
+
+                if (grantOk)
                 {
-                    Date = DateTime.UtcNow,
-                    DestUrl = request.Url,
-                    Token = request.Token,
-                    Type = Enum.Parse<WebhookType>(request.Event, ignoreCase: true),
-                    UserId = user.GetUserId()
-                };
+                    var subscription = new WebhookSubscription
+                    {
+                        Date = DateTime.UtcNow,
+                        DestUrl = request.Url,
+                        Token = request.Token,
+                        Type = Enum.Parse<WebhookType>(request.Event, true),
+                        UserId = user.GetUserId()
+                    };
 
-                context.Add(subscription);
-                await context.SaveChangesAsync();
+                    context.Add(subscription);
+                    await context.SaveChangesAsync();
 
-                return TypedResults.Created($"/api/webhooks/{subscription.Id}");
-            }
-            else
-            {
+                    return TypedResults.Created($"/api/webhooks/{subscription.Id}");
+                }
+
                 return TypedResults.BadRequest($"Invalid grant URL: {request.GrantUrl}");
-            }
-        })
-        .ValidateWebhookSubscriptionRequest();
+            })
+            .ValidateWebhookSubscriptionRequest();
 
         api.MapDelete("/{id:int}", async Task<Results<Accepted, NotFound<string>>> (
             WebhooksContext context,

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
+namespace Inked.Ordering.Domain.AggregatesModel.OrderAggregate;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum OrderStatus
@@ -10,5 +10,8 @@ public enum OrderStatus
     StockConfirmed = 3,
     Paid = 4,
     Shipped = 5,
-    Cancelled = 6
+    Cancelled = 6,
+    AwaitingReturn = 7,
+    RecievedReturn = 8,
+    Refunded = 9
 }

@@ -1,4 +1,4 @@
-﻿namespace eShop.Catalog.API.IntegrationEvents;
+﻿namespace Inked.Catalog.API.IntegrationEvents;
 
 public interface ICatalogIntegrationEventService
 {

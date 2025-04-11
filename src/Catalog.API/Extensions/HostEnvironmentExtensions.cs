@@ -9,6 +9,7 @@ internal static class HostEnvironmentExtensions
         // Check if the environment is "Build" or the entry assembly is "GetDocument.Insider"
         // to account for scenarios where app is launching via OpenAPI build-time generation
         // via the GetDocument.Insider tool.
-        return hostEnvironment.IsEnvironment("Build") || Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
+        return hostEnvironment.IsEnvironment("Build") ||
+               Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
     }
 }

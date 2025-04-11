@@ -1,4 +1,4 @@
-﻿namespace eShop.WebAppComponents.Catalog;
+﻿namespace Inked.WebAppComponents.Catalog;
 
 public record CatalogItem(
     int Id,
@@ -12,5 +12,7 @@ public record CatalogItem(
     CatalogItemType CatalogType);
 
 public record CatalogResult(int PageIndex, int PageSize, int Count, List<CatalogItem> Data);
+
 public record CatalogBrand(int Id, string Brand);
+
 public record CatalogItemType(int Id, string Type);

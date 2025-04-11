@@ -116,7 +116,7 @@
 }
 
 
-@media only screen and (max-width: 480px) { 
+@media only screen and (max-width: 480px) {
     .catalog {
         padding: 0 1rem;
         flex-direction: column;
@@ -128,7 +128,7 @@
     }
 }
 
-@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+@media only screen and (min-width: 481px) and (max-width: 1024px) {
     .catalog {
         padding: 0 3rem;
         flex-direction: column;

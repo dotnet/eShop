@@ -1,9 +1,9 @@
 ﻿using System.Text.Json.Serialization;
-using eShop.Basket.API.Repositories;
-using eShop.Basket.API.IntegrationEvents.EventHandling;
-using eShop.Basket.API.IntegrationEvents.EventHandling.Events;
+using Inked.Basket.API.IntegrationEvents.EventHandling;
+using Inked.Basket.API.IntegrationEvents.EventHandling.Events;
+using Inked.Basket.API.Repositories;
 
-namespace eShop.Basket.API.Extensions;
+namespace Inked.Basket.API.Extensions;
 
 public static class Extensions
 {
@@ -16,13 +16,12 @@ public static class Extensions
         builder.Services.AddSingleton<IBasketRepository, RedisBasketRepository>();
 
         builder.AddRabbitMqEventBus("eventbus")
-               .AddSubscription<OrderStartedIntegrationEvent, OrderStartedIntegrationEventHandler>()
-               .ConfigureJsonOptions(options => options.TypeInfoResolverChain.Add(IntegrationEventContext.Default));
+            .AddSubscription<OrderStartedIntegrationEvent, OrderStartedIntegrationEventHandler>()
+            .ConfigureJsonOptions(options => options.TypeInfoResolverChain.Add(IntegrationEventContext.Default));
     }
 }
 
 [JsonSerializable(typeof(OrderStartedIntegrationEvent))]
-partial class IntegrationEventContext : JsonSerializerContext
+internal partial class IntegrationEventContext : JsonSerializerContext
 {
-
 }

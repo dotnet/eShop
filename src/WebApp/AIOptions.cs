@@ -1,4 +1,4 @@
-﻿namespace eShop.WebApp;
+﻿namespace Inked.WebApp;
 
 public class AIOptions
 {

@@ -1,12 +1,12 @@
-﻿namespace eShop.Ordering.API.Application.DomainEventHandlers;
+﻿namespace Inked.Ordering.API.Application.DomainEventHandlers;
 
 public class OrderStatusChangedToAwaitingValidationDomainEventHandler
-                : INotificationHandler<OrderStatusChangedToAwaitingValidationDomainEvent>
+    : INotificationHandler<OrderStatusChangedToAwaitingValidationDomainEvent>
 {
-    private readonly IOrderRepository _orderRepository;
-    private readonly ILogger _logger;
     private readonly IBuyerRepository _buyerRepository;
+    private readonly ILogger _logger;
     private readonly IOrderingIntegrationEventService _orderingIntegrationEventService;
+    private readonly IOrderRepository _orderRepository;
 
     public OrderStatusChangedToAwaitingValidationDomainEventHandler(
         IOrderRepository orderRepository,
@@ -20,7 +20,8 @@ public class OrderStatusChangedToAwaitingValidationDomainEventHandler
         _orderingIntegrationEventService = orderingIntegrationEventService;
     }
 
-    public async Task Handle(OrderStatusChangedToAwaitingValidationDomainEvent domainEvent, CancellationToken cancellationToken)
+    public async Task Handle(OrderStatusChangedToAwaitingValidationDomainEvent domainEvent,
+        CancellationToken cancellationToken)
     {
         OrderingApiTrace.LogOrderStatusUpdated(_logger, domainEvent.OrderId, OrderStatus.AwaitingValidation);
 
@@ -30,7 +31,8 @@ public class OrderStatusChangedToAwaitingValidationDomainEventHandler
         var orderStockList = domainEvent.OrderItems
             .Select(orderItem => new OrderStockItem(orderItem.ProductId, orderItem.Units));
 
-        var integrationEvent = new OrderStatusChangedToAwaitingValidationIntegrationEvent(order.Id, order.OrderStatus, buyer.Name, buyer.IdentityGuid, orderStockList);
+        var integrationEvent = new OrderStatusChangedToAwaitingValidationIntegrationEvent(order.Id, order.OrderStatus,
+            buyer.Name, buyer.IdentityGuid, orderStockList);
         await _orderingIntegrationEventService.AddAndSaveEventAsync(integrationEvent);
     }
 }

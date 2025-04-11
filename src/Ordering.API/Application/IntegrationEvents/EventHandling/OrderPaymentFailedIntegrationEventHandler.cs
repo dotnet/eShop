@@ -1,4 +1,4 @@
-﻿namespace eShop.Ordering.API.Application.IntegrationEvents.EventHandling;
+﻿namespace Inked.Ordering.API.Application.IntegrationEvents.EventHandling;
 
 public class OrderPaymentFailedIntegrationEventHandler(
     IMediator mediator,
@@ -7,7 +7,8 @@ public class OrderPaymentFailedIntegrationEventHandler(
 {
     public async Task Handle(OrderPaymentFailedIntegrationEvent @event)
     {
-        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id, @event);
+        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id,
+            @event);
 
         var command = new CancelOrderCommand(@event.OrderId);
 

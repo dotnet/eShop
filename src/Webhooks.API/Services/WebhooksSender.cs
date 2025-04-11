@@ -12,7 +12,7 @@ public class WebhooksSender(IHttpClientFactory httpClientFactory, ILogger<Webhoo
 
     private Task OnSendData(WebhookSubscription subs, string jsonData, HttpClient client)
     {
-        var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage
         {
             RequestUri = new Uri(subs.DestUrl, UriKind.Absolute),
             Method = HttpMethod.Post,
@@ -31,5 +31,4 @@ public class WebhooksSender(IHttpClientFactory httpClientFactory, ILogger<Webhoo
 
         return client.SendAsync(request);
     }
-
 }

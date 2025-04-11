@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
@@ -9,7 +8,7 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 
-namespace eShop.ServiceDefaults;
+namespace inked.ServiceDefaults;
 
 public static partial class Extensions
 {
@@ -32,10 +31,10 @@ public static partial class Extensions
     }
 
     /// <summary>
-    /// Adds the services except for making outgoing HTTP calls.
+    ///     Adds the services except for making outgoing HTTP calls.
     /// </summary>
     /// <remarks>
-    /// This allows for things like Polly to be trimmed out of the app if it isn't used.
+    ///     This allows for things like Polly to be trimmed out of the app if it isn't used.
     /// </remarks>
     public static IHostApplicationBuilder AddBasicServiceDefaults(this IHostApplicationBuilder builder)
     {
@@ -74,7 +73,7 @@ public static partial class Extensions
                 tracing.AddAspNetCoreInstrumentation()
                     .AddGrpcClientInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddSource("Experimental.Microsoft.Extensions.AI");                    
+                    .AddSource("Experimental.Microsoft.Extensions.AI");
             });
 
         builder.AddOpenTelemetryExporters();
@@ -118,10 +117,7 @@ public static partial class Extensions
             app.MapHealthChecks("/health");
 
             // Only health checks tagged with the "live" tag must pass for app to be considered alive
-            app.MapHealthChecks("/alive", new HealthCheckOptions
-            {
-                Predicate = r => r.Tags.Contains("live")
-            });
+            app.MapHealthChecks("/alive", new HealthCheckOptions { Predicate = r => r.Tags.Contains("live") });
         }
 
         return app;

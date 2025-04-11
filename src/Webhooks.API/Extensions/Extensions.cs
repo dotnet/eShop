@@ -5,7 +5,7 @@
         builder.AddDefaultAuthentication();
 
         builder.AddRabbitMqEventBus("eventbus")
-               .AddEventBusSubscriptions();
+            .AddEventBusSubscriptions();
 
         builder.AddNpgsqlDbContext<WebhooksContext>("webhooksdb");
 
@@ -19,7 +19,11 @@
     private static void AddEventBusSubscriptions(this IEventBusBuilder eventBus)
     {
         eventBus.AddSubscription<ProductPriceChangedIntegrationEvent, ProductPriceChangedIntegrationEventHandler>();
-        eventBus.AddSubscription<OrderStatusChangedToShippedIntegrationEvent, OrderStatusChangedToShippedIntegrationEventHandler>();
-        eventBus.AddSubscription<OrderStatusChangedToPaidIntegrationEvent, OrderStatusChangedToPaidIntegrationEventHandler>();
+        eventBus
+            .AddSubscription<OrderStatusChangedToShippedIntegrationEvent,
+                OrderStatusChangedToShippedIntegrationEventHandler>();
+        eventBus
+            .AddSubscription<OrderStatusChangedToPaidIntegrationEvent,
+                OrderStatusChangedToPaidIntegrationEventHandler>();
     }
 }

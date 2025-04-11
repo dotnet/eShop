@@ -5,4 +5,4 @@ global using System.Text.Json;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using Microsoft.EntityFrameworkCore.Storage;
-global using eShop.EventBus.Events;
+global using Inked.EventBus.Events;

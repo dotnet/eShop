@@ -70,13 +70,13 @@
     align-self: stretch;
 }
 
-@media only screen and (max-width: 480px) { 
+@media only screen and (max-width: 480px) {
     .checkout {
         padding: 0 1rem;
     }
 }
 
-@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+@media only screen and (min-width: 481px) and (max-width: 1024px) {
     .checkout {
         padding: 0 3rem;
     }

@@ -1,3 +1,4 @@
-﻿namespace eShop.Catalog.API.IntegrationEvents.Events;
+﻿namespace Inked.Catalog.API.IntegrationEvents.Events;
 
-public record OrderStockRejectedIntegrationEvent(int OrderId, List<ConfirmedOrderStockItem> OrderStockItems) : IntegrationEvent;
+public record OrderStockRejectedIntegrationEvent(int OrderId, List<ConfirmedOrderStockItem> OrderStockItems)
+    : IntegrationEvent;

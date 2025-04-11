@@ -1,8 +1,11 @@
-﻿namespace eShop.Ordering.API.Application.IntegrationEvents.Events;
+﻿namespace Inked.Ordering.API.Application.IntegrationEvents.Events;
 
 public record OrderPaymentFailedIntegrationEvent : IntegrationEvent
 {
-    public int OrderId { get; }
+    public OrderPaymentFailedIntegrationEvent(int orderId)
+    {
+        OrderId = orderId;
+    }
 
-    public OrderPaymentFailedIntegrationEvent(int orderId) => OrderId = orderId;
+    public int OrderId { get; }
 }

@@ -1,6 +1,6 @@
-﻿using eShop.EventBus.Abstractions;
+﻿using Inked.EventBus.Abstractions;
 
-namespace eShop.WebApp.Services.OrderStatus.IntegrationEvents;
+namespace Inked.WebApp.Services.OrderStatus.IntegrationEvents;
 
 public class OrderStatusChangedToAwaitingValidationIntegrationEventHandler(
     OrderStatusNotificationService orderStatusNotificationService,
@@ -9,7 +9,8 @@ public class OrderStatusChangedToAwaitingValidationIntegrationEventHandler(
 {
     public async Task Handle(OrderStatusChangedToAwaitingValidationIntegrationEvent @event)
     {
-        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id, @event);
+        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id,
+            @event);
         await orderStatusNotificationService.NotifyOrderStatusChangedAsync(@event.BuyerIdentityGuid);
     }
 }

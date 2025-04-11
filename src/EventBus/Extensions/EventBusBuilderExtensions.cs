@@ -1,13 +1,13 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-using eShop.EventBus.Abstractions;
-using eShop.EventBus.Extensions;
+using Inked.EventBus.Abstractions;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class EventBusBuilderExtensions
 {
-    public static IEventBusBuilder ConfigureJsonOptions(this IEventBusBuilder eventBusBuilder, Action<JsonSerializerOptions> configure)
+    public static IEventBusBuilder ConfigureJsonOptions(this IEventBusBuilder eventBusBuilder,
+        Action<JsonSerializerOptions> configure)
     {
         eventBusBuilder.Services.Configure<EventBusSubscriptionInfo>(o =>
         {
@@ -17,7 +17,9 @@ public static class EventBusBuilderExtensions
         return eventBusBuilder;
     }
 
-    public static IEventBusBuilder AddSubscription<T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TH>(this IEventBusBuilder eventBusBuilder)
+    public static IEventBusBuilder AddSubscription<T,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TH>(
+        this IEventBusBuilder eventBusBuilder)
         where T : IntegrationEvent
         where TH : class, IIntegrationEventHandler<T>
     {

@@ -1,0 +1,43 @@
+@model ApplicationUser
+
+<div class="container">
+    <h2>Additional Information</h2>
+    <form asp-action="CollectAdditionalInfo" method="post">
+        <div class="form-group">
+            <label asp-for="Street"></label>
+            <input asp-for="Street" class="form-control"/>
+            <span asp-validation-for="Street" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="City"></label>
+            <input asp-for="City" class="form-control"/>
+            <span asp-validation-for="City" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="State"></label>
+            <input asp-for="State" class="form-control"/>
+            <span asp-validation-for="State" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Country"></label>
+            <input asp-for="Country" class="form-control"/>
+            <span asp-validation-for="Country" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="ZipCode"></label>
+            <input asp-for="ZipCode" class="form-control"/>
+            <span asp-validation-for="ZipCode" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control"/>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="LastName"></label>
+            <input asp-for="LastName" class="form-control"/>
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>

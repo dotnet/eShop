@@ -1,9 +1,8 @@
-﻿namespace eShop.Catalog.API.Infrastructure;
+﻿namespace Inked.Catalog.API.Infrastructure;
 
 /// <remarks>
-/// Add migrations using the following command inside the 'Catalog.API' project directory:
-///
-/// dotnet ef migrations add --context CatalogContext [migration-name]
+///     Add migrations using the following command inside the 'Catalog.API' project directory:
+///     dotnet ef migrations add --context CatalogContext [migration-name]
 /// </remarks>
 public class CatalogContext : DbContext
 {

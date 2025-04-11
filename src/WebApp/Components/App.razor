@@ -2,19 +2,20 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <base href="/" />
-    <link rel="stylesheet" href="css/normalize.css" />
-    <link rel="stylesheet" href="css/app.css" />
-    <link rel="stylesheet" href="WebApp.styles.css" />
-    <link rel="shortcut icon" href="images/favicon.png" />
-    <HeadOutlet />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <base href="/"/>
+    <link rel="stylesheet" href="css/normalize.css"/>
+    <link rel="stylesheet" href="css/app.css"/>
+    <link rel="stylesheet" href="WebApp.styles.css"/>
+    <link rel="shortcut icon" href="images/favicon.png"/>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
+    <HeadOutlet/>
 </head>
 
 <body>
-    <Routes />
-    <script src="_framework/blazor.web.js"></script>
+<Routes @rendermode="InteractiveServer"/>
+<script src="_framework/blazor.web.js"></script>
 </body>
 
 </html>

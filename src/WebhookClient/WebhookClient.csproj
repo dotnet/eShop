@@ -4,14 +4,14 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>eShop.WebhookClient</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\eShop.ServiceDefaults\eShop.ServiceDefaults.csproj" />
-    <PackageReference Include="Asp.Versioning.Http.Client" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid" />
+    <PackageReference Include="Aspire.Keycloak.Authentication"/>
+    <ProjectReference Include="..\inked.ServiceDefaults\inked.ServiceDefaults.csproj"/>
+    <PackageReference Include="Asp.Versioning.Http.Client"/>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect"/>
+    <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid"/>
   </ItemGroup>
 
 </Project>

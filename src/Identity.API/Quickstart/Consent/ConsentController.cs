@@ -4,14 +4,14 @@
 namespace IdentityServerHost.Quickstart.UI;
 
 /// <summary>
-/// This controller processes the consent UI
+///     This controller processes the consent UI
 /// </summary>
 [SecurityHeaders]
 [Authorize]
 public class ConsentController : Controller
 {
-    private readonly IIdentityServerInteractionService _interaction;
     private readonly IEventService _events;
+    private readonly IIdentityServerInteractionService _interaction;
     private readonly ILogger<ConsentController> _logger;
 
     public ConsentController(
@@ -25,7 +25,7 @@ public class ConsentController : Controller
     }
 
     /// <summary>
-    /// Shows the consent screen
+    ///     Shows the consent screen
     /// </summary>
     /// <param name="returnUrl"></param>
     /// <returns></returns>
@@ -42,7 +42,7 @@ public class ConsentController : Controller
     }
 
     /// <summary>
-    /// Handles the consent screen postback
+    ///     Handles the consent screen postback
     /// </summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -85,7 +85,10 @@ public class ConsentController : Controller
 
         // validate return url is still valid
         var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
-        if (request == null) return result;
+        if (request == null)
+        {
+            return result;
+        }
 
         ConsentResponse grantedConsent = null;
 
@@ -95,7 +98,8 @@ public class ConsentController : Controller
             grantedConsent = new ConsentResponse { Error = AuthorizationError.AccessDenied };
 
             // emit event
-            await _events.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues));
+            await _events.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), request.Client.ClientId,
+                request.ValidatedResources.RawScopeValues));
         }
         // user clicked 'yes' - validate the data
         else if (model?.Button == "yes")
@@ -117,7 +121,9 @@ public class ConsentController : Controller
                 };
 
                 // emit event
-                await _events.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues, grantedConsent.ScopesValuesConsented, grantedConsent.RememberConsent));
+                await _events.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.Client.ClientId,
+                    request.ValidatedResources.RawScopeValues, grantedConsent.ScopesValuesConsented,
+                    grantedConsent.RememberConsent));
             }
             else
             {
@@ -154,10 +160,8 @@ public class ConsentController : Controller
         {
             return CreateConsentViewModel(model, returnUrl, request);
         }
-        else
-        {
-            _logger.LogError("No consent request matching request: {0}", returnUrl);
-        }
+
+        _logger.LogError("No consent request matching request: {0}", returnUrl);
 
         return null;
     }
@@ -171,16 +175,15 @@ public class ConsentController : Controller
             RememberConsent = model?.RememberConsent ?? true,
             ScopesConsented = model?.ScopesConsented ?? Enumerable.Empty<string>(),
             Description = model?.Description,
-
             ReturnUrl = returnUrl,
-
             ClientName = request.Client.ClientName ?? request.Client.ClientId,
             ClientUrl = request.Client.ClientUri,
             ClientLogoUrl = request.Client.LogoUri,
             AllowRememberConsent = request.Client.AllowRememberConsent
         };
 
-        vm.IdentityScopes = request.ValidatedResources.Resources.IdentityResources.Select(x => CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model == null)).ToArray();
+        vm.IdentityScopes = request.ValidatedResources.Resources.IdentityResources
+            .Select(x => CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model == null)).ToArray();
 
         var apiScopes = new List<ScopeViewModel>();
         foreach (var parsedScope in request.ValidatedResources.ParsedScopes)
@@ -188,14 +191,18 @@ public class ConsentController : Controller
             var apiScope = request.ValidatedResources.Resources.FindApiScope(parsedScope.ParsedName);
             if (apiScope != null)
             {
-                var scopeVm = CreateScopeViewModel(parsedScope, apiScope, vm.ScopesConsented.Contains(parsedScope.RawValue) || model == null);
+                var scopeVm = CreateScopeViewModel(parsedScope, apiScope,
+                    vm.ScopesConsented.Contains(parsedScope.RawValue) || model == null);
                 apiScopes.Add(scopeVm);
             }
         }
+
         if (ConsentOptions.EnableOfflineAccess && request.ValidatedResources.Resources.OfflineAccess)
         {
-            apiScopes.Add(GetOfflineAccessScope(vm.ScopesConsented.Contains(IdentityServerConstants.StandardScopes.OfflineAccess) || model == null));
+            apiScopes.Add(GetOfflineAccessScope(
+                vm.ScopesConsented.Contains(IdentityServerConstants.StandardScopes.OfflineAccess) || model == null));
         }
+
         vm.ApiScopes = apiScopes;
 
         return vm;

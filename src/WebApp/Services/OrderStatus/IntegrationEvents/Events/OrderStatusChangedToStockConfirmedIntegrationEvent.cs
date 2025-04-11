@@ -1,14 +1,9 @@
-﻿using eShop.EventBus.Events;
+﻿using Inked.EventBus.Events;
 
-namespace eShop.WebApp.Services.OrderStatus.IntegrationEvents;
+namespace Inked.WebApp.Services.OrderStatus.IntegrationEvents;
 
 public record OrderStatusChangedToStockConfirmedIntegrationEvent : IntegrationEvent
 {
-    public int OrderId { get; }
-    public string OrderStatus { get; }
-    public string BuyerName { get; }
-    public string BuyerIdentityGuid { get; }
-
     public OrderStatusChangedToStockConfirmedIntegrationEvent(
         int orderId, string orderStatus, string buyerName, string buyerIdentityGuid)
     {
@@ -17,4 +12,9 @@ public record OrderStatusChangedToStockConfirmedIntegrationEvent : IntegrationEv
         BuyerName = buyerName;
         BuyerIdentityGuid = buyerIdentityGuid;
     }
+
+    public int OrderId { get; }
+    public string OrderStatus { get; }
+    public string BuyerName { get; }
+    public string BuyerIdentityGuid { get; }
 }

@@ -6,61 +6,55 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Automapper" />
-    <PackageReference Include="Duende.IdentityServer.AspNetIdentity" />
-    <PackageReference Include="Duende.IdentityServer.EntityFramework" />
-    <PackageReference Include="Duende.IdentityServer.Storage" />
-    <PackageReference Include="Duende.IdentityServer" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
+    <PackageReference Include="Automapper"/>
+    <PackageReference Include="Duende.IdentityServer.AspNetIdentity"/>
+    <PackageReference Include="Duende.IdentityServer.EntityFramework"/>
+    <PackageReference Include="Duende.IdentityServer.Storage"/>
+    <PackageReference Include="Duende.IdentityServer"/>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google"/>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"/>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
-    <PackageReference Include="Microsoft.Web.LibraryManager.Build" />
-  </ItemGroup>
-
-  <PropertyGroup>
-    <LibraryRestore>false</LibraryRestore>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LibraryRestore>true</LibraryRestore>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="Views\Account\AccessDenied.cshtml" />
-    <None Include="Views\Account\LoggedOut.cshtml" />
-    <None Include="Views\Account\Login.cshtml" />
-    <None Include="Views\Account\Logout.cshtml" />
-    <None Include="Views\Consent\Index.cshtml" />
-    <None Include="Views\Device\Success.cshtml" />
-    <None Include="Views\Device\UserCodeCapture.cshtml" />
-    <None Include="Views\Device\UserCodeConfirmation.cshtml" />
-    <None Include="Views\Diagnostics\Index.cshtml" />
-    <None Include="Views\Grants\Index.cshtml" />
-    <None Include="Views\Home\Index.cshtml" />
-    <None Include="Views\Shared\Error.cshtml" />
-    <None Include="Views\Shared\Redirect.cshtml" />
-    <None Include="Views\Shared\_Layout.cshtml" />
-    <None Include="Views\Shared\_ScopeListItem.cshtml" />
-    <None Include="Views\Shared\_ValidationSummary.cshtml" />
-    <None Include="Views\_ViewImports.cshtml" />
-    <None Include="Views\_ViewStart.cshtml" />
+    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL"/>
+    <PackageReference Include="Microsoft.Web.LibraryManager.Build"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\eShop.ServiceDefaults\eShop.ServiceDefaults.csproj" />
+    <None Include="Views\Account\AccessDenied.cshtml"/>
+    <None Include="Views\Account\LoggedOut.cshtml"/>
+    <None Include="Views\Account\Login.cshtml"/>
+    <None Include="Views\Account\Logout.cshtml"/>
+    <None Include="Views\Consent\Index.cshtml"/>
+    <None Include="Views\Device\Success.cshtml"/>
+    <None Include="Views\Device\UserCodeCapture.cshtml"/>
+    <None Include="Views\Device\UserCodeConfirmation.cshtml"/>
+    <None Include="Views\Diagnostics\Index.cshtml"/>
+    <None Include="Views\Grants\Index.cshtml"/>
+    <None Include="Views\Home\Index.cshtml"/>
+    <None Include="Views\Shared\Error.cshtml"/>
+    <None Include="Views\Shared\Redirect.cshtml"/>
+    <None Include="Views\Shared\_Layout.cshtml"/>
+    <None Include="Views\Shared\_ScopeListItem.cshtml"/>
+    <None Include="Views\Shared\_ValidationSummary.cshtml"/>
+    <None Include="Views\_ViewImports.cshtml"/>
+    <None Include="Views\_ViewStart.cshtml"/>
+    <None Include="Views\External\CollectAdditionalInfo.cshtml"/>
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <ProjectReference Include="..\inked.ServiceDefaults\inked.ServiceDefaults.csproj"/>
+  </ItemGroup>
+
   <ItemGroup>
     <!-- Don't use this in production -->
-    <Content Include="tempkey.jwk" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="tempkey.jwk" CopyToOutputDirectory="PreserveNewest"/>
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\Shared\MigrateDbContextExtensions.cs" Link="Extensions\MigrateDbContextExtensions.cs" />
-    <Compile Include="..\Shared\ActivityExtensions.cs" Link="Extensions\ActivityExtensions.cs" />
+    <Compile Include="..\Shared\MigrateDbContextExtensions.cs" Link="Extensions\MigrateDbContextExtensions.cs"/>
+    <Compile Include="..\Shared\ActivityExtensions.cs" Link="Extensions\ActivityExtensions.cs"/>
   </ItemGroup>
 </Project>

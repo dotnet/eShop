@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Sdk Name="Aspire.AppHost.Sdk" Version="9.1.0" />
+  <Sdk Name="Aspire.AppHost.Sdk" Version="9.1.0"/>
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -7,26 +7,26 @@
     <IsPackable>false</IsPackable>
     <IsAspireHost>true</IsAspireHost>
   </PropertyGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="Asp.Versioning.Http.Client" />
-    <PackageReference Include="Aspire.Hosting.AppHost" />
-    <PackageReference Include="Aspire.Hosting.PostgreSQL" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+    <PackageReference Include="Asp.Versioning.Http.Client"/>
+    <PackageReference Include="Aspire.Hosting.AppHost"/>
+    <PackageReference Include="Aspire.Hosting.PostgreSQL"/>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+    <PackageReference Include="Microsoft.AspNetCore.TestHost"/>
     <PackageReference Include="xunit.runner.visualstudio">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit"/>
   </ItemGroup>
- 
+
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Ordering.API\Ordering.API.csproj" IsAspireProjectResource="false" />
-    <ProjectReference Include="..\..\src\Identity.API\Identity.API.csproj" />
-    <ProjectReference Include="..\..\src\Ordering.Domain\Ordering.Domain.csproj" IsAspireProjectResource="false" />
-    <ProjectReference Include="..\..\src\Ordering.Infrastructure\Ordering.Infrastructure.csproj" IsAspireProjectResource="false" />
+    <ProjectReference Include="..\..\src\Ordering.API\Ordering.API.csproj" IsAspireProjectResource="false"/>
+    <ProjectReference Include="..\..\src\Identity.API\Identity.API.csproj"/>
+    <ProjectReference Include="..\..\src\Ordering.Domain\Ordering.Domain.csproj" IsAspireProjectResource="false"/>
+    <ProjectReference Include="..\..\src\Ordering.Infrastructure\Ordering.Infrastructure.csproj" IsAspireProjectResource="false"/>
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace eShop.EventBus.Events;
+﻿namespace Inked.EventBus.Events;
 
 public record IntegrationEvent
 {
@@ -8,9 +8,7 @@ public record IntegrationEvent
         CreationDate = DateTime.UtcNow;
     }
 
-    [JsonInclude]
-    public Guid Id { get; set; }
+    [JsonInclude] public Guid Id { get; set; }
 
-    [JsonInclude]
-    public DateTime CreationDate { get; set; }
+    [JsonInclude] public DateTime CreationDate { get; set; }
 }

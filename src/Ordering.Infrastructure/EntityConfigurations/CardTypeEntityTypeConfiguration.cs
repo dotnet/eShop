@@ -1,6 +1,6 @@
-﻿namespace eShop.Ordering.Infrastructure.EntityConfigurations;
+﻿namespace Inked.Ordering.Infrastructure.EntityConfigurations;
 
-class CardTypeEntityTypeConfiguration
+internal class CardTypeEntityTypeConfiguration
     : IEntityTypeConfiguration<CardType>
 {
     public void Configure(EntityTypeBuilder<CardType> cardTypesConfiguration)

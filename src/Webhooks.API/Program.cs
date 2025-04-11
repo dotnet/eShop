@@ -12,9 +12,10 @@ var app = builder.Build();
 app.MapDefaultEndpoints();
 
 var webHooks = app.NewVersionedApi("Web Hooks");
-
+app.UseAuthentication();
+app.UseAuthorization();
 webHooks.MapWebHooksApiV1()
-        .RequireAuthorization();
+    .RequireAuthorization();
 
 app.UseDefaultOpenApi();
 app.Run();

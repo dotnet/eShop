@@ -6,9 +6,9 @@ h2 {
     font-size: 1.3rem;
 }
 
-    h2:first-child, h3:first-child {
-        margin-top: 0;
-    }
+h2:first-child, h3:first-child {
+    margin-top: 0;
+}
 
 p {
     line-height: 1.35rem;
@@ -36,9 +36,9 @@ h1:focus {
     color: white;
 }
 
-    .blazor-error-boundary::after {
-        content: "An error has occurred."
-    }
+.blazor-error-boundary::after {
+    content: "An error has occurred."
+}
 
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
@@ -55,21 +55,21 @@ button.action, a.action {
     border: none;
     border-radius: 0.5rem;
     box-shadow: 0px 3px 4px #00000070;
-    transition: all 0.1s cubic-bezier(.16,1.13,.57,.94);
+    transition: all 0.1s cubic-bezier(.16, 1.13, .57, .94);
     display: inline-block;
     text-decoration: none;
     cursor: pointer;
     font-size: 1.05em;
 }
 
-    button.action:hover, a.action:hover {
-        background-color: #23a0dc;
-    }
+button.action:hover, a.action:hover {
+    background-color: #23a0dc;
+}
 
-    button.action:active, a.action:active {
-        background-color: #00496c;
-        transform: scale(0.98) translateY(1px);
-    }
+button.action:active, a.action:active {
+    background-color: #00496c;
+    transform: scale(0.98) translateY(1px);
+}
 
 .grid-placeholder {
     height: 5rem;
@@ -104,15 +104,15 @@ input[type=text] {
     border-spacing: 0;
 }
 
-    .quickgrid th {
-        border-bottom: 1px solid gray;
-    }
+.quickgrid th {
+    border-bottom: 1px solid gray;
+}
 
-    .quickgrid tr:not(:last-child) td {
-        border-bottom: 1px solid #e1e1e1;
-    }
+.quickgrid tr:not(:last-child) td {
+    border-bottom: 1px solid #e1e1e1;
+}
 
-    .quickgrid td, .quickgrid th {
-        padding-top: 0.4rem !important;
-        padding-bottom: 0.4rem !important;
-    }
+.quickgrid td, .quickgrid th {
+    padding-top: 0.4rem !important;
+    padding-bottom: 0.4rem !important;
+}

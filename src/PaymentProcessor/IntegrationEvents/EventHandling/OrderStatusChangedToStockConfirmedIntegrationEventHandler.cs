@@ -1,4 +1,4 @@
-﻿namespace eShop.PaymentProcessor.IntegrationEvents.EventHandling;
+﻿namespace Inked.PaymentProcessor.IntegrationEvents.EventHandling;
 
 public class OrderStatusChangedToStockConfirmedIntegrationEventHandler(
     IEventBus eventBus,
@@ -8,7 +8,8 @@ public class OrderStatusChangedToStockConfirmedIntegrationEventHandler(
 {
     public async Task Handle(OrderStatusChangedToStockConfirmedIntegrationEvent @event)
     {
-        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id, @event);
+        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id,
+            @event);
 
         IntegrationEvent orderPaymentIntegrationEvent;
 
@@ -27,7 +28,8 @@ public class OrderStatusChangedToStockConfirmedIntegrationEventHandler(
             orderPaymentIntegrationEvent = new OrderPaymentFailedIntegrationEvent(@event.OrderId);
         }
 
-        logger.LogInformation("Publishing integration event: {IntegrationEventId} - ({@IntegrationEvent})", orderPaymentIntegrationEvent.Id, orderPaymentIntegrationEvent);
+        logger.LogInformation("Publishing integration event: {IntegrationEventId} - ({@IntegrationEvent})",
+            orderPaymentIntegrationEvent.Id, orderPaymentIntegrationEvent);
 
         await eventBus.PublishAsync(orderPaymentIntegrationEvent);
     }

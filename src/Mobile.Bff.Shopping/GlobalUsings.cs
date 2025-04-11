@@ -1,1 +1,1 @@
-﻿global using eShop.ServiceDefaults;
+﻿global using inked.ServiceDefaults;

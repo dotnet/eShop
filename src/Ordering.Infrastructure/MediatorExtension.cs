@@ -1,6 +1,6 @@
-﻿namespace eShop.Ordering.Infrastructure;
+﻿namespace Inked.Ordering.Infrastructure;
 
-static class MediatorExtension
+internal static class MediatorExtension
 {
     public static async Task DispatchDomainEventsAsync(this IMediator mediator, OrderingContext ctx)
     {
@@ -16,6 +16,8 @@ static class MediatorExtension
             .ForEach(entity => entity.Entity.ClearDomainEvents());
 
         foreach (var domainEvent in domainEvents)
+        {
             await mediator.Publish(domainEvent);
+        }
     }
 }

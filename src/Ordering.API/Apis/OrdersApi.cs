@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using CardType = eShop.Ordering.API.Application.Queries.CardType;
-using Order = eShop.Ordering.API.Application.Queries.Order;
+using CardType = Inked.Ordering.API.Application.Queries.CardType;
+using Order = Inked.Ordering.API.Application.Queries.Order;
 
 public static class OrdersApi
 {
@@ -10,6 +10,7 @@ public static class OrdersApi
 
         api.MapPut("/cancel", CancelOrderAsync);
         api.MapPut("/ship", ShipOrderAsync);
+        api.MapPut("/return", RequestReturnAsync);
         api.MapGet("{orderId:int}", GetOrderAsync);
         api.MapGet("/", GetOrdersByUserAsync);
         api.MapGet("/cardtypes", GetCardTypesAsync);
@@ -42,7 +43,7 @@ public static class OrdersApi
 
         if (!commandResult)
         {
-            return TypedResults.Problem(detail: "Cancel order failed to process.", statusCode: 500);
+            return TypedResults.Problem("Cancel order failed to process.", statusCode: 500);
         }
 
         return TypedResults.Ok();
@@ -71,13 +72,43 @@ public static class OrdersApi
 
         if (!commandResult)
         {
-            return TypedResults.Problem(detail: "Ship order failed to process.", statusCode: 500);
+            return TypedResults.Problem("Ship order failed to process.", statusCode: 500);
         }
 
         return TypedResults.Ok();
     }
 
-    public static async Task<Results<Ok<Order>, NotFound>> GetOrderAsync(int orderId, [AsParameters] OrderServices services)
+    public static async Task<Results<Ok, BadRequest<string>, ProblemHttpResult>> RequestReturnAsync(
+        [FromHeader(Name = "x-requestid")] Guid requestId,
+        RequestReturnCommand command,
+        [AsParameters] OrderServices services)
+    {
+        if (requestId == Guid.Empty)
+        {
+            return TypedResults.BadRequest("Empty GUID is not valid for request ID");
+        }
+
+        var requestReturnOrder = new IdentifiedCommand<RequestReturnCommand, bool>(command, requestId);
+
+        services.Logger.LogInformation(
+            "Sending command: {CommandName} - {IdProperty}: {CommandId} ({@Command})",
+            requestReturnOrder.GetGenericTypeName(),
+            nameof(requestReturnOrder.Command.OrderNumber),
+            requestReturnOrder.Command.OrderNumber,
+            requestReturnOrder);
+
+        var commandResult = await services.Mediator.Send(requestReturnOrder);
+
+        if (!commandResult)
+        {
+            return TypedResults.Problem("Request return failed to process.", statusCode: 500);
+        }
+
+        return TypedResults.Ok();
+    }
+
+    public static async Task<Results<Ok<Order>, NotFound>> GetOrderAsync(int orderId,
+        [AsParameters] OrderServices services)
     {
         try
         {
@@ -103,7 +134,8 @@ public static class OrdersApi
         return TypedResults.Ok(cardTypes);
     }
 
-    public static async Task<OrderDraftDTO> CreateOrderDraftAsync(CreateOrderDraftCommand command, [AsParameters] OrderServices services)
+    public static async Task<OrderDraftDTO> CreateOrderDraftAsync(CreateOrderDraftCommand command,
+        [AsParameters] OrderServices services)
     {
         services.Logger.LogInformation(
             "Sending command: {CommandName} - {IdProperty}: {CommandId} ({@Command})",
@@ -120,9 +152,8 @@ public static class OrdersApi
         CreateOrderRequest request,
         [AsParameters] OrderServices services)
     {
-        
         //mask the credit card number
-        
+
         services.Logger.LogInformation(
             "Sending command: {CommandName} - {IdProperty}: {CommandId}",
             request.GetGenericTypeName(),
@@ -131,14 +162,18 @@ public static class OrdersApi
 
         if (requestId == Guid.Empty)
         {
-            services.Logger.LogWarning("Invalid IntegrationEvent - RequestId is missing - {@IntegrationEvent}", request);
+            services.Logger.LogWarning("Invalid IntegrationEvent - RequestId is missing - {@IntegrationEvent}",
+                request);
             return TypedResults.BadRequest("RequestId is missing.");
         }
 
-        using (services.Logger.BeginScope(new List<KeyValuePair<string, object>> { new("IdentifiedCommandId", requestId) }))
+        using (services.Logger.BeginScope(
+                   new List<KeyValuePair<string, object>> { new("IdentifiedCommandId", requestId) }))
         {
-            var maskedCCNumber = request.CardNumber.Substring(request.CardNumber.Length - 4).PadLeft(request.CardNumber.Length, 'X');
-            var createOrderCommand = new CreateOrderCommand(request.Items, request.UserId, request.UserName, request.City, request.Street,
+            var maskedCCNumber = request.CardNumber.Substring(request.CardNumber.Length - 4)
+                .PadLeft(request.CardNumber.Length, 'X');
+            var createOrderCommand = new CreateOrderCommand(request.Items, request.UserId, request.UserName,
+                request.City, request.Street,
                 request.State, request.Country, request.ZipCode,
                 maskedCCNumber, request.CardHolderName, request.CardExpiration,
                 request.CardSecurityNumber, request.CardTypeId);

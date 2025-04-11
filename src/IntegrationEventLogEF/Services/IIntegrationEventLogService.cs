@@ -1,4 +1,4 @@
-﻿namespace eShop.IntegrationEventLogEF.Services;
+﻿namespace Inked.IntegrationEventLogEF.Services;
 
 public interface IIntegrationEventLogService
 {

@@ -1,11 +1,10 @@
-﻿
-namespace eShop.Ordering.Domain.Events;
+﻿namespace Inked.Ordering.Domain.Events;
 
 /// <summary>
-/// Event used when an order is created
+///     Event used when an order is created
 /// </summary>
 public record class OrderStartedDomainEvent(
-    Order Order, 
+    Order Order,
     string UserId,
     string UserName,
     int CardTypeId,

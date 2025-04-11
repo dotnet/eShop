@@ -1,4 +1,4 @@
-﻿namespace eShop.WebhookClient.Services;
+﻿namespace Inked.WebhookClient.Services;
 
 public enum WebhookType
 {

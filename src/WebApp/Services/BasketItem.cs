@@ -1,4 +1,4 @@
-﻿namespace eShop.WebApp.Services;
+﻿namespace Inked.WebApp.Services;
 
 public class BasketItem
 {

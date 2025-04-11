@@ -5,20 +5,21 @@
     <PublishAot Condition="'$(EnableAotPublishing)' == 'true'">true</PublishAot>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Aspire.StackExchange.Redis" />
-    <PackageReference Include="Grpc.AspNetCore" />
+    <PackageReference Include="Aspire.Keycloak.Authentication"/>
+    <PackageReference Include="Aspire.StackExchange.Redis"/>
+    <PackageReference Include="Grpc.AspNetCore"/>
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Proto\basket.proto" GrpcServices="Server" />
+    <Protobuf Include="Proto\basket.proto" GrpcServices="Server"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\eShop.ServiceDefaults\eShop.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\EventBusRabbitMQ\EventBusRabbitMQ.csproj" />
+    <ProjectReference Include="..\inked.ServiceDefaults\inked.ServiceDefaults.csproj"/>
+    <ProjectReference Include="..\EventBusRabbitMQ\EventBusRabbitMQ.csproj"/>
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Basket.FunctionalTests" />
+    <InternalsVisibleTo Include="Basket.FunctionalTests"/>
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
-﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+﻿@using Inked.WebApp.Components.Chatbot
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.Extensions.AI
-@using eShop.WebApp.Chatbot
+@rendermode @(new InteractiveServerRenderMode(false))
 @inject IJSRuntime JS
 @inject NavigationManager Nav
 @inject CatalogService CatalogService
@@ -12,7 +12,8 @@
 @inject IServiceProvider ServiceProvider
 
 <div class="floating-pane">
-    <a href="@Nav.GetUriWithQueryParameter("chat", (string?)null)" class="hide-chatbot" title="Close .NET Concierge"><span>✖</span></a>
+    <a href="@Nav.GetUriWithQueryParameter("chat", (string?)null)" class="hide-chatbot"
+       title="Close .NET Concierge"><span>✖</span></a>
 
     <div class="chatbot-chat" @ref="chat">
         @if (chatState is not null)
@@ -21,13 +22,16 @@
             {
                 if (!string.IsNullOrEmpty(message.Text))
                 {
-                    <p @key="@message" class="message message-@message.Role">@MessageProcessor.AllowImages(message.Text)</p>
+                    <p @key="@message"
+                       class="message message-@message.Role">@MessageProcessor.AllowImages(message.Text)</p>
                 }
             }
         }
         else if (missingConfiguration)
         {
-            <p class="message message-assistant"><strong>The chatbot is missing required configuration.</strong> Please set 'useOpenAI = true' in eShop.AppHost/Program.cs. You'll need an API key or an Azure Subscription to enable AI features.</p>
+            <p class="message message-assistant"><strong>The chatbot is missing required configuration.</strong> Please
+                set 'useOpenAI = true' in inked.AppHost/Program.cs. You'll need an API key or an Azure Subscription to
+                enable AI features.</p>
         }
 
         @if (thinking)
@@ -56,7 +60,7 @@
         var client = ServiceProvider.GetService<IChatClient>();
         if (client is not null)
         {
-            AuthenticationState auth = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var auth = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             chatState = new ChatState(CatalogService, BasketState, auth.User, ProductImages, LoggerFactory, client);
         }
         else
@@ -73,7 +77,7 @@
         if (chatState is not null && !string.IsNullOrEmpty(messageCopy))
         {
             thinking = true;
-            await chatState.AddUserMessageAsync(messageCopy, onMessageAdded: StateHasChanged);
+            await chatState.AddUserMessageAsync(messageCopy, StateHasChanged);
             thinking = false;
         }
     }
@@ -89,4 +93,5 @@
             await jsModule.InvokeVoidAsync("submitOnEnter", textbox);
         }
     }
+
 }

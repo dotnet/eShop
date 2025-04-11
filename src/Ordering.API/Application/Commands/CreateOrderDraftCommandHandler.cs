@@ -1,7 +1,6 @@
-﻿namespace eShop.Ordering.API.Application.Commands;
+﻿using Order = Inked.Ordering.Domain.AggregatesModel.OrderAggregate.Order;
 
-using eShop.Ordering.API.Extensions;
-using eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
+namespace Inked.Ordering.API.Application.Commands;
 
 // Regular CommandHandler
 public class CreateOrderDraftCommandHandler
@@ -13,7 +12,8 @@ public class CreateOrderDraftCommandHandler
         var orderItems = message.Items.Select(i => i.ToOrderItemDTO());
         foreach (var item in orderItems)
         {
-            order.AddOrderItem(item.ProductId, item.ProductName, item.UnitPrice, item.Discount, item.PictureUrl, item.Units);
+            order.AddOrderItem(item.ProductId, item.ProductName, item.UnitPrice, item.Discount, item.PictureUrl,
+                item.Units);
         }
 
         return Task.FromResult(OrderDraftDTO.FromOrder(order));
@@ -27,7 +27,7 @@ public record OrderDraftDTO
 
     public static OrderDraftDTO FromOrder(Order order)
     {
-        return new OrderDraftDTO()
+        return new OrderDraftDTO
         {
             OrderItems = order.OrderItems.Select(oi => new OrderItemDTO
             {

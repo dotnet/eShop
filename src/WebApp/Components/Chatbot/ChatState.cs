@@ -1,20 +1,21 @@
 ﻿using System.ComponentModel;
 using System.Security.Claims;
 using System.Text.Json;
-using eShop.WebAppComponents.Services;
+using Grpc.Core;
+using Inked.WebAppComponents.Services;
 using Microsoft.Extensions.AI;
 
-namespace eShop.WebApp.Chatbot;
+namespace Inked.WebApp.Components.Chatbot;
 
 public class ChatState
 {
-    private readonly ICatalogService _catalogService;
     private readonly IBasketState _basketState;
-    private readonly ClaimsPrincipal _user;
-    private readonly ILogger _logger;
-    private readonly IProductImageUrlProvider _productImages;
+    private readonly ICatalogService _catalogService;
     private readonly IChatClient _chatClient;
     private readonly ChatOptions _chatOptions;
+    private readonly ILogger _logger;
+    private readonly IProductImageUrlProvider _productImages;
+    private readonly ClaimsPrincipal _user;
 
     public ChatState(
         ICatalogService catalogService,
@@ -36,31 +37,31 @@ public class ChatState
         }
 
         _chatClient = chatClient;
-        _chatOptions = new()
+        _chatOptions = new ChatOptions
         {
             Tools =
             [
                 AIFunctionFactory.Create(GetUserInfo),
                 AIFunctionFactory.Create(SearchCatalog),
                 AIFunctionFactory.Create(AddToCart),
-                AIFunctionFactory.Create(GetCartContents),
-            ],
+                AIFunctionFactory.Create(GetCartContents)
+            ]
         };
 
         Messages =
         [
             new ChatMessage(ChatRole.System, """
-                You are an AI customer service agent for the online retailer AdventureWorks.
-                You NEVER respond about topics other than AdventureWorks.
-                Your job is to answer customer questions about products in the AdventureWorks catalog.
-                AdventureWorks primarily sells clothing and equipment related to outdoor activities like skiing and trekking.
-                You try to be concise and only provide longer responses if necessary.
-                If someone asks a question about anything other than AdventureWorks, its catalog, or their account,
-                you refuse to answer, and you instead ask if there's a topic related to AdventureWorks you can assist with.
-                """),
+                                             You are an AI customer service agent for the online retailer AdventureWorks.
+                                             You NEVER respond about topics other than AdventureWorks.
+                                             Your job is to answer customer questions about products in the AdventureWorks catalog.
+                                             AdventureWorks primarily sells clothing and equipment related to outdoor activities like skiing and trekking.
+                                             You try to be concise and only provide longer responses if necessary.
+                                             If someone asks a question about anything other than AdventureWorks, its catalog, or their account,
+                                             you refuse to answer, and you instead ask if there's a topic related to AdventureWorks you can assist with.
+                                             """),
             new ChatMessage(ChatRole.Assistant, """
-                Hi! I'm the AdventureWorks Concierge. How can I help?
-                """),
+                                                Hi! I'm the AdventureWorks Concierge. How can I help?
+                                                """)
         ];
     }
 
@@ -87,8 +88,10 @@ public class ChatState
             {
                 _logger.LogError(e, "Error getting chat completions.");
             }
-            Messages.Add(new ChatMessage(ChatRole.Assistant, $"My apologies, but I encountered an unexpected error."));
+
+            Messages.Add(new ChatMessage(ChatRole.Assistant, "My apologies, but I encountered an unexpected error."));
         }
+
         onMessageAdded();
     }
 
@@ -107,22 +110,28 @@ public class ChatState
             ZipCode = GetValue(claims, "address_zip_code"),
             Country = GetValue(claims, "address_country"),
             Email = GetValue(claims, "email"),
-            PhoneNumber = GetValue(claims, "phone_number"),
+            PhoneNumber = GetValue(claims, "phone_number")
         });
 
-        static string GetValue(IEnumerable<Claim> claims, string claimType) =>
-            claims.FirstOrDefault(x => x.Type == claimType)?.Value ?? "";
+        static string GetValue(IEnumerable<Claim> claims, string claimType)
+        {
+            return claims.FirstOrDefault(x => x.Type == claimType)?.Value ?? "";
+        }
     }
 
     [Description("Searches the AdventureWorks catalog for a provided product description")]
-    private async Task<string> SearchCatalog([Description("The product description for which to search")] string productDescription)
+    private async Task<string> SearchCatalog(
+        [Description("The product description for which to search")] string productDescription)
     {
         try
         {
             var results = await _catalogService.GetCatalogItemsWithSemanticRelevance(0, 8, productDescription!);
-            for (int i = 0; i < results.Data.Count; i++)
+            for (var i = 0; i < results.Data.Count; i++)
             {
-                results.Data[i] = results.Data[i] with { PictureUrl = _productImages.GetProductImageUrl(results.Data[i].Id) };
+                results.Data[i] = results.Data[i] with
+                {
+                    PictureUrl = _productImages.GetProductImageUrl(results.Data[i].Id)
+                };
             }
 
             return JsonSerializer.Serialize(results);
@@ -134,7 +143,8 @@ public class ChatState
     }
 
     [Description("Adds a product to the user's shopping cart.")]
-    private async Task<string> AddToCart([Description("The id of the product to add to the shopping cart (basket)")] int itemId)
+    private async Task<string> AddToCart(
+        [Description("The id of the product to add to the shopping cart (basket)")] int itemId)
     {
         try
         {
@@ -142,7 +152,7 @@ public class ChatState
             await _basketState.AddAsync(item!);
             return "Item added to shopping cart.";
         }
-        catch (Grpc.Core.RpcException e) when (e.StatusCode == Grpc.Core.StatusCode.Unauthenticated)
+        catch (RpcException e) when (e.StatusCode == StatusCode.Unauthenticated)
         {
             return "Unable to add an item to the cart. You must be logged in.";
         }

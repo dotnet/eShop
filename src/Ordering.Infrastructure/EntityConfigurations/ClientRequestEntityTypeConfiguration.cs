@@ -1,6 +1,6 @@
-﻿namespace eShop.Ordering.Infrastructure.EntityConfigurations;
+﻿namespace Inked.Ordering.Infrastructure.EntityConfigurations;
 
-class ClientRequestEntityTypeConfiguration
+internal class ClientRequestEntityTypeConfiguration
     : IEntityTypeConfiguration<ClientRequest>
 {
     public void Configure(EntityTypeBuilder<ClientRequest> requestConfiguration)

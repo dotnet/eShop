@@ -1,9 +1,11 @@
-﻿using eShop.WebAppComponents.Services;
+﻿using Inked.WebAppComponents.Services;
 
-namespace eShop.WebApp.Services;
+namespace Inked.WebApp.Services;
 
 public class ProductImageUrlProvider : IProductImageUrlProvider
 {
     public string GetProductImageUrl(int productId)
-        => $"product-images/{productId}?api-version=2.0";
+    {
+        return $"product-images/{productId}?api-version=2.0";
+    }
 }

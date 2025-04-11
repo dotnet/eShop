@@ -8,7 +8,7 @@
 <PageTitle>Shopping Bag | AdventureWorks</PageTitle>
 <SectionContent SectionName="page-header-title">Shopping bag</SectionContent>
 
-<div class='cart'>
+<div class="cart">
     @if (basketItems is null)
     {
         <p>Loading...</p>
@@ -32,7 +32,7 @@
                 var quantity = CurrentOrPendingQuantity(item.ProductId, item.Quantity);
                 <div class="cart-item" @key="@item.Id">
                     <div class="catalog-item-info">
-                        <img alt="@item.ProductName" src="@ProductImages.GetProductImageUrl(item.ProductId)" />
+                        <img alt="@item.ProductName" src="@ProductImages.GetProductImageUrl(item.ProductId)"/>
                         <div class="catalog-item-content">
                             <p class="name">@item.ProductName</p>
                             <p class="price">$@item.UnitPrice.ToString("0.00")</p>
@@ -40,12 +40,13 @@
                     </div>
                     <div class="catalog-item-quantity">
                         <form method="post" data-enhance>
-                            <input type="hidden" name="_handler" value="update-cart" />
-                            <AntiforgeryToken />
-                            <input aria-label="product quantity" type="number" name="UpdateQuantityValue" value="@quantity" min="0" />
-                            <button type="submit" 
+                            <input type="hidden" name="_handler" value="update-cart"/>
+                            <AntiforgeryToken/>
+                            <input aria-label="product quantity" type="number" name="UpdateQuantityValue"
+                                   value="@quantity" min="0"/>
+                            <button type="submit"
                                     class="button button-secondary"
-                                    name="UpdateQuantityId" 
+                                    name="UpdateQuantityId"
                                     value="@item.ProductId">
                                 Update
                             </button>
@@ -57,12 +58,12 @@
                 </div>
             }
         </div>
-       
+
 
         <div class="cart-summary">
             <div class="cart-summary-container">
                 <div class="cart-summary-header">
-                    <img role="presentation" src="icons/cart.svg" />
+                    <img role="presentation" src="icons/cart.svg"/>
                     Your shopping bag
                     <span class="filter-badge">@TotalQuantity</span>
                 </div>
@@ -72,7 +73,7 @@
                 </div>
                 <a href="checkout" class="button button-primary">Check out</a>
                 <a href="" class="cart-summary-link">
-                    <img role="presentation" src="icons/arrow-left.svg" />
+                    <img role="presentation" src="icons/arrow-left.svg"/>
                     <p>Continue shopping</p>
                 </a>
             </div>
@@ -85,11 +86,9 @@
 @code {
     private IReadOnlyCollection<BasketItem>? basketItems;
 
-    [SupplyParameterFromForm]
-    public int? UpdateQuantityId { get; set; }
+    [SupplyParameterFromForm] public int? UpdateQuantityId { get; set; }
 
-    [SupplyParameterFromForm]
-    public int? UpdateQuantityValue { get; set; }
+    [SupplyParameterFromForm] public int? UpdateQuantityValue { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -102,9 +101,11 @@
     // While an update post is in process, we want to show the pending quantity, not the one
     // that is committed to the cart (otherwise the UI briefly shows the old data)
     private int CurrentOrPendingQuantity(int productId, int cartQuantity)
-        => UpdateQuantityId.GetValueOrDefault(-1) == productId
-        ? UpdateQuantityValue!.Value
-        : cartQuantity;
+    {
+        return UpdateQuantityId.GetValueOrDefault(-1) == productId
+            ? UpdateQuantityValue!.Value
+            : cartQuantity;
+    }
 
     private async Task UpdateQuantityAsync()
     {
@@ -113,4 +114,5 @@
         await Basket.SetQuantityAsync(id, quantity);
         basketItems = await Basket.GetBasketItemsAsync();
     }
+
 }

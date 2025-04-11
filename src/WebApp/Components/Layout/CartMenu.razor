@@ -1,12 +1,12 @@
-﻿@using System.Net
-@attribute [StreamRendering]
+﻿@attribute [StreamRendering]
 @inject BasketState Basket
-@inject LogOutService LogOutService
 @inject NavigationManager NavigationManager
+@using System.Net
+@using WebApp.Components.Pages.User
 @implements IDisposable
 
 <a aria-label="cart" href="cart">
-    <img role="presentation" src="icons/cart.svg" />
+    <img role="presentation" src="icons/cart.svg"/>
     @if (basketItems?.Count > 0)
     {
         <span class="cart-badge">@TotalQuantity</span>
@@ -17,8 +17,7 @@
     IDisposable? basketStateSubscription;
     private IReadOnlyCollection<BasketItem>? basketItems;
 
-    [CascadingParameter]
-    public HttpContext? HttpContext { get; set; }
+    [CascadingParameter] public HttpContext? HttpContext { get; set; }
 
     private int? TotalQuantity => basketItems?.Sum(i => i.Quantity);
 
@@ -36,7 +35,7 @@
         }
         catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
         {
-            await LogOutService.LogOutAsync(HttpContext!);
+            NavigationManager.NavigateTo(LogOut.Url(NavigationManager));
         }
     }
 
@@ -49,4 +48,5 @@
     {
         basketItems = await Basket.GetBasketItemsAsync();
     }
+
 }

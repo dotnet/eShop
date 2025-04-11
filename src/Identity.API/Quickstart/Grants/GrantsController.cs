@@ -4,16 +4,16 @@
 namespace IdentityServerHost.Quickstart.UI;
 
 /// <summary>
-/// This sample controller allows a user to revoke grants given to clients
+///     This sample controller allows a user to revoke grants given to clients
 /// </summary>
 [SecurityHeaders]
 [Authorize]
 public class GrantsController : Controller
 {
-    private readonly IIdentityServerInteractionService _interaction;
     private readonly IClientStore _clients;
-    private readonly IResourceStore _resources;
     private readonly IEventService _events;
+    private readonly IIdentityServerInteractionService _interaction;
+    private readonly IResourceStore _resources;
 
     public GrantsController(IIdentityServerInteractionService interaction,
         IClientStore clients,
@@ -27,7 +27,7 @@ public class GrantsController : Controller
     }
 
     /// <summary>
-    /// Show list of grants
+    ///     Show list of grants
     /// </summary>
     [HttpGet]
     public async Task<IActionResult> Index()
@@ -36,7 +36,7 @@ public class GrantsController : Controller
     }
 
     /// <summary>
-    /// Handle postback to revoke a client
+    ///     Handle postback to revoke a client
     /// </summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -60,7 +60,7 @@ public class GrantsController : Controller
             {
                 var resources = await _resources.FindResourcesByScopeAsync(grant.Scopes);
 
-                var item = new GrantViewModel()
+                var item = new GrantViewModel
                 {
                     ClientId = client.ClientId,
                     ClientName = client.ClientName ?? client.ClientId,
@@ -77,9 +77,6 @@ public class GrantsController : Controller
             }
         }
 
-        return new GrantsViewModel
-        {
-            Grants = list
-        };
+        return new GrantsViewModel { Grants = list };
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace eShop.EventBus.Extensions;
+﻿namespace Inked.EventBus.Extensions;
 
 public static class GenericTypeExtensions
 {

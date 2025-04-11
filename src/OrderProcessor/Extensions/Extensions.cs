@@ -1,14 +1,14 @@
 ﻿using System.Text.Json.Serialization;
-using eShop.OrderProcessor.Events;
+using Inked.OrderProcessor.Events;
 
-namespace eShop.OrderProcessor.Extensions;
+namespace Inked.OrderProcessor.Extensions;
 
 public static class Extensions
 {
     public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
         builder.AddRabbitMqEventBus("eventbus")
-               .ConfigureJsonOptions(options => options.TypeInfoResolverChain.Add(IntegrationEventContext.Default));
+            .ConfigureJsonOptions(options => options.TypeInfoResolverChain.Add(IntegrationEventContext.Default));
 
         builder.AddNpgsqlDataSource("orderingdb");
 
@@ -20,7 +20,6 @@ public static class Extensions
 }
 
 [JsonSerializable(typeof(GracePeriodConfirmedIntegrationEvent))]
-partial class IntegrationEventContext : JsonSerializerContext
+internal partial class IntegrationEventContext : JsonSerializerContext
 {
-
 }

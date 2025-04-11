@@ -1,13 +1,12 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Scalar.AspNetCore;
 
-namespace eShop.ServiceDefaults;
+namespace inked.ServiceDefaults;
 
 public static partial class Extensions
 {
@@ -63,7 +62,8 @@ public static partial class Extensions
             {
                 builder.Services.AddOpenApi(description, options =>
                 {
-                    options.ApplyApiVersionInfo(openApi.GetRequiredValue("Document:Title"), openApi.GetRequiredValue("Document:Description"));
+                    options.ApplyApiVersionInfo(openApi.GetRequiredValue<string>("Document:Title"),
+                        openApi.GetRequiredValue<string>("Document:Description"));
                     options.ApplyAuthorizationChecks([.. scopes.Keys]);
                     options.ApplySecuritySchemeDefinitions();
                     options.ApplyOperationDeprecatedStatus();

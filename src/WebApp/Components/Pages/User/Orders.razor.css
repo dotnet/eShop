@@ -63,14 +63,27 @@
     border: 1px solid #2A9E01;
 }
 
-@media only screen and (max-width: 480px) { 
+.cancel-button {
+    border-radius: 1.25rem;
+    border: 1px solid red;
+    background-color: red;
+    color: white;
+    padding: 0.5em 1em;
+    cursor: pointer;
+}
+
+.cancel-button:hover {
+    background-color: darkred;
+}
+
+@media only screen and (max-width: 480px) {
     .orders {
         padding: 0 1rem;
     }
 }
 
-@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+@media only screen and (min-width: 481px) and (max-width: 1024px) {
     .orders {
         padding: 0 3rem;
-    }    
+    }
 }

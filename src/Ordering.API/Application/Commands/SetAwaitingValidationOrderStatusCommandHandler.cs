@@ -1,7 +1,8 @@
-﻿namespace eShop.Ordering.API.Application.Commands;
+﻿namespace Inked.Ordering.API.Application.Commands;
 
 // Regular CommandHandler
-public class SetAwaitingValidationOrderStatusCommandHandler : IRequestHandler<SetAwaitingValidationOrderStatusCommand, bool>
+public class
+    SetAwaitingValidationOrderStatusCommandHandler : IRequestHandler<SetAwaitingValidationOrderStatusCommand, bool>
 {
     private readonly IOrderRepository _orderRepository;
 
@@ -11,8 +12,8 @@ public class SetAwaitingValidationOrderStatusCommandHandler : IRequestHandler<Se
     }
 
     /// <summary>
-    /// Handler which processes the command when
-    /// graceperiod has finished
+    ///     Handler which processes the command when
+    ///     graceperiod has finished
     /// </summary>
     /// <param name="command"></param>
     /// <returns></returns>
@@ -29,9 +30,10 @@ public class SetAwaitingValidationOrderStatusCommandHandler : IRequestHandler<Se
     }
 }
 
-
 // Use for Idempotency in Command process
-public class SetAwaitingValidationIdentifiedOrderStatusCommandHandler : IdentifiedCommandHandler<SetAwaitingValidationOrderStatusCommand, bool>
+public class
+    SetAwaitingValidationIdentifiedOrderStatusCommandHandler : IdentifiedCommandHandler<
+    SetAwaitingValidationOrderStatusCommand, bool>
 {
     public SetAwaitingValidationIdentifiedOrderStatusCommandHandler(
         IMediator mediator,

@@ -1,13 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace eShop.IntegrationEventLogEF;
+namespace Inked.IntegrationEventLogEF;
 
 public class IntegrationEventLogEntry
 {
     private static readonly JsonSerializerOptions s_indentedOptions = new() { WriteIndented = true };
-    private static readonly JsonSerializerOptions s_caseInsensitiveOptions = new() { PropertyNameCaseInsensitive = true };
+
+    private static readonly JsonSerializerOptions s_caseInsensitiveOptions =
+        new() { PropertyNameCaseInsensitive = true };
 
     private IntegrationEventLogEntry() { }
+
     public IntegrationEventLogEntry(IntegrationEvent @event, Guid transactionId)
     {
         EventId = @event.Id;
@@ -18,18 +21,21 @@ public class IntegrationEventLogEntry
         TimesSent = 0;
         TransactionId = transactionId;
     }
+
     public Guid EventId { get; private set; }
-    [Required]
-    public string EventTypeName { get; private set; }
-    [NotMapped]
-    public string EventTypeShortName => EventTypeName.Split('.')?.Last();
-    [NotMapped]
-    public IntegrationEvent IntegrationEvent { get; private set; }
+
+    [Required] public string EventTypeName { get; }
+
+    [NotMapped] public string EventTypeShortName => EventTypeName.Split('.')?.Last();
+
+    [NotMapped] public IntegrationEvent IntegrationEvent { get; private set; }
+
     public EventStateEnum State { get; set; }
     public int TimesSent { get; set; }
     public DateTime CreationTime { get; private set; }
-    [Required]
-    public string Content { get; private set; }
+
+    [Required] public string Content { get; }
+
     public Guid TransactionId { get; private set; }
 
     public IntegrationEventLogEntry DeserializeJsonContent(Type type)

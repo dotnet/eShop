@@ -6,12 +6,13 @@
 
 <h2>Register a new webhook</h2>
 
-<p>This page registers the "OrderPaid" Webhook by sending a POST to the WebHooks API. Once the Webhook is set, you will be able to see new paid orders from the <a href="">home</a> page.</p>
+<p>This page registers the "OrderPaid" Webhook by sending a POST to the WebHooks API. Once the Webhook is set, you will
+    be able to see new paid orders from the <a href="">home</a> page.</p>
 
 <form @onsubmit="RegisterAsync">
     <p>
         Token:
-        <input type="text" @bind="@token" placeholder="Token" />
+        <input type="text" @bind="@token" placeholder="Token"/>
     </p>
     <button class="action" type="submit">Register</button>
 </form>
@@ -62,4 +63,5 @@
             message = $"Registation was rejected with status {(int)response.StatusCode} {response.ReasonPhrase}";
         }
     }
+
 }

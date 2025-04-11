@@ -1,9 +1,11 @@
-﻿namespace eShop.Ordering.API.Application.DomainEventHandlers;
+﻿namespace Inked.Ordering.API.Application.DomainEventHandlers;
 
-public class UpdateOrderWhenBuyerAndPaymentMethodVerifiedDomainEventHandler : INotificationHandler<BuyerAndPaymentMethodVerifiedDomainEvent>
+public class
+    UpdateOrderWhenBuyerAndPaymentMethodVerifiedDomainEventHandler : INotificationHandler<
+    BuyerAndPaymentMethodVerifiedDomainEvent>
 {
-    private readonly IOrderRepository _orderRepository;
     private readonly ILogger _logger;
+    private readonly IOrderRepository _orderRepository;
 
     public UpdateOrderWhenBuyerAndPaymentMethodVerifiedDomainEventHandler(
         IOrderRepository orderRepository,
@@ -19,7 +21,8 @@ public class UpdateOrderWhenBuyerAndPaymentMethodVerifiedDomainEventHandler : IN
     public async Task Handle(BuyerAndPaymentMethodVerifiedDomainEvent domainEvent, CancellationToken cancellationToken)
     {
         var orderToUpdate = await _orderRepository.GetAsync(domainEvent.OrderId);
-        orderToUpdate.SetPaymentMethodVerified(domainEvent.Buyer.Id, domainEvent.Payment.Id); 
-        OrderingApiTrace.LogOrderPaymentMethodUpdated(_logger, domainEvent.OrderId, nameof(domainEvent.Payment), domainEvent.Payment.Id);
+        orderToUpdate.SetPaymentMethodVerified(domainEvent.Buyer.Id, domainEvent.Payment.Id);
+        OrderingApiTrace.LogOrderPaymentMethodUpdated(_logger, domainEvent.OrderId, nameof(domainEvent.Payment),
+            domainEvent.Payment.Id);
     }
 }

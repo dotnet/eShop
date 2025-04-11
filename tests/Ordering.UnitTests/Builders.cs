@@ -1,6 +1,6 @@
-﻿using eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
+﻿using Inked.Ordering.Domain.AggregatesModel.OrderAggregate;
 
-namespace eShop.Ordering.UnitTests.Domain;
+namespace Inked.Ordering.UnitTests.Domain;
 
 public class AddressBuilder
 {
@@ -20,11 +20,11 @@ public class OrderBuilder
             "userId",
             "fakeName",
             address,
-            cardTypeId: 5,
-            cardNumber: "12",
-            cardSecurityNumber: "123",
-            cardHolderName: "name",
-            cardExpiration: DateTime.UtcNow);
+            5,
+            "12",
+            "123",
+            "name",
+            DateTime.UtcNow);
     }
 
     public OrderBuilder AddOne(

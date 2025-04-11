@@ -1,4 +1,4 @@
-﻿namespace eShop.Ordering.API.Application.Commands;
+﻿namespace Inked.Ordering.API.Application.Commands;
 
 // Regular CommandHandler
 public class SetPaidOrderStatusCommandHandler : IRequestHandler<SetPaidOrderStatusCommand, bool>
@@ -11,8 +11,8 @@ public class SetPaidOrderStatusCommandHandler : IRequestHandler<SetPaidOrderStat
     }
 
     /// <summary>
-    /// Handler which processes the command when
-    /// Shipment service confirms the payment
+    ///     Handler which processes the command when
+    ///     Shipment service confirms the payment
     /// </summary>
     /// <param name="command"></param>
     /// <returns></returns>
@@ -31,7 +31,6 @@ public class SetPaidOrderStatusCommandHandler : IRequestHandler<SetPaidOrderStat
         return await _orderRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
     }
 }
-
 
 // Use for Idempotency in Command process
 public class SetPaidIdentifiedOrderStatusCommandHandler : IdentifiedCommandHandler<SetPaidOrderStatusCommand, bool>

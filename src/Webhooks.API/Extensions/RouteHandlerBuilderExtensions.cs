@@ -13,7 +13,8 @@ public static class RouteHandlerBuilderExtensions
                 return TypedResults.BadRequest("No WebhookSubscriptionRequest found.");
             }
 
-            var validationResults = webhookSubscriptionRequest.Validate(new ValidationContext(webhookSubscriptionRequest));
+            var validationResults =
+                webhookSubscriptionRequest.Validate(new ValidationContext(webhookSubscriptionRequest));
 
             if (validationResults.Any())
             {
@@ -32,7 +33,7 @@ public static class RouteHandlerBuilderExtensions
         {
             var propertyNames = validationResult.MemberNames.Any() ? validationResult.MemberNames : [string.Empty];
 
-            foreach (string propertyName in propertyNames)
+            foreach (var propertyName in propertyNames)
             {
                 if (errors.TryGetValue(propertyName, out var value))
                 {
@@ -40,10 +41,11 @@ public static class RouteHandlerBuilderExtensions
                 }
                 else
                 {
-                    errors.Add(propertyName, [validationResult.ErrorMessage]);  
+                    errors.Add(propertyName, [validationResult.ErrorMessage]);
                 }
             }
         }
+
         return errors;
     }
 }

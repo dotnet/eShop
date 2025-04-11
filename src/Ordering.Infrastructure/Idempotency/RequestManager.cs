@@ -1,4 +1,4 @@
-﻿namespace eShop.Ordering.Infrastructure.Idempotency;
+﻿namespace Inked.Ordering.Infrastructure.Idempotency;
 
 public class RequestManager : IRequestManager
 {
@@ -12,8 +12,7 @@ public class RequestManager : IRequestManager
 
     public async Task<bool> ExistAsync(Guid id)
     {
-        var request = await _context.
-            FindAsync<ClientRequest>(id);
+        var request = await _context.FindAsync<ClientRequest>(id);
 
         return request != null;
     }
@@ -22,14 +21,9 @@ public class RequestManager : IRequestManager
     {
         var exists = await ExistAsync(id);
 
-        var request = exists ?
-            throw new OrderingDomainException($"Request with {id} already exists") :
-            new ClientRequest()
-            {
-                Id = id,
-                Name = typeof(T).Name,
-                Time = DateTime.UtcNow
-            };
+        var request = exists
+            ? throw new OrderingDomainException($"Request with {id} already exists")
+            : new ClientRequest { Id = id, Name = typeof(T).Name, Time = DateTime.UtcNow };
 
         _context.Add(request);
 

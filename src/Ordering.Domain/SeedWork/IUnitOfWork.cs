@@ -1,4 +1,4 @@
-﻿namespace eShop.Ordering.Domain.Seedwork;
+﻿namespace Inked.Ordering.Domain.Seedwork;
 
 public interface IUnitOfWork : IDisposable
 {

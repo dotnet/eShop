@@ -1,5 +1,5 @@
-﻿global using eShop.ServiceDefaults;
-global using eShop.WebhookClient.Components;
-global using eShop.WebhookClient.Endpoints;
-global using eShop.WebhookClient.Extensions;
-global using eShop.WebhookClient.Services;
+﻿global using inked.ServiceDefaults;
+global using Inked.WebhookClient;
+global using Inked.WebhookClient.Endpoints;
+global using Inked.WebhookClient.Extensions;
+global using Inked.WebhookClient.Services;

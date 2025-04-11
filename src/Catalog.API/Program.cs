@@ -1,7 +1,4 @@
-﻿using Asp.Versioning.Builder;
-using System.Reflection;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddApplicationServices();
@@ -12,10 +9,12 @@ var withApiVersioning = builder.Services.AddApiVersioning();
 builder.AddDefaultOpenApi(withApiVersioning);
 
 var app = builder.Build();
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapDefaultEndpoints();
 
 app.UseStatusCodePages();
+
 
 app.MapCatalogApi();
 

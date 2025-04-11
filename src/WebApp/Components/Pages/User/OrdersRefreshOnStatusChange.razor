@@ -1,9 +1,10 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
-@rendermode InteractiveServer
+﻿@rendermode InteractiveServer
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject OrderStatusNotificationService OrderStatusNotificationService
 @inject NavigationManager Nav
+@using Microsoft.AspNetCore.Components.Authorization
 @implements IDisposable
+
 @code {
     private IDisposable? orderStatusChangedSubscription;
 
@@ -38,4 +39,5 @@
     {
         orderStatusChangedSubscription?.Dispose();
     }
+
 }

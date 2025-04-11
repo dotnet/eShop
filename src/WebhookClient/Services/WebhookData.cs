@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace eShop.WebhookClient.Services;
+﻿namespace Inked.WebhookClient.Services;
 
 public class WebhookData
 {

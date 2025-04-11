@@ -1,0 +1,34 @@
+@page "/submission/view/{id:guid}"
+@inject SubmissionService SubmissionService
+
+<PageTitle>View Submission</PageTitle>
+<SectionContent SectionName="page-header-title">View Submission</SectionContent>
+
+@if (submission == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h2>@submission.Title</h2>
+                <p><strong>Artist:</strong> @submission.Artist</p>
+                <p><strong>Description:</strong> @submission.Description</p>
+                <img src="@submission.ArtUrl" alt="Art" class="img-fluid"/>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public Guid id { get; set; }
+    private SubmissionModel? submission;
+
+    protected override async Task OnInitializedAsync()
+    {
+        submission = await SubmissionService.GetSubmissionByIdAsync(id);
+    }
+
+}

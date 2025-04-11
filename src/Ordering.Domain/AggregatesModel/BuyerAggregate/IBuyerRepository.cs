@@ -1,4 +1,4 @@
-﻿namespace eShop.Ordering.Domain.AggregatesModel.BuyerAggregate;
+﻿namespace Inked.Ordering.Domain.AggregatesModel.BuyerAggregate;
 
 //This is just the RepositoryContracts or Interface defined at the Domain Layer
 //as requisite for the Buyer Aggregate
@@ -10,4 +10,3 @@ public interface IBuyerRepository : IRepository<Buyer>
     Task<Buyer> FindAsync(string BuyerIdentityGuid);
     Task<Buyer> FindByIdAsync(int id);
 }
-

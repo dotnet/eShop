@@ -1,19 +1,16 @@
 ﻿using System.Text.Json.Serialization;
-using eShop.Basket.API.Model;
+using Inked.Basket.API.Model;
 
-namespace eShop.Basket.API.Repositories;
+namespace Inked.Basket.API.Repositories;
 
-public class RedisBasketRepository(ILogger<RedisBasketRepository> logger, IConnectionMultiplexer redis) : IBasketRepository
+public class RedisBasketRepository(ILogger<RedisBasketRepository> logger, IConnectionMultiplexer redis)
+    : IBasketRepository
 {
-    private readonly IDatabase _database = redis.GetDatabase();
-
     // implementation:
 
     // - /basket/{id} "string" per unique basket
-    private static RedisKey BasketKeyPrefix = "/basket/"u8.ToArray();
-    // note on UTF8 here: library limitation (to be fixed) - prefixes are more efficient as blobs
-
-    private static RedisKey GetBasketKey(string userId) => BasketKeyPrefix.Append(userId);
+    private static readonly RedisKey BasketKeyPrefix = "/basket/"u8.ToArray();
+    private readonly IDatabase _database = redis.GetDatabase();
 
     public async Task<bool> DeleteBasketAsync(string id)
     {
@@ -28,6 +25,7 @@ public class RedisBasketRepository(ILogger<RedisBasketRepository> logger, IConne
         {
             return null;
         }
+
         return JsonSerializer.Deserialize(data.Span, BasketSerializationContext.Default.CustomerBasket);
     }
 
@@ -46,11 +44,16 @@ public class RedisBasketRepository(ILogger<RedisBasketRepository> logger, IConne
         logger.LogInformation("Basket item persisted successfully.");
         return await GetBasketAsync(basket.BuyerId);
     }
+    // note on UTF8 here: library limitation (to be fixed) - prefixes are more efficient as blobs
+
+    private static RedisKey GetBasketKey(string userId)
+    {
+        return BasketKeyPrefix.Append(userId);
+    }
 }
 
 [JsonSerializable(typeof(CustomerBasket))]
 [JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true)]
 public partial class BasketSerializationContext : JsonSerializerContext
 {
-
 }

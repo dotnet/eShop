@@ -71,7 +71,7 @@
     gap: 1.5rem;
 }
 
-@media only screen and (max-width: 480px) { 
+@media only screen and (max-width: 480px) {
     .eshop-header-hero {
         height: 18rem;
     }
@@ -105,13 +105,13 @@
     .eshop-header-intro h1 {
         font-size: 2rem;
     }
-    
+
     .eshop-header-intro p {
         font-size: 1.5rem;
     }
 }
 
-@media only screen and (min-width: 481px) and (max-width: 1024px) { 
+@media only screen and (min-width: 481px) and (max-width: 1024px) {
     .eshop-header.home .eshop-header-hero {
         height: 24rem;
     }
@@ -144,7 +144,7 @@
     .eshop-header-intro h1 {
         font-size: 2rem;
     }
-    
+
     .eshop-header-intro p {
         font-size: 1.5rem;
     }

@@ -1,20 +1,22 @@
-﻿namespace eShop.Ordering.API.Application.IntegrationEvents.EventHandling;
+﻿namespace Inked.Ordering.API.Application.IntegrationEvents.EventHandling;
 
 public class GracePeriodConfirmedIntegrationEventHandler(
     IMediator mediator,
-    ILogger<GracePeriodConfirmedIntegrationEventHandler> logger) : IIntegrationEventHandler<GracePeriodConfirmedIntegrationEvent>
+    ILogger<GracePeriodConfirmedIntegrationEventHandler> logger)
+    : IIntegrationEventHandler<GracePeriodConfirmedIntegrationEvent>
 {
     /// <summary>
-    /// Event handler which confirms that the grace period
-    /// has been completed and order will not initially be cancelled.
-    /// Therefore, the order process continues for validation. 
+    ///     Event handler which confirms that the grace period
+    ///     has been completed and order will not initially be cancelled.
+    ///     Therefore, the order process continues for validation.
     /// </summary>
-    /// <param name="event">       
+    /// <param name="event">
     /// </param>
     /// <returns></returns>
     public async Task Handle(GracePeriodConfirmedIntegrationEvent @event)
     {
-        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id, @event);
+        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id,
+            @event);
 
         var command = new SetAwaitingValidationOrderStatusCommand(@event.OrderId);
 

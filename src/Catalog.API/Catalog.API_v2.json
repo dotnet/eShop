@@ -769,6 +769,20 @@
           }
         }
       }
+    },
+    "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "http://localhost/realms/inked/protocol/openid-connect/auth",
+            "tokenUrl": "http://localhost/realms/inked/protocol/openid-connect/token",
+            "scopes": {
+              "catalog": "Catalog API"
+            }
+          }
+        }
+      }
     }
   },
   "tags": [

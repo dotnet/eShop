@@ -1,12 +1,12 @@
 ﻿using System.Security.Claims;
-using eShop.Basket.API.Repositories;
-using eShop.Basket.API.Grpc;
-using eShop.Basket.API.Model;
-using eShop.Basket.UnitTests.Helpers;
+using Inked.Basket.API.Grpc;
+using Inked.Basket.API.Model;
+using Inked.Basket.API.Repositories;
+using Inked.Basket.UnitTests.Helpers;
 using Microsoft.Extensions.Logging.Abstractions;
-using BasketItem = eShop.Basket.API.Model.BasketItem;
+using API_Model_BasketItem = Inked.Basket.API.Model.BasketItem;
 
-namespace eShop.Basket.UnitTests;
+namespace Inked.Basket.UnitTests;
 
 [TestClass]
 public class BasketServiceTests
@@ -29,8 +29,9 @@ public class BasketServiceTests
     public async Task GetBasketReturnsItemsForValidUserId()
     {
         var mockRepository = Substitute.For<IBasketRepository>();
-        List<BasketItem> items = [new BasketItem { Id = "some-id" }];
-        mockRepository.GetBasketAsync("1").Returns(Task.FromResult(new CustomerBasket { BuyerId = "1", Items = items }));
+        List<API_Model_BasketItem> items = [new() { Id = "some-id" }];
+        mockRepository.GetBasketAsync("1")
+            .Returns(Task.FromResult(new CustomerBasket { BuyerId = "1", Items = items }));
         var service = new BasketService(mockRepository, NullLogger<BasketService>.Instance);
         var serverCallContext = TestServerCallContext.Create();
         var httpContext = new DefaultHttpContext();
@@ -47,8 +48,9 @@ public class BasketServiceTests
     public async Task GetBasketReturnsEmptyForInvalidUserId()
     {
         var mockRepository = Substitute.For<IBasketRepository>();
-        List<BasketItem> items = [new BasketItem { Id = "some-id" }];
-        mockRepository.GetBasketAsync("1").Returns(Task.FromResult(new CustomerBasket { BuyerId = "1", Items = items }));
+        List<API_Model_BasketItem> items = [new() { Id = "some-id" }];
+        mockRepository.GetBasketAsync("1")
+            .Returns(Task.FromResult(new CustomerBasket { BuyerId = "1", Items = items }));
         var service = new BasketService(mockRepository, NullLogger<BasketService>.Instance);
         var serverCallContext = TestServerCallContext.Create();
         var httpContext = new DefaultHttpContext();

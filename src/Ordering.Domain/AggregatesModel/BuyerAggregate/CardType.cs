@@ -1,4 +1,4 @@
-﻿namespace eShop.Ordering.Domain.AggregatesModel.BuyerAggregate;
+﻿namespace Inked.Ordering.Domain.AggregatesModel.BuyerAggregate;
 
 public sealed class CardType
 {

@@ -1,11 +1,11 @@
-﻿namespace eShop.IntegrationEventLogEF.Services;
+﻿namespace Inked.IntegrationEventLogEF.Services;
 
 public class IntegrationEventLogService<TContext> : IIntegrationEventLogService, IDisposable
     where TContext : DbContext
 {
-    private volatile bool _disposedValue;
     private readonly TContext _context;
     private readonly Type[] _eventTypes;
+    private volatile bool _disposedValue;
 
     public IntegrationEventLogService(TContext context)
     {
@@ -14,6 +14,12 @@ public class IntegrationEventLogService<TContext> : IIntegrationEventLogService,
             .GetTypes()
             .Where(t => t.Name.EndsWith(nameof(IntegrationEvent)))
             .ToArray();
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     public async Task<IEnumerable<IntegrationEventLogEntry>> RetrieveEventLogsPendingToPublishAsync(Guid transactionId)
@@ -33,7 +39,10 @@ public class IntegrationEventLogService<TContext> : IIntegrationEventLogService,
 
     public Task SaveEventAsync(IntegrationEvent @event, IDbContextTransaction transaction)
     {
-        if (transaction == null) throw new ArgumentNullException(nameof(transaction));
+        if (transaction == null)
+        {
+            throw new ArgumentNullException(nameof(transaction));
+        }
 
         var eventLogEntry = new IntegrationEventLogEntry(@event, transaction.TransactionId);
 
@@ -64,7 +73,9 @@ public class IntegrationEventLogService<TContext> : IIntegrationEventLogService,
         eventLogEntry.State = status;
 
         if (status == EventStateEnum.InProgress)
+        {
             eventLogEntry.TimesSent++;
+        }
 
         return _context.SaveChangesAsync();
     }
@@ -81,11 +92,5 @@ public class IntegrationEventLogService<TContext> : IIntegrationEventLogService,
 
             _disposedValue = true;
         }
-    }
-
-    public void Dispose()
-    {
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
     }
 }

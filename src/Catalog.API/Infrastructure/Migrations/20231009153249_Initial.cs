@@ -3,7 +3,7 @@ using Pgvector;
 
 #nullable disable
 
-namespace eShop.Catalog.API.Infrastructure.Migrations
+namespace Inked.Catalog.API.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration

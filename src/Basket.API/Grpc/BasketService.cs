@@ -1,9 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using eShop.Basket.API.Repositories;
-using eShop.Basket.API.Extensions;
-using eShop.Basket.API.Model;
+using Inked.Basket.API.Model;
+using Inked.Basket.API.Repositories;
 
-namespace eShop.Basket.API.Grpc;
+namespace Inked.Basket.API.Grpc;
 
 public class BasketService(
     IBasketRepository repository,
@@ -15,7 +14,7 @@ public class BasketService(
         var userId = context.GetUserIdentity();
         if (string.IsNullOrEmpty(userId))
         {
-            return new();
+            return new CustomerBasketResponse();
         }
 
         if (logger.IsEnabled(LogLevel.Debug))
@@ -30,10 +29,11 @@ public class BasketService(
             return MapToCustomerBasketResponse(data);
         }
 
-        return new();
+        return new CustomerBasketResponse();
     }
 
-    public override async Task<CustomerBasketResponse> UpdateBasket(UpdateBasketRequest request, ServerCallContext context)
+    public override async Task<CustomerBasketResponse> UpdateBasket(UpdateBasketRequest request,
+        ServerCallContext context)
     {
         var userId = context.GetUserIdentity();
         if (string.IsNullOrEmpty(userId))
@@ -56,7 +56,8 @@ public class BasketService(
         return MapToCustomerBasketResponse(response);
     }
 
-    public override async Task<DeleteBasketResponse> DeleteBasket(DeleteBasketRequest request, ServerCallContext context)
+    public override async Task<DeleteBasketResponse> DeleteBasket(DeleteBasketRequest request,
+        ServerCallContext context)
     {
         var userId = context.GetUserIdentity();
         if (string.IsNullOrEmpty(userId))
@@ -65,14 +66,20 @@ public class BasketService(
         }
 
         await repository.DeleteBasketAsync(userId);
-        return new();
+        return new DeleteBasketResponse();
     }
 
     [DoesNotReturn]
-    private static void ThrowNotAuthenticated() => throw new RpcException(new Status(StatusCode.Unauthenticated, "The caller is not authenticated."));
+    private static void ThrowNotAuthenticated()
+    {
+        throw new RpcException(new Status(StatusCode.Unauthenticated, "The caller is not authenticated."));
+    }
 
     [DoesNotReturn]
-    private static void ThrowBasketDoesNotExist(string userId) => throw new RpcException(new Status(StatusCode.NotFound, $"Basket with buyer id {userId} does not exist"));
+    private static void ThrowBasketDoesNotExist(string userId)
+    {
+        throw new RpcException(new Status(StatusCode.NotFound, $"Basket with buyer id {userId} does not exist"));
+    }
 
     private static CustomerBasketResponse MapToCustomerBasketResponse(CustomerBasket customerBasket)
     {
@@ -80,11 +87,7 @@ public class BasketService(
 
         foreach (var item in customerBasket.Items)
         {
-            response.Items.Add(new BasketItem()
-            {
-                ProductId = item.ProductId,
-                Quantity = item.Quantity,
-            });
+            response.Items.Add(new BasketItem { ProductId = item.ProductId, Quantity = item.Quantity });
         }
 
         return response;
@@ -92,18 +95,11 @@ public class BasketService(
 
     private static CustomerBasket MapToCustomerBasket(string userId, UpdateBasketRequest customerBasketRequest)
     {
-        var response = new CustomerBasket
-        {
-            BuyerId = userId
-        };
+        var response = new CustomerBasket { BuyerId = userId };
 
         foreach (var item in customerBasketRequest.Items)
         {
-            response.Items.Add(new()
-            {
-                ProductId = item.ProductId,
-                Quantity = item.Quantity,
-            });
+            response.Items.Add(new Model.BasketItem { ProductId = item.ProductId, Quantity = item.Quantity });
         }
 
         return response;

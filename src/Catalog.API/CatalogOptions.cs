@@ -1,4 +1,4 @@
-﻿namespace eShop.Catalog.API;
+﻿namespace Inked.Catalog.API;
 
 public class CatalogOptions
 {

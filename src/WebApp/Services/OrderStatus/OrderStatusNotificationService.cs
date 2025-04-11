@@ -1,10 +1,11 @@
-﻿namespace eShop.WebApp.Services;
+﻿namespace Inked.WebApp.Services;
 
 public class OrderStatusNotificationService
 {
+    private readonly Dictionary<string, HashSet<Subscription>> _subscriptionsByBuyerId = new();
+
     // Locking manually because we need multiple values per key, and only need to lock very briefly
     private readonly object _subscriptionsLock = new();
-    private readonly Dictionary<string, HashSet<Subscription>> _subscriptionsByBuyerId = new();
 
     public IDisposable SubscribeToOrderStatusNotifications(string buyerId, Func<Task> callback)
     {
@@ -51,12 +52,14 @@ public class OrderStatusNotificationService
 
     private class Subscription(OrderStatusNotificationService owner, string buyerId, Func<Task> callback) : IDisposable
     {
+        public void Dispose()
+        {
+            owner.Unsubscribe(buyerId, this);
+        }
+
         public Task NotifyAsync()
         {
             return callback();
         }
-
-        public void Dispose()
-            => owner.Unsubscribe(buyerId, this);
     }
 }

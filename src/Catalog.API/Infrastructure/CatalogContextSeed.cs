@@ -1,10 +1,9 @@
 ﻿using System.Text.Json;
-using eShop.Catalog.API.Services;
-using Pgvector;
+using Inked.Catalog.API.Services;
 
-namespace eShop.Catalog.API.Infrastructure;
+namespace Inked.Catalog.API.Infrastructure;
 
-public partial class CatalogContextSeed(
+public class CatalogContextSeed(
     IWebHostEnvironment env,
     IOptions<CatalogOptions> settings,
     ICatalogAI catalogAI,
@@ -52,14 +51,14 @@ public partial class CatalogContextSeed(
                 AvailableStock = 100,
                 MaxStockThreshold = 200,
                 RestockThreshold = 10,
-                PictureFileName = $"{source.Id}.webp",
+                PictureFileName = $"{source.Id}.webp"
             }).ToArray();
 
             if (catalogAI.IsEnabled)
             {
                 logger.LogInformation("Generating {NumItems} embeddings", catalogItems.Length);
-                IReadOnlyList<Vector> embeddings = await catalogAI.GetEmbeddingsAsync(catalogItems);
-                for (int i = 0; i < catalogItems.Length; i++)
+                var embeddings = await catalogAI.GetEmbeddingsAsync(catalogItems);
+                for (var i = 0; i < catalogItems.Length; i++)
                 {
                     catalogItems[i].Embedding = embeddings[i];
                 }

@@ -1,12 +1,12 @@
-﻿namespace eShop.Ordering.API.Application.DomainEventHandlers;
+﻿namespace Inked.Ordering.API.Application.DomainEventHandlers;
 
-public partial class OrderCancelledDomainEventHandler
-                : INotificationHandler<OrderCancelledDomainEvent>
+public class OrderCancelledDomainEventHandler
+    : INotificationHandler<OrderCancelledDomainEvent>
 {
-    private readonly IOrderRepository _orderRepository;
     private readonly IBuyerRepository _buyerRepository;
     private readonly ILogger _logger;
     private readonly IOrderingIntegrationEventService _orderingIntegrationEventService;
+    private readonly IOrderRepository _orderRepository;
 
     public OrderCancelledDomainEventHandler(
         IOrderRepository orderRepository,
@@ -27,7 +27,9 @@ public partial class OrderCancelledDomainEventHandler
         var order = await _orderRepository.GetAsync(domainEvent.Order.Id);
         var buyer = await _buyerRepository.FindByIdAsync(order.BuyerId.Value);
 
-        var integrationEvent = new OrderStatusChangedToCancelledIntegrationEvent(order.Id, order.OrderStatus, buyer.Name, buyer.IdentityGuid);
+        var integrationEvent =
+            new OrderStatusChangedToCancelledIntegrationEvent(order.Id, order.OrderStatus, buyer.Name,
+                buyer.IdentityGuid);
         await _orderingIntegrationEventService.AddAndSaveEventAsync(integrationEvent);
     }
 }

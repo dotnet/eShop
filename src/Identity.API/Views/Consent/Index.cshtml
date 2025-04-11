@@ -15,12 +15,12 @@
 
     <div class="row">
         <div class="col-sm-8">
-            <partial name="_ValidationSummary" />
+            <partial name="_ValidationSummary"/>
         </div>
     </div>
 
     <form asp-action="Index">
-        <input type="hidden" asp-for="ReturnUrl" />
+        <input type="hidden" asp-for="ReturnUrl"/>
         <div class="row">
             <div class="col-sm-8">
                 @if (Model.IdentityScopes.Any())
@@ -34,7 +34,7 @@
                             <ul class="list-group list-group-flush">
                                 @foreach (var scope in Model.IdentityScopes)
                                 {
-                                    <partial name="_ScopeListItem" model="@scope" />
+                                    <partial name="_ScopeListItem" model="@scope"/>
                                 }
                             </ul>
                         </div>
@@ -52,7 +52,7 @@
                             <ul class="list-group list-group-flush">
                                 @foreach (var scope in Model.ApiScopes)
                                 {
-                                    <partial name="_ScopeListItem" model="scope" />
+                                    <partial name="_ScopeListItem" model="scope"/>
                                 }
                             </ul>
                         </div>
@@ -66,7 +66,8 @@
                             Description
                         </div>
                         <div class="card-body">
-                            <input class="form-control" placeholder="Description or name of device" asp-for="Description" autofocus>
+                            <input class="form-control" placeholder="Description or name of device"
+                                   asp-for="Description" autofocus>
                         </div>
                     </div>
                 </div>

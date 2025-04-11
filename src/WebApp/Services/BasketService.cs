@@ -1,14 +1,12 @@
-﻿using eShop.Basket.API.Grpc;
-using GrpcBasketItem = eShop.Basket.API.Grpc.BasketItem;
-using GrpcBasketClient = eShop.Basket.API.Grpc.Basket.BasketClient;
+﻿using Inked.Basket.API.Grpc;
 
-namespace eShop.WebApp.Services;
+namespace Inked.WebApp.Services;
 
-public class BasketService(GrpcBasketClient basketClient)
+public class BasketService(Basket.API.Grpc.Basket.BasketClient basketClient)
 {
     public async Task<IReadOnlyCollection<BasketQuantity>> GetBasketAsync()
     {
-        var result = await basketClient.GetBasketAsync(new ());
+        var result = await basketClient.GetBasketAsync(new GetBasketRequest());
         return MapToBasket(result);
     }
 
@@ -23,11 +21,7 @@ public class BasketService(GrpcBasketClient basketClient)
 
         foreach (var item in basket)
         {
-            var updateItem = new GrpcBasketItem
-            {
-                ProductId = item.ProductId,
-                Quantity = item.Quantity,
-            };
+            var updateItem = new Basket.API.Grpc.BasketItem { ProductId = item.ProductId, Quantity = item.Quantity };
             updatePayload.Items.Add(updateItem);
         }
 

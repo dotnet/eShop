@@ -1,4 +1,4 @@
-﻿namespace eShop.Catalog.API.IntegrationEvents.EventHandling;
+﻿namespace Inked.Catalog.API.IntegrationEvents.EventHandling;
 
 public class OrderStatusChangedToPaidIntegrationEventHandler(
     CatalogContext catalogContext,
@@ -7,7 +7,8 @@ public class OrderStatusChangedToPaidIntegrationEventHandler(
 {
     public async Task Handle(OrderStatusChangedToPaidIntegrationEvent @event)
     {
-        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id, @event);
+        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id,
+            @event);
 
         //we're not blocking stock/inventory
         foreach (var orderStockItem in @event.OrderStockItems)

@@ -1,15 +1,16 @@
-﻿namespace eShop.Ordering.Infrastructure.Repositories;
+﻿namespace Inked.Ordering.Infrastructure.Repositories;
 
 public class BuyerRepository
     : IBuyerRepository
 {
     private readonly OrderingContext _context;
-    public IUnitOfWork UnitOfWork => _context;
 
     public BuyerRepository(OrderingContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
+
+    public IUnitOfWork UnitOfWork => _context;
 
     public Buyer Add(Buyer buyer)
     {
@@ -26,8 +27,8 @@ public class BuyerRepository
     public Buyer Update(Buyer buyer)
     {
         return _context.Buyers
-                .Update(buyer)
-                .Entity;
+            .Update(buyer)
+            .Entity;
     }
 
     public async Task<Buyer> FindAsync(string identity)

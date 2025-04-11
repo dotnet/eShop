@@ -11,17 +11,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Packages.props = Directory.Packages.props
 		NuGet.config = NuGet.config
 		README.md = README.md
+		compose.yaml = compose.yaml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A857AD10-40FF-4303-BEC2-FF1C58D5735E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShop.AppHost", "src\eShop.AppHost\eShop.AppHost.csproj", "{F3DCC17A-F57E-452B-900D-613957EE34FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "inked.AppHost", "src\inked.AppHost\inked.AppHost.csproj", "{F3DCC17A-F57E-452B-900D-613957EE34FA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basket.API", "src\Basket.API\Basket.API.csproj", "{EE1B5D90-E230-417B-8E58-7F3060457112}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.API", "src\Catalog.API\Catalog.API.csproj", "{65321F44-C60B-4F80-B0D4-55E14E23CDB8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShop.ServiceDefaults", "src\eShop.ServiceDefaults\eShop.ServiceDefaults.csproj", "{CB04FF2E-F033-487F-8CC1-F2D3490F2187}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "inked.ServiceDefaults", "src\inked.ServiceDefaults\inked.ServiceDefaults.csproj", "{CB04FF2E-F033-487F-8CC1-F2D3490F2187}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventBus", "src\EventBus\EventBus.csproj", "{53FC1F8E-F56F-4245-A4DD-5100FEB380EC}"
 EndProject
@@ -64,6 +65,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientApp", "src\ClientApp\ClientApp.csproj", "{938803BB-4F6F-4108-BDD1-2AD0180BBDC1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientApp.UnitTests", "tests\ClientApp.UnitTests\ClientApp.UnitTests.csproj", "{02878FFB-F4DA-4996-B4A6-308851A837C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RefundProcessor", "src\RefundProcessor\RefundProcessor.csproj", "{599B2869-BA43-4A3B-9FF6-EADD87F48E78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Submission.API", "src\Submission.API\Submission.API.csproj", "{0DFEA400-6786-489B-BAE0-2689376D4363}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -175,6 +180,14 @@ Global
 		{02878FFB-F4DA-4996-B4A6-308851A837C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02878FFB-F4DA-4996-B4A6-308851A837C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02878FFB-F4DA-4996-B4A6-308851A837C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{599B2869-BA43-4A3B-9FF6-EADD87F48E78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{599B2869-BA43-4A3B-9FF6-EADD87F48E78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{599B2869-BA43-4A3B-9FF6-EADD87F48E78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{599B2869-BA43-4A3B-9FF6-EADD87F48E78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DFEA400-6786-489B-BAE0-2689376D4363}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DFEA400-6786-489B-BAE0-2689376D4363}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DFEA400-6786-489B-BAE0-2689376D4363}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DFEA400-6786-489B-BAE0-2689376D4363}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -205,6 +218,8 @@ Global
 		{66275483-5364-42F9-B7E6-410E6A1B5ECF} = {932D8224-11F6-4D07-B109-DA28AD288A63}
 		{938803BB-4F6F-4108-BDD1-2AD0180BBDC1} = {932D8224-11F6-4D07-B109-DA28AD288A63}
 		{02878FFB-F4DA-4996-B4A6-308851A837C6} = {A857AD10-40FF-4303-BEC2-FF1C58D5735E}
+		{599B2869-BA43-4A3B-9FF6-EADD87F48E78} = {932D8224-11F6-4D07-B109-DA28AD288A63}
+		{0DFEA400-6786-489B-BAE0-2689376D4363} = {932D8224-11F6-4D07-B109-DA28AD288A63}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {25728519-5F0F-4973-8A64-0A81EB4EA8D9}

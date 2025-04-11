@@ -1,2 +1,2 @@
 ﻿global using System.Text.Json.Serialization;
-global using eShop.EventBus.Events;
+global using Inked.EventBus.Events;

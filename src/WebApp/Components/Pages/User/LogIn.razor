@@ -1,12 +1,11 @@
 ﻿@page "/user/login"
 @inject NavigationManager Nav
 @attribute [Authorize]
-@code {
-    [SupplyParameterFromQuery]
-    public string? ReturnUrl { get; set; }
 
-    [CascadingParameter]
-    public HttpContext? HttpContext { get; set; }
+@code {
+    [SupplyParameterFromQuery] public string? ReturnUrl { get; set; }
+
+    [CascadingParameter] public HttpContext? HttpContext { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -17,5 +16,8 @@
     }
 
     public static string Url(NavigationManager nav)
-        => $"user/login?returnUrl={Uri.EscapeDataString(nav.ToBaseRelativePath(nav.Uri))}";
+    {
+        return $"user/login?returnUrl={Uri.EscapeDataString(nav.Uri)}";
+    }
+
 }

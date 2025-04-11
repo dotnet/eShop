@@ -1,4 +1,4 @@
-﻿using eShop.Catalog.API.Services;
+﻿using Inked.Catalog.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
 public class CatalogServices(
@@ -13,4 +13,4 @@ public class CatalogServices(
     public IOptions<CatalogOptions> Options { get; } = options;
     public ILogger<CatalogServices> Logger { get; } = logger;
     public ICatalogIntegrationEventService EventService { get; } = eventService;
-};
+}

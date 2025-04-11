@@ -7,9 +7,10 @@
 else if (webhooks.Any())
 {
     <QuickGrid Items="@webhooks">
-        <PropertyColumn Sortable="@true" IsDefaultSortColumn="true" InitialSortDirection="@SortDirection.Descending" Title="Date" Property="@(hook => hook.Date)" />
-        <PropertyColumn Sortable="@true" Title="Destination" Property="@(hook => hook.DestUrl)" />
-        <PropertyColumn Sortable="@true" Title="Token" Property="@(hook => hook.Token)" />
+        <PropertyColumn Sortable="@true" IsDefaultSortColumn="true" InitialSortDirection="@SortDirection.Descending"
+                        Title="Date" Property="@(hook => hook.Date)"/>
+        <PropertyColumn Sortable="@true" Title="Destination" Property="@(hook => hook.DestUrl)"/>
+        <PropertyColumn Sortable="@true" Title="Token" Property="@(hook => hook.Token)"/>
     </QuickGrid>
 }
 else
@@ -24,4 +25,5 @@ else
     {
         webhooks = (await WebhooksClient.LoadWebhooks()).AsQueryable();
     }
+
 }

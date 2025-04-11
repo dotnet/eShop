@@ -1,4 +1,4 @@
-﻿namespace eShop.IntegrationEventLogEF;
+﻿namespace Inked.IntegrationEventLogEF;
 
 public static class IntegrationLogExtensions
 {

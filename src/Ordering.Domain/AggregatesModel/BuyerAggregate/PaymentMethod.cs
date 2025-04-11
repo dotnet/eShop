@@ -1,28 +1,34 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace eShop.Ordering.Domain.AggregatesModel.BuyerAggregate;
+namespace Inked.Ordering.Domain.AggregatesModel.BuyerAggregate;
 
 public class PaymentMethod : Entity
 {
-    [Required]
-    private string _alias;
-    [Required]
-    private string _cardNumber;
-    private string _securityNumber;
-    [Required]
-    private string _cardHolderName;
-    private DateTime _expiration;
+    [Required] private readonly string _cardNumber;
 
-    private int _cardTypeId;
-    public CardType CardType { get; private set; }
+    private readonly int _cardTypeId;
+    private readonly DateTime _expiration;
+
+    [Required] private string _alias;
+
+    [Required] private string _cardHolderName;
+
+    private string _securityNumber;
 
     protected PaymentMethod() { }
 
-    public PaymentMethod(int cardTypeId, string alias, string cardNumber, string securityNumber, string cardHolderName, DateTime expiration)
+    public PaymentMethod(int cardTypeId, string alias, string cardNumber, string securityNumber, string cardHolderName,
+        DateTime expiration)
     {
-        _cardNumber = !string.IsNullOrWhiteSpace(cardNumber) ? cardNumber : throw new OrderingDomainException(nameof(cardNumber));
-        _securityNumber = !string.IsNullOrWhiteSpace(securityNumber) ? securityNumber : throw new OrderingDomainException(nameof(securityNumber));
-        _cardHolderName = !string.IsNullOrWhiteSpace(cardHolderName) ? cardHolderName : throw new OrderingDomainException(nameof(cardHolderName));
+        _cardNumber = !string.IsNullOrWhiteSpace(cardNumber)
+            ? cardNumber
+            : throw new OrderingDomainException(nameof(cardNumber));
+        _securityNumber = !string.IsNullOrWhiteSpace(securityNumber)
+            ? securityNumber
+            : throw new OrderingDomainException(nameof(securityNumber));
+        _cardHolderName = !string.IsNullOrWhiteSpace(cardHolderName)
+            ? cardHolderName
+            : throw new OrderingDomainException(nameof(cardHolderName));
 
         if (expiration < DateTime.UtcNow)
         {
@@ -34,10 +40,12 @@ public class PaymentMethod : Entity
         _cardTypeId = cardTypeId;
     }
 
+    public CardType CardType { get; private set; }
+
     public bool IsEqualTo(int cardTypeId, string cardNumber, DateTime expiration)
     {
         return _cardTypeId == cardTypeId
-            && _cardNumber == cardNumber
-            && _expiration == expiration;
+               && _cardNumber == cardNumber
+               && _expiration == expiration;
     }
 }

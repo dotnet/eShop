@@ -1,6 +1,6 @@
-﻿namespace eShop.Ordering.Infrastructure.EntityConfigurations;
+﻿namespace Inked.Ordering.Infrastructure.EntityConfigurations;
 
-class BuyerEntityTypeConfiguration
+internal class BuyerEntityTypeConfiguration
     : IEntityTypeConfiguration<Buyer>
 {
     public void Configure(EntityTypeBuilder<Buyer> buyerConfiguration)
@@ -16,7 +16,7 @@ class BuyerEntityTypeConfiguration
             .HasMaxLength(200);
 
         buyerConfiguration.HasIndex("IdentityGuid")
-            .IsUnique(true);
+            .IsUnique();
 
         buyerConfiguration.HasMany(b => b.PaymentMethods)
             .WithOne();

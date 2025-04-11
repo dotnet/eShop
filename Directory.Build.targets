@@ -15,7 +15,7 @@
     <!-- Single warn the following assemblies, which have known warnings, so the warnings can be suppressed for now. -->
     <ItemGroup>
       <!-- https://github.com/rabbitmq/rabbitmq-dotnet-client/issues/1410 is tracking fixing the one EventSource warning in RabbitMQ. -->
-      <IlcArg Include="--singlewarnassembly:RabbitMQ.Client" />
+      <IlcArg Include="--singlewarnassembly:RabbitMQ.Client"/>
     </ItemGroup>
   </Target>
 

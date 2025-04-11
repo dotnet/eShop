@@ -5,13 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Yarp.ReverseProxy" />
-    <PackageReference Include="Microsoft.Extensions.ServiceDiscovery.Yarp" />
-    <PackageReference Include="AspNetCore.HealthChecks.Uris" />
+    <PackageReference Include="Yarp.ReverseProxy"/>
+    <PackageReference Include="Microsoft.Extensions.ServiceDiscovery.Yarp"/>
+    <PackageReference Include="AspNetCore.HealthChecks.Uris"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\eShop.ServiceDefaults\eShop.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\inked.ServiceDefaults\inked.ServiceDefaults.csproj"/>
   </ItemGroup>
 
 </Project>

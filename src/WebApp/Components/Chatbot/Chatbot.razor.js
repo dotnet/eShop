@@ -1,5 +1,5 @@
 ﻿export function scrollToEnd(element) {
-    element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' });
+    element.scrollTo({top: element.scrollHeight, behavior: 'smooth'});
 }
 
 export function submitOnEnter(element) {

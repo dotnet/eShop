@@ -1,17 +1,19 @@
-﻿namespace eShop.Ordering.UnitTests.Application;
-
+﻿using Inked.Ordering.API.Application.Queries;
 using Microsoft.AspNetCore.Http.HttpResults;
-using eShop.Ordering.API.Application.Queries;
-using Order = eShop.Ordering.API.Application.Queries.Order;
 using NSubstitute.ExceptionExtensions;
+using CardType = Inked.Ordering.API.Application.Queries.CardType;
+
+namespace Inked.Ordering.UnitTests.Application;
+
+using Order = Order;
 
 [TestClass]
 public class OrdersWebApiTest
 {
-    private readonly IMediator _mediatorMock;
-    private readonly IOrderQueries _orderQueriesMock;
     private readonly IIdentityService _identityServiceMock;
     private readonly ILogger<OrderServices> _loggerMock;
+    private readonly IMediator _mediatorMock;
+    private readonly IOrderQueries _orderQueriesMock;
 
     public OrdersWebApiTest()
     {
@@ -25,7 +27,7 @@ public class OrdersWebApiTest
     public async Task Cancel_order_with_requestId_success()
     {
         // Arrange
-        _mediatorMock.Send(Arg.Any<IdentifiedCommand<CancelOrderCommand, bool>>(), default)
+        _mediatorMock.Send(Arg.Any<IdentifiedCommand<CancelOrderCommand, bool>>())
             .Returns(Task.FromResult(true));
 
         // Act
@@ -40,7 +42,7 @@ public class OrdersWebApiTest
     public async Task Cancel_order_bad_request()
     {
         // Arrange
-        _mediatorMock.Send(Arg.Any<IdentifiedCommand<CancelOrderCommand, bool>>(), default)
+        _mediatorMock.Send(Arg.Any<IdentifiedCommand<CancelOrderCommand, bool>>())
             .Returns(Task.FromResult(true));
 
         // Act
@@ -55,7 +57,7 @@ public class OrdersWebApiTest
     public async Task Ship_order_with_requestId_success()
     {
         // Arrange
-        _mediatorMock.Send(Arg.Any<IdentifiedCommand<ShipOrderCommand, bool>>(), default)
+        _mediatorMock.Send(Arg.Any<IdentifiedCommand<ShipOrderCommand, bool>>())
             .Returns(Task.FromResult(true));
 
         // Act
@@ -64,14 +66,13 @@ public class OrdersWebApiTest
 
         // Assert
         Assert.IsInstanceOfType<Ok>(result.Result);
-
     }
 
     [TestMethod]
     public async Task Ship_order_bad_request()
     {
         // Arrange
-        _mediatorMock.Send(Arg.Any<IdentifiedCommand<CreateOrderCommand, bool>>(), default)
+        _mediatorMock.Send(Arg.Any<IdentifiedCommand<CreateOrderCommand, bool>>())
             .Returns(Task.FromResult(true));
 
         // Act

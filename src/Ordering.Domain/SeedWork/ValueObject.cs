@@ -1,4 +1,4 @@
-﻿namespace eShop.Ordering.Domain.SeedWork;
+﻿namespace Inked.Ordering.Domain.SeedWork;
 
 public abstract class ValueObject
 {
@@ -8,12 +8,13 @@ public abstract class ValueObject
         {
             return false;
         }
+
         return ReferenceEquals(left, null) || left.Equals(right);
     }
 
     protected static bool NotEqualOperator(ValueObject left, ValueObject right)
     {
-        return !(EqualOperator(left, right));
+        return !EqualOperator(left, right);
     }
 
     protected abstract IEnumerable<object> GetEqualityComponents();
@@ -27,7 +28,7 @@ public abstract class ValueObject
 
         var other = (ValueObject)obj;
 
-        return this.GetEqualityComponents().SequenceEqual(other.GetEqualityComponents());
+        return GetEqualityComponents().SequenceEqual(other.GetEqualityComponents());
     }
 
     public override int GetHashCode()
@@ -39,6 +40,6 @@ public abstract class ValueObject
 
     public ValueObject GetCopy()
     {
-        return this.MemberwiseClone() as ValueObject;
+        return MemberwiseClone() as ValueObject;
     }
 }

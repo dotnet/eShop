@@ -1,4 +1,4 @@
-﻿namespace eShop.Ordering.API.Application.Models;
+﻿namespace Inked.Ordering.API.Application.Models;
 
 public class BasketItem
 {
@@ -10,4 +10,3 @@ public class BasketItem
     public int Quantity { get; init; }
     public string PictureUrl { get; init; }
 }
-

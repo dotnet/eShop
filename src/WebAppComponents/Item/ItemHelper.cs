@@ -1,9 +1,11 @@
-﻿using eShop.WebAppComponents.Catalog;
+﻿using Inked.WebAppComponents.Catalog;
 
-namespace eShop.WebAppComponents.Item;
+namespace Inked.WebAppComponents.Item;
 
 public static class ItemHelper
 {
     public static string Url(CatalogItem item)
-        => $"item/{item.Id}";
+    {
+        return $"item/{item.Id}";
+    }
 }

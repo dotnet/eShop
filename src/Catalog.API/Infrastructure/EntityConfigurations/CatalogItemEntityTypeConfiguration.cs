@@ -1,6 +1,6 @@
-﻿namespace eShop.Catalog.API.Infrastructure.EntityConfigurations;
+﻿namespace Inked.Catalog.API.Infrastructure.EntityConfigurations;
 
-class CatalogItemEntityTypeConfiguration
+internal class CatalogItemEntityTypeConfiguration
     : IEntityTypeConfiguration<CatalogItem>
 {
     public void Configure(EntityTypeBuilder<CatalogItem> builder)

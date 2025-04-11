@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using eShop.Identity.API.Data;
+using Inked.Identity.API.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace eShop.Identity.API.Data.Migrations
+namespace Inked.Identity.API.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20230925223402_InitialMigration")]

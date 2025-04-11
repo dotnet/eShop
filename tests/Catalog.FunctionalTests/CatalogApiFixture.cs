@@ -1,18 +1,18 @@
-﻿using System.Reflection;
-using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
 
-namespace eShop.Catalog.FunctionalTests;
+namespace Inked.Catalog.FunctionalTests;
 
 public sealed class CatalogApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly IHost _app;
-
-    public IResourceBuilder<PostgresServerResource> Postgres { get; private set; }
     private string _postgresConnectionString;
 
     public CatalogApiFixture()
     {
-        var options = new DistributedApplicationOptions { AssemblyName = typeof(CatalogApiFixture).Assembly.FullName, DisableDashboard = true };
+        var options = new DistributedApplicationOptions
+        {
+            AssemblyName = typeof(CatalogApiFixture).Assembly.FullName, DisableDashboard = true
+        };
         var appBuilder = DistributedApplication.CreateBuilder(options);
         Postgres = appBuilder.AddPostgres("CatalogDB")
             .WithImage("ankane/pgvector")
@@ -20,17 +20,7 @@ public sealed class CatalogApiFixture : WebApplicationFactory<Program>, IAsyncLi
         _app = appBuilder.Build();
     }
 
-    protected override IHost CreateHost(IHostBuilder builder)
-    {
-        builder.ConfigureHostConfiguration(config =>
-        {
-            config.AddInMemoryCollection(new Dictionary<string, string>
-            {
-                { $"ConnectionStrings:{Postgres.Resource.Name}", _postgresConnectionString },
-                });
-        });
-        return base.CreateHost(builder);
-    }
+    public IResourceBuilder<PostgresServerResource> Postgres { get; }
 
     public new async Task DisposeAsync()
     {
@@ -50,5 +40,17 @@ public sealed class CatalogApiFixture : WebApplicationFactory<Program>, IAsyncLi
     {
         await _app.StartAsync();
         _postgresConnectionString = await Postgres.Resource.GetConnectionStringAsync();
+    }
+
+    protected override IHost CreateHost(IHostBuilder builder)
+    {
+        builder.ConfigureHostConfiguration(config =>
+        {
+            config.AddInMemoryCollection(new Dictionary<string, string>
+            {
+                { $"ConnectionStrings:{Postgres.Resource.Name}", _postgresConnectionString }
+            });
+        });
+        return base.CreateHost(builder);
     }
 }

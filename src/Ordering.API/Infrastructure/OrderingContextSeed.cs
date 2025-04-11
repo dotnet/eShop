@@ -1,8 +1,8 @@
-﻿namespace eShop.Ordering.API.Infrastructure;
+﻿using CardType = Inked.Ordering.Domain.AggregatesModel.BuyerAggregate.CardType;
 
-using eShop.Ordering.Domain.AggregatesModel.BuyerAggregate;
+namespace Inked.Ordering.API.Infrastructure;
 
-public class OrderingContextSeed: IDbSeeder<OrderingContext>
+public class OrderingContextSeed : IDbSeeder<OrderingContext>
 {
     public async Task SeedAsync(OrderingContext context)
     {

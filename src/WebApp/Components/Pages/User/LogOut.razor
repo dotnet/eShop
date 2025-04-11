@@ -1,5 +1,39 @@
 ﻿@page "/user/logout"
-@*
-    When the 'log out' form is posted, it is handled inside UserMenu.razor.
-    This page only exists to create an endpoint that accepts the form post.
-*@
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@inject NavigationManager Nav
+@inject IConfiguration Configuration
+@attribute [Authorize]
+
+@code {
+    [SupplyParameterFromQuery] public string? ReturnUrl { get; set; }
+
+    [CascadingParameter] public HttpContext? HttpContext { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var keycloakServer = Configuration["Identity:Url"]; // Get from Aspire environment
+        if (string.IsNullOrEmpty(keycloakServer))
+        {
+            throw new Exception("Identity API URL (IdentityUrl) is not set.");
+        }
+
+        await HttpContext!.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        var clientId = Configuration["Identity:ClientId"];
+        var postLogoutRedirectUri = Configuration.GetRequiredValue<string>("Identity:Callback");
+
+        // Build the IdentityServer4 logout URL
+        var logoutUrl = $"{keycloakServer}/realms/inked/protocol/openid-connect/logout?client_id={clientId}&post_logout_redirect_uri={Uri.EscapeDataString(postLogoutRedirectUri)}";
+        // Navigate to IdentityServer4 logout page
+        Nav.NavigateTo(logoutUrl, true);
+
+        await base.OnInitializedAsync();
+    }
+
+    public static string Url(NavigationManager nav)
+    {
+        return $"user/logout?returnUrl={Uri.EscapeDataString(nav.Uri)}";
+    }
+
+}

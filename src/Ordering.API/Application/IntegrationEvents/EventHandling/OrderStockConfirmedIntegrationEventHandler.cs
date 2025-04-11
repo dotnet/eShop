@@ -1,4 +1,4 @@
-﻿namespace eShop.Ordering.API.Application.IntegrationEvents.EventHandling;
+﻿namespace Inked.Ordering.API.Application.IntegrationEvents.EventHandling;
 
 public class OrderStockConfirmedIntegrationEventHandler(
     IMediator mediator,
@@ -7,7 +7,8 @@ public class OrderStockConfirmedIntegrationEventHandler(
 {
     public async Task Handle(OrderStockConfirmedIntegrationEvent @event)
     {
-        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id, @event);
+        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id,
+            @event);
 
         var command = new SetStockConfirmedOrderStatusCommand(@event.OrderId);
 

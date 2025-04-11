@@ -2,15 +2,15 @@
 using System.Text.Json;
 using Asp.Versioning;
 using Asp.Versioning.Http;
-using eShop.Catalog.API.Model;
+using Inked.Catalog.API.Model;
 using Microsoft.AspNetCore.Mvc.Testing;
 
-namespace eShop.Catalog.FunctionalTests;
+namespace Inked.Catalog.FunctionalTests;
 
 public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
 {
-    private readonly WebApplicationFactory<Program> _webApplicationFactory;
     private readonly JsonSerializerOptions _jsonSerializerOptions = new(JsonSerializerDefaults.Web);
+    private readonly WebApplicationFactory<Program> _webApplicationFactory;
 
     public CatalogApiTests(CatalogApiFixture fixture)
     {
@@ -165,8 +165,10 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         // Act
         var response = version switch
         {
-            1.0 => await _httpClient.GetAsync("api/catalog/items/by/Wanderer%20Black%20Hiking%20Boots?PageSize=5&PageIndex=0"),
-            2.0 => await _httpClient.GetAsync("api/catalog/items?name=Wanderer%20Black%20Hiking%20Boots&PageSize=5&PageIndex=0"),
+            1.0 => await _httpClient.GetAsync(
+                "api/catalog/items/by/Wanderer%20Black%20Hiking%20Boots?PageSize=5&PageIndex=0"),
+            2.0 => await _httpClient.GetAsync(
+                "api/catalog/items?name=Wanderer%20Black%20Hiking%20Boots&PageSize=5&PageIndex=0"),
             _ => throw new ArgumentOutOfRangeException(nameof(version), version, null)
         };
 
@@ -239,8 +241,10 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         // Act
         var response = version switch
         {
-            1.0 => await _httpClient.GetAsync("api/catalog/items/withsemanticrelevance/Wanderer?PageSize=5&PageIndex=0"),
-            2.0 => await _httpClient.GetAsync("api/catalog/items/withsemanticrelevance?text=Wanderer&PageSize=5&PageIndex=0"),
+            1.0 => await _httpClient.GetAsync(
+                "api/catalog/items/withsemanticrelevance/Wanderer?PageSize=5&PageIndex=0"),
+            2.0 => await _httpClient.GetAsync(
+                "api/catalog/items/withsemanticrelevance?text=Wanderer&PageSize=5&PageIndex=0"),
             _ => throw new ArgumentOutOfRangeException(nameof(version), version, null)
         };
 
@@ -360,14 +364,16 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     {
         var _httpClient = CreateHttpClient(new ApiVersion(version));
 
-        var id = version switch {
+        var id = version switch
+        {
             1.0 => 10015,
             2.0 => 10016,
             _ => 0
         };
 
         // Act - 1
-        var bodyContent = new CatalogItem {
+        var bodyContent = new CatalogItem
+        {
             Id = id,
             Name = "TestCatalog1",
             Description = "Test catalog description 1",
@@ -393,7 +399,6 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
 
         // Assert - 1
         Assert.Equal(bodyContent.Id, addedItem.Id);
-
     }
 
     [Theory]
@@ -403,7 +408,8 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     {
         var _httpClient = CreateHttpClient(new ApiVersion(version));
 
-        var id = version switch {
+        var id = version switch
+        {
             1.0 => 5,
             2.0 => 6,
             _ => 0

@@ -1,4 +1,4 @@
-﻿namespace eShop.Catalog.API.IntegrationEvents.EventHandling;
+﻿namespace Inked.Catalog.API.IntegrationEvents.EventHandling;
 
 public class OrderStatusChangedToAwaitingValidationIntegrationEventHandler(
     CatalogContext catalogContext,
@@ -8,7 +8,8 @@ public class OrderStatusChangedToAwaitingValidationIntegrationEventHandler(
 {
     public async Task Handle(OrderStatusChangedToAwaitingValidationIntegrationEvent @event)
     {
-        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id, @event);
+        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id,
+            @event);
 
         var confirmedOrderStockItems = new List<ConfirmedOrderStockItem>();
 

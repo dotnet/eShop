@@ -1,48 +1,34 @@
-﻿using eShop.IntegrationEventLogEF;
+﻿using System.Diagnostics;
+using Inked.IntegrationEventLogEF;
 
-namespace eShop.Ordering.Infrastructure;
+namespace Inked.Ordering.Infrastructure;
 
 /// <remarks>
-/// Add migrations using the following command inside the 'Ordering.Infrastructure' project directory:
-///
-/// dotnet ef migrations add --startup-project Ordering.API --context OrderingContext [migration-name]
+///     Add migrations using the following command inside the 'Ordering.Infrastructure' project directory:
+///     dotnet ef migrations add --startup-project Ordering.API --context OrderingContext [migration-name]
 /// </remarks>
 public class OrderingContext : DbContext, IUnitOfWork
 {
-    public DbSet<Order> Orders { get; set; }
-    public DbSet<OrderItem> OrderItems { get; set; }
-    public DbSet<PaymentMethod> Payments { get; set; }
-    public DbSet<Buyer> Buyers { get; set; }
-    public DbSet<CardType> CardTypes { get; set; }
-
     private readonly IMediator _mediator;
     private IDbContextTransaction _currentTransaction;
 
     public OrderingContext(DbContextOptions<OrderingContext> options) : base(options) { }
-
-    public IDbContextTransaction GetCurrentTransaction() => _currentTransaction;
-
-    public bool HasActiveTransaction => _currentTransaction != null;
 
     public OrderingContext(DbContextOptions<OrderingContext> options, IMediator mediator) : base(options)
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
 
 
-        System.Diagnostics.Debug.WriteLine("OrderingContext::ctor ->" + this.GetHashCode());
+        Debug.WriteLine("OrderingContext::ctor ->" + GetHashCode());
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.HasDefaultSchema("ordering");
-        modelBuilder.ApplyConfiguration(new ClientRequestEntityTypeConfiguration());
-        modelBuilder.ApplyConfiguration(new PaymentMethodEntityTypeConfiguration());
-        modelBuilder.ApplyConfiguration(new OrderEntityTypeConfiguration());
-        modelBuilder.ApplyConfiguration(new OrderItemEntityTypeConfiguration());
-        modelBuilder.ApplyConfiguration(new CardTypeEntityTypeConfiguration());
-        modelBuilder.ApplyConfiguration(new BuyerEntityTypeConfiguration());
-        modelBuilder.UseIntegrationEventLogs();
-    }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<PaymentMethod> Payments { get; set; }
+    public DbSet<Buyer> Buyers { get; set; }
+    public DbSet<CardType> CardTypes { get; set; }
+
+    public bool HasActiveTransaction => _currentTransaction != null;
 
     public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)
     {
@@ -61,9 +47,29 @@ public class OrderingContext : DbContext, IUnitOfWork
         return true;
     }
 
+    public IDbContextTransaction GetCurrentTransaction()
+    {
+        return _currentTransaction;
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.HasDefaultSchema("ordering");
+        modelBuilder.ApplyConfiguration(new ClientRequestEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new PaymentMethodEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new OrderEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new OrderItemEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new CardTypeEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new BuyerEntityTypeConfiguration());
+        modelBuilder.UseIntegrationEventLogs();
+    }
+
     public async Task<IDbContextTransaction> BeginTransactionAsync()
     {
-        if (_currentTransaction != null) return null;
+        if (_currentTransaction != null)
+        {
+            return null;
+        }
 
         _currentTransaction = await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted);
 
@@ -72,8 +78,15 @@ public class OrderingContext : DbContext, IUnitOfWork
 
     public async Task CommitTransactionAsync(IDbContextTransaction transaction)
     {
-        if (transaction == null) throw new ArgumentNullException(nameof(transaction));
-        if (transaction != _currentTransaction) throw new InvalidOperationException($"Transaction {transaction.TransactionId} is not current");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException(nameof(transaction));
+        }
+
+        if (transaction != _currentTransaction)
+        {
+            throw new InvalidOperationException($"Transaction {transaction.TransactionId} is not current");
+        }
 
         try
         {
@@ -111,5 +124,3 @@ public class OrderingContext : DbContext, IUnitOfWork
         }
     }
 }
-
-#nullable enable

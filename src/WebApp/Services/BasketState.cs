@@ -1,10 +1,10 @@
 ﻿using System.Security.Claims;
+using Inked.WebAppComponents.Catalog;
+using Inked.WebAppComponents.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using eShop.WebAppComponents.Catalog;
-using eShop.WebAppComponents.Services;
 
-namespace eShop.WebApp.Services;
+namespace Inked.WebApp.Services;
 
 public class BasketState(
     BasketService basketService,
@@ -12,28 +12,20 @@ public class BasketState(
     OrderingService orderingService,
     AuthenticationStateProvider authenticationStateProvider) : IBasketState
 {
+    private readonly HashSet<BasketStateChangedSubscription> _changeSubscriptions = new();
     private Task<IReadOnlyCollection<BasketItem>>? _cachedBasket;
-    private HashSet<BasketStateChangedSubscription> _changeSubscriptions = new();
-
-    public Task DeleteBasketAsync()
-        => basketService.DeleteBasketAsync();
 
     public async Task<IReadOnlyCollection<BasketItem>> GetBasketItemsAsync()
-        => (await GetUserAsync()).Identity?.IsAuthenticated == true
-        ? await FetchBasketItemsAsync()
-        : [];
-
-    public IDisposable NotifyOnChange(EventCallback callback)
     {
-        var subscription = new BasketStateChangedSubscription(this, callback);
-        _changeSubscriptions.Add(subscription);
-        return subscription;
+        return (await GetUserAsync()).Identity?.IsAuthenticated == true
+            ? await FetchBasketItemsAsync()
+            : [];
     }
 
     public async Task AddAsync(CatalogItem item)
     {
         var items = (await FetchBasketItemsAsync()).Select(i => new BasketQuantity(i.ProductId, i.Quantity)).ToList();
-        bool found = false;
+        var found = false;
         for (var i = 0; i < items.Count; i++)
         {
             var existing = items[i];
@@ -55,6 +47,18 @@ public class BasketState(
         await NotifyChangeSubscribersAsync();
     }
 
+    public Task DeleteBasketAsync()
+    {
+        return basketService.DeleteBasketAsync();
+    }
+
+    public IDisposable NotifyOnChange(EventCallback callback)
+    {
+        var subscription = new BasketStateChangedSubscription(this, callback);
+        _changeSubscriptions.Add(subscription);
+        return subscription;
+    }
+
     public async Task SetQuantityAsync(int productId, int quantity)
     {
         var existingItems = (await FetchBasketItemsAsync()).ToList();
@@ -70,7 +74,8 @@ public class BasketState(
             }
 
             _cachedBasket = null;
-            await basketService.UpdateBasketAsync(existingItems.Select(i => new BasketQuantity(i.ProductId, i.Quantity)).ToList());
+            await basketService.UpdateBasketAsync(existingItems.Select(i => new BasketQuantity(i.ProductId, i.Quantity))
+                .ToList());
             await NotifyChangeSubscribersAsync();
         }
     }
@@ -82,37 +87,43 @@ public class BasketState(
             checkoutInfo.RequestId = Guid.NewGuid();
         }
 
-        var buyerId = await authenticationStateProvider.GetBuyerIdAsync() ?? throw new InvalidOperationException("User does not have a buyer ID");
-        var userName = await authenticationStateProvider.GetUserNameAsync() ?? throw new InvalidOperationException("User does not have a user name");
+        var buyerId = await authenticationStateProvider.GetBuyerIdAsync() ??
+                      throw new InvalidOperationException("User does not have a buyer ID");
+        var userName = await authenticationStateProvider.GetUserNameAsync() ??
+                       throw new InvalidOperationException("User does not have a user name");
 
         // Get details for the items in the basket
         var orderItems = await FetchBasketItemsAsync();
 
         // Call into Ordering.API to create the order using those details
         var request = new CreateOrderRequest(
-            UserId: buyerId,
-            UserName: userName,
-            City: checkoutInfo.City!,
-            Street: checkoutInfo.Street!,
-            State: checkoutInfo.State!,
-            Country: checkoutInfo.Country!,
-            ZipCode: checkoutInfo.ZipCode!,
-            CardNumber: "1111222233334444",
-            CardHolderName: "TESTUSER",
-            CardExpiration: DateTime.UtcNow.AddYears(1),
-            CardSecurityNumber: "111",
-            CardTypeId: checkoutInfo.CardTypeId,
-            Buyer: buyerId,
-            Items: [.. orderItems]);
+            buyerId,
+            userName,
+            checkoutInfo.City!,
+            checkoutInfo.Street!,
+            checkoutInfo.State!,
+            checkoutInfo.Country!,
+            checkoutInfo.ZipCode!,
+            "1111222233334444",
+            "TESTUSER",
+            DateTime.UtcNow.AddYears(1),
+            "111",
+            checkoutInfo.CardTypeId,
+            buyerId,
+            [.. orderItems]);
         await orderingService.CreateOrder(request, checkoutInfo.RequestId);
         await DeleteBasketAsync();
     }
 
     private Task NotifyChangeSubscribersAsync()
-        => Task.WhenAll(_changeSubscriptions.Select(s => s.NotifyAsync()));
+    {
+        return Task.WhenAll(_changeSubscriptions.Select(s => s.NotifyAsync()));
+    }
 
     private async Task<ClaimsPrincipal> GetUserAsync()
-        => (await authenticationStateProvider.GetAuthenticationStateAsync()).User;
+    {
+        return (await authenticationStateProvider.GetAuthenticationStateAsync()).User;
+    }
 
     private Task<IReadOnlyCollection<BasketItem>> FetchBasketItemsAsync()
     {
@@ -139,7 +150,7 @@ public class BasketState(
                     ProductId = catalogItem.Id,
                     ProductName = catalogItem.Name,
                     UnitPrice = catalogItem.Price,
-                    Quantity = item.Quantity,
+                    Quantity = item.Quantity
                 };
                 basketItems.Add(orderItem);
             }
@@ -150,8 +161,15 @@ public class BasketState(
 
     private class BasketStateChangedSubscription(BasketState Owner, EventCallback Callback) : IDisposable
     {
-        public Task NotifyAsync() => Callback.InvokeAsync();
-        public void Dispose() => Owner._changeSubscriptions.Remove(this);
+        public void Dispose()
+        {
+            Owner._changeSubscriptions.Remove(this);
+        }
+
+        public Task NotifyAsync()
+        {
+            return Callback.InvokeAsync();
+        }
     }
 }
 

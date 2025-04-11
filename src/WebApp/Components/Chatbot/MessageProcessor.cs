@@ -3,7 +3,7 @@ using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
 
-namespace eShop.WebApp.Chatbot;
+namespace Inked.WebApp.Components.Chatbot;
 
 public static partial class MessageProcessor
 {
@@ -21,10 +21,12 @@ public static partial class MessageProcessor
         {
             var contentToHere = message.Substring(prevEnd, match.Index - prevEnd);
             result.Append(HtmlEncoder.Default.Encode(contentToHere));
-            result.Append($"<img title=\"{(HtmlEncoder.Default.Encode(match.Groups[1].Value))}\" src=\"{(HtmlEncoder.Default.Encode(match.Groups[2].Value))}\" />");
+            result.Append(
+                $"<img title=\"{HtmlEncoder.Default.Encode(match.Groups[1].Value)}\" src=\"{HtmlEncoder.Default.Encode(match.Groups[2].Value)}\" />");
 
             prevEnd = match.Index + match.Length;
         }
+
         result.Append(HtmlEncoder.Default.Encode(message.Substring(prevEnd)));
 
         return new MarkupString(result.ToString());

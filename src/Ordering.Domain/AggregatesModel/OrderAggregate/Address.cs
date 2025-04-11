@@ -1,15 +1,9 @@
-﻿using eShop.Ordering.Domain.SeedWork;
+﻿using Inked.Ordering.Domain.SeedWork;
 
-namespace eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
+namespace Inked.Ordering.Domain.AggregatesModel.OrderAggregate;
 
 public class Address : ValueObject
 {
-    public string Street { get; private set; }
-    public string City { get; private set; }
-    public string State { get; private set; }
-    public string Country { get; private set; }
-    public string ZipCode { get; private set; }
-
     public Address() { }
 
     public Address(string street, string city, string state, string country, string zipcode)
@@ -20,6 +14,12 @@ public class Address : ValueObject
         Country = country;
         ZipCode = zipcode;
     }
+
+    public string Street { get; }
+    public string City { get; }
+    public string State { get; }
+    public string Country { get; }
+    public string ZipCode { get; }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {

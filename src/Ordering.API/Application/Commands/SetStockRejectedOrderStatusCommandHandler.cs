@@ -1,4 +1,4 @@
-﻿namespace eShop.Ordering.API.Application.Commands;
+﻿namespace Inked.Ordering.API.Application.Commands;
 
 // Regular CommandHandler
 public class SetStockRejectedOrderStatusCommandHandler : IRequestHandler<SetStockRejectedOrderStatusCommand, bool>
@@ -11,8 +11,8 @@ public class SetStockRejectedOrderStatusCommandHandler : IRequestHandler<SetStoc
     }
 
     /// <summary>
-    /// Handler which processes the command when
-    /// Stock service rejects the request
+    ///     Handler which processes the command when
+    ///     Stock service rejects the request
     /// </summary>
     /// <param name="command"></param>
     /// <returns></returns>
@@ -33,9 +33,10 @@ public class SetStockRejectedOrderStatusCommandHandler : IRequestHandler<SetStoc
     }
 }
 
-
 // Use for Idempotency in Command process
-public class SetStockRejectedOrderStatusIdentifiedCommandHandler : IdentifiedCommandHandler<SetStockRejectedOrderStatusCommand, bool>
+public class
+    SetStockRejectedOrderStatusIdentifiedCommandHandler : IdentifiedCommandHandler<SetStockRejectedOrderStatusCommand,
+    bool>
 {
     public SetStockRejectedOrderStatusIdentifiedCommandHandler(
         IMediator mediator,

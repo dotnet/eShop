@@ -22,7 +22,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col">
             <div class="card">
                 <div class="card-header">
@@ -39,17 +39,17 @@
                         {
                             <dt>Clients</dt>
                             <dd>
-                            @{
-                                var clients = Model.Clients.ToArray();
-                                for(var i = 0; i < clients.Length; i++)
-                                {
-                                    <text>@clients[i]</text>
-                                    if (i < clients.Length - 1)
+                                @{
+                                    var clients = Model.Clients.ToArray();
+                                    for (var i = 0; i < clients.Length; i++)
                                     {
-                                        <text>, </text>
+                                        <text>@clients[i]</text>
+                                        if (i < clients.Length - 1)
+                                        {
+                                            <text>, </text>
+                                        }
                                     }
                                 }
-                            }
                             </dd>
                         }
                     </dl>

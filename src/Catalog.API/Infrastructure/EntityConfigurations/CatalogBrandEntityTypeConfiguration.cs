@@ -1,6 +1,6 @@
-﻿namespace eShop.Catalog.API.Infrastructure.EntityConfigurations;
+﻿namespace Inked.Catalog.API.Infrastructure.EntityConfigurations;
 
-class CatalogBrandEntityTypeConfiguration
+internal class CatalogBrandEntityTypeConfiguration
     : IEntityTypeConfiguration<CatalogBrand>
 {
     public void Configure(EntityTypeBuilder<CatalogBrand> builder)

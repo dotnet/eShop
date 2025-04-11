@@ -1,4 +1,4 @@
-﻿namespace eShop.Ordering.API.Application.Commands;
+﻿namespace Inked.Ordering.API.Application.Commands;
 
 // Regular CommandHandler
 public class ShipOrderCommandHandler : IRequestHandler<ShipOrderCommand, bool>
@@ -11,8 +11,8 @@ public class ShipOrderCommandHandler : IRequestHandler<ShipOrderCommand, bool>
     }
 
     /// <summary>
-    /// Handler which processes the command when
-    /// administrator executes ship order from app
+    ///     Handler which processes the command when
+    ///     administrator executes ship order from app
     /// </summary>
     /// <param name="command"></param>
     /// <returns></returns>
@@ -28,7 +28,6 @@ public class ShipOrderCommandHandler : IRequestHandler<ShipOrderCommand, bool>
         return await _orderRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
     }
 }
-
 
 // Use for Idempotency in Command process
 public class ShipOrderIdentifiedCommandHandler : IdentifiedCommandHandler<ShipOrderCommand, bool>

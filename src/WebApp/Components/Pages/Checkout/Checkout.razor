@@ -1,6 +1,5 @@
 ﻿@page "/checkout"
 @using System.Globalization
-@using System.ComponentModel.DataAnnotations
 @inject BasketState Basket
 @inject NavigationManager Nav
 @attribute [Authorize]
@@ -8,56 +7,57 @@
 <PageTitle>Checkout | AdventureWorks</PageTitle>
 <SectionContent SectionName="page-header-title">Checkout</SectionContent>
 
-<div class='checkout'>
+<div class="checkout">
     <EditForm EditContext="@editContext" FormName="checkout" OnSubmit="@HandleSubmitAsync" Enhance>
-        <DataAnnotationsValidator />
+        <DataAnnotationsValidator/>
         <div class="form">
             <div class="form-section">
                 <h2>Shipping address</h2>
                 <label>
                     Address
-                    <InputText @bind-Value="@Info.Street" />
-                    <ValidationMessage For="@(() => Info.Street)" />
+                    <InputText @bind-Value="@Info.Street"/>
+                    <ValidationMessage For="@(() => Info.Street)"/>
                 </label>
                 <div class="form-group">
                     <div class="form-group-item">
                         <label>
                             City
-                            <InputText @bind-Value="@Info.City" />
-                            <ValidationMessage For="@(() => Info.City)" />
+                            <InputText @bind-Value="@Info.City"/>
+                            <ValidationMessage For="@(() => Info.City)"/>
                         </label>
                     </div>
                     <div class="form-group-item">
                         <label>
                             State
-                            <InputText @bind-Value="@Info.State" />
-                            <ValidationMessage For="@(() => Info.State)" />
+                            <InputText @bind-Value="@Info.State"/>
+                            <ValidationMessage For="@(() => Info.State)"/>
                         </label>
                     </div>
                     <div class="form-group-item">
                         <label>
                             Zip code
-                            <InputText @bind-Value="@Info.ZipCode" />
-                            <ValidationMessage For="@(() => Info.ZipCode)" />
+                            <InputText @bind-Value="@Info.ZipCode"/>
+                            <ValidationMessage For="@(() => Info.ZipCode)"/>
                         </label>
                     </div>
                 </div>
                 <div>
                     <label>
                         Country
-                        <InputText @bind-Value="@Info.Country" />
-                        <ValidationMessage For="@(() => Info.Country)" />
+                        <InputText @bind-Value="@Info.Country"/>
+                        <ValidationMessage For="@(() => Info.Country)"/>
                     </label>
                 </div>
             </div>
             <div class="form-section">
                 <div class="form-buttons">
-                    <a href="cart" class="button button-secondary"><img role="presentation" src="icons/arrow-left.svg" />Back to the shopping bag</a>
+                    <a href="cart" class="button button-secondary"><img role="presentation" src="icons/arrow-left.svg"/>Back
+                        to the shopping bag</a>
                     <button class="button button-primary" type="submit">Place order</button>
                 </div>
             </div>
         </div>
-        <ValidationSummary />
+        <ValidationSummary/>
     </EditForm>
 </div>
 
@@ -65,11 +65,9 @@
     private EditContext editContext = default!;
     private ValidationMessageStore extraMessages = default!;
 
-    [SupplyParameterFromForm]
-    public BasketCheckoutInfo Info { get; set; } = default!;
+    [SupplyParameterFromForm] public BasketCheckoutInfo Info { get; set; } = default!;
 
-    [CascadingParameter]
-    public HttpContext HttpContext { get; set; } = default!;
+    [CascadingParameter] public HttpContext HttpContext { get; set; } = default!;
 
     protected override void OnInitialized()
     {
@@ -95,7 +93,9 @@
         };
 
         string? ReadClaim(string type)
-            => HttpContext.User.Claims.FirstOrDefault(x => x.Type == type)?.Value;
+        {
+            return HttpContext.User.Claims.FirstOrDefault(x => x.Type == type)?.Value;
+        }
     }
 
     private async Task HandleSubmitAsync()
@@ -126,5 +126,8 @@
     }
 
     private static DateTime? ParseExpiryDate(string? mmyy)
-        => DateTime.TryParseExact($"01/{mmyy}", "dd/MM/yy", null, DateTimeStyles.None, out var result) ? result.ToUniversalTime() : null;
+    {
+        return DateTime.TryParseExact($"01/{mmyy}", "dd/MM/yy", null, DateTimeStyles.None, out var result) ? result.ToUniversalTime() : null;
+    }
+
 }

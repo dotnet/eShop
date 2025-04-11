@@ -1,6 +1,6 @@
 ﻿using Pgvector;
 
-namespace eShop.Catalog.API.Services;
+namespace Inked.Catalog.API.Services;
 
 public interface ICatalogAI
 {
@@ -9,7 +9,7 @@ public interface ICatalogAI
 
     /// <summary>Gets an embedding vector for the specified text.</summary>
     ValueTask<Vector> GetEmbeddingAsync(string text);
-    
+
     /// <summary>Gets an embedding vector for the specified catalog item.</summary>
     ValueTask<Vector> GetEmbeddingAsync(CatalogItem item);
 

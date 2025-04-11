@@ -1,0 +1,260 @@
+﻿@page "/submission/create"
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IHttpContextAccessor HttpContextAccessor
+@inject ILogger<CreateSubmission> _logger
+@attribute [Authorize]
+@inject NavigationManager Nav
+@inject SubmissionService SubmissionService
+@inject CardTypeService CardTypeService
+@inject CardThemeService CardThemeService
+@inject IConfiguration Configuration
+
+<PageTitle>Create Submission</PageTitle>
+<SectionContent SectionName="page-header-title">Create a New Submission</SectionContent>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger" role="alert">
+                    @errorMessage
+                </div>
+            }
+
+            <AuthorizeView>
+                <Authorized Context="authContext">
+                    <EditForm Model="@submission" OnValidSubmit="HandleValidSubmit"
+                              OnInvalidSubmit="HandleInvalidSubmit">
+                        <DataAnnotationsValidator/>
+                        <ValidationSummary/>
+
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <InputText id="title" class="form-control" @bind-Value="submission.Title"
+                                       @oninput="ValidateTitle"/>
+                            @if (!string.IsNullOrEmpty(titleErrorMessage))
+                            {
+                                <div class="alert @titleErrorClass" role="alert">
+                                    @titleErrorMessage
+                                </div>
+                            }
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cardType">Card Type</label>
+                            <select id="cardType" class="form-control" @bind-value="submission.CardTypeId">
+                                <option value="">-- Select Card Type --</option>
+                                @foreach (var type in cardTypeOptions)
+                                {
+                                    <option value="@type.Id">@type.Type</option>
+                                }
+                            </select>
+                            @if (SelectedCardType is not null)
+                            {
+                                <div class="p-3 border rounded bg-light shadow-sm">
+                                    <strong>Description:</strong>
+                                    <p>@SelectedCardType.Description</p>
+                                </div>
+                            }
+                        </div>
+
+
+                        <div class="form-group">
+                            <label>Card Themes</label>
+                            @foreach (var theme in cardThemeOptions)
+                            {
+                                <div class="form-check">
+                                    <input type="checkbox"
+                                           class="form-check-input"
+                                           id="theme-@theme.Id"
+                                           value="@theme.Id"
+                                           @onchange="e => ToggleThemeSelection(theme, e.Value is true)"
+                                           checked="@submission.Themes.Contains(theme.Id)"/>
+                                    <label class="form-check-label" for="theme-@theme.Id">@theme.Theme</label>
+                                </div>
+                            }
+
+                            @if (SelectedThemes.Any())
+                            {
+                                <div class="p-3 border rounded bg-light shadow-sm">
+                                    <strong>Selected Theme Descriptions:</strong>
+                                    <ul>
+                                        @foreach (var theme in SelectedThemes)
+                                        {
+                                            <li><strong>@theme.Theme:</strong> @theme.Description</li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <InputTextArea id="description" class="form-control" @bind-Value="submission.Description"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="artist">Artist</label>
+                            <InputText id="artist" class="form-control" @bind-Value="submission.Artist"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="file">Art (JPEG only)</label>
+                            <InputFile id="file" class="form-control" OnChange="HandleFileSelected"
+                                       accept=".jpeg,.jpg"/>
+                        </div>
+
+                        @if (selectedFile != null)
+                        {
+                            <div class="image-preview">
+                                <img class="img-fluid" role="presentation" src="@imagePreviewUrl" alt="Image Preview"/>
+                            </div>
+                        }
+
+                        <button type="submit" class="btn btn-primary" disabled="@isLoading" @onclick="Click">Submit
+                        </button>
+                    </EditForm>
+                    @if (isLoading)
+                    {
+                        <div class="loading-indicator">
+                            <p>Loading...</p>
+                        </div>
+                    }
+                </Authorized>
+                <NotAuthorized Context="authContext">
+                    <p>You must be logged in to create a submission.</p>
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+    </div>
+</div>
+
+@code {
+    private readonly SubmissionModel submission = new();
+    private EditContext? editContext;
+    private IBrowserFile? selectedFile;
+
+    private CardType? SelectedCardType =>
+        cardTypeOptions?.FirstOrDefault(t => t.Id == submission.CardTypeId);
+
+    private List<CardTheme> cardThemeOptions = new();
+    private List<CardType> cardTypeOptions = new();
+    private string? imagePreviewUrl;
+    private string? errorMessage;
+    private string? titleErrorMessage;
+    private string titleErrorClass = "alert-danger";
+    private bool isLoading;
+
+    private void ToggleThemeSelection(CardTheme theme, bool isSelected)
+    {
+        if (isSelected)
+        {
+            if (!submission.Themes.Contains(theme.Id))
+                submission.Themes.Add(theme.Id);
+        }
+        else
+        {
+            submission.Themes.Remove(theme.Id);
+        }
+    }
+
+    private IEnumerable<CardTheme> SelectedThemes =>
+        cardThemeOptions?.Where(t => submission.Themes.Contains(t.Id)) ?? Enumerable.Empty<CardTheme>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = HttpContextAccessor.HttpContext?.User;
+        if (user?.Identity?.IsAuthenticated == true && user.Identity.Name is not null)
+        {
+            submission.Artist = user.Identity.Name;
+        }
+
+        editContext = new EditContext(submission);
+        _logger.LogInformation("EditContext initialized: {@editContext}", editContext);
+        var fieldIdentifier = FieldIdentifier.Create(() => submission.Artist);
+        editContext.NotifyFieldChanged(fieldIdentifier);
+        editContext.MarkAsUnmodified(fieldIdentifier);
+        cardTypeOptions = await CardTypeService.GetCardTypesAsync() ?? [];
+        cardThemeOptions = await CardThemeService.GetCardThemesAsync() ?? [];
+    }
+
+    private void Click()
+    {
+        _logger.LogInformation("Clicked submit");
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        _logger.LogInformation("HandleValidSubmit method called.");
+        isLoading = true;
+        errorMessage = null;
+        var (submissionId, error) = await SubmissionService.CreateSubmissionAsync(submission, selectedFile);
+        isLoading = false;
+        if (submissionId.HasValue)
+        {
+            Nav.NavigateTo($"/submission/view/{submissionId.Value}");
+        }
+        else
+        {
+            errorMessage = error;
+        }
+    }
+
+    private void HandleInvalidSubmit(EditContext context)
+    {
+        _logger.LogWarning("Form is invalid.");
+        errorMessage = "Form is not valid!";
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+        if (selectedFile == null || !selectedFile.ContentType.StartsWith("image/jpeg"))
+        {
+            errorMessage = "Please select a JPEG file.";
+            isLoading = false;
+            editContext?.NotifyValidationStateChanged(); // Trigger validation for other fields
+            return;
+        }
+
+        var maxFileSize = Configuration.GetValue<long>("Kestrel:Limits:MaxRequestBodySize");
+        if (selectedFile.Size > maxFileSize)
+        {
+            errorMessage = $"File size must be under {maxFileSize / (1024 * 1024)}MB.";
+            selectedFile = null;
+            imagePreviewUrl = null;
+            editContext?.NotifyValidationStateChanged(); // Trigger validation for other fields
+            return;
+        }
+
+        imagePreviewUrl = await SubmissionService.SaveFileForPreviewAsync(selectedFile);
+    }
+
+
+    private async Task ValidateTitle(ChangeEventArgs e)
+    {
+        var title = e.Value?.ToString();
+        if (!string.IsNullOrEmpty(title))
+        {
+            var isUnique = await SubmissionService.IsTitleUniqueAsync(title);
+            if (isUnique)
+            {
+                titleErrorMessage = "Title available.";
+                titleErrorClass = "alert-success";
+            }
+            else
+            {
+                titleErrorMessage = "Title is already in use.";
+                titleErrorClass = "alert-danger";
+            }
+        }
+        else
+        {
+            titleErrorMessage = null;
+        }
+    }
+
+}

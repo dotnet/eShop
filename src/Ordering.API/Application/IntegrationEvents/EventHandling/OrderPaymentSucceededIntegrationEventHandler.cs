@@ -1,4 +1,4 @@
-﻿namespace eShop.Ordering.API.Application.IntegrationEvents.EventHandling;
+﻿namespace Inked.Ordering.API.Application.IntegrationEvents.EventHandling;
 
 public class OrderPaymentSucceededIntegrationEventHandler(
     IMediator mediator,
@@ -7,7 +7,8 @@ public class OrderPaymentSucceededIntegrationEventHandler(
 {
     public async Task Handle(OrderPaymentSucceededIntegrationEvent @event)
     {
-        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id, @event);
+        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id,
+            @event);
 
         var command = new SetPaidOrderStatusCommand(@event.OrderId);
 

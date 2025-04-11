@@ -3,7 +3,7 @@
     public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
         var services = builder.Services;
-        
+
         // Add the authentication services to DI
         builder.AddDefaultAuthentication();
 
@@ -24,7 +24,7 @@
         services.AddTransient<IOrderingIntegrationEventService, OrderingIntegrationEventService>();
 
         builder.AddRabbitMqEventBus("eventbus")
-               .AddEventBusSubscriptions();
+            .AddEventBusSubscriptions();
 
         services.AddHttpContextAccessor();
         services.AddTransient<IIdentityService, IdentityService>();

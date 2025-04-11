@@ -3,7 +3,7 @@
     bottom: 5rem;
     right: 3rem;
     z-index: 1;
-    box-shadow: 0 2px 7px 2px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 7px 2px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     background-image: url('chat.png');
     background-size: contain;
@@ -17,14 +17,14 @@
     display: block;
 }
 
-    .show-chatbot:hover {
-        border-color: #49b4fe;
-        cursor: pointer;
-        transform: scale(1.2);
-        box-shadow: 0 2px 7px 2px rgba(0,0,0,0.4);
-    }
+.show-chatbot:hover {
+    border-color: #49b4fe;
+    cursor: pointer;
+    transform: scale(1.2);
+    box-shadow: 0 2px 7px 2px rgba(0, 0, 0, 0.4);
+}
 
-    .show-chatbot:active {
-        transform: scale(1.1);
-        transition: transform ease-out 0.01s;
-    }
+.show-chatbot:active {
+    transform: scale(1.1);
+    transition: transform ease-out 0.01s;
+}

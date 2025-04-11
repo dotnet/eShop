@@ -7,19 +7,6 @@
       "destination": "wwwroot/lib/jquery/"
     },
     {
-      "provider": "unpkg",
-      "library": "bootstrap@5.2.3",
-      "files": [
-        "dist/css/bootstrap.css",
-        "dist/css/bootstrap.css.map",
-        "dist/css/bootstrap.min.css",
-        "dist/css/bootstrap.min.css.map",
-        "dist/js/bootstrap.js",
-        "dist/js/bootstrap.min.js"
-      ],
-      "destination": "wwwroot/lib/bootstrap/"
-    },
-    {
       "library": "jquery-validation-unobtrusive@4.0.0",
       "destination": "wwwroot/lib/jquery-validation-unobtrusive/"
     },
@@ -30,6 +17,14 @@
         "jquery.validate.min.js",
         "jquery.validate.js"
       ]
+    },
+    {
+      "library": "bootstrap@5.3.3",
+      "destination": "wwwroot/lib/bootstrap"
+    },
+    {
+      "library": "font-awesome@6.7.2",
+      "destination": "wwwroot/lib/font-awesome"
     }
   ]
 }

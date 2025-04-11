@@ -5,7 +5,7 @@
         builder.Services.AddHttpForwarderWithServiceDiscovery();
 
         builder.Services.AddHealthChecks()
-            .AddUrlGroup(new Uri("http://catalog-api/health"), name: "catalogapi-check")
-            .AddUrlGroup(new Uri("http://identity-api/health"), name: "identityapi-check");
+            .AddUrlGroup(new Uri("http://catalog-api/health"), "catalogapi-check")
+            .AddUrlGroup(new Uri("http://identity-api/health"), "identityapi-check");
     }
 }

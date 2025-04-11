@@ -1,8 +1,8 @@
 ﻿using System.Net.Http.Json;
 using System.Web;
-using eShop.WebAppComponents.Catalog;
+using Inked.WebAppComponents.Catalog;
 
-namespace eShop.WebAppComponents.Services;
+namespace Inked.WebAppComponents.Services;
 
 public class CatalogService(HttpClient httpClient) : ICatalogService
 {
@@ -30,7 +30,8 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
 
     public Task<CatalogResult> GetCatalogItemsWithSemanticRelevance(int page, int take, string text)
     {
-        var url = $"{remoteServiceBaseUrl}items/withsemanticrelevance?text={HttpUtility.UrlEncode(text)}&pageIndex={page}&pageSize={take}";
+        var url =
+            $"{remoteServiceBaseUrl}items/withsemanticrelevance?text={HttpUtility.UrlEncode(text)}&pageIndex={page}&pageSize={take}";
         var result = httpClient.GetFromJsonAsync<CatalogResult>(url);
         return result!;
     }
@@ -51,12 +52,13 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
 
     private static string GetAllCatalogItemsUri(string baseUri, int pageIndex, int pageSize, int? brand, int? type)
     {
-        string filterQs = string.Empty;
+        var filterQs = string.Empty;
 
         if (type.HasValue)
         {
             filterQs += $"type={type.Value}&";
         }
+
         if (brand.HasValue)
         {
             filterQs += $"brand={brand.Value}&";

@@ -1,12 +1,12 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
-@using System.Web
+﻿@using System.Web
+@using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager Nav
 
 <AuthorizeView>
     <Authorized>
         <strong>@context.User.Identity?.Name</strong>
         <form method="post" action="logout">
-            <AntiforgeryToken />
+            <AntiforgeryToken/>
             <button class="action" type="submit">Log out</button>
         </form>
     </Authorized>
@@ -16,9 +16,11 @@
 </AuthorizeView>
 
 @code {
+
     private void LogIn()
     {
         var returnUrl = Nav.ToBaseRelativePath(Nav.Uri);
-        Nav.NavigateTo($"login?returnUrl={HttpUtility.UrlEncode(returnUrl)}", forceLoad: true);
+        Nav.NavigateTo($"login?returnUrl={HttpUtility.UrlEncode(returnUrl)}", true);
     }
+
 }

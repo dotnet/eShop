@@ -1,7 +1,7 @@
-﻿using eShop.Basket.API.Repositories;
-using eShop.Basket.API.IntegrationEvents.EventHandling.Events;
+﻿using Inked.Basket.API.IntegrationEvents.EventHandling.Events;
+using Inked.Basket.API.Repositories;
 
-namespace eShop.Basket.API.IntegrationEvents.EventHandling;
+namespace Inked.Basket.API.IntegrationEvents.EventHandling;
 
 public class OrderStartedIntegrationEventHandler(
     IBasketRepository repository,
@@ -9,7 +9,8 @@ public class OrderStartedIntegrationEventHandler(
 {
     public async Task Handle(OrderStartedIntegrationEvent @event)
     {
-        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id, @event);
+        logger.LogInformation("Handling integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id,
+            @event);
 
         await repository.DeleteBasketAsync(@event.UserId);
     }

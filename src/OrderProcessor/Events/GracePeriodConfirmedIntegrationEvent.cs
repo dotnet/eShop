@@ -1,12 +1,13 @@
-﻿namespace eShop.OrderProcessor.Events
+﻿using Inked.EventBus.Events;
+
+namespace Inked.OrderProcessor.Events;
+
+public record GracePeriodConfirmedIntegrationEvent : IntegrationEvent
 {
-    using eShop.EventBus.Events;
-
-    public record GracePeriodConfirmedIntegrationEvent : IntegrationEvent
+    public GracePeriodConfirmedIntegrationEvent(int orderId)
     {
-        public int OrderId { get; }
-
-        public GracePeriodConfirmedIntegrationEvent(int orderId) =>
-            OrderId = orderId;
+        OrderId = orderId;
     }
+
+    public int OrderId { get; }
 }

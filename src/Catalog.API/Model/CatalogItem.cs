@@ -2,14 +2,13 @@
 using System.Text.Json.Serialization;
 using Pgvector;
 
-namespace eShop.Catalog.API.Model;
+namespace Inked.Catalog.API.Model;
 
 public class CatalogItem
 {
     public int Id { get; set; }
 
-    [Required]
-    public string Name { get; set; }
+    [Required] public string Name { get; set; }
 
     public string Description { get; set; }
 
@@ -40,25 +39,24 @@ public class CatalogItem
     public Vector Embedding { get; set; }
 
     /// <summary>
-    /// True if item is on reorder
+    ///     True if item is on reorder
     /// </summary>
     public bool OnReorder { get; set; }
 
-    public CatalogItem() { }
-
 
     /// <summary>
-    /// Decrements the quantity of a particular item in inventory and ensures the restockThreshold hasn't
-    /// been breached. If so, a RestockRequest is generated in CheckThreshold. 
-    /// 
-    /// If there is sufficient stock of an item, then the integer returned at the end of this call should be the same as quantityDesired. 
-    /// In the event that there is not sufficient stock available, the method will remove whatever stock is available and return that quantity to the client.
-    /// In this case, it is the responsibility of the client to determine if the amount that is returned is the same as quantityDesired.
-    /// It is invalid to pass in a negative number. 
+    ///     Decrements the quantity of a particular item in inventory and ensures the restockThreshold hasn't
+    ///     been breached. If so, a RestockRequest is generated in CheckThreshold.
+    ///     If there is sufficient stock of an item, then the integer returned at the end of this call should be the same as
+    ///     quantityDesired.
+    ///     In the event that there is not sufficient stock available, the method will remove whatever stock is available and
+    ///     return that quantity to the client.
+    ///     In this case, it is the responsibility of the client to determine if the amount that is returned is the same as
+    ///     quantityDesired.
+    ///     It is invalid to pass in a negative number.
     /// </summary>
     /// <param name="quantityDesired"></param>
     /// <returns>int: Returns the number actually removed from stock. </returns>
-    /// 
     public int RemoveStock(int quantityDesired)
     {
         if (AvailableStock == 0)
@@ -68,39 +66,39 @@ public class CatalogItem
 
         if (quantityDesired <= 0)
         {
-            throw new CatalogDomainException($"Item units desired should be greater than zero");
+            throw new CatalogDomainException("Item units desired should be greater than zero");
         }
 
-        int removed = Math.Min(quantityDesired, this.AvailableStock);
+        var removed = Math.Min(quantityDesired, AvailableStock);
 
-        this.AvailableStock -= removed;
+        AvailableStock -= removed;
 
         return removed;
     }
 
     /// <summary>
-    /// Increments the quantity of a particular item in inventory.
-    /// <param name="quantity"></param>
-    /// <returns>int: Returns the quantity that has been added to stock</returns>
+    ///     Increments the quantity of a particular item in inventory.
+    ///     <param name="quantity"></param>
+    ///     <returns>int: Returns the quantity that has been added to stock</returns>
     /// </summary>
     public int AddStock(int quantity)
     {
-        int original = this.AvailableStock;
+        var original = AvailableStock;
 
         // The quantity that the client is trying to add to stock is greater than what can be physically accommodated in the Warehouse
-        if ((this.AvailableStock + quantity) > this.MaxStockThreshold)
+        if (AvailableStock + quantity > MaxStockThreshold)
         {
             // For now, this method only adds new units up maximum stock threshold. In an expanded version of this application, we
             //could include tracking for the remaining units and store information about overstock elsewhere. 
-            this.AvailableStock += (this.MaxStockThreshold - this.AvailableStock);
+            AvailableStock += MaxStockThreshold - AvailableStock;
         }
         else
         {
-            this.AvailableStock += quantity;
+            AvailableStock += quantity;
         }
 
-        this.OnReorder = false;
+        OnReorder = false;
 
-        return this.AvailableStock - original;
+        return AvailableStock - original;
     }
 }

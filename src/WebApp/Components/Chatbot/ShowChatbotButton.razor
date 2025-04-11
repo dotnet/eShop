@@ -4,10 +4,12 @@
 
 @if (ShowChat)
 {
-    <Chatbot />
+    <Chatbot/>
 }
 
 @code {
+
     [SupplyParameterFromQuery(Name = "chat")]
     public bool ShowChat { get; set; }
+
 }
