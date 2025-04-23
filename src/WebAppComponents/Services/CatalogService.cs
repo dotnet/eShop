@@ -49,6 +49,13 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
         return result!;
     }
 
+    public async Task UpdateCatalogItem(CatalogItem item)
+    {
+        var uri = $"{remoteServiceBaseUrl}items/{item.Id}";
+        var response = await httpClient.PutAsJsonAsync(uri, item);
+        response.EnsureSuccessStatusCode();
+    }
+
     private static string GetAllCatalogItemsUri(string baseUri, int pageIndex, int pageSize, int? brand, int? type)
     {
         string filterQs = string.Empty;
