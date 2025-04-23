@@ -11,6 +11,7 @@ namespace eShop.ClientApp.Services;
 [JsonSerializable(typeof(CancelOrderCommand))]
 [JsonSerializable(typeof(CatalogBrand))]
 [JsonSerializable(typeof(CatalogItem))]
+[JsonSerializable(typeof(CatalogItem))]
 [JsonSerializable(typeof(CatalogRoot))]
 [JsonSerializable(typeof(CatalogType))]
 [JsonSerializable(typeof(Models.Orders.Order))]
