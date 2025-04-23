@@ -15,7 +15,6 @@ public class OrderRepository
     public Order Add(Order order)
     {
         return _context.Orders.Add(order).Entity;
-
     }
 
     public async Task<Order> GetAsync(int orderId)
@@ -34,5 +33,27 @@ public class OrderRepository
     public void Update(Order order)
     {
         _context.Entry(order).State = EntityState.Modified;
+    }
+
+    public async Task<Product> GetProductAsync(int productId)
+    {
+        var product = await _context.Products.FindAsync(productId);
+
+        if (product != null)
+        {
+            await _context.Entry(product).Collection(p => p.ProductDetails).LoadAsync();
+        }
+
+        return product;
+    }
+
+    public Product AddProduct(Product product)
+    {
+        return _context.Products.Add(product).Entity;
+    }
+
+    public void UpdateProduct(Product product)
+    {
+        _context.Entry(product).State = EntityState.Modified;
     }
 }
