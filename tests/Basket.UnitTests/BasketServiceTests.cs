@@ -59,4 +59,25 @@ public class BasketServiceTests
         Assert.IsInstanceOfType<CustomerBasketResponse>(response);
         Assert.AreEqual(response.Items.Count(), 0);
     }
+
+
+    [TestMethod]
+    public async Task DeleteBasketTest()
+    {
+        var mockRepository = Substitute.For<IBasketRepository>();
+        List<BasketItem> items = [new BasketItem { Id = "some-id" }];
+        mockRepository.GetBasketAsync("1").Returns(Task.FromResult(new CustomerBasket { BuyerId = "1", Items = items }));
+        var service = new BasketService(mockRepository, NullLogger<BasketService>.Instance);
+        var serverCallContext = TestServerCallContext.Create();
+        var httpContext = new DefaultHttpContext();
+        httpContext.User = new ClaimsPrincipal(new ClaimsIdentity([new Claim("sub", "1")]));
+        serverCallContext.SetUserState("__HttpContext", httpContext);
+
+        var response = await service.GetBasket(new GetBasketRequest(), serverCallContext);
+        Assert.IsInstanceOfType<CustomerBasketResponse>(response);
+
+        // delete my user's basket
+        var deleteResponse = await service.DeleteBasket(new(), serverCallContext);
+        Assert.IsInstanceOfType<DeleteBasketResponse>(deleteResponse);
+    }
 }

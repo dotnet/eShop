@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using eShop.Basket.API.Repositories;
 using eShop.Basket.API.Extensions;
 using eShop.Basket.API.Model;
@@ -62,6 +63,11 @@ public class BasketService(
         if (string.IsNullOrEmpty(userId))
         {
             ThrowNotAuthenticated();
+        }
+        var basket = await repository.GetBasketAsync(userId);
+        if (basket.Items.Any())
+        {
+            throw new InvalidOperationException("Cannot delete a basket that contains items");
         }
 
         await repository.DeleteBasketAsync(userId);
