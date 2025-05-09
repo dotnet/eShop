@@ -4,21 +4,21 @@ image: microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m36
 description: "This definition is for the eShop frontend engineering environment"
 
 tasks:
-  - name: ~/winget
+  - name: winget
     parameters:
       downloadUrl: 'https://raw.githubusercontent.com/contoso-co/common-eng-sys/msft-git/dsc-configurations/common-config.dsc.yaml'
 
-  - name: ~/winget
+  - name: winget
     description: Install AZD
     parameters:
       package:  Microsoft.Azd
 
-  - name: ~/winget
+  - name: winget
     description: Install Visual Studio Code
     parameters:
       package:  Microsoft.VisualStudioCode
 
-  - name: ~/powershell
+  - name: powershell
     parameters:
       command: |
         $env:Path = [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User') 

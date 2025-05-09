@@ -1,8 +1,0 @@
-  ### Run common DSC configurations for contoso engineering environments to create Dev Drive and install common tools
-$schema: 1.0
-name: ContosoBaseImageDefinition
-image: microsoftwindowsdesktop_windows-ent-cpc_win11-24H2-ent-cpc
-tasks:
-  - name: ~/winget
-    parameters:
-      downloadUrl: 'https://raw.githubusercontent.com/contoso-co/common-eng-sys/refs/heads/main/dsc-configurations/common-config.dsc.yaml'
