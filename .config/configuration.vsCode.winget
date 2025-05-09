@@ -10,14 +10,14 @@ properties:
     ########################################
     ### Enable: Developer Mode
     ### -------------------------------------
-    - resource: Microsoft.Windows.Developer/DeveloperMode
+    - resource: Microsoft.Windows.Settings/WindowsSettings
       directives:
         description: Enable Developer Mode
         # Requires elevation only for the set operation
         securityContext: elevated
         allowPrerelease: true
       settings:
-        Ensure: Present
+        DeveloperMode: true
     ### Install Windows VirtualMachinePlatform
     ### -------------------------------------
     - resource: PSDscResources/WindowsOptionalFeature
