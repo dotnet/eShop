@@ -4,7 +4,7 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
     <AspnetVersion>9.0.5</AspnetVersion>
     <MicrosoftExtensionsVersion>9.0.5</MicrosoftExtensionsVersion>
-    <MicrosoftExtensionsAIVersion>9.5.0-preview.1.25262.9</MicrosoftExtensionsAIVersion>
+    <MicrosoftExtensionsAIVersion>9.5.0</MicrosoftExtensionsAIVersion>
     <AspireVersion>9.3.0</AspireVersion>
     <AspireUnstablePackagesVersion>9.3.0-preview.1.25264.6</AspireUnstablePackagesVersion>
     <GrpcVersion>2.71.0</GrpcVersion>
@@ -65,8 +65,8 @@
     <!-- AI -->
     <PackageVersion Include="Microsoft.Extensions.AI" Version="$(MicrosoftExtensionsAIVersion)" />
     <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="$(MicrosoftExtensionsAIVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="$(MicrosoftExtensionsAIVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.AI.Ollama" Version="$(MicrosoftExtensionsAIVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="9.5.0-preview.1.25265.7" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Ollama" Version="9.5.0-preview.1.25265.7" />
     <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="9.3.0" />
     <PackageVersion Include="CommunityToolkit.Aspire.OllamaSharp" Version="9.3.1-beta.259" />
     <!-- Open Telemetry -->
