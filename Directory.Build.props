@@ -11,4 +11,10 @@
     <NoWarn>NU1901;NU1902;NU1903;NU1904</NoWarn>
   </PropertyGroup>
 
+  <!-- Enable OpenAI OpenTelemetry so OpenAI calls participate in tracing and metrics. -->
+  <ItemGroup>
+    <RuntimeHostConfigurationOption Include="OpenAI.Experimental.EnableOpenTelemetry"
+                                    Value="true" />
+  </ItemGroup>
+  
 </Project>
