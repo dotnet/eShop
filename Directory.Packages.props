@@ -67,8 +67,8 @@
     <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="$(MicrosoftExtensionsAIVersion)" />
     <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="9.5.0-preview.1.25265.7" />
     <PackageVersion Include="Microsoft.Extensions.AI.Ollama" Version="9.5.0-preview.1.25265.7" />
-    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="9.3.0" />
-    <PackageVersion Include="CommunityToolkit.Aspire.OllamaSharp" Version="9.3.1-beta.259" />
+    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="9.4.1-beta.288" />
+    <PackageVersion Include="CommunityToolkit.Aspire.OllamaSharp" Version="9.4.1-beta.288" />
     <!-- Open Telemetry -->
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.11.2" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.11.2" />
