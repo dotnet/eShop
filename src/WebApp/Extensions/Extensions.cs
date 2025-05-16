@@ -1,5 +1,4 @@
 ﻿using eShop.Basket.API.Grpc;
-using eShop.WebApp;
 using eShop.WebApp.Services.OrderStatus.IntegrationEvents;
 using eShop.WebAppComponents.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -8,8 +7,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.Extensions.AI;
 using Microsoft.IdentityModel.JsonWebTokens;
-using OllamaSharp;
-using OpenAI;
 
 public static class Extensions
 {
