@@ -43,7 +43,7 @@ internal static class Extensions
         const string textEmbeddingModelName = "text-embedding-3-small";
 
         const string chatName = "chatModel";
-        const string chatModelName = "gpt-4o-mini";
+        const string chatModelName = "gpt-4.1-mini";
 
         // to use an existing OpenAI resource as a connection string, add the following to the AppHost user secrets:
         // "ConnectionStrings": {
@@ -84,10 +84,12 @@ internal static class Extensions
                     builder.AddParameter("openaiResourceGroup"));
             }
 
-            var chat = openAI.AddDeployment(chatName, chatModelName, "2024-07-18")
+            var chat = openAI.AddDeployment(chatName, chatModelName, "2025-04-14")
                 .WithProperties(d =>
                 {
                     d.DeploymentName = chatModelName;
+                    d.SkuName = "GlobalStandard";
+                    d.SkuCapacity = 50;
                 });
             var textEmbedding = openAI.AddDeployment(textEmbeddingName, textEmbeddingModelName, "1")
                 .WithProperties(d =>

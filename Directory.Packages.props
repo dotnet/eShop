@@ -2,19 +2,18 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    <AspnetVersion>9.0.4</AspnetVersion>
-    <MicrosoftExtensionsVersion>9.0.4</MicrosoftExtensionsVersion>
-    <MicrosoftExtensionsAIVersion>9.4.0-preview.1.25207.5</MicrosoftExtensionsAIVersion>
-    <AspireVersion>9.2.0</AspireVersion>
-    <AspireUnstablePackagesVersion>9.2.0-preview.1.25209.2</AspireUnstablePackagesVersion>
-    <GrpcVersion>2.70.0</GrpcVersion>
+    <AspnetVersion>9.0.5</AspnetVersion>
+    <MicrosoftExtensionsVersion>9.0.5</MicrosoftExtensionsVersion>
+    <MicrosoftExtensionsAIVersion>9.5.0</MicrosoftExtensionsAIVersion>
+    <AspireVersion>9.3.0</AspireVersion>
+    <AspireUnstablePackagesVersion>9.3.0-preview.1.25265.20</AspireUnstablePackagesVersion>
+    <GrpcVersion>2.71.0</GrpcVersion>
     <DuendeVersion>7.1.1</DuendeVersion>
     <ApiVersioningVersion>8.1.0</ApiVersioningVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Version together with Aspire -->
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Hosting.Docker" Version="$(AspireUnstablePackagesVersion)" />
     <PackageVersion Include="Aspire.Hosting.Azure.CognitiveServices" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="$(AspireVersion)" />
@@ -46,7 +45,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="$(AspnetVersion)" />
 
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.4.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.5.0" />
 
     <PackageVersion Include="MSTest.TestFramework" Version="3.8.2" />
     <PackageVersion Include="MSTest.TestAdapter" Version="3.8.2" />
@@ -66,17 +65,16 @@
     <!-- AI -->
     <PackageVersion Include="Microsoft.Extensions.AI" Version="$(MicrosoftExtensionsAIVersion)" />
     <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="$(MicrosoftExtensionsAIVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="$(MicrosoftExtensionsAIVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.AI.Ollama" Version="$(MicrosoftExtensionsAIVersion)" />
-    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="9.3.0" />
-    <PackageVersion Include="CommunityToolkit.Aspire.OllamaSharp" Version="9.3.1-beta.259" />
+    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="9.5.0-preview.1.25265.7" />
+    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="9.4.1-beta.289" />
+    <PackageVersion Include="CommunityToolkit.Aspire.OllamaSharp" Version="9.4.1-beta.289" />
     <!-- Open Telemetry -->
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.11.2" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.11.2" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.11.1" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.6.0-beta.3" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.11.1" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.11.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.12.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.12.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.12.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.12.0-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.12.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.12.0" />
     <!-- IdentityServer -->
     <PackageVersion Include="Duende.IdentityServer" Version="$(DuendeVersion)" />
     <PackageVersion Include="Duende.IdentityServer.AspNetIdentity" Version="$(DuendeVersion)" />
@@ -90,12 +88,12 @@
     <!-- Grpc -->
     <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcVersion)" />
     <PackageVersion Include="Grpc.Net.ClientFactory" Version="$(GrpcVersion)" />
-    <PackageVersion Include="Grpc.Tools" Version="2.71.0" PrivateAssets="All" />
+    <PackageVersion Include="Grpc.Tools" Version="2.72.0" PrivateAssets="All" />
     <!-- Miscellaneous -->
     <PackageVersion Include="Automapper" Version="14.0.0" />
     <PackageVersion Include="Dapper" Version="2.1.35" />
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
-    <PackageVersion Include="Google.Protobuf" Version="3.30.1" />
+    <PackageVersion Include="Google.Protobuf" Version="3.30.2" />
     <PackageVersion Include="MediatR" Version="12.4.1" />
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
     <PackageVersion Include="Polly.Core" Version="8.5.2" />
