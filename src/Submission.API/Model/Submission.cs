@@ -15,7 +15,7 @@ public class Submission
 
     [Required] public string Author { get; set; }
 
-    [Required] public string Artitst { get; set; }
+    [Required] public string Artist { get; set; }
 
     public bool IsApproved { get; set; } = false;
     public bool IsPublished { get; set; } = false;

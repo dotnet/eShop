@@ -30,14 +30,11 @@ public static class Extensions
                 });
             });
 
-        if (builder.Environment.IsDevelopment())
-        {
-            builder.Services.AddSingleton<IStorageService, LocalStorageService>();
-        }
-        else
-        {
-            builder.Services.AddSingleton<IStorageService, AzureBlobStorageService>();
-        }
+        // Always use LocalStorageService for now, as per current requirements.
+        builder.Services.AddSingleton<IStorageService, LocalStorageService>();
+        // TODO: Add configuration check if AzureBlobStorageService should be used in the future,
+        // e.g., based on a specific appsetting or if connection string "AzureStorage" is present and valid.
+        // For now, defaulting to LocalStorageService as requested.
 
         // REVIEW: This is done for development ease but shouldn't be here in production
         builder.Services.AddMigration<SubmissionContext, SubmissionContextSeed>();

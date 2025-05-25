@@ -1,0 +1,187 @@
+﻿@page "/submissions"
+@using Inked.WebApp.Services
+@inject SubmissionService SubmissionService
+@inject CardTypeService CardTypeService
+@inject CardThemeService CardThemeService
+@inject NavigationManager NavigationManager
+@inject ILogger<ListSubmissions> Logger
+
+<PageTitle>All Submissions</PageTitle>
+<SectionContent SectionName="page-header-title">View All Card Submissions</SectionContent>
+
+<div class="container mt-4">
+    @if (isLoading)
+    {
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading submissions...</span>
+            </div>
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
+            @errorMessage
+        </div>
+    }
+    else
+    {
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label for="cardTypeFilter" class="form-label">Filter by Card Type:</label>
+                <select id="cardTypeFilter" class="form-select" @bind="selectedCardTypeId" @onchange="ApplyFiltersAndSorting">
+                    <option value="0">All Card Types</option>
+                    @foreach (var type in cardTypes)
+                    {
+                        <option value="@type.Id">@type.Type</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="themeFilter" class="form-label">Filter by Theme:</label>
+                <select id="themeFilter" class="form-select" @bind="selectedThemeId" @onchange="ApplyFiltersAndSorting">
+                    <option value="0">All Themes</option>
+                    @foreach (var theme in cardThemes)
+                    {
+                        <option value="@theme.Id">@theme.Theme</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="sortBy" class="form-label">Sort By:</label>
+                <select id="sortBy" class="form-select" @bind="sortBy" @onchange="ApplyFiltersAndSorting">
+                    <option value="createdat">Created Date</option>
+                    <option value="title">Title</option>
+                    <option value="cardtype">Card Type</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="sortOrder" class="form-label">Sort Order:</label>
+                <select id="sortOrder" class="form-select" @bind="sortOrder" @onchange="ApplyFiltersAndSorting">
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+            </div>
+        </div>
+
+        if (submissions == null || !submissions.Any())
+        {
+            <div class="alert alert-info" role="alert">
+                No submissions found matching your criteria.
+            </div>
+        }
+        else
+        {
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                @foreach (var sub in submissions)
+                {
+                    <div class="col">
+                        <div class="card h-100 shadow-sm">
+                            <img src="@sub.ImageUrl" class="card-img-top" alt="@sub.Title" style="height: 200px; object-fit: cover;" 
+                                 onerror="this.onerror=null; this.src='/images/placeholder.png';">
+                            <div class="card-body">
+                                <h5 class="card-title">@sub.Title</h5>
+                                <p class="card-text mb-1"><small class="text-muted">Author: @sub.Author</small></p>
+                                <p class="card-text mb-1"><small class="text-muted">Artist: @sub.Artist</small></p>
+                                <p class="card-text mb-1"><strong>Card Type:</strong> @sub.CardTypeName</p>
+                                <p class="card-text mb-1">
+                                    <strong>Themes:</strong> @(sub.ThemeNames != null && sub.ThemeNames.Any() ? string.Join(", ", sub.ThemeNames) : "N/A")
+                                </p>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted">Created: @sub.CreatedAt.ToString("yyyy-MM-dd HH:mm")</small>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>
+
+@code {
+    private List<SubmissionSummaryViewModel>? submissions;
+    private List<CardType> cardTypes = new();
+    private List<CardTheme> cardThemes = new();
+
+    private bool isLoading = true;
+    private string? errorMessage;
+
+    // Filtering and Sorting parameters
+    private int selectedCardTypeId = 0; // 0 for "All"
+    private int selectedThemeId = 0;    // 0 for "All"
+    private string sortBy = "createdat";
+    private string sortOrder = "desc";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadInitialData();
+    }
+
+    private async Task LoadInitialData()
+    {
+        isLoading = true;
+        errorMessage = null;
+        try
+        {
+            var cardTypesTask = CardTypeService.GetCardTypesAsync();
+            var cardThemesTask = CardThemeService.GetCardThemesAsync();
+            var submissionsTask = SubmissionService.GetAllSubmissionsAsync(sortBy, sortOrder, 
+                selectedCardTypeId == 0 ? null : selectedCardTypeId, 
+                selectedThemeId == 0 ? null : selectedThemeId);
+
+            await Task.WhenAll(cardTypesTask, cardThemesTask, submissionsTask);
+
+            cardTypes = await cardTypesTask ?? new List<CardType>();
+            cardThemes = await cardThemesTask ?? new List<CardTheme>();
+            submissions = await submissionsTask;
+
+            if (submissions == null)
+            {
+                errorMessage = "Failed to load submissions. The service returned no data.";
+                Logger.LogWarning("GetAllSubmissionsAsync returned null.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error loading initial data for ListSubmissions page.");
+            errorMessage = $"An error occurred while loading data: {ex.Message}";
+            submissions = new List<SubmissionSummaryViewModel>(); // Ensure submissions is not null for UI
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task ApplyFiltersAndSorting()
+    {
+        isLoading = true;
+        errorMessage = null;
+        Logger.LogInformation("Applying filters and sorting: CardType={SelectedCardTypeId}, Theme={SelectedThemeId}, SortBy={SortBy}, SortOrder={SortOrder}",
+            selectedCardTypeId, selectedThemeId, sortBy, sortOrder);
+        try
+        {
+            submissions = await SubmissionService.GetAllSubmissionsAsync(sortBy, sortOrder,
+                selectedCardTypeId == 0 ? null : selectedCardTypeId,
+                selectedThemeId == 0 ? null : selectedThemeId);
+
+            if (submissions == null)
+            {
+                errorMessage = "Failed to load submissions with the selected criteria. The service returned no data.";
+                Logger.LogWarning("GetAllSubmissionsAsync returned null after applying filters/sorting.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error applying filters or sorting.");
+            errorMessage = $"An error occurred while updating submissions: {ex.Message}";
+            submissions = new List<SubmissionSummaryViewModel>(); // Ensure submissions is not null for UI
+        }
+        finally
+        {
+            isLoading = false;
+        }
+        StateHasChanged(); // Re-render the component
+    }
+}

@@ -53,6 +53,15 @@ public static class SubmissionApi
             .WithDescription("Retrieve the art submitted in the submission ID")
             .WithTags("Submissions", "Art");
 
+        api.MapGet("/", GetAllSubmissions)
+            .WithName("GetAllSubmissions")
+            .WithSummary("Get all submissions with filtering and sorting")
+            .WithDescription("Retrieve all submissions, allowing for filtering by card type and theme, and sorting by creation date, title, or card type.")
+            .WithTags("Submissions")
+            .Produces<List<Inked.Submission.API.Model.SubmissionSummaryDto>>(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
+
         // CardType endpoints
         api.MapGet("/card-types", GetCardTypes)
             .WithName("GetCardTypes")
@@ -131,6 +140,14 @@ public static class SubmissionApi
                 statusCode: StatusCodes.Status400BadRequest);
         }
 
+        // Validate CardTypeId
+        var cardTypeExists = await services.Context.CardTypes.AnyAsync(ct => ct.Id == request.CardTypeId);
+        if (!cardTypeExists)
+        {
+            return Results.Json(new ProblemDetails { Detail = "Invalid CardTypeId provided." },
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+
         var submissionId = Guid.NewGuid();
         var pictureFileName = submissionId.ToString();
 
@@ -154,7 +171,7 @@ public static class SubmissionApi
             Description = request.Description,
             CardTypeId = request.CardTypeId,
             Author = author,
-            Artitst = request.Artist,
+            Artist = request.Artist,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             CardThemes = themes // Associate the themes
@@ -295,4 +312,95 @@ public class CreateSubmissionRequest
 
     [Required] public List<int> Themes { get; set; } = new();
     [Required] public IFormFile Art { get; set; }
+}
+
+public static async Task<IResult> GetAllSubmissions(
+    [AsParameters] SubmissionServices services,
+    [FromServices] IHttpContextAccessor httpContextAccessor,
+    [FromQuery] string? sortBy,
+    [FromQuery] string? sortOrder,
+    [FromQuery] int? cardTypeId,
+    [FromQuery] int? themeId)
+{
+    try
+    {
+        var query = services.Context.Submissions
+            .Include(s => s.CardType)
+            .Include(s => s.CardThemes)
+            .AsQueryable();
+
+        // Filtering
+        if (cardTypeId.HasValue)
+        {
+            query = query.Where(s => s.CardTypeId == cardTypeId.Value);
+        }
+
+        if (themeId.HasValue)
+        {
+            query = query.Where(s => s.CardThemes.Any(th => th.Id == themeId.Value));
+        }
+
+        // Sorting
+        // Default sort order
+        var actualSortOrder = sortOrder?.ToLowerInvariant() ?? "desc";
+        var actualSortBy = sortBy?.ToLowerInvariant() ?? "createdat";
+
+        if (actualSortBy == "createdat" && string.IsNullOrEmpty(sortBy)) // Default to desc for createdAt if no sortBy is specified
+        {
+            actualSortOrder = "desc";
+        }
+        else if (string.IsNullOrEmpty(sortOrder)) // Default to asc for other sort fields if no sortOrder is specified
+        {
+            actualSortOrder = "asc";
+        }
+
+
+        switch (actualSortBy)
+        {
+            case "title":
+                query = actualSortOrder == "desc"
+                    ? query.OrderByDescending(s => s.Title)
+                    : query.OrderBy(s => s.Title);
+                break;
+            case "cardtype":
+                query = actualSortOrder == "desc"
+                    ? query.OrderByDescending(s => s.CardType.Type)
+                    : query.OrderBy(s => s.CardType.Type);
+                break;
+            case "createdat":
+            default: // Default to CreatedAt
+                query = actualSortOrder == "desc"
+                    ? query.OrderByDescending(s => s.CreatedAt)
+                    : query.OrderBy(s => s.CreatedAt);
+                break;
+        }
+
+        var submissions = await query.ToListAsync();
+
+        // Construct base URL for ImageUrl.
+        // This attempts to get the base URL from the request.
+        // In a real-world scenario with gateways/proxies, this might need more robust handling (e.g., from configuration).
+        var request = httpContextAccessor.HttpContext?.Request;
+        var baseUrl = $"{request?.Scheme}://{request?.Host}";
+
+
+        var submissionSummaries = submissions.Select(s => new Inked.Submission.API.Model.SubmissionSummaryDto
+        {
+            Id = s.Id,
+            Title = s.Title,
+            Author = s.Author,
+            Artist = s.Artist,
+            CardTypeName = s.CardType?.Type ?? "N/A",
+            ThemeNames = s.CardThemes?.Select(ct => ct.Theme).ToList() ?? new List<string>(),
+            ImageUrl = $"{baseUrl}/api/submission/art/{s.Id}",
+            CreatedAt = s.CreatedAt
+        }).ToList();
+
+        return Results.Ok(submissionSummaries);
+    }
+    catch (Exception ex)
+    {
+        services.Logger.LogError(ex, "Error retrieving submissions.");
+        return Results.Problem("An unexpected error occurred while retrieving submissions.", statusCode: StatusCodes.Status500InternalServerError);
+    }
 }

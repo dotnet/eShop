@@ -139,6 +139,54 @@ public class SubmissionService
         _logger.LogInformation("File successfully uploaded for preview. URL: {FileUrl}", fileUrl);
         return fileUrl;
     }
+
+    public async Task<List<SubmissionSummaryViewModel>?> GetAllSubmissionsAsync(
+        string? sortBy = null, string? sortOrder = null, int? cardTypeId = null, int? themeId = null)
+    {
+        var queryParams = new List<string>();
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            queryParams.Add($"sortBy={Uri.EscapeDataString(sortBy)}");
+        }
+        if (!string.IsNullOrEmpty(sortOrder))
+        {
+            queryParams.Add($"sortOrder={Uri.EscapeDataString(sortOrder)}");
+        }
+        if (cardTypeId.HasValue)
+        {
+            queryParams.Add($"cardTypeId={cardTypeId.Value}");
+        }
+        if (themeId.HasValue)
+        {
+            queryParams.Add($"themeId={themeId.Value}");
+        }
+
+        var queryString = queryParams.Any() ? $"?{string.Join("&", queryParams)}" : string.Empty;
+        var requestUrl = $"/api/submission{queryString}"; // Ensure this matches the API endpoint for all submissions
+
+        _logger.LogInformation("Fetching all submissions from URL: {RequestUrl}", requestUrl);
+
+        try
+        {
+            var response = await _httpClient.GetAsync(requestUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                var submissions = await response.Content.ReadFromJsonAsync<List<SubmissionSummaryViewModel>>();
+                return submissions;
+            }
+
+            _logger.LogError("Failed to fetch submissions. Status code: {StatusCode}, Reason: {ReasonPhrase}",
+                response.StatusCode, response.ReasonPhrase);
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _logger.LogError("Error content: {ErrorContent}", errorContent);
+            return null; // Or throw an exception / return a result object with error info
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Exception occurred while fetching all submissions.");
+            return null; // Or throw an exception / return a result object with error info
+        }
+    }
 }
 
 public class SubmissionModel
@@ -156,6 +204,16 @@ public class SubmissionModel
 
     public string ArtUrl { get; set; } = string.Empty;
 
+    // The Author property is intentionally not validated with [Required]
+    // as it's automatically populated from the authenticated user's identity.
+    // It's not expected to be provided by the user directly in the form.
+    public string Author { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Please select a card type.")]
+    [Range(1, int.MaxValue, ErrorMessage = "Please select a valid card type.")]
     public int CardTypeId { get; set; }
+
+    [Required(ErrorMessage = "Please select at least one theme.")]
+    [MinLength(1, ErrorMessage = "Please select at least one theme.")]
     public List<int> Themes { get; set; } = new();
 }

@@ -1,6 +1,6 @@
 ﻿@page "/submission/create"
 @using Microsoft.AspNetCore.Components.Authorization
-@inject IHttpContextAccessor HttpContextAccessor
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ILogger<CreateSubmission> _logger
 @attribute [Authorize]
 @inject NavigationManager Nav
@@ -30,19 +30,23 @@
                         <ValidationSummary/>
 
                         <div class="form-group">
-                            <label for="title">Title</label>
+                            <label for="title">Title <span class="text-danger">*</span></label>
                             <InputText id="title" class="form-control" @bind-Value="submission.Title"
                                        @oninput="ValidateTitle"/>
+                            @if (isTitleValidating)
+                            {
+                                <small class="form-text text-muted">Validating title...</small>
+                            }
                             @if (!string.IsNullOrEmpty(titleErrorMessage))
                             {
-                                <div class="alert @titleErrorClass" role="alert">
+                                <div class="alert @titleErrorClass mt-1" role="alert">
                                     @titleErrorMessage
                                 </div>
                             }
                         </div>
 
                         <div class="form-group">
-                            <label for="cardType">Card Type</label>
+                            <label for="cardType">Card Type <span class="text-danger">*</span></label>
                             <select id="cardType" class="form-control" @bind="submission.CardTypeId">
                                 <option value="">-- Select Card Type --</option>
                                 @foreach (var type in cardTypeOptions)
@@ -61,7 +65,7 @@
 
 
                         <div class="form-group">
-                            <label>Card Themes</label>
+                            <label>Card Themes <span class="text-danger">*</span></label>
                             @foreach (var theme in cardThemeOptions)
                             {
                                 <div class="form-check">
@@ -91,35 +95,45 @@
 
 
                         <div class="form-group">
-                            <label for="description">Description</label>
+                            <label for="description">Description <span class="text-danger">*</span></label>
                             <InputTextArea id="description" class="form-control" @bind-Value="submission.Description"/>
                         </div>
 
                         <div class="form-group">
-                            <label for="artist">Artist</label>
+                            <label for="author">Author</label>
+                            <InputText id="author" class="form-control" @bind-Value="submission.Author" disabled/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="artist">Artist <span class="text-danger">*</span></label>
                             <InputText id="artist" class="form-control" @bind-Value="submission.Artist"/>
                         </div>
 
                         <div class="form-group">
-                            <label for="file">Art (JPEG only)</label>
+                            <label for="file">Art (JPEG only) <span class="text-danger">*</span></label>
                             <InputFile id="file" class="form-control" OnChange="HandleFileSelected"
                                        accept=".jpeg,.jpg"/>
+                            @if (isFileLoading)
+                            {
+                                <small class="form-text text-muted">Processing file...</small>
+                            }
                         </div>
 
-                        @if (selectedFile != null)
+                        @if (selectedFile != null && !isFileLoading)
                         {
-                            <div class="image-preview">
+                            <div class="image-preview mt-2" style="border: 1px solid #ddd; padding: 5px; max-height: 300px; overflow: hidden;">
                                 <img class="img-fluid" role="presentation" src="@imagePreviewUrl" alt="Image Preview"/>
                             </div>
                         }
 
-                        <button type="submit" class="btn btn-primary" disabled="@isLoading" @onclick="Click">Submit
+                        <button type="submit" class="btn btn-primary mt-3" disabled="@(isLoading || isTitleValidating || isFileLoading)" @onclick="Click">
+                            @(isLoading ? "Submitting..." : "Submit")
                         </button>
                     </EditForm>
-                    @if (isLoading)
+                    @if (isLoading) // General loading for submission process
                     {
-                        <div class="loading-indicator">
-                            <p>Loading...</p>
+                        <div class="loading-indicator mt-2">
+                            <p>Submitting your masterpiece...</p>
                         </div>
                     }
                 </Authorized>
@@ -146,6 +160,8 @@
     private string? titleErrorMessage;
     private string titleErrorClass = "alert-danger";
     private bool isLoading;
+    private bool isTitleValidating;
+    private bool isFileLoading;
 
     private void ToggleThemeSelection(CardTheme theme, bool isSelected)
     {
@@ -166,17 +182,20 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var user = HttpContextAccessor.HttpContext?.User;
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
         if (user?.Identity?.IsAuthenticated == true && user.Identity.Name is not null)
         {
-            submission.Artist = user.Identity.Name;
+            submission.Author = user.Identity.Name;
         }
 
         editContext = new EditContext(submission);
         _logger.LogInformation("EditContext initialized: {@editContext}", editContext);
-        var fieldIdentifier = FieldIdentifier.Create(() => submission.Artist);
-        editContext.NotifyFieldChanged(fieldIdentifier);
-        editContext.MarkAsUnmodified(fieldIdentifier);
+        // Optionally, if you want to notify about Author field change, though it's disabled and set programmatically
+        // var authorFieldIdentifier = FieldIdentifier.Create(() => submission.Author);
+        // editContext.NotifyFieldChanged(authorFieldIdentifier);
+        // editContext.MarkAsUnmodified(authorFieldIdentifier);
         cardTypeOptions = await CardTypeService.GetCardTypesAsync() ?? [];
         cardThemeOptions = await CardThemeService.GetCardThemesAsync() ?? [];
     }
@@ -212,11 +231,24 @@
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
         selectedFile = e.File;
-        if (selectedFile == null || !selectedFile.ContentType.StartsWith("image/jpeg"))
+        errorMessage = null; // Clear previous general errors
+        imagePreviewUrl = null; // Clear previous preview
+
+        if (selectedFile == null)
         {
-            errorMessage = "Please select a JPEG file.";
-            isLoading = false;
-            editContext?.NotifyValidationStateChanged(); // Trigger validation for other fields
+            return; // No file selected or selection cancelled
+        }
+
+        isFileLoading = true;
+        StateHasChanged(); // Update UI to show file loading indicator
+
+        if (!selectedFile.ContentType.StartsWith("image/jpeg"))
+        {
+            errorMessage = "Please select a JPEG file (.jpeg or .jpg).";
+            selectedFile = null;
+            isFileLoading = false;
+            editContext?.NotifyValidationStateChanged();
+            StateHasChanged();
             return;
         }
 
@@ -225,19 +257,46 @@
         {
             errorMessage = $"File size must be under {maxFileSize / (1024 * 1024)}MB.";
             selectedFile = null;
-            imagePreviewUrl = null;
-            editContext?.NotifyValidationStateChanged(); // Trigger validation for other fields
+            isFileLoading = false;
+            editContext?.NotifyValidationStateChanged();
+            StateHasChanged();
             return;
         }
-
-        imagePreviewUrl = await SubmissionService.SaveFileForPreviewAsync(selectedFile);
+        try
+        {
+            imagePreviewUrl = await SubmissionService.SaveFileForPreviewAsync(selectedFile);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error saving file for preview.");
+            errorMessage = "There was an error processing the file for preview.";
+            selectedFile = null;
+        }
+        finally
+        {
+            isFileLoading = false;
+            StateHasChanged();
+        }
     }
 
 
     private async Task ValidateTitle(ChangeEventArgs e)
     {
         var title = e.Value?.ToString();
-        if (!string.IsNullOrEmpty(title))
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            titleErrorMessage = "Title is required.";
+            titleErrorClass = "alert-danger";
+            isTitleValidating = false;
+            StateHasChanged();
+            return;
+        }
+
+        isTitleValidating = true;
+        titleErrorMessage = null; // Clear previous message
+        StateHasChanged(); // Show validating indicator
+
+        try
         {
             var isUnique = await SubmissionService.IsTitleUniqueAsync(title);
             if (isUnique)
@@ -251,9 +310,16 @@
                 titleErrorClass = "alert-danger";
             }
         }
-        else
+        catch (Exception ex)
         {
-            titleErrorMessage = null;
+            _logger.LogError(ex, "Error validating title");
+            titleErrorMessage = "Error validating title.";
+            titleErrorClass = "alert-danger";
+        }
+        finally
+        {
+            isTitleValidating = false;
+            StateHasChanged(); // Hide indicator, show message
         }
     }
 
