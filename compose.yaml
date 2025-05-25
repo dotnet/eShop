@@ -1,0 +1,24 @@
+﻿services:
+  refundprocessor:
+    image: refundprocessor
+    build:
+      context: .
+      dockerfile: RefundProcessor/Dockerfile
+
+  webapplication1:
+    image: webapplication1
+    build:
+      context: .
+      dockerfile: WebApplication1/Dockerfile
+
+  returnprocessor:
+    image: returnprocessor
+    build:
+      context: .
+      dockerfile: ReturnProcessor/Dockerfile
+
+  refundprocessor-1:
+    image: refundprocessor-1
+    build:
+      context: .
+      dockerfile: RefundProcessor/Dockerfile

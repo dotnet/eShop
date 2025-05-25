@@ -1,0 +1,24 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Submission.API | v2",
+    "version": "1.0.0"
+  },
+  "paths": { },
+  "components": {
+    "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "http://localhost/realms/inked/protocol/openid-connect/auth",
+            "tokenUrl": "http://localhost/realms/inked/protocol/openid-connect/token",
+            "scopes": {
+              "submission": "Submission API"
+            }
+          }
+        }
+      }
+    }
+  }
+}
