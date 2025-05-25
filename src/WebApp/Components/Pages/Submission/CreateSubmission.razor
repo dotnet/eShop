@@ -43,7 +43,7 @@
 
                         <div class="form-group">
                             <label for="cardType">Card Type</label>
-                            <select id="cardType" class="form-control" @bind-value="submission.CardTypeId">
+                            <select id="cardType" class="form-control" @bind="submission.CardTypeId">
                                 <option value="">-- Select Card Type --</option>
                                 @foreach (var type in cardTypeOptions)
                                 {
@@ -53,8 +53,8 @@
                             @if (SelectedCardType is not null)
                             {
                                 <div class="p-3 border rounded bg-light shadow-sm">
-                                    <strong>Description:</strong>
-                                    <p>@SelectedCardType.Description</p>
+                                    <strong>Kanji:</strong>
+                                    <p>@SelectedCardType.Kanji</p>
                                 </div>
                             }
                         </div>

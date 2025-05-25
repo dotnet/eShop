@@ -6,11 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
+    <ProjectReference Include="..\EventBus\EventBus.csproj"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EventBus\EventBus.csproj"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
   </ItemGroup>
 
 </Project>

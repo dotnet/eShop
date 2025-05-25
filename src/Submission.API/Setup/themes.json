@@ -1,0 +1,583 @@
+[
+  {
+    "Theme": "Surreal",
+    "Description": "Dreamlike and strange — bend reality and logic to explore the subconscious and symbolic.",
+    "Primary": "#FF5733",
+    "Secondary": "#6A0572",
+    "Accent": "#FFC300"
+  },
+  {
+    "Theme": "Abstract",
+    "Description": "Non-representational. Focus on shape, color, and form to express ideas beyond realism.",
+    "Primary": "#1F618D",
+    "Secondary": "#F4D03F",
+    "Accent": "#A569BD"
+  },
+  {
+    "Theme": "Minimalistic",
+    "Description": "Stripped down to essentials. Emphasize simplicity, negative space, and quiet focus.",
+    "Primary": "#FFFFFF",
+    "Secondary": "#BDC3C7",
+    "Accent": "#2C3E50"
+  },
+  {
+    "Theme": "Romantic",
+    "Description": "Soft, emotional, and passionate. Center beauty, love, and idealism.",
+    "Primary": "#FF6F61",
+    "Secondary": "#FFC1CC",
+    "Accent": "#8B0000"
+  },
+  {
+    "Theme": "Melancholic",
+    "Description": "Subtle and sorrowful. Evoke longing, solitude, or quiet sadness.",
+    "Primary": "#5D6D7E",
+    "Secondary": "#85929E",
+    "Accent": "#2E4053"
+  },
+  {
+    "Theme": "Dark",
+    "Description": "Moody and intense. Use shadow and contrast to explore fear, mystery, or depth.",
+    "Primary": "#000000",
+    "Secondary": "#2C3E50",
+    "Accent": "#8E44AD"
+  },
+  {
+    "Theme": "Gritty",
+    "Description": "Rough and textured. Embrace imperfections, decay, or urban realism.",
+    "Primary": "#7B7D7D",
+    "Secondary": "#4D5656",
+    "Accent": "#A04000"
+  },
+  {
+    "Theme": "Ethereal",
+    "Description": "Delicate and light. Capture a spiritual, floating, or celestial feeling.",
+    "Primary": "#E8F8F5",
+    "Secondary": "#AED6F1",
+    "Accent": "#D2B4DE"
+  },
+  {
+    "Theme": "Chaotic",
+    "Description": "Explosive and wild. Let disorder and motion drive the composition.",
+    "Primary": "#E74C3C",
+    "Secondary": "#F1C40F",
+    "Accent": "#8E44AD"
+  },
+  {
+    "Theme": "Symbolic",
+    "Description": "Filled with meaning. Use imagery and motifs that represent deeper ideas.",
+    "Primary": "#34495E",
+    "Secondary": "#F39C12",
+    "Accent": "#E74C3C"
+  },
+  {
+    "Theme": "Nostalgic",
+    "Description": "Evokes memory and past times. Use vintage styles or aged textures.",
+    "Primary": "#D4A373",
+    "Secondary": "#6C757D",
+    "Accent": "#F5CBA7"
+  },
+  {
+    "Theme": "Whimsical",
+    "Description": "Playful and imaginative. Lean into fantasy, humor, or charm.",
+    "Primary": "#FFB6C1",
+    "Secondary": "#FFD700",
+    "Accent": "#87CEFA"
+  },
+  {
+    "Theme": "Digital",
+    "Description": "Art created using digital tools and software, often with a focus on technology and innovation.",
+    "Primary": "#0D6EFD",
+    "Secondary": "#6C757D",
+    "Accent": "#6610F2"
+  },
+  {
+    "Theme": "Traditional",
+    "Description": "Art created using traditional methods and materials, such as paint, pencil, or ink.",
+    "Primary": "#8B4513",
+    "Secondary": "#F4A460",
+    "Accent": "#D2B48C"
+  },
+  {
+    "Theme": "Prototype",
+    "Description": "Art that is created as a preliminary version or model, often used for testing or experimentation.",
+    "Primary": "#808080",
+    "Secondary": "#A9A9A9",
+    "Accent": "#C0C0C0"
+  },
+  {
+    "Theme": "Moody",
+    "Description": "Heavy atmosphere. Use color and light to build emotional tension.",
+    "Primary": "#2C3E50",
+    "Secondary": "#34495E",
+    "Accent": "#95A5A6"
+  },
+  {
+    "Theme": "Celestial",
+    "Description": "Inspired by stars, space, or cosmic ideas. Feel infinite or mystical.",
+    "Primary": "#1B4F72",
+    "Secondary": "#5DADE2",
+    "Accent": "#F4D03F"
+  },
+  {
+    "Theme": "Organic",
+    "Description": "Flowing and natural. Use curves, earthy tones, or plant-like forms.",
+    "Primary": "#2E8B57",
+    "Secondary": "#8FBC8F",
+    "Accent": "#F5DEB3"
+  },
+  {
+    "Theme": "Futuristic",
+    "Description": "Sleek and speculative. Use clean lines, metallic tones, or digital aesthetics.",
+    "Primary": "#2C3E50",
+    "Secondary": "#BDC3C7",
+    "Accent": "#3498DB"
+  },
+  {
+    "Theme": "Bold",
+    "Description": "Strong contrasts and clear statements. High impact with minimal ambiguity.",
+    "Primary": "#E74C3C",
+    "Secondary": "#2C3E50",
+    "Accent": "#F1C40F"
+  },
+  {
+    "Theme": "Haunted",
+    "Description": "Lingering and eerie. Quiet but unforgettable — use minimalism and contrast.",
+    "Primary": "#2C2C54",
+    "Secondary": "#706FD3",
+    "Accent": "#F7F1E3"
+  },
+  {
+    "Theme": "Opulent",
+    "Description": "Luxurious and lavish. Rich color, ornate detail, or golden light.",
+    "Primary": "#D4AF37",
+    "Secondary": "#8E44AD",
+    "Accent": "#F1C40F"
+  },
+  {
+    "Theme": "Subversive",
+    "Description": "Challenges norms or expectations. Use irony, shock, or satire.",
+    "Primary": "#E74C3C",
+    "Secondary": "#34495E",
+    "Accent": "#F39C12"
+  },
+  {
+    "Theme": "Playful",
+    "Description": "Joyful and spontaneous. Use fun elements, childlike wonder, or surprises.",
+    "Primary": "#FF6F61",
+    "Secondary": "#FFD700",
+    "Accent": "#87CEEB"
+  },
+  {
+    "Theme": "Ritualistic",
+    "Description": "Ceremonial and cyclical. Explore repetition and sacred forms.",
+    "Primary": "#6C3483",
+    "Secondary": "#F4D03F",
+    "Accent": "#1F618D"
+  },
+  {
+    "Theme": "Mythic",
+    "Description": "Timeless and archetypal. Draw from ancient stories and symbols.",
+    "Primary": "#8E44AD",
+    "Secondary": "#F39C12",
+    "Accent": "#34495E"
+  },
+  {
+    "Theme": "Definitive",
+    "Description": "Clear and unambiguous. Use strong lines and shapes to convey certainty.",
+    "Primary": "#2C3E50",
+    "Secondary": "#E74C3C",
+    "Accent": "#F1C40F"
+  },
+  {
+    "Theme": "Popular",
+    "Description": "Art that draws inspiration from popular culture, often using bright colors and commercial imagery.",
+    "Primary": "#FF5733",
+    "Secondary": "#FFC300",
+    "Accent": "#DAF7A6"
+  },
+  {
+    "Theme": "Vintage",
+    "Description": "Art that evokes nostalgia, often using retro styles or color palettes.",
+    "Primary": "#D4A373",
+    "Secondary": "#6C757D",
+    "Accent": "#F5CBA7"
+  },
+  {
+    "Theme": "Natural",
+    "Description": "Art that focuses on the beauty of nature, including flora, fauna, and landscapes.",
+    "Primary": "#2E8B57",
+    "Secondary": "#8FBC8F",
+    "Accent": "#F5DEB3"
+  },
+  {
+    "Theme": "Sci-Fi",
+    "Description": "Art that explores futuristic concepts, technology, and speculative worlds.",
+    "Primary": "#1B2631",
+    "Secondary": "#5DADE2",
+    "Accent": "#F4D03F"
+  },
+  {
+    "Theme": "Religious",
+    "Description": "Artwork inspired by spiritual or religious traditions, icons, or narratives.",
+    "Primary": "#8E44AD",
+    "Secondary": "#F1C40F",
+    "Accent": "#34495E"
+  },
+  {
+    "Theme": "Fantastic",
+    "Description": "Depictions of imaginary or magical worlds, often involving storytelling and lore.",
+    "Primary": "#6C3483",
+    "Secondary": "#F4D03F",
+    "Accent": "#1F618D"
+  },
+  {
+    "Theme": "Historic",
+    "Description": "Depicts events, people, or aesthetics from specific historical time periods.",
+    "Primary": "#D4A373",
+    "Secondary": "#6C757D",
+    "Accent": "#F5CBA7"
+  },
+  {
+    "Theme": "Concept",
+    "Description": "Art created to explore ideas for stories, games, or film — often loose, exploratory, and iterative.",
+    "Primary": "#34495E",
+    "Secondary": "#F39C12",
+    "Accent": "#E74C3C"
+  },
+  {
+    "Theme": "Mechanical",
+    "Description": "Machines, vehicles, or robots — often industrial, sci-fi, or speculative.",
+    "Primary": "#808080",
+    "Secondary": "#A9A9A9",
+    "Accent": "#C0C0C0"
+  },
+  {
+    "Theme": "Cosmic",
+    "Description": "Focus on stars, planets, galaxies, and outer space themes.",
+    "Primary": "#1B4F72",
+    "Secondary": "#5DADE2",
+    "Accent": "#F4D03F"
+  },
+  {
+    "Theme": "Suggestive",
+    "Description": "Explores sensual or erotic content, tastefully or provocatively presented.",
+    "Primary": "#E74C3C",
+    "Secondary": "#F1C40F",
+    "Accent": "#8E44AD"
+  },
+  {
+    "Theme": "Utopian",
+    "Description": "Depicts idealized civilizations, often commenting on society.",
+    "Primary": "#2E8B57",
+    "Secondary": "#8FBC8F",
+    "Accent": "#F5DEB3"
+  },
+  {
+    "Theme": "Dystopian",
+    "Description": "Depicts collapsed civilizations, often commenting on society.",
+    "Primary": "#2C3E50",
+    "Secondary": "#34495E",
+    "Accent": "#E74C3C"
+  },
+  {
+    "Theme": "Perfect",
+    "Description": "Art that is flawless in execution, often with a focus on technical skill and precision.",
+    "Primary": "#1ABC9C",
+    "Secondary": "#2ECC71",
+    "Accent": "#16A085"
+  },
+  {
+    "Theme": "Classic",
+    "Description": "Art that draws inspiration from ancient cultures, often with a focus on beauty and harmony.",
+    "Primary": "#F5CBA7",
+    "Secondary": "#D4A373",
+    "Accent": "#6C757D"
+  },
+  {
+    "Theme": "Ancient",
+    "Description": "Art that evokes a sense of age or history, often with a focus on craftsmanship and detail.",
+    "Primary": "#8B4513",
+    "Secondary": "#D2B48C",
+    "Accent": "#F4A460"
+  },
+  {
+    "Theme": "Sacred",
+    "Description": "Art that explores themes of spirituality, divinity, or sacredness.",
+    "Primary": "#8E44AD",
+    "Secondary": "#F1C40F",
+    "Accent": "#34495E"
+  },
+  {
+    "Theme": "Final",
+    "Description": "Art that is polished and complete, often with a focus on presentation and impact.",
+    "Primary": "#2C3E50",
+    "Secondary": "#E74C3C",
+    "Accent": "#F1C40F"
+  },
+  {
+    "Theme": "Rare",
+    "Description": "Art that is designed to be collected or traded, often with a focus on rarity and value.",
+    "Primary": "#9B59B6",
+    "Secondary": "#8E44AD",
+    "Accent": "#F39C12"
+  },
+  {
+    "Theme": "Retro",
+    "Description": "Art that draws inspiration from past styles, often evoking nostalgia or vintage aesthetics.",
+    "Primary": "#D4A373",
+    "Secondary": "#6C757D",
+    "Accent": "#F5CBA7"
+  },
+  {
+    "Theme": "Cyberpunk",
+    "Description": "Futuristic art that blends advanced technology with a gritty, urban aesthetic.",
+    "Primary": "#1B2631",
+    "Secondary": "#E74C3C",
+    "Accent": "#3498DB"
+  },
+  {
+    "Theme": "Steampunk",
+    "Description": "Art that combines Victorian-era aesthetics with steam-powered machinery and fantasy elements.",
+    "Primary": "#8B4513",
+    "Secondary": "#D2B48C",
+    "Accent": "#F4A460"
+  },
+  {
+    "Theme": "Grand",
+    "Description": "Art that is large in scale or ambitious in concept, often with a focus on grandeur and impact.",
+    "Primary": "#D4AF37",
+    "Secondary": "#8E44AD",
+    "Accent": "#F1C40F"
+  },
+  {
+    "Theme": "Epic",
+    "Description": "Art that tells a grand story or depicts monumental events, often with a focus on scale and drama.",
+    "Primary": "#6C3483",
+    "Secondary": "#F4D03F",
+    "Accent": "#1F618D"
+  },
+  {
+    "Theme": "Serious",
+    "Description": "Art that explores weighty themes or subjects, often with a focus on depth and complexity.",
+    "Primary": "#2C3E50",
+    "Secondary": "#34495E",
+    "Accent": "#E74C3C"
+  },
+  {
+    "Theme": "Magical",
+    "Description": "Art that evokes a sense of wonder or enchantment, often with a focus on fantasy and imagination.",
+    "Primary": "#8E44AD",
+    "Secondary": "#F39C12",
+    "Accent": "#34495E"
+  },
+  {
+    "Theme": "Broken",
+    "Description": "Art that is fragmented or incomplete, often with a focus on imperfection and rawness.",
+    "Primary": "#7B7D7D",
+    "Secondary": "#4D5656",
+    "Accent": "#A04000"
+  },
+  {
+    "Theme": "Transcendent",
+    "Description": "Art that transcends the ordinary, often with a focus on spirituality or higher consciousness.",
+    "Primary": "#E8F8F5",
+    "Secondary": "#AED6F1",
+    "Accent": "#D2B4DE"
+  },
+  {
+    "Theme": "Powerful",
+    "Description": "Art that evokes strong emotions or reactions, often with a focus on impact and intensity.",
+    "Primary": "#E74C3C",
+    "Secondary": "#F1C40F",
+    "Accent": "#8E44AD"
+  },
+  {
+    "Theme": "Legendary",
+    "Description": "Art that tells the stories of heroes, myths, or legends, often with a focus on grandeur and impact.",
+    "Primary": "#D4AF37",
+    "Secondary": "#8E44AD",
+    "Accent": "#F1C40F"
+  },
+  {
+    "Theme": "Deceptive",
+    "Description": "Art that plays with perception or reality, often with a focus on illusion and trickery.",
+    "Primary": "#34495E",
+    "Secondary": "#F39C12",
+    "Accent": "#E74C3C"
+  },
+  {
+    "Theme": "Evil",
+    "Description": "Art that explores dark or sinister themes, often with a focus on horror and fear.",
+    "Primary": "#000000",
+    "Secondary": "#2C3E50",
+    "Accent": "#8E44AD"
+  },
+  {
+    "Theme": "Professional",
+    "Description": "Art that is polished and refined, often with a focus on technical skill and expertise.",
+    "Primary": "#1ABC9C",
+    "Secondary": "#2ECC71",
+    "Accent": "#16A085"
+  },
+  {
+    "Theme": "Gorgeous",
+    "Description": "Art that is visually stunning or beautiful, often with a focus on aesthetics and design.",
+    "Primary": "#FF69B4",
+    "Secondary": "#FFD700",
+    "Accent": "#87CEEB"
+  },
+  {
+    "Theme": "Selfless",
+    "Description": "Art that explores themes of altruism or selflessness, often with a focus on compassion and empathy.",
+    "Primary": "#1ABC9C",
+    "Secondary": "#2ECC71",
+    "Accent": "#16A085"
+  },
+  {
+    "Theme": "Selfish",
+    "Description": "Art that explores themes of ego or self-interest, often with a focus on individualism and desire.",
+    "Primary": "#E74C3C",
+    "Secondary": "#F1C40F",
+    "Accent": "#8E44AD"
+  },
+  {
+    "Theme": "Unusual",
+    "Description": "Art that is unconventional or unexpected, often with a focus on surprise and intrigue.",
+    "Primary": "#34495E",
+    "Secondary": "#F39C12",
+    "Accent": "#E74C3C"
+  },
+  {
+    "Theme": "Unique",
+    "Description": "Art that is one-of-a-kind or distinctive, often with a focus on originality and creativity.",
+    "Primary": "#9B59B6",
+    "Secondary": "#8E44AD",
+    "Accent": "#F39C12"
+  },
+  {
+    "Theme": "Uncommon",
+    "Description": "Art that is rare or not widely seen, often with a focus on exclusivity and value.",
+    "Primary": "#D4A373",
+    "Secondary": "#6C757D",
+    "Accent": "#F5CBA7"
+  },
+  {
+    "Theme": "Common",
+    "Description": "Art that is widely recognized or familiar, often with a focus on accessibility and relatability.",
+    "Primary": "#BDC3C7",
+    "Secondary": "#95A5A6",
+    "Accent": "#7F8C8D"
+  },
+  {
+    "Theme": "Cheap",
+    "Description": "Art that is low-cost or affordable, often with a focus on accessibility and value.",
+    "Primary": "#7B7D7D",
+    "Secondary": "#4D5656",
+    "Accent": "#A04000"
+  },
+  {
+    "Theme": "Luxurious",
+    "Description": "Art that is opulent or extravagant, often with a focus on wealth and indulgence.",
+    "Primary": "#D4AF37",
+    "Secondary": "#8E44AD",
+    "Accent": "#F1C40F"
+  },
+  {
+    "Theme": "Heritage",
+    "Description": "Art that draws inspiration from cultural traditions or history, often with a focus on identity and legacy.",
+    "Primary": "#8B4513",
+    "Secondary": "#D2B48C",
+    "Accent": "#F4A460"
+  },
+  {
+    "Theme": "Revolutionary",
+    "Description": "Art that challenges the status quo or pushes boundaries, often with a focus on innovation and change.",
+    "Primary": "#E74C3C",
+    "Secondary": "#3498DB",
+    "Accent": "#F1C40F"
+  },
+  {
+    "Theme": "Experimental",
+    "Description": "Art that explores new techniques or concepts, often with a focus on innovation and creativity.",
+    "Primary": "#9B59B6",
+    "Secondary": "#8E44AD",
+    "Accent": "#F39C12"
+  },
+  {
+    "Theme": "Sophisticated",
+    "Description": "Art that is refined and cultured, often with a focus on elegance and complexity.",
+    "Primary": "#34495E",
+    "Secondary": "#BDC3C7",
+    "Accent": "#2C3E50"
+  },
+  {
+    "Theme": "Clean",
+    "Description": "Art that is simple and uncluttered, often with a focus on minimalism and clarity.",
+    "Primary": "#FFFFFF",
+    "Secondary": "#BDC3C7",
+    "Accent": "#2C3E50"
+  },
+  {
+    "Theme": "Messy",
+    "Description": "Art that is chaotic or disorganized, often with a focus on rawness and spontaneity.",
+    "Primary": "#7B7D7D",
+    "Secondary": "#4D5656",
+    "Accent": "#A04000"
+  },
+  {
+    "Theme": "Detailed",
+    "Description": "Art that is intricate and complex, often with a focus on craftsmanship and precision.",
+    "Primary": "#1F618D",
+    "Secondary": "#F4D03F",
+    "Accent": "#A569BD"
+  },
+  {
+    "Theme": "Simplistic",
+    "Description": "Art that is straightforward and uncomplicated, often with a focus on clarity and accessibility.",
+    "Primary": "#BDC3C7",
+    "Secondary": "#95A5A6",
+    "Accent": "#7F8C8D"
+  },
+  {
+    "Theme": "Complex",
+    "Description": "Art that is multifaceted and layered, often with a focus on depth and nuance.",
+    "Primary": "#6C3483",
+    "Secondary": "#F4D03F",
+    "Accent": "#1F618D"
+  },
+  {
+    "Theme": "Dense",
+    "Description": "Art that is rich and packed with detail, often with a focus on intricacy and complexity.",
+    "Primary": "#8B4513",
+    "Secondary": "#D2B48C",
+    "Accent": "#F4A460"
+  },
+  {
+    "Theme": "Cute",
+    "Description": "Art that is charming and endearing, often with a focus on playfulness and innocence.",
+    "Primary": "#FFB6C1",
+    "Secondary": "#FFD700",
+    "Accent": "#87CEFA"
+  },
+  {
+    "Theme": "Cool",
+    "Description": "Art that is stylish and trendy, often with a focus on aesthetics and design.",
+    "Primary": "#3498DB",
+    "Secondary": "#2C3E50",
+    "Accent": "#F1C40F"
+  },
+  {
+    "Theme": "Hot",
+    "Description": "Art that is bold and eye-catching, often with a focus on impact and intensity.",
+    "Primary": "#E74C3C",
+    "Secondary": "#F1C40F",
+    "Accent": "#8E44AD"
+  },
+  {
+    "Theme": "Horrific",
+    "Description": "Dark and terrifying. Evoke fear, dread, and horror through unsettling imagery.",
+    "Primary": "#4A0000",
+    "Secondary": "#1C1C1C",
+    "Accent": "#8B0000"
+  }
+]

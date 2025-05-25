@@ -15,7 +15,6 @@ var postgres = builder.AddPostgres("postgres")
     .WithPgAdmin();
 
 var catalogDb = postgres.AddDatabase("catalogdb");
-var identityDb = postgres.AddDatabase("identitydb");
 var orderDb = postgres.AddDatabase("orderingdb");
 var webhooksDb = postgres.AddDatabase("webhooksdb");
 var submissionDb = postgres.AddDatabase("submissiondb");

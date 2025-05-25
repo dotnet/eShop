@@ -61,4 +61,12 @@ public class CardTheme
     public int Id { get; set; }
     public string Theme { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+    public ThemeColors Colors { get; set; } = new();
+}
+
+public class ThemeColors
+{
+    public string Primary { get; set; } = string.Empty;
+    public string Secondary { get; set; } = string.Empty;
+    public string Accent { get; set; } = string.Empty;
 }
