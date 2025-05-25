@@ -99,7 +99,7 @@ public class BasketService(
 
         foreach (var item in customerBasketRequest.Items)
         {
-            response.Items.Add(new Model.BasketItem { ProductId = item.ProductId, Quantity = item.Quantity });
+            response.Items.Add(new BasketItem { ProductId = item.ProductId, Quantity = item.Quantity });
         }
 
         return response;
