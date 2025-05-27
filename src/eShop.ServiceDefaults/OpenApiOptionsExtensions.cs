@@ -2,7 +2,6 @@
 using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -149,16 +148,48 @@ internal static class OpenApiOptionsExtensions
         return options;
     }
 
-    private static IOpenApiAny? CreateOpenApiAnyFromObject(object value)
+    public static OpenApiOptions ApplyApiVersionDescription(this OpenApiOptions options)
     {
-        return value switch
+        options.AddOperationTransformer((operation, context, cancellationToken) =>
         {
-            bool b => new OpenApiBoolean(b),
-            int i => new OpenApiInteger(i),
-            double d => new OpenApiDouble(d),
-            string s => new OpenApiString(s),
-            _ => null
-        };
+            // Find parameter named "api-version" and add a description to it
+            var apiVersionParameter = operation.Parameters.FirstOrDefault(p => p.Name == "api-version");
+            if (apiVersionParameter is not null)
+            {
+                apiVersionParameter.Description = "The API version, in the format 'major.minor'.";
+                switch (context.DocumentName) {
+                    case "v1":
+                        apiVersionParameter.Schema.Example = new OpenApiString("1.0");
+                        break;
+                    case "v2":
+                        apiVersionParameter.Schema.Example = new OpenApiString("2.0");
+                        break;
+                }
+            }
+            return Task.CompletedTask;
+        });
+        return options;
+    }
+
+    // This extension method adds a schema transformer that sets "nullable" to false for all optional properties.
+    public static OpenApiOptions ApplySchemaNullableFalse(this OpenApiOptions options)
+    {
+        options.AddSchemaTransformer((schema, context, cancellationToken) =>
+        {
+            if (schema.Properties is not null)
+            {
+                foreach (var property in schema.Properties)
+                {
+                    if (schema.Required?.Contains(property.Key) != true)
+                    {
+                        property.Value.Nullable = false;
+                    }
+                }
+            }
+
+            return Task.CompletedTask;
+        });
+        return options;
     }
 
     private class SecuritySchemeDefinitionsTransformer(IConfiguration configuration) : IOpenApiDocumentTransformer

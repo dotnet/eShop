@@ -32,7 +32,7 @@ public class ChatState
 
         if (_logger.IsEnabled(LogLevel.Debug))
         {
-            _logger.LogDebug("ChatModel: {model}", chatClient.Metadata.ModelId);
+            _logger.LogDebug("ChatModel: {model}", chatClient.GetService<ChatClientMetadata>()?.DefaultModelId);
         }
 
         _chatClient = chatClient;
@@ -75,10 +75,10 @@ public class ChatState
         // Get and store the AI's response message
         try
         {
-            ChatCompletion response = await _chatClient.CompleteAsync(Messages, _chatOptions);
-            if (!string.IsNullOrWhiteSpace(response.Message.Text))
+            var response = await _chatClient.GetResponseAsync(Messages, _chatOptions);
+            if (!string.IsNullOrWhiteSpace(response.Text))
             {
-                Messages.Add(response.Message);
+                Messages.AddMessages(response);
             }
         }
         catch (Exception e)

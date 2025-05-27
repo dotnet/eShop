@@ -56,4 +56,7 @@ updates:
       Duende:
         patterns:
           - "Duende.*"
+      MSTest:
+        patterns:
+          - "MSTest.*"
 

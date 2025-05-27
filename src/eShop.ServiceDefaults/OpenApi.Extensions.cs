@@ -58,7 +58,7 @@ public static partial class Extensions
             // the default format will just be ApiVersion.ToString(); for example, 1.0.
             // this will format the version as "'v'major[.minor][-status]"
             var versioned = apiVersioning.AddApiExplorer(options => options.GroupNameFormat = "'v'VVV");
-            string[] versions = ["v1"];
+            string[] versions = ["v1", "v2"];
             foreach (var description in versions)
             {
                 builder.Services.AddOpenApi(description, options =>
@@ -67,6 +67,8 @@ public static partial class Extensions
                     options.ApplyAuthorizationChecks([.. scopes.Keys]);
                     options.ApplySecuritySchemeDefinitions();
                     options.ApplyOperationDeprecatedStatus();
+                    options.ApplyApiVersionDescription();
+                    options.ApplySchemaNullableFalse();
                     // Clear out the default servers so we can fallback to
                     // whatever ports have been allocated for the service by Aspire
                     options.AddDocumentTransformer((document, context, cancellationToken) =>

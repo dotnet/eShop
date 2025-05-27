@@ -38,19 +38,25 @@ internal static class Extensions
         IResourceBuilder<ProjectResource> webApp)
     {
         const string openAIName = "openai";
-        const string textEmbeddingModelName = "text-embedding-3-small";
-        const string chatModelName = "gpt-4o-mini";
 
-        // to use an existing OpenAI resource, add the following to the AppHost user secrets:
+        const string textEmbeddingName = "textEmbeddingModel";
+        const string textEmbeddingModelName = "text-embedding-3-small";
+
+        const string chatName = "chatModel";
+        const string chatModelName = "gpt-4.1-mini";
+
+        // to use an existing OpenAI resource as a connection string, add the following to the AppHost user secrets:
         // "ConnectionStrings": {
         //   "openai": "Key=<API Key>" (to use https://api.openai.com/)
         //     -or-
         //   "openai": "Endpoint=https://<name>.openai.azure.com/" (to use Azure OpenAI)
         // }
-        IResourceBuilder<IResourceWithConnectionString> openAI;
-        if (builder.Configuration.GetConnectionString(openAIName) is not null)
+        if (builder.Configuration.GetConnectionString(openAIName) is string openAIConnectionString)
         {
-            openAI = builder.AddConnectionString(openAIName);
+            catalogApi.WithReference(
+                builder.AddConnectionString(textEmbeddingName, ReferenceExpression.Create($"{openAIConnectionString};Deployment={textEmbeddingModelName}")));
+            webApp.WithReference(
+                builder.AddConnectionString(chatName, ReferenceExpression.Create($"{openAIConnectionString};Deployment={chatModelName}")));
         }
         else
         {
@@ -60,18 +66,65 @@ internal static class Extensions
             //   "ResourceGroupPrefix": "<prefix>",
             //   "Location": "<location>"
             // }
-            openAI = builder.AddAzureOpenAI(openAIName)
-                .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-4o-mini", "2024-07-18"))
-                .AddDeployment(new AzureOpenAIDeployment(textEmbeddingModelName, "text-embedding-3-small", "1", skuCapacity: 20)); // 20k tokens per minute are needed to seed the initial embeddings
+
+            var openAI = builder.AddAzureOpenAI(openAIName);
+
+            // to use an existing Azure OpenAI resource via provisioning, add the following to the AppHost user secrets:
+            // "Parameters": {
+            //   "openaiName": "<Azure OpenAI resource name>",
+            //   "openaiResourceGroup": "<Azure OpenAI resource group>"
+            // }
+            // - or -
+            // leave the parameters out to create a new Azure OpenAI resource
+            if (builder.Configuration["Parameters:openaiName"] is not null &&
+                builder.Configuration["Parameters:openaiResourceGroup"] is not null)
+            {
+                openAI.AsExisting(
+                    builder.AddParameter("openaiName"),
+                    builder.AddParameter("openaiResourceGroup"));
+            }
+
+            var chat = openAI.AddDeployment(chatName, chatModelName, "2025-04-14")
+                .WithProperties(d =>
+                {
+                    d.DeploymentName = chatModelName;
+                    d.SkuName = "GlobalStandard";
+                    d.SkuCapacity = 50;
+                });
+            var textEmbedding = openAI.AddDeployment(textEmbeddingName, textEmbeddingModelName, "1")
+                .WithProperties(d =>
+                {
+                    d.DeploymentName = textEmbeddingModelName;
+                    d.SkuCapacity = 20; // 20k tokens per minute are needed to seed the initial embeddings
+                });
+
+            catalogApi.WithReference(textEmbedding);
+            webApp.WithReference(chat);
         }
 
-        catalogApi
-            .WithReference(openAI)
-            .WithEnvironment("AI__OPENAI__EMBEDDINGMODEL", textEmbeddingModelName);
+        return builder;
+    }
 
-        webApp
-            .WithReference(openAI)
-            .WithEnvironment("AI__OPENAI__CHATMODEL", chatModelName);
+    /// <summary>
+    /// Configures eShop projects to use Ollama for text embedding and chat.
+    /// </summary>
+    public static IDistributedApplicationBuilder AddOllama(this IDistributedApplicationBuilder builder,
+        IResourceBuilder<ProjectResource> catalogApi,
+        IResourceBuilder<ProjectResource> webApp)
+    {
+        var ollama = builder.AddOllama("ollama")
+            .WithDataVolume()
+            .WithGPUSupport()
+            .WithOpenWebUI();
+        var embeddings = ollama.AddModel("embedding", "all-minilm");
+        var chat = ollama.AddModel("chat", "llama3.1");
+
+        catalogApi.WithReference(embeddings)
+            .WithEnvironment("OllamaEnabled", "true")
+            .WaitFor(embeddings);
+        webApp.WithReference(chat)
+            .WithEnvironment("OllamaEnabled", "true")
+            .WaitFor(chat);
 
         return builder;
     }

@@ -11,20 +11,21 @@
 
   <ItemGroup>
 
-    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.0-rc.2.24503.2" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.0-rc.2.24503.2" />
-    <PackageReference Include="Microsoft.Maui.Controls.Maps" Version="9.0.0-rc.2.24503.2" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.40" />
+
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.40" />
+    <PackageReference Include="Microsoft.Maui.Controls.Maps" Version="9.0.40" />
     
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     
-    <PackageReference Include="coverlet.collector" Version="6.0.2">
+    <PackageReference Include="coverlet.collector" Version="6.0.4">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     
-    <PackageReference Include="MSTest.TestAdapter" Version="3.6.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.8.2" />
     
-    <PackageReference Include="MSTest.TestFramework" Version="3.6.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.8.2" />
   </ItemGroup>
 
   <ItemGroup>

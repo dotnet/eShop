@@ -61,19 +61,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.28.2" />
-    <PackageReference Include="Grpc.Net.Client" Version="2.66.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.67.0">
+    <PackageReference Include="Google.Protobuf" Version="3.29.3" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.67.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.69.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="IdentityModel.OidcClient" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.0-rc.2.24503.2" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.0-rc.2.24503.2" />
-    <PackageReference Include="Microsoft.Maui.Controls.Maps" Version="9.0.0-rc.2.24503.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.*-*" />
-
-    <PackageReference Include="CommunityToolkit.Maui" Version="9.1.0" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.30" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.30" />
+    <PackageReference Include="Microsoft.Maui.Controls.Maps" Version="9.0.30" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
+    <PackageReference Include="CommunityToolkit.Maui" Version="9.1.1" />
     <PackageReference Include="IdentityModel" Version="7.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
   </ItemGroup>

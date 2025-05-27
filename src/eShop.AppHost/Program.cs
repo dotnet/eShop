@@ -30,6 +30,7 @@ var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
     .WithReference(redis)
     .WithReference(rabbitMq).WaitFor(rabbitMq)
     .WithEnvironment("Identity__Url", identityEndpoint);
+redis.WithParentRelationship(basketApi);
 
 var catalogApi = builder.AddProject<Projects.Catalog_API>("catalog-api")
     .WithReference(rabbitMq).WaitFor(rabbitMq)
@@ -68,6 +69,7 @@ var webhooksClient = builder.AddProject<Projects.WebhookClient>("webhooksclient"
 
 var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
     .WithExternalHttpEndpoints()
+    .WithUrls(c => c.Urls.ForEach(u => u.DisplayText = $"Online Store ({u.Endpoint?.EndpointName})"))
     .WithReference(basketApi)
     .WithReference(catalogApi)
     .WithReference(orderingApi)
@@ -79,6 +81,12 @@ bool useOpenAI = false;
 if (useOpenAI)
 {
     builder.AddOpenAI(catalogApi, webApp);
+}
+
+bool useOllama = false;
+if (useOllama)
+{
+    builder.AddOllama(catalogApi, webApp);
 }
 
 // Wire up the callback urls (self referencing)
