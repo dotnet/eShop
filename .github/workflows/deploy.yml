@@ -1,0 +1,47 @@
+
+name: Build and Deploy .NET 9 to Azure Container Apps
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  IMAGE_NAME: myapp
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and publish .NET app
+        run: |
+          dotnet publish -c Release -o publish
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+
+      - name: Push Docker image to ACR
+        run: |
+          echo "${{ secrets.AZURE_CLIENT_SECRET }}" | docker login ${{ secrets.AZURE_CONTAINER_REGISTRY }} -u ${{ secrets.AZURE_CLIENT_ID }} --password-stdin
+          docker push ${{ secrets.AZURE_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      - name: Deploy to Azure Container Apps
+        run: |
+          az containerapp update             --name ${{ secrets.AZURE_CONTAINER_APP_NAME }}             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }}             --image ${{ secrets.AZURE_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
