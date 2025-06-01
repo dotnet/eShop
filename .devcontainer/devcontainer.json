@@ -49,9 +49,27 @@
 		"5243": {
 			"label": "Identity HTTPS"
 		},
+    "5221": {
+      "label": "Basket API HTTP"
+    },
+    "5222": {
+      "label": "Catalog API HTTP"
+    },
+		"5062": {
+			"label": "WebHooks Client HTTP"
+		},
 		"5223": {
 			"label": "Identity HTTP"
 		},
+    "5224": {
+      "label": "Ordering API HTTP"
+    },
+    "5226": {
+      "label": "Payment Processor HTTP"
+    },
+    "5227": {
+      "label": "WebHooks API HTTP"
+    },
 		"5045": {
 			"label": "Web App HTTP"
 		},
@@ -63,12 +81,22 @@
 		},
 		"19888": {
 			"label": "Dashboard HTTPS"
+		},
+		"11632": {
+			"label": "Mobile BFF HTTP"
+		},
+		"16888": {
+			"label": "Order Processor HTTP"
 		}
 	},
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "dotnet workload restore",
-	"postStartCommand": "dotnet dev-certs https --trust",
+	// "postCreateCommand": "dotnet workload restore",
+	"postStartCommand": {
+		"dotnet-workload-restore": ["dotnet", "workload", "restore"],
+    "dotent-dev-certs-trust": ["dotnet", "dev-certs", "https", "--trust"],
+		"copy-root-config": ["sh", "-c", "if [ -e /root/.vscode-remote ]; then cp -r /root/.vscode-remote /home/vscode/; fi"]
+  },
 
 	// Configure tool-specific properties.
 	// "customizations": {},
