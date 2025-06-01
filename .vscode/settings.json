@@ -1,3 +1,5 @@
 {
-  "dotnet.defaultSolution": "eShop.Web.slnf"
+  "dotnet.defaultSolution": "eShop.Web.slnf",
+  "github.copilot.nextEditSuggestions.enabled": true,
+  "github.copilot.nextEditSuggestions.fixes": true
 }

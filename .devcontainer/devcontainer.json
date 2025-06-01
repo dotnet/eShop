@@ -8,6 +8,11 @@
 			// Path is relative to the devcontainer.json file.
 			"dockerfile": "Dockerfile"
 	},
+
+	"hostRequirements": {
+    "storage": "64gb"
+  },
+
 	"features": {
 		"ghcr.io/devcontainers/features/azure-cli:1": {
 			"version": "latest"
@@ -28,7 +33,7 @@
 			"extensions": [
 				"ms-dotnettools.csharp",
 				"redhat.vscode-yaml",
-				"ms-azuretools.vscode-docker",
+				"ms-azuretools.vscode-containers",
 				"GitHub.vscode-pull-request-github",
 				"bierner.markdown-mermaid"
 			]
@@ -62,7 +67,8 @@
 	},
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "dotnet workload restore",	
+	"postCreateCommand": "dotnet workload restore",
+	"postStartCommand": "dotnet dev-certs https --trust",
 
 	// Configure tool-specific properties.
 	// "customizations": {},
