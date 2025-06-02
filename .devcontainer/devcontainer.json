@@ -8,11 +8,6 @@
 			// Path is relative to the devcontainer.json file.
 			"dockerfile": "Dockerfile"
 	},
-
-	"hostRequirements": {
-    "storage": "64gb"
-  },
-
 	"features": {
 		"ghcr.io/devcontainers/features/azure-cli:1": {
 			"version": "latest"
