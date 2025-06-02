@@ -89,7 +89,7 @@
 	// "postCreateCommand": "dotnet workload restore",
 	"postStartCommand": {
 		"dotnet-workload-restore": ["dotnet", "workload", "restore"],
-    "dotent-dev-certs-trust": ["dotnet", "dev-certs", "https", "--trust"],
+		"dotnet-dev-certs-trust": ["dotnet", "dev-certs", "https", "--trust"],
 		"copy-root-config": ["sh", "-c", "if [ -e /root/.vscode-remote ]; then cp -r /root/.vscode-remote /home/vscode/; fi"]
   },
 

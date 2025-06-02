@@ -18,7 +18,7 @@
       "env": {
         "ESHOP_USE_HTTP_ENDPOINTS": "1",
         "ASPIRE_ALLOW_UNSECURED_TRANSPORT": "true",
-		    "DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS ": "true"
+        "DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS": "true"
       },
     }
   ]
