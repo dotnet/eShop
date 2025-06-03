@@ -1,4 +1,9 @@
-﻿internal static class Extensions
+﻿using eShop.Ordering.API.Application.Commands.CancelOrder;
+using eShop.Ordering.API.Application.Commands.CreateOrder;
+using eShop.Ordering.API.Application.Commands.Identified;
+using eShop.Ordering.API.Application.Commands.ShipOrder;
+
+internal static class Extensions
 {
     public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
