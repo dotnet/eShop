@@ -1,4 +1,5 @@
 ﻿using eShop.AppHost;
+using Scalar.Aspire;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -76,6 +77,26 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
     .WithReference(rabbitMq).WaitFor(rabbitMq)
     .WithEnvironment("IdentityUrl", identityEndpoint);
 
+var scalar = builder.AddScalarApiReference(options =>
+{
+    options
+        .AddPreferredSecuritySchemes("oauth2")
+        .WithDefaultFonts(false);
+});
+
+scalar
+    .WithApiReference(catalogApi, options => options.AddDocuments("v1", "v2"))
+    .WithApiReference(orderingApi, options => options.AddImplicitFlow("oauth2", flow =>
+    {
+        flow.WithClientId("ordering-scalar")
+            .WithSelectedScopes("orders");
+    }))
+    .WithApiReference(webHooksApi, options => options.AddImplicitFlow("oauth2", flow =>
+    {
+        flow.WithClientId("webhooks-scalar")
+            .WithSelectedScopes("webhooks");
+    }));
+
 // set to true if you want to use OpenAI
 bool useOpenAI = false;
 if (useOpenAI)
@@ -94,11 +115,9 @@ webApp.WithEnvironment("CallBackUrl", webApp.GetEndpoint(launchProfileName));
 webhooksClient.WithEnvironment("CallBackUrl", webhooksClient.GetEndpoint(launchProfileName));
 
 // Identity has a reference to all of the apps for callback urls, this is a cyclic reference
-identityApi.WithEnvironment("BasketApiClient", basketApi.GetEndpoint("http"))
-           .WithEnvironment("OrderingApiClient", orderingApi.GetEndpoint("http"))
-           .WithEnvironment("WebhooksApiClient", webHooksApi.GetEndpoint("http"))
-           .WithEnvironment("WebhooksWebClient", webhooksClient.GetEndpoint(launchProfileName))
-           .WithEnvironment("WebAppClient", webApp.GetEndpoint(launchProfileName));
+identityApi.WithEnvironment("WebhooksWebClient", webhooksClient.GetEndpoint(launchProfileName))
+           .WithEnvironment("WebAppClient", webApp.GetEndpoint(launchProfileName))
+           .WithEnvironment("ScalarApiReference", scalar.GetEndpoint("http"));
 
 builder.Build().Run();
 
