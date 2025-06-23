@@ -28,7 +28,7 @@ public class BuyerAggregateTest
         var name = "fakeUser";
 
         //Act - Assert
-        Assert.ThrowsException<ArgumentNullException>(() => new Buyer(identity, name));
+        Assert.ThrowsExactly<ArgumentNullException>(() => new Buyer(identity, name));
     }
 
     [TestMethod]
@@ -84,7 +84,7 @@ public class BuyerAggregateTest
         var expiration = DateTime.UtcNow.AddYears(-1);
 
         //Act - Assert
-        Assert.ThrowsException<OrderingDomainException>(() => new PaymentMethod(cardTypeId, alias, cardNumber, securityNumber, cardHolderName, expiration));
+        Assert.ThrowsExactly<OrderingDomainException>(() => new PaymentMethod(cardTypeId, alias, cardNumber, securityNumber, cardHolderName, expiration));
     }
 
     [TestMethod]
@@ -125,6 +125,6 @@ public class BuyerAggregateTest
         fakeBuyer.VerifyOrAddPaymentMethod(cardTypeId, alias, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration, orderId);
 
         //Assert
-        Assert.AreEqual(fakeBuyer.DomainEvents.Count, expectedResult);
+        Assert.AreEqual(expectedResult, fakeBuyer.DomainEvents.Count);
     }
 }

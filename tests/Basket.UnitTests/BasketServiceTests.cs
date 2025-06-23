@@ -22,7 +22,7 @@ public class BasketServiceTests
         var response = await service.GetBasket(new GetBasketRequest(), serverCallContext);
 
         Assert.IsInstanceOfType<CustomerBasketResponse>(response);
-        Assert.AreEqual(response.Items.Count(), 0);
+        Assert.AreEqual(0, response.Items.Count());
     }
 
     [TestMethod]
@@ -40,7 +40,7 @@ public class BasketServiceTests
         var response = await service.GetBasket(new GetBasketRequest(), serverCallContext);
 
         Assert.IsInstanceOfType<CustomerBasketResponse>(response);
-        Assert.AreEqual(response.Items.Count(), 1);
+        Assert.AreEqual(1, response.Items.Count());
     }
 
     [TestMethod]
@@ -57,6 +57,6 @@ public class BasketServiceTests
         var response = await service.GetBasket(new GetBasketRequest(), serverCallContext);
 
         Assert.IsInstanceOfType<CustomerBasketResponse>(response);
-        Assert.AreEqual(response.Items.Count(), 0);
+        Assert.AreEqual(0, response.Items.Count());
     }
 }
