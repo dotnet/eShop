@@ -93,7 +93,6 @@
     <PackageVersion Include="Dapper" Version="2.1.35" />
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageVersion Include="Google.Protobuf" Version="3.30.2" />
-    <PackageVersion Include="MediatR" Version="12.4.1" />
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
     <PackageVersion Include="Polly.Core" Version="8.5.2" />
     <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
@@ -102,5 +101,7 @@
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.3.0" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.0.26"/>
+    <!-- Before license change -->
+    <PackageVersion Include="MediatR" Version="12.5.0" />
   </ItemGroup>
 </Project>
