@@ -143,28 +143,11 @@
                 },
                 new Client
                 {
-                    ClientId = "basketswaggerui",
-                    ClientName = "Basket Swagger UI",
+                    ClientId = "ordering-scalar",
+                    ClientName = "Ordering Scalar UI",
                     AllowedGrantTypes = GrantTypes.Implicit,
                     AllowAccessTokensViaBrowser = true,
-
-                    RedirectUris = { $"{configuration["BasketApiClient"]}/swagger/oauth2-redirect.html" },
-                    PostLogoutRedirectUris = { $"{configuration["BasketApiClient"]}/swagger/" },
-
-                    AllowedScopes =
-                    {
-                        "basket"
-                    }
-                },
-                new Client
-                {
-                    ClientId = "orderingswaggerui",
-                    ClientName = "Ordering Swagger UI",
-                    AllowedGrantTypes = GrantTypes.Implicit,
-                    AllowAccessTokensViaBrowser = true,
-
-                    RedirectUris = { $"{configuration["OrderingApiClient"]}/swagger/oauth2-redirect.html" },
-                    PostLogoutRedirectUris = { $"{configuration["OrderingApiClient"]}/swagger/" },
+                    RedirectUris = [$"{configuration["ScalarApiReference"]}/"],
 
                     AllowedScopes =
                     {
@@ -173,13 +156,11 @@
                 },
                 new Client
                 {
-                    ClientId = "webhooksswaggerui",
-                    ClientName = "WebHooks Service Swagger UI",
+                    ClientId = "webhooks-scalar",
+                    ClientName = "WebHooks Scalar UI",
                     AllowedGrantTypes = GrantTypes.Implicit,
                     AllowAccessTokensViaBrowser = true,
-
-                    RedirectUris = { $"{configuration["WebhooksApiClient"]}/swagger/oauth2-redirect.html" },
-                    PostLogoutRedirectUris = { $"{configuration["WebhooksApiClient"]}/swagger/" },
+                    RedirectUris = [$"{configuration["ScalarApiReference"]}/"],
 
                     AllowedScopes =
                     {
