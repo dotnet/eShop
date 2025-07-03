@@ -108,7 +108,6 @@ public static class CatalogApi
             .WithName("DeleteItem")
             .WithSummary("Delete catalog item")
             .WithDescription("Delete the specified catalog item");
-
         // TradeGecko integration endpoints
         api.MapGet("/tradegecko/products", GetTradeGeckoProducts)
             .WithName("GetTradeGeckoProducts")
