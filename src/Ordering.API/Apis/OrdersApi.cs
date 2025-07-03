@@ -16,6 +16,27 @@ public static class OrdersApi
         api.MapPost("/draft", CreateOrderDraftAsync);
         api.MapPost("/", CreateOrderAsync);
 
+        // TradeGecko integration endpoints
+        api.MapGet("/tradegecko/orders", GetTradeGeckoOrders)
+            .WithName("GetTradeGeckoOrders")
+            .WithSummary("Get orders from TradeGecko")
+            .WithDescription("Fetch orders from TradeGecko API");
+        
+        api.MapGet("/tradegecko/orders/{orderId:int}", GetTradeGeckoOrder)
+            .WithName("GetTradeGeckoOrder")
+            .WithSummary("Get order from TradeGecko")
+            .WithDescription("Fetch a specific order from TradeGecko API");
+        
+        api.MapPost("/tradegecko/orders", CreateTradeGeckoOrder)
+            .WithName("CreateTradeGeckoOrder")
+            .WithSummary("Create order in TradeGecko")
+            .WithDescription("Create a new order in TradeGecko API");
+        
+        api.MapPut("/tradegecko/orders/{orderId:int}/status", UpdateTradeGeckoOrderStatus)
+            .WithName("UpdateTradeGeckoOrderStatus")
+            .WithSummary("Update order status in TradeGecko")
+            .WithDescription("Update financial and fulfillment status for an order in TradeGecko");
+
         return api;
     }
 
@@ -183,3 +204,61 @@ public record CreateOrderRequest(
     int CardTypeId,
     string Buyer,
     List<BasketItem> Items);
+
+    // TradeGecko integration endpoint implementations
+    public static async Task<Ok<List<Models.TradeGeckoOrder>>> GetTradeGeckoOrders(
+        [AsParameters] OrderServices services,
+        [Description("Number of orders to return")] int? limit,
+        [Description("Page number for pagination")] int? page)
+    {
+        var tradeGeckoService = services.ServiceProvider.GetRequiredService<ITradeGeckoService>();
+        var orders = await tradeGeckoService.GetOrdersAsync(limit, page);
+        return TypedResults.Ok(orders);
+    }
+
+    public static async Task<Results<Ok<Models.TradeGeckoOrder>, NotFound>> GetTradeGeckoOrder(
+        [AsParameters] OrderServices services,
+        [Description("The TradeGecko order ID")] int orderId)
+    {
+        var tradeGeckoService = services.ServiceProvider.GetRequiredService<ITradeGeckoService>();
+        var order = await tradeGeckoService.GetOrderAsync(orderId);
+        
+        if (order == null)
+        {
+            return TypedResults.NotFound();
+        }
+        
+        return TypedResults.Ok(order);
+    }
+
+    public static async Task<Results<Ok<Models.TradeGeckoOrder>, BadRequest<string>>> CreateTradeGeckoOrder(
+        [AsParameters] OrderServices services,
+        Models.TradeGeckoOrder order)
+    {
+        var tradeGeckoService = services.ServiceProvider.GetRequiredService<ITradeGeckoService>();
+        var createdOrder = await tradeGeckoService.CreateOrderAsync(order);
+        
+        if (createdOrder == null)
+        {
+            return TypedResults.BadRequest("Failed to create order in TradeGecko");
+        }
+        
+        return TypedResults.Ok(createdOrder);
+    }
+
+    public static async Task<Results<Ok<bool>, NotFound>> UpdateTradeGeckoOrderStatus(
+        [AsParameters] OrderServices services,
+        [Description("The TradeGecko order ID")] int orderId,
+        [Description("The financial status")] string financialStatus,
+        [Description("The fulfillment status")] string fulfillmentStatus)
+    {
+        var tradeGeckoService = services.ServiceProvider.GetRequiredService<ITradeGeckoService>();
+        var success = await tradeGeckoService.UpdateOrderStatusAsync(orderId, financialStatus, fulfillmentStatus);
+        
+        if (!success)
+        {
+            return TypedResults.NotFound();
+        }
+        
+        return TypedResults.Ok(success);
+    }

@@ -35,6 +35,12 @@ public static class Extensions
         builder.Services.AddOptions<CatalogOptions>()
             .BindConfiguration(nameof(CatalogOptions));
 
+        // Add TradeGecko services
+        builder.Services.AddOptions<TradeGeckoOptions>()
+            .BindConfiguration(TradeGeckoOptions.SectionName);
+        
+        builder.Services.AddHttpClient<ITradeGeckoService, TradeGeckoService>();
+
         if (builder.Configuration["OllamaEnabled"] is string ollamaEnabled && bool.Parse(ollamaEnabled))
         {
             builder.AddOllamaApiClient("embedding")

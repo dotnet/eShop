@@ -29,6 +29,12 @@
         services.AddHttpContextAccessor();
         services.AddTransient<IIdentityService, IdentityService>();
 
+        // Add TradeGecko services
+        services.AddOptions<TradeGeckoOptions>()
+            .BindConfiguration(TradeGeckoOptions.SectionName);
+        
+        services.AddHttpClient<ITradeGeckoService, TradeGeckoService>();
+
         // Configure mediatR
         services.AddMediatR(cfg =>
         {
