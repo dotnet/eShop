@@ -5,7 +5,7 @@
     <AspnetVersion>9.0.5</AspnetVersion>
     <MicrosoftExtensionsVersion>9.0.5</MicrosoftExtensionsVersion>
     <MicrosoftExtensionsAIVersion>9.5.0</MicrosoftExtensionsAIVersion>
-    <AspireVersion>9.3.0</AspireVersion>
+    <AspireVersion>9.3.1</AspireVersion>
     <AspireUnstablePackagesVersion>9.3.0-preview.1.25265.20</AspireUnstablePackagesVersion>
     <GrpcVersion>2.71.0</GrpcVersion>
     <DuendeVersion>7.1.1</DuendeVersion>
