@@ -1,7 +1,6 @@
-﻿namespace eShop.Identity.API.Models.AccountViewModels
+﻿namespace eShop.Identity.API.Models.AccountViewModels;
+
+public record LogoutViewModel
 {
-    public record LogoutViewModel
-    {
-        public string LogoutId { get; set; }
-    }
+    public string LogoutId { get; set; }
 }
