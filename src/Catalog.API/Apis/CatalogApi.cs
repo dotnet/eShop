@@ -30,6 +30,31 @@ public static class CatalogApi
         api.MapPost("/items", CreateItem);
         api.MapDelete("/items/{id:int}", DeleteItemById);
 
+        // TradeGecko integration endpoints
+        api.MapGet("/tradegecko/products", GetTradeGeckoProducts)
+            .WithName("GetTradeGeckoProducts")
+            .WithSummary("Get products from TradeGecko")
+            .WithDescription("Fetch products from TradeGecko API")
+            .WithTags("TradeGecko");
+
+        api.MapGet("/tradegecko/products/{productId:int}", GetTradeGeckoProduct)
+            .WithName("GetTradeGeckoProduct")
+            .WithSummary("Get product from TradeGecko")
+            .WithDescription("Fetch a specific product from TradeGecko API")
+            .WithTags("TradeGecko");
+
+        api.MapGet("/tradegecko/products/{productId:int}/variants", GetTradeGeckoProductVariants)
+            .WithName("GetTradeGeckoProductVariants")
+            .WithSummary("Get product variants from TradeGecko")
+            .WithDescription("Fetch variants for a specific product from TradeGecko API")
+            .WithTags("TradeGecko");
+
+        api.MapPut("/tradegecko/variants/{variantId:int}/stock", UpdateTradeGeckoVariantStock)
+            .WithName("UpdateTradeGeckoVariantStock")
+            .WithSummary("Update variant stock in TradeGecko")
+            .WithDescription("Update stock level for a specific variant in TradeGecko")
+            .WithTags("TradeGecko");
+
         return app;
     }
 
@@ -312,4 +337,55 @@ public static class CatalogApi
 
     public static string GetFullPath(string contentRootPath, string pictureFileName) =>
         Path.Combine(contentRootPath, "Pics", pictureFileName);
+
+    // TradeGecko integration endpoint implementations
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    public static async Task<Ok<List<Model.TradeGeckoProduct>>> GetTradeGeckoProducts(
+        [AsParameters] CatalogServices services,
+        [System.ComponentModel.Description("Number of products to return")] int? limit,
+        [System.ComponentModel.Description("Page number for pagination")] int? page)
+    {
+        var tradeGeckoService = services.ServiceProvider.GetRequiredService<Services.ITradeGeckoService>();
+        var products = await tradeGeckoService.GetProductsAsync(limit, page);
+        return TypedResults.Ok(products);
+    }
+
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    public static async Task<Results<Ok<Model.TradeGeckoProduct>, NotFound>> GetTradeGeckoProduct(
+        [AsParameters] CatalogServices services,
+        [System.ComponentModel.Description("The TradeGecko product ID")] int productId)
+    {
+        var tradeGeckoService = services.ServiceProvider.GetRequiredService<Services.ITradeGeckoService>();
+        var product = await tradeGeckoService.GetProductAsync(productId);
+        if (product == null)
+        {
+            return TypedResults.NotFound();
+        }
+        return TypedResults.Ok(product);
+    }
+
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    public static async Task<Ok<List<Model.TradeGeckoProductVariant>>> GetTradeGeckoProductVariants(
+        [AsParameters] CatalogServices services,
+        [System.ComponentModel.Description("The TradeGecko product ID")] int productId)
+    {
+        var tradeGeckoService = services.ServiceProvider.GetRequiredService<Services.ITradeGeckoService>();
+        var variants = await tradeGeckoService.GetProductVariantsAsync(productId);
+        return TypedResults.Ok(variants);
+    }
+
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    public static async Task<Results<Ok<bool>, NotFound>> UpdateTradeGeckoVariantStock(
+        [AsParameters] CatalogServices services,
+        [System.ComponentModel.Description("The TradeGecko variant ID")] int variantId,
+        [System.ComponentModel.Description("The new stock level")] int stockLevel)
+    {
+        var tradeGeckoService = services.ServiceProvider.GetRequiredService<Services.ITradeGeckoService>();
+        var success = await tradeGeckoService.UpdateVariantStockAsync(variantId, stockLevel);
+        if (!success)
+        {
+            return TypedResults.NotFound();
+        }
+        return TypedResults.Ok(success);
+    }
 }

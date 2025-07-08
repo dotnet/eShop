@@ -28,6 +28,11 @@ public static class Extensions
         builder.Services.AddOptions<CatalogOptions>()
             .BindConfiguration(nameof(CatalogOptions));
 
+        // Add TradeGecko services
+        builder.Services.AddOptions<TradeGeckoOptions>()
+            .BindConfiguration(TradeGeckoOptions.SectionName);
+        builder.Services.AddHttpClient<ITradeGeckoService, TradeGeckoService>();
+
         if (builder.Configuration["AI:Onnx:EmbeddingModelPath"] is string modelPath &&
             builder.Configuration["AI:Onnx:EmbeddingVocabPath"] is string vocabPath)
         {

@@ -49,6 +49,11 @@
         services.AddScoped<IBuyerRepository, BuyerRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IRequestManager, RequestManager>();
+
+        // Add TradeGecko services
+        services.AddOptions<TradeGeckoOptions>()
+            .BindConfiguration(TradeGeckoOptions.SectionName);
+        services.AddHttpClient<ITradeGeckoService, TradeGeckoService>();
     }
 
     private static void AddEventBusSubscriptions(this IEventBusBuilder eventBus)
