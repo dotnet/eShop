@@ -1,3 +1,17 @@
+## 🎓 Projet de Fin d’Études – Déploiement CI/CD & Kubernetes
+
+Ce dépôt est un fork du projet officiel [dotnet/eShop](https://github.com/dotnet/eShop).  
+Il sert de base pour un Projet de Fin d’Études (PFE) consacré à :
+
+- La mise en place d’un pipeline **CI/CD avec Jenkins & GitHub Actions**
+- Le **déploiement de l’application sur Kubernetes**
+- La gestion des images Docker via un **Docker Hub personnel : [`ealinour`](https://hub.docker.com/u/ealinour)**
+
+Toutes les étapes seront documentées et automatisées progressivement.
+
+
+
+
 # eShop Reference Application - "AdventureWorks"
 
 A reference .NET application implementing an e-commerce website using a services-based architecture using [.NET Aspire](https://learn.microsoft.com/dotnet/aspire/).
@@ -140,3 +154,4 @@ The sample catalog data is defined in [catalog.json](https://github.com/dotnet/e
 ## eShop on Azure
 
 For a version of this app configured for deployment on Azure, please view [the eShop on Azure](https://github.com/Azure-Samples/eShopOnAzure) repo.
+
