@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     environment {
-        HELM_KUBECONFIG_CREDENTIAL_ID = 'kubeconfig-dev'
-        HELM_CHART_DIR = './eshop/helm'
+        KUBECONFIG_CREDENTIALS = 'kubeconfig-dev'
     }
 
     stages {
@@ -13,28 +12,39 @@ pipeline {
             }
         }
 
-        stage('Deploy DEV') {
+        stage('Show workspace files') {
             steps {
-                withCredentials([file(credentialsId: env.HELM_KUBECONFIG_CREDENTIAL_ID, variable: 'KUBECONFIG')]) {
-                    sh """
-                        helm upgrade --install eshop $HELM_CHART_DIR -f values-dev.yaml -n eshop-dev --create-namespace --kubeconfig \$KUBECONFIG
-                    """
+                sh 'pwd'
+                sh 'ls -l'
+                sh 'ls -l helm'
+                sh 'ls -l helm/eshop'
+                sh 'ls -l helm/eshop/templates'
+                sh 'ls -l *.yaml'
+            }
+        }
+
+        stage('Deploy to DEV') {
+            steps {
+                withCredentials([file(credentialsId: env.KUBECONFIG_CREDENTIALS, variable: 'KUBECONFIG')]) {
+                    sh '''
+                    helm upgrade --install eshop ./helm/eshop -f values-dev.yaml -n eshop-dev --create-namespace --kubeconfig $KUBECONFIG
+                    '''
                 }
             }
         }
 
-        stage('Approval Gate') {
+        stage('Approval before PROD') {
             steps {
-                input message: 'Go Prod ?', ok: 'Deploy Prod'
+                input message: 'Valider le déploiement en PROD ?'
             }
         }
 
-        stage('Deploy PROD') {
+        stage('Deploy to PROD') {
             steps {
-                withCredentials([file(credentialsId: env.HELM_KUBECONFIG_CREDENTIAL_ID, variable: 'KUBECONFIG')]) {
-                    sh """
-                        helm upgrade --install eshop $HELM_CHART_DIR -f values-prod.yaml -n eshop-prod --create-namespace --kubeconfig \$KUBECONFIG
-                    """
+                withCredentials([file(credentialsId: env.KUBECONFIG_CREDENTIALS, variable: 'KUBECONFIG')]) {
+                    sh '''
+                    helm upgrade --install eshop ./helm/eshop -f values-prod.yaml -n eshop-prod --create-namespace --kubeconfig $KUBECONFIG
+                    '''
                 }
             }
         }
@@ -42,10 +52,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Deployment pipeline completed successfully.'
+            echo '✅ Pipeline de déploiement réussi.'
         }
         failure {
-            echo '❌ Deployment pipeline failed.'
+            echo '❌ Pipeline de déploiement échoué.'
         }
     }
 }
