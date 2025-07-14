@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        KUBECONFIG = credentials('kubeconfig-credential-id') // adapte l’ID à ton Jenkins
-    }
-
     stages {
         stage('Declarative: Checkout SCM') {
             steps {
@@ -12,42 +8,41 @@ pipeline {
             }
         }
 
-        stage('Checkout') {
+        stage('Debug Workspace') {
             steps {
-                checkout scm
-            }
-        }
-
-        stage('Debug ls') {
-            steps {
+                echo "Liste racine workspace:"
                 sh 'ls -l'
-                sh 'ls -l helm'
+                echo "Liste dossier helm/eshop:"
                 sh 'ls -l helm/eshop'
+                echo "Liste dossier helm/eshop/templates:"
                 sh 'ls -l helm/eshop/templates'
             }
         }
 
         stage('Deploy DEV') {
             steps {
-                withCredentials([file(credentialsId: 'kubeconfig-credential-id', variable: 'KUBECONFIG')]) {
+                withCredentials([file(credentialsId: 'kubeconfig-dev', variable: 'KUBECONFIG')]) {
                     sh '''
-                    helm upgrade --install eshop ./helm/eshop -f values-dev.yaml -n eshop-dev --create-namespace --kubeconfig $KUBECONFIG
+                        helm upgrade --install eshop ./helm/eshop -f values-dev.yaml -n eshop-dev --create-namespace --kubeconfig $KUBECONFIG
                     '''
                 }
             }
         }
 
         stage('Approval Gate') {
+            when {
+                expression { false }
+            }
             steps {
-                input message: 'Approve deployment to PROD?', ok: 'Deploy'
+                input message: 'Approve deployment to PROD?'
             }
         }
 
         stage('Deploy PROD') {
             steps {
-                withCredentials([file(credentialsId: 'kubeconfig-credential-id', variable: 'KUBECONFIG')]) {
+                withCredentials([file(credentialsId: 'kubeconfig-dev', variable: 'KUBECONFIG')]) {
                     sh '''
-                    helm upgrade --install eshop ./helm/eshop -f values-prod.yaml -n eshop-prod --create-namespace --kubeconfig $KUBECONFIG
+                        helm upgrade --install eshop ./helm/eshop -f values-prod.yaml -n eshop-prod --create-namespace --kubeconfig $KUBECONFIG
                     '''
                 }
             }
@@ -55,6 +50,9 @@ pipeline {
     }
 
     post {
+        success {
+            echo '✅ Deployment pipeline succeeded.'
+        }
         failure {
             echo '❌ Deployment pipeline failed.'
         }
