@@ -1,0 +1,62 @@
+pipeline {
+    agent any
+
+    environment {
+        KUBECONFIG = credentials('kubeconfig-credential-id') // adapte l’ID à ton Jenkins
+    }
+
+    stages {
+        stage('Declarative: Checkout SCM') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Debug ls') {
+            steps {
+                sh 'ls -l'
+                sh 'ls -l helm'
+                sh 'ls -l helm/eshop'
+                sh 'ls -l helm/eshop/templates'
+            }
+        }
+
+        stage('Deploy DEV') {
+            steps {
+                withCredentials([file(credentialsId: 'kubeconfig-credential-id', variable: 'KUBECONFIG')]) {
+                    sh '''
+                    helm upgrade --install eshop ./helm/eshop -f values-dev.yaml -n eshop-dev --create-namespace --kubeconfig $KUBECONFIG
+                    '''
+                }
+            }
+        }
+
+        stage('Approval Gate') {
+            steps {
+                input message: 'Approve deployment to PROD?', ok: 'Deploy'
+            }
+        }
+
+        stage('Deploy PROD') {
+            steps {
+                withCredentials([file(credentialsId: 'kubeconfig-credential-id', variable: 'KUBECONFIG')]) {
+                    sh '''
+                    helm upgrade --install eshop ./helm/eshop -f values-prod.yaml -n eshop-prod --create-namespace --kubeconfig $KUBECONFIG
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        failure {
+            echo '❌ Deployment pipeline failed.'
+        }
+    }
+}
