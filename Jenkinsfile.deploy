@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    environment {
+        HELM_CHART_DIR = './helm'
+        KUBECONFIG_CREDENTIAL_ID = 'kubeconfig-dev' // ID du credential dans Jenkins
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Deploy DEV') {
+            steps {
+                withCredentials([file(credentialsId: env.HELM_KUBECONFIG_CREDENTIAL_ID, variable: 'KUBECONFIG')]) {
+                    sh """
+                        helm upgrade --install eshop $HELM_CHART_DIR -f values-dev.yaml -n eshop-dev --create-namespace --kubeconfig $KUBECONFIG
+                    """
+                }
+            }
+        }
+
+        stage('Approval Gate') {
+            steps {
+                input message: 'Go Prod ?', ok: 'Deploy Prod'
+            }
+        }
+
+        stage('Deploy PROD') {
+            steps {
+                withCredentials([file(credentialsId: env.HELM_KUBECONFIG_CREDENTIAL_ID, variable: 'KUBECONFIG')]) {
+                    sh """
+                        helm upgrade --install eshop $HELM_CHART_DIR -f values-prod.yaml -n eshop-prod --create-namespace --kubeconfig $KUBECONFIG
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Deployment pipeline completed successfully.'
+        }
+        failure {
+            echo '❌ Deployment pipeline failed.'
+        }
+    }
+}
