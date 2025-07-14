@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        KUBECONFIG_CREDENTIALS = 'kubeconfig-dev'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -8,19 +12,20 @@ pipeline {
             }
         }
 
-        stage('Debug Workspace') {
+        stage('Show workspace files') {
             steps {
                 sh 'pwd'
                 sh 'ls -l'
                 sh 'ls -l helm'
                 sh 'ls -l helm/eshop'
                 sh 'ls -l helm/eshop/templates'
+                sh 'ls -l *.yaml'
             }
         }
 
-        stage('Deploy DEV') {
+        stage('Deploy to DEV') {
             steps {
-                withCredentials([file(credentialsId: 'kubeconfig-dev', variable: 'KUBECONFIG')]) {
+                withCredentials([file(credentialsId: env.KUBECONFIG_CREDENTIALS, variable: 'KUBECONFIG')]) {
                     sh '''
                     helm upgrade --install eshop ./helm/eshop -f values-dev.yaml -n eshop-dev --create-namespace --kubeconfig $KUBECONFIG
                     '''
@@ -28,15 +33,15 @@ pipeline {
             }
         }
 
-        stage('Approval Gate') {
+        stage('Approval before PROD') {
             steps {
-                input message: 'Approve deployment to PROD?'
+                input message: 'Valider le déploiement en PROD ?'
             }
         }
 
-        stage('Deploy PROD') {
+        stage('Deploy to PROD') {
             steps {
-                withCredentials([file(credentialsId: 'kubeconfig-dev', variable: 'KUBECONFIG')]) {
+                withCredentials([file(credentialsId: env.KUBECONFIG_CREDENTIALS, variable: 'KUBECONFIG')]) {
                     sh '''
                     helm upgrade --install eshop ./helm/eshop -f values-prod.yaml -n eshop-prod --create-namespace --kubeconfig $KUBECONFIG
                     '''
@@ -47,10 +52,11 @@ pipeline {
 
     post {
         success {
-            echo '✅ Deployment pipeline succeeded.'
+            echo '✅ Pipeline de déploiement réussi.'
         }
         failure {
-            echo '❌ Deployment pipeline failed.'
+            echo '❌ Pipeline de déploiement échoué.'
         }
     }
 }
+
