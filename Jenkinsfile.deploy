@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        HELM_CHART_DIR = "./helm/eshop"
-        HELM_KUBECONFIG_CREDENTIAL_ID = "kubeconfig-dev"  // Vérifie que cet ID correspond à ta credential Jenkins
+        HELM_KUBECONFIG_CREDENTIAL_ID = 'kubeconfig-dev'
+        HELM_CHART_DIR = './eshop/helm'
     }
 
     stages {
@@ -17,7 +17,7 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: env.HELM_KUBECONFIG_CREDENTIAL_ID, variable: 'KUBECONFIG')]) {
                     sh """
-                        helm upgrade --install eshop ${HELM_CHART_DIR} -f values-dev.yaml -n eshop-dev --create-namespace --kubeconfig $KUBECONFIG
+                        helm upgrade --install eshop $HELM_CHART_DIR -f values-dev.yaml -n eshop-dev --create-namespace --kubeconfig \$KUBECONFIG
                     """
                 }
             }
@@ -33,7 +33,7 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: env.HELM_KUBECONFIG_CREDENTIAL_ID, variable: 'KUBECONFIG')]) {
                     sh """
-                        helm upgrade --install eshop ${HELM_CHART_DIR} -f values-prod.yaml -n eshop-prod --create-namespace --kubeconfig $KUBECONFIG
+                        helm upgrade --install eshop $HELM_CHART_DIR -f values-prod.yaml -n eshop-prod --create-namespace --kubeconfig \$KUBECONFIG
                     """
                 }
             }
