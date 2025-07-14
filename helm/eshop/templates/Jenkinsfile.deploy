@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        // Variable d'environnement pour Kubernetes config
         KUBECONFIG = ''
     }
 
