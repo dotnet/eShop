@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        KUBECONFIG = ''
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -26,7 +22,7 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'kubeconfig-dev', variable: 'KUBECONFIG')]) {
                     sh '''
-                        helm upgrade --install eshop ./helm/eshop -f values-dev.yaml -n eshop-dev --create-namespace --kubeconfig $KUBECONFIG
+                    helm upgrade --install eshop ./helm/eshop -f values-dev.yaml -n eshop-dev --create-namespace --kubeconfig $KUBECONFIG
                     '''
                 }
             }
@@ -42,7 +38,7 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'kubeconfig-dev', variable: 'KUBECONFIG')]) {
                     sh '''
-                        helm upgrade --install eshop ./helm/eshop -f values-prod.yaml -n eshop-prod --create-namespace --kubeconfig $KUBECONFIG
+                    helm upgrade --install eshop ./helm/eshop -f values-prod.yaml -n eshop-prod --create-namespace --kubeconfig $KUBECONFIG
                     '''
                 }
             }
