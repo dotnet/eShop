@@ -1,8 +1,13 @@
 pipeline {
     agent any
 
+    environment {
+        // Variable d'environnement pour Kubernetes config
+        KUBECONFIG = ''
+    }
+
     stages {
-        stage('Declarative: Checkout SCM') {
+        stage('Checkout') {
             steps {
                 checkout scm
             }
@@ -10,11 +15,10 @@ pipeline {
 
         stage('Debug Workspace') {
             steps {
-                echo "Liste racine workspace:"
+                sh 'pwd'
                 sh 'ls -l'
-                echo "Liste dossier helm/eshop:"
+                sh 'ls -l helm'
                 sh 'ls -l helm/eshop'
-                echo "Liste dossier helm/eshop/templates:"
                 sh 'ls -l helm/eshop/templates'
             }
         }
@@ -30,9 +34,6 @@ pipeline {
         }
 
         stage('Approval Gate') {
-            when {
-                expression { false }
-            }
             steps {
                 input message: 'Approve deployment to PROD?'
             }
