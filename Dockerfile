@@ -10,14 +10,50 @@ COPY Directory.Build.targets ./
 COPY Directory.Packages.props ./
 COPY nuget.config ./
 
-# Copy all project files for dependency restoration
-COPY src/ ./src/
-COPY tests/ ./tests/
+# Copy only the non-MAUI projects for dependency restoration
+COPY src/eShop.AppHost/ ./src/eShop.AppHost/
+COPY src/Basket.API/ ./src/Basket.API/
+COPY src/Catalog.API/ ./src/Catalog.API/
+COPY src/eShop.ServiceDefaults/ ./src/eShop.ServiceDefaults/
+COPY src/EventBus/ ./src/EventBus/
+COPY src/EventBusRabbitMQ/ ./src/EventBusRabbitMQ/
+COPY src/Identity.API/ ./src/Identity.API/
+COPY src/IntegrationEventLogEF/ ./src/IntegrationEventLogEF/
+COPY src/Mobile.Bff.Shopping/ ./src/Mobile.Bff.Shopping/
+COPY src/Ordering.API/ ./src/Ordering.API/
+COPY src/OrderProcessor/ ./src/OrderProcessor/
+COPY src/Ordering.Domain/ ./src/Ordering.Domain/
+COPY src/Ordering.Infrastructure/ ./src/Ordering.Infrastructure/
+COPY src/PaymentProcessor/ ./src/PaymentProcessor/
+COPY src/WebApp/ ./src/WebApp/
+COPY src/WebAppComponents/ ./src/WebAppComponents/
+COPY src/WebhookClient/ ./src/WebhookClient/
+COPY src/Webhooks.API/ ./src/Webhooks.API/
 
-# Restore dependencies (excluding MAUI projects that don't work on Linux)
-RUN dotnet restore --ignore-failed-sources
+# Copy only the non-MAUI test projects
+COPY tests/Basket.UnitTests/ ./tests/Basket.UnitTests/
+COPY tests/Catalog.FunctionalTests/ ./tests/Catalog.FunctionalTests/
+COPY tests/Ordering.FunctionalTests/ ./tests/Ordering.FunctionalTests/
+COPY tests/Ordering.UnitTests/ ./tests/Ordering.UnitTests/
 
-# Copy the rest of the code
+# Restore dependencies for non-MAUI projects only
+RUN dotnet restore src/eShop.AppHost/eShop.AppHost.csproj
+RUN dotnet restore src/Basket.API/Basket.API.csproj
+RUN dotnet restore src/Catalog.API/Catalog.API.csproj
+RUN dotnet restore src/Identity.API/Identity.API.csproj
+RUN dotnet restore src/Mobile.Bff.Shopping/Mobile.Bff.Shopping.csproj
+RUN dotnet restore src/Ordering.API/Ordering.API.csproj
+RUN dotnet restore src/OrderProcessor/OrderProcessor.csproj
+RUN dotnet restore src/PaymentProcessor/PaymentProcessor.csproj
+RUN dotnet restore src/WebApp/WebApp.csproj
+RUN dotnet restore src/WebhookClient/WebhookClient.csproj
+RUN dotnet restore src/Webhooks.API/Webhooks.API.csproj
+RUN dotnet restore tests/Basket.UnitTests/Basket.UnitTests.csproj
+RUN dotnet restore tests/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj
+RUN dotnet restore tests/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj
+RUN dotnet restore tests/Ordering.UnitTests/Ordering.UnitTests.csproj
+
+# Copy the rest of the code (excluding MAUI projects)
 COPY . .
 
 # Install ReportGenerator tool for test coverage reports
