@@ -1,0 +1,27 @@
+{
+  "enabled": "true",
+  "increase-coverage": {
+    "project-name": "dotnet-eshop",
+    "target-branches": [
+      "main",
+      "master"
+    ],
+    "test-env-docker-stage": "test",
+    "build-test-env-docker-stage-script-path": "tool/build-test-env-docker-stage.sh",
+    "test-files-folders": [
+      "tests/Ordering.UnitTests/Domain/OrderAggregateTest.cs"
+    ],
+    "source-test-file-paths": [
+      {
+        "source-file-path": "src/Ordering.Domain/AggregatesModel/OrderAggregate/Order.cs",
+        "test-file-path": "tests/Ordering.UnitTests/Domain/OrderAggregateTest.cs"
+      }
+    ],
+    "test-command": "dotnet test --collect:'XPlat Code Coverage' --results-directory ./tests/TestResults --logger trx --logger 'console;verbosity=detailed' && find ./tests/TestResults -name 'coverage.cobertura.xml' -exec cp {} ./tests/TestResults/coverage.cobertura.xml \\; && reportgenerator -reports:./tests/TestResults/coverage.cobertura.xml -targetdir:./tests/TestResults/CoverageReport -reporttypes:'Html;Cobertura' && echo 'Coverage report generated in ./tests/TestResults/CoverageReport'",
+    "coverage-type": "cobertura",
+    "code-coverage-report-path": "tests/TestResults/coverage.cobertura.xml",
+    "desired-coverage": 85,
+    "max-iterations": 1,
+    "max-number-of-test-cases": 8
+  }
+}
