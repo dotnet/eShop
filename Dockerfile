@@ -10,7 +10,7 @@ COPY Directory.Build.targets ./
 COPY Directory.Packages.props ./
 COPY nuget.config ./
 
-# Copy all source project files
+# Copy all source project files (excluding MAUI projects)
 COPY src/eShop.AppHost/eShop.AppHost.csproj ./src/eShop.AppHost/
 COPY src/Basket.API/Basket.API.csproj ./src/Basket.API/
 COPY src/Catalog.API/Catalog.API.csproj ./src/Catalog.API/
@@ -29,21 +29,23 @@ COPY src/WebApp/WebApp.csproj ./src/WebApp/
 COPY src/WebhookClient/WebhookClient.csproj ./src/WebhookClient/
 COPY src/Webhooks.API/Webhooks.API.csproj ./src/Webhooks.API/
 COPY src/WebAppComponents/WebAppComponents.csproj ./src/WebAppComponents/
-COPY src/HybridApp/HybridApp.csproj ./src/HybridApp/
-COPY src/ClientApp/ClientApp.csproj ./src/ClientApp/
+# Excluding MAUI projects: HybridApp and ClientApp
 
-# Copy all test project files
+# Copy test project files (excluding MAUI test projects)
 COPY tests/Basket.UnitTests/Basket.UnitTests.csproj ./tests/Basket.UnitTests/
 COPY tests/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj ./tests/Catalog.FunctionalTests/
 COPY tests/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj ./tests/Ordering.FunctionalTests/
 COPY tests/Ordering.UnitTests/Ordering.UnitTests.csproj ./tests/Ordering.UnitTests/
-COPY tests/ClientApp.UnitTests/ClientApp.UnitTests.csproj ./tests/ClientApp.UnitTests/
+# Excluding MAUI test project: ClientApp.UnitTests
 
 # Restore dependencies
 RUN dotnet restore
 
-# Copy the rest of the code
-COPY . .
+# Copy the rest of the code (excluding MAUI projects)
+COPY src/ ./src/
+COPY tests/ ./tests/
+# Remove MAUI projects after copying
+RUN rm -rf ./src/HybridApp ./src/ClientApp ./tests/ClientApp.UnitTests
 
 # Install ReportGenerator tool for test coverage reports
 RUN dotnet tool install -g dotnet-reportgenerator-globaltool
