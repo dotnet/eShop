@@ -21,8 +21,6 @@
     <PackageReference Include="Aspire.Azure.AI.OpenAI" />
     <PackageReference Include="CommunityToolkit.Aspire.OllamaSharp" />
     <PackageReference Include="Microsoft.Extensions.ServiceDiscovery.Yarp" />
-    <PackageReference Include="Microsoft.Extensions.AI" />
-    <PackageReference Include="Microsoft.Extensions.AI.OpenAI" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
     <PackageReference Include="Google.Protobuf" />
     <PackageReference Include="Grpc.Net.ClientFactory" />
