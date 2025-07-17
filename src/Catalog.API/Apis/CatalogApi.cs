@@ -18,30 +18,46 @@ public static class CatalogApi
         var v2 = vApi.MapGroup("api/catalog").HasApiVersion(2, 0);
 
         // Routes for querying catalog items.
-        v1.MapGet("/items", GetAllItemsV1);
-        v2.MapGet("/items", GetAllItems);
-        api.MapGet("/items/by", GetItemsByIds);
-        api.MapGet("/items/{id:int}", GetItemById);
-        v1.MapGet("/items/by/{name:minlength(1)}", GetItemsByName);
-        api.MapGet("/items/{id:int}/pic", GetItemPictureById);
+        v1.MapGet("/items", GetAllItemsV1)
+            .WithTags("Items");
+        v2.MapGet("/items", GetAllItems)
+            .WithTags("Items");
+        api.MapGet("/items/by", GetItemsByIds)
+            .WithTags("Items");
+        api.MapGet("/items/{id:int}", GetItemById)
+            .WithTags("Items");
+        v1.MapGet("/items/by/{name:minlength(1)}", GetItemsByName)
+            .WithTags("Items");
+        api.MapGet("/items/{id:int}/pic", GetItemPictureById)
+            .WithTags("Items");
 
         // Routes for resolving catalog items using AI.
-        v1.MapGet("/items/withsemanticrelevance/{text:minlength(1)}", GetItemsBySemanticRelevanceV1);
+        v1.MapGet("/items/withsemanticrelevance/{text:minlength(1)}", GetItemsBySemanticRelevanceV1)
+            .WithTags("Search");
 
-                // Routes for resolving catalog items using AI.
-        v2.MapGet("/items/withsemanticrelevance", GetItemsBySemanticRelevance);
+        // Routes for resolving catalog items using AI.
+        v2.MapGet("/items/withsemanticrelevance", GetItemsBySemanticRelevance)
+            .WithTags("Search");
 
         // Routes for resolving catalog items by type and brand.
-        v1.MapGet("/items/type/{typeId}/brand/{brandId?}", GetItemsByBrandAndTypeId);
-        v1.MapGet("/items/type/all/brand/{brandId:int?}", GetItemsByBrandId);
-        api.MapGet("/catalogtypes", GetCatalogTypes);
-        api.MapGet("/catalogbrands", GetCatalogBrands);
+        v1.MapGet("/items/type/{typeId}/brand/{brandId?}", GetItemsByBrandAndTypeId)
+            .WithTags("Types");
+        v1.MapGet("/items/type/all/brand/{brandId:int?}", GetItemsByBrandId)
+            .WithTags("Brands");
+        api.MapGet("/catalogtypes", GetCatalogTypes)
+            .WithTags("Types");
+        api.MapGet("/catalogbrands", GetCatalogBrands)
+            .WithTags("Brands");
 
         // Routes for modifying catalog items.
-        v1.MapPut("/items", UpdateItemV1);
-        v2.MapPut("/items/{id:int}", UpdateItem);
-        api.MapPost("/items", CreateItem);
-        api.MapDelete("/items/{id:int}", DeleteItemById);
+        v1.MapPut("/items", UpdateItemV1)
+            .WithTags("Items");
+        v2.MapPut("/items/{id:int}", UpdateItem)
+            .WithTags("Items");
+        api.MapPost("/items", CreateItem)
+            .WithTags("Items");
+        api.MapDelete("/items/{id:int}", DeleteItemById)
+            .WithTags("Items");
 
         return app;
     }
