@@ -1,6 +1,6 @@
 {
   "solution": {
-    "path": "eShop.sln",
+    "path": "eShop.slnx",
     "projects": [
       "src\\Basket.API\\Basket.API.csproj",
       "src\\Catalog.API\\Catalog.API.csproj",
