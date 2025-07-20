@@ -103,6 +103,15 @@ identityApi.WithEnvironment("BasketApiClient", basketApi.GetEndpoint("http"))
 // In order to do so, run 'dotnet run --publisher docker-compose --output-path ./docker-compose' to try it out.
 builder.AddDockerComposePublisher();
 
+var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? builder.Configuration["OpenAI:ApiKey"];
+var endpoint = Environment.GetEnvironmentVariable("OPENAI_ENDPOINT") ?? builder.Configuration["OpenAI:Endpoint"];
+builder.Services.AddSingleton<IOpenAiService>(provider => {
+    var options = new OpenAiOptions {
+        ApiKey = apiKey,
+        Endpoint = endpoint
+    };
+    return new OpenAiService(options);
+});
 builder.Build().Run();
 
 // For test use only.
