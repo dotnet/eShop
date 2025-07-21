@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    <AspnetVersion>9.0.5</AspnetVersion>
+    <AspnetVersion>9.0.7</AspnetVersion>
     <MicrosoftExtensionsVersion>9.0.5</MicrosoftExtensionsVersion>
     <MicrosoftExtensionsAIVersion>9.5.0</MicrosoftExtensionsAIVersion>
     <AspireVersion>9.3.0</AspireVersion>
@@ -100,7 +100,7 @@
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.3.0" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.0.26"/>
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.0.26" />
     <!-- Before license change -->
     <PackageVersion Include="MediatR" Version="12.5.0" />
   </ItemGroup>
