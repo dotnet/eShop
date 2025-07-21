@@ -71,7 +71,7 @@
     <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.30" />
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.30" />
     <PackageReference Include="Microsoft.Maui.Controls.Maps" Version="9.0.30" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.7" />
     <PackageReference Include="CommunityToolkit.Maui" Version="9.1.1" />
     <PackageReference Include="IdentityModel" Version="7.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />

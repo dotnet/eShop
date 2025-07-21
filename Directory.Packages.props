@@ -2,10 +2,10 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    <AspnetVersion>9.0.5</AspnetVersion>
-    <MicrosoftExtensionsVersion>9.0.5</MicrosoftExtensionsVersion>
+    <AspnetVersion>9.0.7</AspnetVersion>
+    <MicrosoftExtensionsVersion>9.0.7</MicrosoftExtensionsVersion>
     <MicrosoftExtensionsAIVersion>9.5.0</MicrosoftExtensionsAIVersion>
-    <AspireVersion>9.3.0</AspireVersion>
+    <AspireVersion>9.3.1</AspireVersion>
     <AspireUnstablePackagesVersion>9.3.0-preview.1.25265.20</AspireUnstablePackagesVersion>
     <GrpcVersion>2.71.0</GrpcVersion>
     <DuendeVersion>7.1.1</DuendeVersion>
@@ -45,7 +45,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="$(AspnetVersion)" />
 
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.5.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.7.0" />
 
     <PackageVersion Include="MSTest.TestFramework" Version="3.8.2" />
     <PackageVersion Include="MSTest.TestAdapter" Version="3.8.2" />
@@ -100,7 +100,7 @@
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.3.0" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.0.26"/>
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.0.26" />
     <!-- Before license change -->
     <PackageVersion Include="MediatR" Version="12.5.0" />
   </ItemGroup>
