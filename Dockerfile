@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS test
 
 WORKDIR /app
 
-# Copy solution and project files
+# Copy solution and configuration files
 COPY eShop.sln ./
 COPY global.json ./
 COPY Directory.Build.props ./
@@ -62,5 +62,23 @@ RUN dotnet tool install -g dotnet-reportgenerator-globaltool
 # Add dotnet tools to PATH
 ENV PATH="${PATH}:/root/.dotnet/tools"
 
-# Run tests with coverage (excluding MAUI projects)
-CMD ["bash", "-c", "echo GLIBC VERSION && ldd --version && echo GLIBC VERSION CHECK && dotnet test --collect:'XPlat Code Coverage' --results-directory ./tests/TestResults --logger trx --logger 'console;verbosity=detailed' tests/Basket.UnitTests/Basket.UnitTests.csproj tests/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj tests/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj tests/Ordering.UnitTests/Ordering.UnitTests.csproj && find ./tests/TestResults -name 'coverage.cobertura.xml' -exec cp {} ./tests/TestResults/coverage.cobertura.xml \\; && reportgenerator -reports:./tests/TestResults/coverage.cobertura.xml -targetdir:./tests/TestResults/CoverageReport -reporttypes:'Html;Cobertura' && echo 'Coverage report generated in ./tests/TestResults/CoverageReport'"]
+# Run tests with coverage (only non-MAUI test projects)
+CMD ["bash", "-c", "\
+    echo 'GLIBC VERSION' && ldd --version && \
+    echo 'GLIBC VERSION CHECK' && \
+    dotnet test --no-restore --no-build \
+        --collect:'XPlat Code Coverage' \
+        --results-directory ./tests/TestResults \
+        --logger trx \
+        --logger 'console;verbosity=detailed' \
+        tests/Basket.UnitTests/Basket.UnitTests.csproj \
+        tests/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj \
+        tests/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj \
+        tests/Ordering.UnitTests/Ordering.UnitTests.csproj && \
+    find ./tests/TestResults -name 'coverage.cobertura.xml' \
+        -exec cp {} ./tests/TestResults/coverage.cobertura.xml \\; && \
+    reportgenerator -reports:./tests/TestResults/coverage.cobertura.xml \
+        -targetdir:./tests/TestResults/CoverageReport \
+        -reporttypes:'Html;Cobertura' && \
+    echo 'Coverage report generated in ./tests/TestResults/CoverageReport' \
+    "]
