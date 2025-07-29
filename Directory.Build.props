@@ -13,8 +13,7 @@
 
   <!-- Enable OpenAI OpenTelemetry so OpenAI calls participate in tracing and metrics. -->
   <ItemGroup>
-    <RuntimeHostConfigurationOption Include="OpenAI.Experimental.EnableOpenTelemetry"
-                                    Value="true" />
+    <RuntimeHostConfigurationOption Include="OpenAI.Experimental.EnableOpenTelemetry" Value="true" />
   </ItemGroup>
   
 </Project>
