@@ -7,7 +7,7 @@
     <AspireVersion>9.4.0</AspireVersion>
     <AspireUnstablePackagesVersion>9.4.0-preview.1.25378.8</AspireUnstablePackagesVersion>
     <GrpcVersion>2.71.0</GrpcVersion>
-    <DuendeVersion>7.1.1</DuendeVersion>
+    <DuendeVersion>7.2.4</DuendeVersion>
     <ApiVersioningVersion>8.1.0</ApiVersioningVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -93,7 +93,7 @@
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.0.26"/>
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.0.26" />
     <!-- Before license change -->
     <PackageVersion Include="MediatR" Version="12.5.0" />
   </ItemGroup>
