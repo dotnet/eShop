@@ -56,11 +56,9 @@ var webHooksApi = builder.AddProject<Projects.Webhooks_API>("webhooks-api")
     .WithEnvironment("Identity__Url", identityEndpoint);
 
 // Reverse proxies
-builder.AddProject<Projects.Mobile_Bff_Shopping>("mobile-bff")
-    .WithReference(catalogApi)
-    .WithReference(orderingApi)
-    .WithReference(basketApi)
-    .WithReference(identityApi);
+builder.AddYarp("mobile-bff")
+    .WithExternalHttpEndpoints()
+    .ConfigureMobileBffRoutes(catalogApi, orderingApi, identityApi);
 
 // Apps
 var webhooksClient = builder.AddProject<Projects.WebhookClient>("webhooksclient", launchProfileName)
@@ -80,7 +78,7 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
 bool useOpenAI = false;
 if (useOpenAI)
 {
-    builder.AddOpenAI(catalogApi, webApp);
+    builder.AddOpenAI(catalogApi, webApp, OpenAITarget.OpenAI); // set to AzureOpenAI if you want to use Azure OpenAI
 }
 
 bool useOllama = false;
