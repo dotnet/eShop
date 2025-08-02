@@ -491,3 +491,4 @@ $RECYCLE.BIN/
 /playwright/.auth/
 /user.json
 .azure
+/tmp/validate_changes.cs
