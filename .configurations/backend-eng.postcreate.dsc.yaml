@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+properties:
+  configurationVersion: 0.2.0
+  ########################################
+  ### RESOURCES: System Configuration
+  ########################################
+  resources:
+    ### Install Postman
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: postman
+      directives:
+        description: Install Postman
+        allowPrerelease: true
+      settings:
+       id: Postman.Postman
+
+
+       
