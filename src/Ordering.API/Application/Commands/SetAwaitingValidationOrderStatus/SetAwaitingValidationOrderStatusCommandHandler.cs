@@ -1,22 +1,24 @@
-﻿namespace eShop.Ordering.API.Application.Commands;
+﻿using eShop.Ordering.API.Application.Commands.Identified;
+
+namespace eShop.Ordering.API.Application.Commands.SetAwaitingValidationOrderStatus;
 
 // Regular CommandHandler
-public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, bool>
+public class SetAwaitingValidationOrderStatusCommandHandler : IRequestHandler<SetAwaitingValidationOrderStatusCommand, bool>
 {
     private readonly IOrderRepository _orderRepository;
 
-    public CancelOrderCommandHandler(IOrderRepository orderRepository)
+    public SetAwaitingValidationOrderStatusCommandHandler(IOrderRepository orderRepository)
     {
         _orderRepository = orderRepository;
     }
 
     /// <summary>
     /// Handler which processes the command when
-    /// customer executes cancel order from app
+    /// graceperiod has finished
     /// </summary>
     /// <param name="command"></param>
     /// <returns></returns>
-    public async Task<bool> Handle(CancelOrderCommand command, CancellationToken cancellationToken)
+    public async Task<bool> Handle(SetAwaitingValidationOrderStatusCommand command, CancellationToken cancellationToken)
     {
         var orderToUpdate = await _orderRepository.GetAsync(command.OrderNumber);
         if (orderToUpdate == null)
@@ -24,19 +26,19 @@ public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, boo
             return false;
         }
 
-        orderToUpdate.SetCancelledStatus();
+        orderToUpdate.SetAwaitingValidationStatus();
         return await _orderRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
     }
 }
 
 
 // Use for Idempotency in Command process
-public class CancelOrderIdentifiedCommandHandler : IdentifiedCommandHandler<CancelOrderCommand, bool>
+public class SetAwaitingValidationIdentifiedOrderStatusCommandHandler : IdentifiedCommandHandler<SetAwaitingValidationOrderStatusCommand, bool>
 {
-    public CancelOrderIdentifiedCommandHandler(
+    public SetAwaitingValidationIdentifiedOrderStatusCommandHandler(
         IMediator mediator,
         IRequestManager requestManager,
-        ILogger<IdentifiedCommandHandler<CancelOrderCommand, bool>> logger)
+        ILogger<IdentifiedCommandHandler<SetAwaitingValidationOrderStatusCommand, bool>> logger)
         : base(mediator, requestManager, logger)
     {
     }

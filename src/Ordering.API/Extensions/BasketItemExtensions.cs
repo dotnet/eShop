@@ -1,4 +1,6 @@
-﻿namespace eShop.Ordering.API.Extensions;
+﻿using eShop.Ordering.API.Application.Commands.CreateOrderDraft;
+
+namespace eShop.Ordering.API.Extensions;
 
 public static class BasketItemExtensions
 {

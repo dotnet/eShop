@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using eShop.Ordering.API.Application.Queries;
 using Order = eShop.Ordering.API.Application.Queries.Order;
 using NSubstitute.ExceptionExtensions;
+using eShop.Ordering.API.Application.Commands.CancelOrder;
+using eShop.Ordering.API.Application.Commands.CreateOrder;
+using eShop.Ordering.API.Application.Commands.Identified;
+using eShop.Ordering.API.Application.Commands.ShipOrder;
 
 [TestClass]
 public class OrdersWebApiTest
