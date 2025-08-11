@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    <AspnetVersion>9.0.7</AspnetVersion>
+    <AspnetVersion>9.0.8</AspnetVersion>
     <MicrosoftExtensionsVersion>9.0.7</MicrosoftExtensionsVersion>
     <AspireVersion>9.4.0</AspireVersion>
     <AspireUnstablePackagesVersion>9.4.0-preview.1.25378.8</AspireUnstablePackagesVersion>
@@ -47,8 +47,8 @@
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.7.0" />
 
-    <PackageVersion Include="MSTest.TestFramework" Version="3.8.2" />
-    <PackageVersion Include="MSTest.TestAdapter" Version="3.8.2" />
+    <PackageVersion Include="MSTest.TestFramework" Version="3.10.1" />
+    <PackageVersion Include="MSTest.TestAdapter" Version="3.10.1" />
     <!-- Version together with EF -->
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4" />
