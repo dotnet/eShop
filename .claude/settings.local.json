@@ -42,7 +42,13 @@
       "Bash(cp:*)",
       "Bash(.deploy-local.ps1)",
       "Bash(pwsh ./deploy-local.ps1)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet run:*)",
+      "Bash(docker run:*)",
+      "Bash(docker stop:*)",
+      "Bash(docker rm:*)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": [],

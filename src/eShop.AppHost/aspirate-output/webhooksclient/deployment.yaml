@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webhooksclient
+  labels:
+    app: webhooksclient
+spec:
+  minReadySeconds: 60
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webhooksclient
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: webhooksclient
+    spec:
+      containers:
+      - name: webhooksclient
+        image: localhost:6000/webhooksclient:latest
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8080
+        - name: https
+          containerPort: 8443
+        envFrom:
+        - configMapRef:
+            name: webhooksclient-env
+      terminationGracePeriodSeconds: 180

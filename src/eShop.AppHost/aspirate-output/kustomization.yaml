@@ -1,0 +1,22 @@
+resources:
+- redis
+- eventbus
+- postgres
+- identity-api
+- basket-api
+- catalog-api
+- ordering-api
+- order-processor
+- payment-processor
+- webhooks-api
+- mobile-bff
+- webhooksclient
+- webapp
+- dashboard.yaml
+
+namespace: eshop
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+

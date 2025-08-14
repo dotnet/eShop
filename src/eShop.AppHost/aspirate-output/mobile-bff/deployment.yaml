@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mobile-bff
+  labels:
+    app: mobile-bff
+spec:
+  minReadySeconds: 60
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mobile-bff
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mobile-bff
+    spec:
+      containers:
+      - name: mobile-bff
+        image: localhost:6000/mobile-bff:latest
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8080
+        - name: https
+          containerPort: 8443
+        envFrom:
+        - configMapRef:
+            name: mobile-bff-env
+      terminationGracePeriodSeconds: 180

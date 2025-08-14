@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aspire-dashboard
+  labels:
+    app: aspire-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aspire-dashboard
+  template:
+    metadata:
+      labels:
+        app: aspire-dashboard
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: aspire-dashboard
+          image: mcr.microsoft.com/dotnet/aspire-dashboard:9.0
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              memory: "512Mi"
+          ports:
+            - name: dashboard-ui
+              containerPort: 18888
+            - name: otlp
+              containerPort: 18889
+          env:
+            - name: DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS
+              value: "true"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aspire-dashboard
+spec:
+  selector:
+    app: aspire-dashboard
+  ports:
+    - name: dashboard-ui
+      protocol: TCP
+      port: 18888
+      targetPort: 18888
+    - name: otlp
+      protocol: TCP
+      port: 18889
+      targetPort: 18889
+  type: ClusterIP

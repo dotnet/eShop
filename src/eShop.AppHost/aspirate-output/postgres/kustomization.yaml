@@ -1,0 +1,17 @@
+resources:
+- deployment.yaml
+- service.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: postgres-env
+  literals:
+    - POSTGRES_HOST_AUTH_METHOD=scram-sha-256
+    - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256 --auth-local=scram-sha-256
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=jBfoeAN1eArsj4fuINVCH3
+    - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
+    - OTEL_SERVICE_NAME=postgres
+

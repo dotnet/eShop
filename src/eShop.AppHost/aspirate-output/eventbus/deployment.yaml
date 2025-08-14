@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventbus
+  labels:
+    app: eventbus
+spec:
+  minReadySeconds: 60
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eventbus
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: eventbus
+    spec:
+      containers:
+      - name: eventbus
+        image: docker.io/library/rabbitmq:4.1
+        imagePullPolicy: Always
+        ports:
+        - name: tcp
+          containerPort: 5672
+        envFrom:
+        - configMapRef:
+            name: eventbus-env
+      terminationGracePeriodSeconds: 180
