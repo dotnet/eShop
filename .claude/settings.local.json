@@ -48,7 +48,10 @@
       "Bash(docker run:*)",
       "Bash(docker stop:*)",
       "Bash(docker rm:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(cat:*)",
+      "Bash(docker image inspect:*)",
+      "Bash(docker images:*)"
     ],
     "deny": [],
     "ask": [],

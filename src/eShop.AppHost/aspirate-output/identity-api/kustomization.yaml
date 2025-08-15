@@ -13,12 +13,14 @@ configMapGenerator:
     - OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY=in_memory
     - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
     - HTTP_PORTS=8080
-    - ConnectionStrings__identitydb=Host=postgres;Port=5432;Username=postgres;Password=jBfoeAN1eArsj4fuINVCH3;Database=identitydb
+    - Kestrel__Endpoints__Http__Url=http://0.0.0.0:8080
+    - IssuerUri=http://localhost:31671
+    - DisableAuth=true
+    - ConnectionStrings__identitydb=Host=postgres;Port=5432;Username=postgres;Password=PEhdYhXtln0GBa5Cfs2qu3;Database=identitydb
     - BasketApiClient=http://basket-api:8080
     - OrderingApiClient=http://ordering-api:8080
     - WebhooksApiClient=http://webhooks-api:8080
-    - WebhooksWebClient=http://webhooksclient:8080
-    - WebAppClient=http://webapp:8080
+    - WebAppClient=http://localhost:30509
     - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
     - OTEL_SERVICE_NAME=identity-api
     - ASPNETCORE_URLS=http://+:8080;

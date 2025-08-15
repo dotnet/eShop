@@ -14,8 +14,6 @@ resources:
 - webapp
 - dashboard.yaml
 
-namespace: eshop
-
 generatorOptions:
   disableNameSuffixHash: true
 

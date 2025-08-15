@@ -14,8 +14,7 @@ app.MapDefaultEndpoints();
 
 var orders = app.NewVersionedApi("Orders");
 
-orders.MapOrdersApiV1()
-      .RequireAuthorization();
+orders.MapOrdersApiV1();
 
 app.UseDefaultOpenApi();
 app.Run();

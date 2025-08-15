@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.AspNetCore.Authorization;
 
 namespace eShop.ServiceDefaults;
 
@@ -11,6 +12,20 @@ public static class AuthenticationExtensions
     {
         var services = builder.Services;
         var configuration = builder.Configuration;
+
+        // Check if authentication is disabled
+        var disableAuth = configuration.GetValue<bool>("DisableAuth");
+        if (disableAuth)
+        {
+            // Authentication disabled, add minimal authorization that allows everything
+            services.AddAuthorization(options =>
+            {
+                options.FallbackPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
+                    .RequireAssertion(context => true) // Always allow
+                    .Build();
+            });
+            return services;
+        }
 
         // {
         //   "Identity": {

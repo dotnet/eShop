@@ -17,7 +17,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 builder.Services.AddIdentityServer(options =>
 {
-    //options.IssuerUri = "null";
+    options.IssuerUri = builder.Configuration["IssuerUri"];
     options.Authentication.CookieLifetime = TimeSpan.FromHours(2);
 
     options.Events.RaiseErrorEvents = true;
@@ -27,6 +27,13 @@ builder.Services.AddIdentityServer(options =>
 
     // TODO: Remove this line in production.
     options.KeyManagement.Enabled = false;
+    
+    // Disable PAR (Pushed Authorization Requests) for Community Edition
+    var disablePAR = builder.Configuration.GetValue("DisablePAR", "true");
+    if (disablePAR.Equals("true", StringComparison.OrdinalIgnoreCase))
+    {
+        options.Endpoints.EnablePushedAuthorizationEndpoint = false;
+    }
 })
 .AddInMemoryIdentityResources(Config.GetResources())
 .AddInMemoryApiScopes(Config.GetApiScopes())

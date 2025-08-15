@@ -17,6 +17,7 @@ configMapGenerator:
     - services__ordering-api__http__0=http://ordering-api:8080
     - services__basket-api__http__0=http://basket-api:8080
     - services__identity-api__http__0=http://identity-api:8080
+    - DisableAuth=true
     - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
     - OTEL_SERVICE_NAME=mobile-bff
     - ASPNETCORE_URLS=http://+:8080;

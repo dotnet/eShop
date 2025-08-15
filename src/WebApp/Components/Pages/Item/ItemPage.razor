@@ -1,9 +1,11 @@
 ﻿@page "/item/{itemId:int}"
 @using System.Net
+@using Microsoft.AspNetCore.Components.Authorization
 @inject CatalogService CatalogService
 @inject BasketState BasketState
 @inject NavigationManager Nav
 @inject IProductImageUrlProvider ProductImages
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @if (item is not null)
 {
@@ -76,7 +78,8 @@ else if (notFound)
     {
         try
         {
-            isLoggedIn = HttpContext?.User.Identity?.IsAuthenticated == true;
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            isLoggedIn = authState.User.Identity?.IsAuthenticated == true;
             item = await CatalogService.GetCatalogItem(ItemId);
             await UpdateNumInCartAsync();
         }

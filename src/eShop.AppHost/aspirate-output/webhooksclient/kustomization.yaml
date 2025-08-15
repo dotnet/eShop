@@ -14,8 +14,7 @@ configMapGenerator:
     - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
     - HTTP_PORTS=8080
     - services__webhooks-api__http__0=http://webhooks-api:8080
-    - IdentityUrl=http://identity-api:8080
-    - CallBackUrl=http://webhooksclient:8080
+    - DisableAuth=true
     - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
     - OTEL_SERVICE_NAME=webhooksclient
     - ASPNETCORE_URLS=http://+:8080;

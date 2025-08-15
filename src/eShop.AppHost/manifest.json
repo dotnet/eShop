@@ -43,9 +43,16 @@
       "type": "container.v0",
       "connectionString": "Host={postgres.bindings.tcp.host};Port={postgres.bindings.tcp.port};Username=postgres;Password={postgres-password.value}",
       "image": "docker.io/ankane/pgvector:latest",
+      "volumes": [
+        {
+          "name": "eshop.apphost-70ba1f416c-postgres-data",
+          "target": "/var/lib/postgresql/data",
+          "readOnly": false
+        }
+      ],
       "env": {
-        "POSTGRES_HOST_AUTH_METHOD": "scram-sha-256",
-        "POSTGRES_INITDB_ARGS": "--auth-host=scram-sha-256 --auth-local=scram-sha-256",
+        "POSTGRES_HOST_AUTH_METHOD": "md5",
+        "POSTGRES_INITDB_ARGS": "--auth-host=md5 --auth-local=md5",
         "POSTGRES_USER": "postgres",
         "POSTGRES_PASSWORD": "{postgres-password.value}"
       },
@@ -83,12 +90,15 @@
         "OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY": "in_memory",
         "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
         "HTTP_PORTS": "{identity-api.bindings.http.targetPort}",
+        "Kestrel__Endpoints__Http__Url": "http://0.0.0.0:8080",
+        "IssuerUri": "http://localhost:31671",
+        "DisableAuth": "true",
         "ConnectionStrings__identitydb": "{identitydb.connectionString}",
         "BasketApiClient": "{basket-api.bindings.http.url}",
         "OrderingApiClient": "{ordering-api.bindings.http.url}",
         "WebhooksApiClient": "{webhooks-api.bindings.http.url}",
         "WebhooksWebClient": "{webhooksclient.bindings.https.url}",
-        "WebAppClient": "{webapp.bindings.https.url}"
+        "WebAppClient": "http://localhost:30509"
       },
       "bindings": {
         "http": {
@@ -116,7 +126,8 @@
         "HTTP_PORTS": "{basket-api.bindings.http.targetPort}",
         "ConnectionStrings__redis": "{redis.connectionString}",
         "ConnectionStrings__eventbus": "{eventbus.connectionString}",
-        "Identity__Url": "{identity-api.bindings.https.url}"
+        "Identity__Url": "{identity-api.bindings.https.url}",
+        "DisableAuth": "true"
       },
       "bindings": {
         "http": {
@@ -141,7 +152,8 @@
         "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
         "HTTP_PORTS": "{catalog-api.bindings.http.targetPort}",
         "ConnectionStrings__eventbus": "{eventbus.connectionString}",
-        "ConnectionStrings__catalogdb": "{catalogdb.connectionString}"
+        "ConnectionStrings__catalogdb": "{catalogdb.connectionString}",
+        "DisableAuth": "true"
       },
       "bindings": {
         "http": {
@@ -167,7 +179,8 @@
         "HTTP_PORTS": "{ordering-api.bindings.http.targetPort}",
         "ConnectionStrings__eventbus": "{eventbus.connectionString}",
         "ConnectionStrings__orderingdb": "{orderingdb.connectionString}",
-        "Identity__Url": "{identity-api.bindings.https.url}"
+        "Identity__Url": "{identity-api.bindings.https.url}",
+        "DisableAuth": "true"
       },
       "bindings": {
         "http": {
@@ -192,7 +205,8 @@
         "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
         "HTTP_PORTS": "{order-processor.bindings.http.targetPort}",
         "ConnectionStrings__eventbus": "{eventbus.connectionString}",
-        "ConnectionStrings__orderingdb": "{orderingdb.connectionString}"
+        "ConnectionStrings__orderingdb": "{orderingdb.connectionString}",
+        "DisableAuth": "true"
       },
       "bindings": {
         "http": {
@@ -216,7 +230,8 @@
         "OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY": "in_memory",
         "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
         "HTTP_PORTS": "{payment-processor.bindings.http.targetPort}",
-        "ConnectionStrings__eventbus": "{eventbus.connectionString}"
+        "ConnectionStrings__eventbus": "{eventbus.connectionString}",
+        "DisableAuth": "true"
       },
       "bindings": {
         "http": {
@@ -242,7 +257,8 @@
         "HTTP_PORTS": "{webhooks-api.bindings.http.targetPort}",
         "ConnectionStrings__eventbus": "{eventbus.connectionString}",
         "ConnectionStrings__webhooksdb": "{webhooksdb.connectionString}",
-        "Identity__Url": "{identity-api.bindings.https.url}"
+        "Identity__Url": "{identity-api.bindings.https.url}",
+        "DisableAuth": "true"
       },
       "bindings": {
         "http": {
@@ -273,7 +289,8 @@
         "services__basket-api__http__0": "{basket-api.bindings.http.url}",
         "services__basket-api__https__0": "{basket-api.bindings.https.url}",
         "services__identity-api__http__0": "{identity-api.bindings.http.url}",
-        "services__identity-api__https__0": "{identity-api.bindings.https.url}"
+        "services__identity-api__https__0": "{identity-api.bindings.https.url}",
+        "DisableAuth": "true"
       },
       "bindings": {
         "http": {
@@ -300,6 +317,7 @@
         "services__webhooks-api__http__0": "{webhooks-api.bindings.http.url}",
         "services__webhooks-api__https__0": "{webhooks-api.bindings.https.url}",
         "IdentityUrl": "{identity-api.bindings.https.url}",
+        "DisableAuth": "true",
         "CallBackUrl": "{webhooksclient.bindings.https.url}"
       },
       "bindings": {
@@ -331,7 +349,8 @@
         "services__ordering-api__http__0": "{ordering-api.bindings.http.url}",
         "services__ordering-api__https__0": "{ordering-api.bindings.https.url}",
         "ConnectionStrings__eventbus": "{eventbus.connectionString}",
-        "IdentityUrl": "{identity-api.bindings.https.url}",
+        "IdentityUrl": "{identity-api.bindings.http.url}",
+        "DisableAuth": "true",
         "CallBackUrl": "{webapp.bindings.https.url}"
       },
       "bindings": {

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
+using eShop.WebhookClient.Services;
 
 namespace eShop.WebhookClient.Extensions;
 
@@ -16,18 +18,42 @@ public static class Extensions
         builder.Services.AddSingleton<HooksRepository>();
 
         // HTTP client registrations
-        builder.Services.AddHttpClient<WebhooksClient>(o => o.BaseAddress = new("http://webhooks-api"))
-            .AddApiVersion(1.0)
-            .AddAuthToken();
+        var httpClientBuilder = builder.Services.AddHttpClient<WebhooksClient>(o => o.BaseAddress = new("http://webhooks-api"))
+            .AddApiVersion(1.0);
+            
+        var disableAuth = builder.Configuration.GetValue("DisableAuth", "false").Equals("true", StringComparison.OrdinalIgnoreCase);
+        if (!disableAuth)
+        {
+            httpClientBuilder.AddAuthToken();
+        }
     }
 
     public static void AddAuthenticationServices(this IHostApplicationBuilder builder)
     {
         var configuration = builder.Configuration;
         var services = builder.Services;
+        
+        var disableAuth = configuration.GetValue("DisableAuth", "false").Equals("true", StringComparison.OrdinalIgnoreCase);
+        
+        if (disableAuth)
+        {
+            // Disable authentication completely - use anonymous access
+            services.AddAuthorization(options =>
+            {
+                options.FallbackPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
+                    .RequireAssertion(context => true) // Always allow
+                    .Build();
+            });
+            
+            // Add a fake authentication state provider
+            services.AddScoped<AuthenticationStateProvider>(provider => 
+                new MockAuthenticationStateProvider());
+            services.AddCascadingAuthenticationState();
+            return;
+        }
 
-        var identityUrl = configuration.GetRequiredValue("IdentityUrl");
-        var callBackUrl = configuration.GetRequiredValue("CallBackUrl");
+        var identityUrl = configuration.GetValue("IdentityUrl", "");
+        var callBackUrl = configuration.GetValue("CallBackUrl", "");
         var sessionCookieLifetime = configuration.GetValue("SessionCookieLifetimeMinutes", 60);
 
         // Add Authentication services
