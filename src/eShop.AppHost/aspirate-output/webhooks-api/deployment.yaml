@@ -30,4 +30,6 @@ spec:
         envFrom:
         - configMapRef:
             name: webhooks-api-env
+        - secretRef:
+            name: webhooks-api-secrets
       terminationGracePeriodSeconds: 180

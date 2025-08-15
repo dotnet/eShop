@@ -30,4 +30,6 @@ spec:
         envFrom:
         - configMapRef:
             name: webapp-env
+        - secretRef:
+            name: webapp-secrets
       terminationGracePeriodSeconds: 180

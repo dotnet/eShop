@@ -16,27 +16,28 @@ var postgres = builder.AddPostgres("postgres")
     .WithLifetime(ContainerLifetime.Persistent);
 
 var catalogDb = postgres.AddDatabase("catalogdb");
-var identityDb = postgres.AddDatabase("identitydb");
+// var identityDb = postgres.AddDatabase("identitydb"); // Identity disabled
 var orderDb = postgres.AddDatabase("orderingdb");
 var webhooksDb = postgres.AddDatabase("webhooksdb");
 
 var launchProfileName = ShouldUseHttpForEndpoints() ? "http" : "https";
 
 // Services
-var identityApi = builder.AddProject<Projects.Identity_API>("identity-api", launchProfileName)
-    .WithExternalHttpEndpoints()
-    .WithEnvironment("Kestrel__Endpoints__Http__Url", "http://0.0.0.0:8080")
-    .WithEnvironment("ASPNETCORE_FORWARDEDHEADERS_ENABLED", "true")
-    .WithEnvironment("IssuerUri", "http://localhost:31671")
-    .WithEnvironment("DisableAuth", "true")
-    .WithReference(identityDb);
+// Identity API disabled for this deployment
+// var identityApi = builder.AddProject<Projects.Identity_API>("identity-api", launchProfileName)
+//     .WithExternalHttpEndpoints()
+//     .WithEnvironment("Kestrel__Endpoints__Http__Url", "http://0.0.0.0:8080")
+//     .WithEnvironment("ASPNETCORE_FORWARDEDHEADERS_ENABLED", "true")
+//     .WithEnvironment("IssuerUri", "http://localhost:31671")
+//     .WithEnvironment("DisableAuth", "true")
+//     .WithReference(identityDb);
 
-var identityEndpoint = identityApi.GetEndpoint(launchProfileName);
+// var identityEndpoint = identityApi.GetEndpoint(launchProfileName);
 
 var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
     .WithReference(redis)
     .WithReference(rabbitMq).WaitFor(rabbitMq)
-    .WithEnvironment("Identity__Url", identityEndpoint)
+    // .WithEnvironment("Identity__Url", identityEndpoint) // Identity disabled
     .WithEnvironment("DisableAuth", "true");
 redis.WithParentRelationship(basketApi);
 
@@ -49,7 +50,7 @@ var orderingApi = builder.AddProject<Projects.Ordering_API>("ordering-api")
     .WithReference(rabbitMq).WaitFor(rabbitMq)
     .WithReference(orderDb).WaitFor(orderDb)
     .WithHttpHealthCheck("/health")
-    .WithEnvironment("Identity__Url", identityEndpoint)
+    // .WithEnvironment("Identity__Url", identityEndpoint) // Identity disabled
     .WithEnvironment("DisableAuth", "true");
 
 builder.AddProject<Projects.OrderProcessor>("order-processor")
@@ -65,7 +66,7 @@ builder.AddProject<Projects.PaymentProcessor>("payment-processor")
 var webHooksApi = builder.AddProject<Projects.Webhooks_API>("webhooks-api")
     .WithReference(rabbitMq).WaitFor(rabbitMq)
     .WithReference(webhooksDb)
-    .WithEnvironment("Identity__Url", identityEndpoint)
+    // .WithEnvironment("Identity__Url", identityEndpoint) // Identity disabled
     .WithEnvironment("DisableAuth", "true");
 
 // Reverse proxies
@@ -73,13 +74,13 @@ builder.AddProject<Projects.Mobile_Bff_Shopping>("mobile-bff")
     .WithReference(catalogApi)
     .WithReference(orderingApi)
     .WithReference(basketApi)
-    .WithReference(identityApi)
+    // .WithReference(identityApi) // Identity disabled
     .WithEnvironment("DisableAuth", "true");
 
 // Apps
 var webhooksClient = builder.AddProject<Projects.WebhookClient>("webhooksclient", launchProfileName)
     .WithReference(webHooksApi)
-    .WithEnvironment("IdentityUrl", identityEndpoint)
+    // .WithEnvironment("IdentityUrl", identityEndpoint) // Identity disabled
     .WithEnvironment("DisableAuth", "true");
 
 var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
@@ -89,7 +90,7 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
     .WithReference(catalogApi)
     .WithReference(orderingApi)
     .WithReference(rabbitMq).WaitFor(rabbitMq)
-    .WithEnvironment("IdentityUrl", identityApi.GetEndpoint("http"))
+    // .WithEnvironment("IdentityUrl", identityApi.GetEndpoint("http")) // Identity disabled
     .WithEnvironment("DisableAuth", "true");
 
 // set to true if you want to use OpenAI
@@ -110,11 +111,12 @@ webApp.WithEnvironment("CallBackUrl", webApp.GetEndpoint(launchProfileName));
 webhooksClient.WithEnvironment("CallBackUrl", webhooksClient.GetEndpoint(launchProfileName));
 
 // Identity has a reference to all of the apps for callback urls, this is a cyclic reference
-identityApi.WithEnvironment("BasketApiClient", basketApi.GetEndpoint("http"))
-           .WithEnvironment("OrderingApiClient", orderingApi.GetEndpoint("http"))
-           .WithEnvironment("WebhooksApiClient", webHooksApi.GetEndpoint("http"))
-           .WithEnvironment("WebhooksWebClient", webhooksClient.GetEndpoint(launchProfileName))
-           .WithEnvironment("WebAppClient", "http://localhost:30509");
+// Identity API disabled
+// identityApi.WithEnvironment("BasketApiClient", basketApi.GetEndpoint("http"))
+//            .WithEnvironment("OrderingApiClient", orderingApi.GetEndpoint("http"))
+//            .WithEnvironment("WebhooksApiClient", webHooksApi.GetEndpoint("http"))
+//            .WithEnvironment("WebhooksWebClient", webhooksClient.GetEndpoint(launchProfileName))
+//            .WithEnvironment("WebAppClient", "http://localhost:30509");
 
 builder.Build().Run();
 

@@ -30,4 +30,6 @@ spec:
         envFrom:
         - configMapRef:
             name: order-processor-env
+        - secretRef:
+            name: order-processor-secrets
       terminationGracePeriodSeconds: 180

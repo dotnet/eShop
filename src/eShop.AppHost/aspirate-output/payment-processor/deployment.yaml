@@ -30,4 +30,6 @@ spec:
         envFrom:
         - configMapRef:
             name: payment-processor-env
+        - secretRef:
+            name: payment-processor-secrets
       terminationGracePeriodSeconds: 180

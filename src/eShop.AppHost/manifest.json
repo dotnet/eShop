@@ -69,10 +69,6 @@
       "type": "value.v0",
       "connectionString": "{postgres.connectionString};Database=catalogdb"
     },
-    "identitydb": {
-      "type": "value.v0",
-      "connectionString": "{postgres.connectionString};Database=identitydb"
-    },
     "orderingdb": {
       "type": "value.v0",
       "connectionString": "{postgres.connectionString};Database=orderingdb"
@@ -80,40 +76,6 @@
     "webhooksdb": {
       "type": "value.v0",
       "connectionString": "{postgres.connectionString};Database=webhooksdb"
-    },
-    "identity-api": {
-      "type": "project.v0",
-      "path": "../Identity.API/Identity.API.csproj",
-      "env": {
-        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES": "true",
-        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES": "true",
-        "OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY": "in_memory",
-        "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
-        "HTTP_PORTS": "{identity-api.bindings.http.targetPort}",
-        "Kestrel__Endpoints__Http__Url": "http://0.0.0.0:8080",
-        "IssuerUri": "http://localhost:31671",
-        "DisableAuth": "true",
-        "ConnectionStrings__identitydb": "{identitydb.connectionString}",
-        "BasketApiClient": "{basket-api.bindings.http.url}",
-        "OrderingApiClient": "{ordering-api.bindings.http.url}",
-        "WebhooksApiClient": "{webhooks-api.bindings.http.url}",
-        "WebhooksWebClient": "{webhooksclient.bindings.https.url}",
-        "WebAppClient": "http://localhost:30509"
-      },
-      "bindings": {
-        "http": {
-          "scheme": "http",
-          "protocol": "tcp",
-          "transport": "http",
-          "external": true
-        },
-        "https": {
-          "scheme": "https",
-          "protocol": "tcp",
-          "transport": "http",
-          "external": true
-        }
-      }
     },
     "basket-api": {
       "type": "project.v0",
@@ -126,7 +88,6 @@
         "HTTP_PORTS": "{basket-api.bindings.http.targetPort}",
         "ConnectionStrings__redis": "{redis.connectionString}",
         "ConnectionStrings__eventbus": "{eventbus.connectionString}",
-        "Identity__Url": "{identity-api.bindings.https.url}",
         "DisableAuth": "true"
       },
       "bindings": {
@@ -179,7 +140,6 @@
         "HTTP_PORTS": "{ordering-api.bindings.http.targetPort}",
         "ConnectionStrings__eventbus": "{eventbus.connectionString}",
         "ConnectionStrings__orderingdb": "{orderingdb.connectionString}",
-        "Identity__Url": "{identity-api.bindings.https.url}",
         "DisableAuth": "true"
       },
       "bindings": {
@@ -257,7 +217,6 @@
         "HTTP_PORTS": "{webhooks-api.bindings.http.targetPort}",
         "ConnectionStrings__eventbus": "{eventbus.connectionString}",
         "ConnectionStrings__webhooksdb": "{webhooksdb.connectionString}",
-        "Identity__Url": "{identity-api.bindings.https.url}",
         "DisableAuth": "true"
       },
       "bindings": {
@@ -288,8 +247,6 @@
         "services__ordering-api__https__0": "{ordering-api.bindings.https.url}",
         "services__basket-api__http__0": "{basket-api.bindings.http.url}",
         "services__basket-api__https__0": "{basket-api.bindings.https.url}",
-        "services__identity-api__http__0": "{identity-api.bindings.http.url}",
-        "services__identity-api__https__0": "{identity-api.bindings.https.url}",
         "DisableAuth": "true"
       },
       "bindings": {
@@ -316,7 +273,6 @@
         "HTTP_PORTS": "{webhooksclient.bindings.http.targetPort}",
         "services__webhooks-api__http__0": "{webhooks-api.bindings.http.url}",
         "services__webhooks-api__https__0": "{webhooks-api.bindings.https.url}",
-        "IdentityUrl": "{identity-api.bindings.https.url}",
         "DisableAuth": "true",
         "CallBackUrl": "{webhooksclient.bindings.https.url}"
       },
@@ -349,7 +305,6 @@
         "services__ordering-api__http__0": "{ordering-api.bindings.http.url}",
         "services__ordering-api__https__0": "{ordering-api.bindings.https.url}",
         "ConnectionStrings__eventbus": "{eventbus.connectionString}",
-        "IdentityUrl": "{identity-api.bindings.http.url}",
         "DisableAuth": "true",
         "CallBackUrl": "{webapp.bindings.https.url}"
       },

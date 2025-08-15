@@ -16,10 +16,12 @@ configMapGenerator:
     - services__basket-api__http__0=http://basket-api:8080
     - services__catalog-api__http__0=http://catalog-api:8080
     - services__ordering-api__http__0=http://ordering-api:8080
-    - ConnectionStrings__eventbus=amqp://guest:8CME6GWIxgjElphJQZpHOl@eventbus:5672
-    - IdentityUrl=http://identity-api:8080
     - DisableAuth=true
     - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
     - OTEL_SERVICE_NAME=webapp
     - ASPNETCORE_URLS=http://+:8080;
 
+secretGenerator:
+- name: webapp-secrets
+  envs:
+  - .webapp.secrets

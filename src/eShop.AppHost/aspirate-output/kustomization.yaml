@@ -2,7 +2,6 @@ resources:
 - redis
 - eventbus
 - postgres
-- identity-api
 - basket-api
 - catalog-api
 - ordering-api

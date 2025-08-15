@@ -51,7 +51,11 @@
       "WebSearch",
       "Bash(cat:*)",
       "Bash(docker image inspect:*)",
-      "Bash(docker images:*)"
+      "Bash(docker images:*)",
+      "Bash(del \"C:\\Users\\Sebastian\\source\\repos\\IggyCloud\\eShop\\aspirate-state.json\")",
+      "Bash(del \"C:\\Users\\Sebastian\\source\\repos\\IggyCloud\\eShop\\src\\eShop.AppHost\\aspirate-state.json\")",
+      "Bash(do timeout 3 curl -s http://localhost:30509/health)",
+      "Bash(break)"
     ],
     "deny": [],
     "ask": [],

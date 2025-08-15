@@ -10,8 +10,58 @@
   "containerBuilder": "docker",
   "kubeContext": "docker-desktop",
   "outputFormat": "kustomize",
-  "disableSecrets": true,
   "privateRegistryEmail": "aspir8@aka.ms",
   "includeDashboard": true,
-  "useCustomNamespace": true
+  "useCustomNamespace": true,
+  "secrets": {
+    "salt": "H/99LdFyINCX0KQk",
+    "hash": "Ee9HAxJnaFhkE4udWcIAkouo1CJfAy4lAtVw8MaL10k=",
+    "secrets": {
+      "redis-password": {
+        "value": "H/99LdFyINCX0KQkKqSEsNXrSrOwjJUCV3IIW8LR4ltxyI1kuPP5QdvYPbtLFTWK3BI="
+      },
+      "eventbus-password": {
+        "value": "H/99LdFyINCX0KQkb/urWWkSFyglWkEQvxdzjOroy0N0yoIs3fHuBtvLXLQ7FAq/tSQ="
+      },
+      "postgres-password": {
+        "value": "H/99LdFyINCX0KQkOfB7WZInTUvNfkWAIH\u002BYoMnm8BFT74F0g/XdG7jgcIx9GByV7iY="
+      },
+      "redis": {},
+      "eventbus": {},
+      "postgres": {
+        "POSTGRES_PASSWORD": "H/99LdFyINCX0KQkOfB7WZInTUvNfkWAIH\u002BYoMnm8BFT74F0g/XdG7jgcIx9GByV7iY="
+      },
+      "catalogdb": {},
+      "orderingdb": {},
+      "webhooksdb": {},
+      "basket-api": {
+        "ConnectionStrings__redis": "H/99LdFyINCX0KQkPIHbTeBSIbg0GkZ29F7evf7mx0BxvdU\u002B3ZmnB43ae49iITz7yiNxL90NVabyX3jZfdE/9tEFYpl04A==",
+        "ConnectionStrings__eventbus": "H/99LdFyINCX0KQkOyOgN3d/voDiktJiGQDyQe3u0lk4qMxqn8X4A9bPY5BnJRWnpUZhON91WZvsOk29M5Ff9fI1artY4cTl8axAHfQ="
+      },
+      "catalog-api": {
+        "ConnectionStrings__eventbus": "H/99LdFyINCX0KQkOyOgN3d/voDiktJiGQDyQe3u0lk4qMxqn8X4A9bPY5BnJRWnpUZhON91WZvsOk29M5Ff9fI1artY4cTl8axAHfQ=",
+        "ConnectionStrings__catalogdb": "H/99LdFyINCX0KQk7/6WZY9i21LVPNNc\u002BQ\u002BLtMTs0F0/94x\u002Bnsf5Ep\u002BSWJd/J2XzsEICZvsxXr3ObWeKd9BlxuMkfbBfuOH3uOoBRbSvRY0TT5bovhR\u002BwfIeAT4UBy3QjIA4\u002BlseE5FxtAwTKWvFo1NmW/jRCUMa"
+      },
+      "ordering-api": {
+        "ConnectionStrings__eventbus": "H/99LdFyINCX0KQkOyOgN3d/voDiktJiGQDyQe3u0lk4qMxqn8X4A9bPY5BnJRWnpUZhON91WZvsOk29M5Ff9fI1artY4cTl8axAHfQ=",
+        "ConnectionStrings__orderingdb": "H/99LdFyINCX0KQkz2Fg8OGgZ9jFx\u002BoPlyGtecTs0F0/94x\u002Bnsf5Ep\u002BSWJd/J2XzsEICZvsxXr3ObWeKd9BlxuMkfbBfuOH3uOoBRbSvRY0TT5bovhR\u002BwfIeAT4UBy3QjIA4\u002BlseE5FxtAwTKWvFr0B2X\u002BbXAEAcWg=="
+      },
+      "order-processor": {
+        "ConnectionStrings__eventbus": "H/99LdFyINCX0KQkOyOgN3d/voDiktJiGQDyQe3u0lk4qMxqn8X4A9bPY5BnJRWnpUZhON91WZvsOk29M5Ff9fI1artY4cTl8axAHfQ=",
+        "ConnectionStrings__orderingdb": "H/99LdFyINCX0KQkz2Fg8OGgZ9jFx\u002BoPlyGtecTs0F0/94x\u002Bnsf5Ep\u002BSWJd/J2XzsEICZvsxXr3ObWeKd9BlxuMkfbBfuOH3uOoBRbSvRY0TT5bovhR\u002BwfIeAT4UBy3QjIA4\u002BlseE5FxtAwTKWvFr0B2X\u002BbXAEAcWg=="
+      },
+      "payment-processor": {
+        "ConnectionStrings__eventbus": "H/99LdFyINCX0KQkOyOgN3d/voDiktJiGQDyQe3u0lk4qMxqn8X4A9bPY5BnJRWnpUZhON91WZvsOk29M5Ff9fI1artY4cTl8axAHfQ="
+      },
+      "webhooks-api": {
+        "ConnectionStrings__eventbus": "H/99LdFyINCX0KQkOyOgN3d/voDiktJiGQDyQe3u0lk4qMxqn8X4A9bPY5BnJRWnpUZhON91WZvsOk29M5Ff9fI1artY4cTl8axAHfQ=",
+        "ConnectionStrings__webhooksdb": "H/99LdFyINCX0KQkjvjDZyGAhZwWI6WV\u002BGd30MTs0F0/94x\u002Bnsf5Ep\u002BSWJd/J2XzsEICZvsxXr3ObWeKd9BlxuMkfbBfuOH3uOoBRbSvRY0TT5bovhR\u002BwfIeAT4UBy3QjIA4\u002BlseE5FxtAwTKWvFt1dwUvvRBVQcWg=="
+      },
+      "mobile-bff": {},
+      "webhooksclient": {},
+      "webapp": {
+        "ConnectionStrings__eventbus": "H/99LdFyINCX0KQkOyOgN3d/voDiktJiGQDyQe3u0lk4qMxqn8X4A9bPY5BnJRWnpUZhON91WZvsOk29M5Ff9fI1artY4cTl8axAHfQ="
+      }
+    }
+  }
 }
