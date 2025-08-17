@@ -55,7 +55,10 @@
       "Bash(del \"C:\\Users\\Sebastian\\source\\repos\\IggyCloud\\eShop\\aspirate-state.json\")",
       "Bash(del \"C:\\Users\\Sebastian\\source\\repos\\IggyCloud\\eShop\\src\\eShop.AppHost\\aspirate-state.json\")",
       "Bash(do timeout 3 curl -s http://localhost:30509/health)",
-      "Bash(break)"
+      "Bash(break)",
+      "Bash(do timeout 3 curl -s http://localhost:30509/)",
+      "Bash(for i in {1..3})",
+      "Bash(do timeout 3 curl -s http://localhost:30509/basket)"
     ],
     "deny": [],
     "ask": [],

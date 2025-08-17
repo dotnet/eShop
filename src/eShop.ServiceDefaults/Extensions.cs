@@ -65,11 +65,8 @@ public static partial class Extensions
             })
             .WithTracing(tracing =>
             {
-                if (builder.Environment.IsDevelopment())
-                {
-                    // We want to view all traces in development
-                    tracing.SetSampler(new AlwaysOnSampler());
-                }
+                // Always use AlwaysOnSampler for telemetry collection
+                tracing.SetSampler(new AlwaysOnSampler());
 
                 tracing.AddAspNetCoreInstrumentation()
                     .AddGrpcClientInstrumentation()

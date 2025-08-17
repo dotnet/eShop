@@ -14,53 +14,53 @@
   "includeDashboard": true,
   "useCustomNamespace": true,
   "secrets": {
-    "salt": "H/99LdFyINCX0KQk",
-    "hash": "Ee9HAxJnaFhkE4udWcIAkouo1CJfAy4lAtVw8MaL10k=",
+    "salt": "jldPXUW3dYNKcrRM",
+    "hash": "zEVaodbZ88TYjcZMQhtL2Wn3VbVdI9DtJ314s87NBCI=",
     "secrets": {
       "redis-password": {
-        "value": "H/99LdFyINCX0KQkKqSEsNXrSrOwjJUCV3IIW8LR4ltxyI1kuPP5QdvYPbtLFTWK3BI="
+        "value": "jldPXUW3dYNKcrRM7oLQDyuc/aOf7Ixb/GvWfh7R3dLfie/OMSPrcygaZuoR3XCK8mQ="
       },
       "eventbus-password": {
-        "value": "H/99LdFyINCX0KQkb/urWWkSFyglWkEQvxdzjOroy0N0yoIs3fHuBtvLXLQ7FAq/tSQ="
+        "value": "jldPXUW3dYNKcrRMfptnZ\u002BlNH2KIgkBwXwkdHD3bhOz6wLuAFjPITThndb0r61yc/Q0="
       },
       "postgres-password": {
-        "value": "H/99LdFyINCX0KQkOfB7WZInTUvNfkWAIH\u002BYoMnm8BFT74F0g/XdG7jgcIx9GByV7iY="
+        "value": "jldPXUW3dYNKcrRMT0DtdpMKRYzJCwBJ3JryQQ3X1vPB7\u002B7PJibrDi8bVZ4es0m0iDw="
       },
       "redis": {},
       "eventbus": {},
       "postgres": {
-        "POSTGRES_PASSWORD": "H/99LdFyINCX0KQkOfB7WZInTUvNfkWAIH\u002BYoMnm8BFT74F0g/XdG7jgcIx9GByV7iY="
+        "POSTGRES_PASSWORD": "jldPXUW3dYNKcrRMT0DtdpMKRYzJCwBJ3JryQQ3X1vPB7\u002B7PJibrDi8bVZ4es0m0iDw="
       },
       "catalogdb": {},
       "orderingdb": {},
       "webhooksdb": {},
       "basket-api": {
-        "ConnectionStrings__redis": "H/99LdFyINCX0KQkPIHbTeBSIbg0GkZ29F7evf7mx0BxvdU\u002B3ZmnB43ae49iITz7yiNxL90NVabyX3jZfdE/9tEFYpl04A==",
-        "ConnectionStrings__eventbus": "H/99LdFyINCX0KQkOyOgN3d/voDiktJiGQDyQe3u0lk4qMxqn8X4A9bPY5BnJRWnpUZhON91WZvsOk29M5Ff9fI1artY4cTl8axAHfQ="
+        "ConnectionStrings__redis": "jldPXUW3dYNKcrRMmymTjEtaPrHHYRLxRaOmJSjGgfLkkumKR021SCsjT60o9k7z\u002ByXt3v156eDX3CrxwD19JdssKY7JAg==",
+        "ConnectionStrings__eventbus": "jldPXUW3dYNKcrRMbGAzIYWfKYqH23AQQ0GXHDvOlOuth/DeBRHqTHA3RLsw6UKqhjGSxsAq7t7x5zfM8DV9VegDFqTwU8Jx7UvJTwo="
       },
       "catalog-api": {
-        "ConnectionStrings__eventbus": "H/99LdFyINCX0KQkOyOgN3d/voDiktJiGQDyQe3u0lk4qMxqn8X4A9bPY5BnJRWnpUZhON91WZvsOk29M5Ff9fI1artY4cTl8axAHfQ=",
-        "ConnectionStrings__catalogdb": "H/99LdFyINCX0KQk7/6WZY9i21LVPNNc\u002BQ\u002BLtMTs0F0/94x\u002Bnsf5Ep\u002BSWJd/J2XzsEICZvsxXr3ObWeKd9BlxuMkfbBfuOH3uOoBRbSvRY0TT5bovhR\u002BwfIeAT4UBy3QjIA4\u002BlseE5FxtAwTKWvFo1NmW/jRCUMa"
+        "ConnectionStrings__eventbus": "jldPXUW3dYNKcrRMbGAzIYWfKYqH23AQQ0GXHDvOlOuth/DeBRHqTHA3RLsw6UKqhjGSxsAq7t7x5zfM8DV9VegDFqTwU8Jx7UvJTwo=",
+        "ConnectionStrings__catalogdb": "jldPXUW3dYNKcrRMx4hMBXcsISOQobKa287ogRLMlu\u002Bq2LDKBBPrXTlrbLU18Bf7i2TnrOArvOX46jXfnwdIZvkSAa/3CudjpA2IF0qlHkrrvWNsIyNCAQL8X7i9tZ5J8rw7b2oqOJ5ZFrNqz72M1uaKRG3rgFJN"
       },
       "ordering-api": {
-        "ConnectionStrings__eventbus": "H/99LdFyINCX0KQkOyOgN3d/voDiktJiGQDyQe3u0lk4qMxqn8X4A9bPY5BnJRWnpUZhON91WZvsOk29M5Ff9fI1artY4cTl8axAHfQ=",
-        "ConnectionStrings__orderingdb": "H/99LdFyINCX0KQkz2Fg8OGgZ9jFx\u002BoPlyGtecTs0F0/94x\u002Bnsf5Ep\u002BSWJd/J2XzsEICZvsxXr3ObWeKd9BlxuMkfbBfuOH3uOoBRbSvRY0TT5bovhR\u002BwfIeAT4UBy3QjIA4\u002BlseE5FxtAwTKWvFr0B2X\u002BbXAEAcWg=="
+        "ConnectionStrings__eventbus": "jldPXUW3dYNKcrRMbGAzIYWfKYqH23AQQ0GXHDvOlOuth/DeBRHqTHA3RLsw6UKqhjGSxsAq7t7x5zfM8DV9VegDFqTwU8Jx7UvJTwo=",
+        "ConnectionStrings__orderingdb": "jldPXUW3dYNKcrRMdTyLVlLrhl1V5HVU6O6YqxLMlu\u002Bq2LDKBBPrXTlrbLU18Bf7i2TnrOArvOX46jXfnwdIZvkSAa/3CudjpA2IF0qlHkrrvWNsIyNCAQL8X7i9tZ5J8rw7b2oqOJ5ZFrNqz72M2vWaQHPtiVFLwg=="
       },
       "order-processor": {
-        "ConnectionStrings__eventbus": "H/99LdFyINCX0KQkOyOgN3d/voDiktJiGQDyQe3u0lk4qMxqn8X4A9bPY5BnJRWnpUZhON91WZvsOk29M5Ff9fI1artY4cTl8axAHfQ=",
-        "ConnectionStrings__orderingdb": "H/99LdFyINCX0KQkz2Fg8OGgZ9jFx\u002BoPlyGtecTs0F0/94x\u002Bnsf5Ep\u002BSWJd/J2XzsEICZvsxXr3ObWeKd9BlxuMkfbBfuOH3uOoBRbSvRY0TT5bovhR\u002BwfIeAT4UBy3QjIA4\u002BlseE5FxtAwTKWvFr0B2X\u002BbXAEAcWg=="
+        "ConnectionStrings__eventbus": "jldPXUW3dYNKcrRMbGAzIYWfKYqH23AQQ0GXHDvOlOuth/DeBRHqTHA3RLsw6UKqhjGSxsAq7t7x5zfM8DV9VegDFqTwU8Jx7UvJTwo=",
+        "ConnectionStrings__orderingdb": "jldPXUW3dYNKcrRMdTyLVlLrhl1V5HVU6O6YqxLMlu\u002Bq2LDKBBPrXTlrbLU18Bf7i2TnrOArvOX46jXfnwdIZvkSAa/3CudjpA2IF0qlHkrrvWNsIyNCAQL8X7i9tZ5J8rw7b2oqOJ5ZFrNqz72M2vWaQHPtiVFLwg=="
       },
       "payment-processor": {
-        "ConnectionStrings__eventbus": "H/99LdFyINCX0KQkOyOgN3d/voDiktJiGQDyQe3u0lk4qMxqn8X4A9bPY5BnJRWnpUZhON91WZvsOk29M5Ff9fI1artY4cTl8axAHfQ="
+        "ConnectionStrings__eventbus": "jldPXUW3dYNKcrRMbGAzIYWfKYqH23AQQ0GXHDvOlOuth/DeBRHqTHA3RLsw6UKqhjGSxsAq7t7x5zfM8DV9VegDFqTwU8Jx7UvJTwo="
       },
       "webhooks-api": {
-        "ConnectionStrings__eventbus": "H/99LdFyINCX0KQkOyOgN3d/voDiktJiGQDyQe3u0lk4qMxqn8X4A9bPY5BnJRWnpUZhON91WZvsOk29M5Ff9fI1artY4cTl8axAHfQ=",
-        "ConnectionStrings__webhooksdb": "H/99LdFyINCX0KQkjvjDZyGAhZwWI6WV\u002BGd30MTs0F0/94x\u002Bnsf5Ep\u002BSWJd/J2XzsEICZvsxXr3ObWeKd9BlxuMkfbBfuOH3uOoBRbSvRY0TT5bovhR\u002BwfIeAT4UBy3QjIA4\u002BlseE5FxtAwTKWvFt1dwUvvRBVQcWg=="
+        "ConnectionStrings__eventbus": "jldPXUW3dYNKcrRMbGAzIYWfKYqH23AQQ0GXHDvOlOuth/DeBRHqTHA3RLsw6UKqhjGSxsAq7t7x5zfM8DV9VegDFqTwU8Jx7UvJTwo=",
+        "ConnectionStrings__webhooksdb": "jldPXUW3dYNKcrRMvCikUjmtJSVuod9/GqzfNBLMlu\u002Bq2LDKBBPrXTlrbLU18Bf7i2TnrOArvOX46jXfnwdIZvkSAa/3CudjpA2IF0qlHkrrvWNsIyNCAQL8X7i9tZ5J8rw7b2oqOJ5ZFrNqz72MwuKcTW7rjEVLwg=="
       },
       "mobile-bff": {},
       "webhooksclient": {},
       "webapp": {
-        "ConnectionStrings__eventbus": "H/99LdFyINCX0KQkOyOgN3d/voDiktJiGQDyQe3u0lk4qMxqn8X4A9bPY5BnJRWnpUZhON91WZvsOk29M5Ff9fI1artY4cTl8axAHfQ="
+        "ConnectionStrings__eventbus": "jldPXUW3dYNKcrRMbGAzIYWfKYqH23AQQ0GXHDvOlOuth/DeBRHqTHA3RLsw6UKqhjGSxsAq7t7x5zfM8DV9VegDFqTwU8Jx7UvJTwo="
       }
     }
   }
