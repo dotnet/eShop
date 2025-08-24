@@ -30,6 +30,4 @@ spec:
         envFrom:
         - configMapRef:
             name: catalog-api-env
-        - secretRef:
-            name: catalog-api-secrets
       terminationGracePeriodSeconds: 180

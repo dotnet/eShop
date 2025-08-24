@@ -30,6 +30,4 @@ spec:
         envFrom:
         - configMapRef:
             name: basket-api-env
-        - secretRef:
-            name: basket-api-secrets
       terminationGracePeriodSeconds: 180

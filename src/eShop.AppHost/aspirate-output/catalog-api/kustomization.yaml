@@ -13,13 +13,11 @@ configMapGenerator:
     - OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY=in_memory
     - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
     - HTTP_PORTS=8080
+    - ConnectionStrings__eventbus=amqp://guest:OqBKU9ZFjDxkHtvjQ9Y5Vx@eventbus:5672
+    - ConnectionStrings__catalogdb=Host=postgres;Port=5432;Username=postgres;Password=FAm5czGXTYySC5YnF!Swl0;Database=catalogdb
     - DisableAuth=true
     - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
     - OTEL_EXPORTER_OTLP_HEADERS=x-otlp-api-key=bd556687-b71b-4065-95bb-f01077fed6cb1c4ef63a-bc26-4a4c-b29b-f6f4479a4ec6
     - OTEL_SERVICE_NAME=catalog-api
     - ASPNETCORE_URLS=http://+:8080;
 
-secretGenerator:
-- name: catalog-api-secrets
-  envs:
-  - .catalog-api.secrets

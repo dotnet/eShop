@@ -10,6 +10,7 @@
   "containerBuilder": "docker",
   "kubeContext": "docker-desktop",
   "outputFormat": "kustomize",
+  "disableSecrets": true,
   "privateRegistryEmail": "aspir8@aka.ms",
   "includeDashboard": true,
   "useCustomNamespace": true,

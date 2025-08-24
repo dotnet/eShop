@@ -30,6 +30,4 @@ spec:
         envFrom:
         - configMapRef:
             name: ordering-api-env
-        - secretRef:
-            name: ordering-api-secrets
       terminationGracePeriodSeconds: 180
