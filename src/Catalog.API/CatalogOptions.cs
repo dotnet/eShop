@@ -2,6 +2,6 @@
 
 public class CatalogOptions
 {
-    public string PicBaseUrl { get; set; }
+    public string? PicBaseUrl { get; set; }
     public bool UseCustomizationData { get; set; }
 }

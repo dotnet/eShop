@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Json;
+using System.Net.Http.Json;
 using System.Text.Json;
 using Asp.Versioning;
 using Asp.Versioning.Http;
@@ -367,9 +367,8 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         };
 
         // Act - 1
-        var bodyContent = new CatalogItem {
+        var bodyContent = new CatalogItem("TestCatalog1") {
             Id = id,
-            Name = "TestCatalog1",
             Description = "Test catalog description 1",
             Price = 11000.08m,
             PictureFileName = null,

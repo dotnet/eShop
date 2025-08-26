@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -124,7 +124,7 @@ public static class CatalogApi
     public static async Task<Ok<PaginatedItems<CatalogItem>>> GetAllItems(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
-        [Description("The name of the item to return")] string name,
+        [Description("The name of the item to return")] string? name,
         [Description("The type of items to return")] int? type,
         [Description("The brand of items to return")] int? brand)
     {
@@ -214,9 +214,9 @@ public static class CatalogApi
             return TypedResults.NotFound();
         }
 
-        var path = GetFullPath(environment.ContentRootPath, item.PictureFileName);
+        var path = GetFullPath(environment.ContentRootPath, item.PictureFileName ?? string.Empty);
 
-        string imageFileExtension = Path.GetExtension(item.PictureFileName);
+        string imageFileExtension = Path.GetExtension(item.PictureFileName ?? string.Empty) ?? string.Empty;
         string mimetype = GetImageMimeTypeFromImageFileExtension(imageFileExtension);
         DateTime lastModified = File.GetLastWriteTimeUtc(path);
 
@@ -250,6 +250,11 @@ public static class CatalogApi
         // Create an embedding for the input search
         var vector = await services.CatalogAI.GetEmbeddingAsync(text);
 
+        if (vector is null)
+        {
+            return await GetItemsByName(paginationRequest, services, text);
+        }
+
         // Get the total number of items
         var totalItems = await services.Context.CatalogItems
             .LongCountAsync();
@@ -259,7 +264,8 @@ public static class CatalogApi
         if (services.Logger.IsEnabled(LogLevel.Debug))
         {
             var itemsWithDistance = await services.Context.CatalogItems
-                .Select(c => new { Item = c, Distance = c.Embedding.CosineDistance(vector) })
+                .Where(c => c.Embedding != null)
+                .Select(c => new { Item = c, Distance = c.Embedding!.CosineDistance(vector) })
                 .OrderBy(c => c.Distance)
                 .Skip(pageSize * pageIndex)
                 .Take(pageSize)
@@ -272,7 +278,8 @@ public static class CatalogApi
         else
         {
             itemsOnPage = await services.Context.CatalogItems
-                .OrderBy(c => c.Embedding.CosineDistance(vector))
+                .Where(c => c.Embedding != null)
+                .OrderBy(c => c.Embedding!.CosineDistance(vector))
                 .Skip(pageSize * pageIndex)
                 .Take(pageSize)
                 .ToListAsync();
@@ -360,13 +367,12 @@ public static class CatalogApi
         [AsParameters] CatalogServices services,
         CatalogItem product)
     {
-        var item = new CatalogItem
+        var item = new CatalogItem(product.Name)
         {
             Id = product.Id,
             CatalogBrandId = product.CatalogBrandId,
             CatalogTypeId = product.CatalogTypeId,
             Description = product.Description,
-            Name = product.Name,
             PictureFileName = product.PictureFileName,
             Price = product.Price,
             AvailableStock = product.AvailableStock,
