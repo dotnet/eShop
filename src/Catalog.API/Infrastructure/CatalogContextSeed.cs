@@ -56,18 +56,15 @@ public partial class CatalogContextSeed(
                 MaxStockThreshold = 200,
                 RestockThreshold = 10,
                 PictureFileName = $"{source.Id}.webp",
-            }).ToArray() ?? [];
+            }).ToArray();
 
             if (catalogAI.IsEnabled)
             {
                 logger.LogInformation("Generating {NumItems} embeddings", catalogItems.Length);
                 IReadOnlyList<Vector>? embeddings = await catalogAI.GetEmbeddingsAsync(catalogItems);
-                if (embeddings != null)
+                for (int i = 0; i < catalogItems.Length; i++)
                 {
-                    for (int i = 0; i < catalogItems.Length && i < embeddings.Count; i++)
-                    {
-                        catalogItems[i].Embedding = embeddings[i];
-                    }
+                    catalogItems[i].Embedding = embeddings?[i];
                 }
             }
 
