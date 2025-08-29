@@ -58,7 +58,9 @@
       "Bash(break)",
       "Bash(do timeout 3 curl -s http://localhost:30509/)",
       "Bash(for i in {1..3})",
-      "Bash(do timeout 3 curl -s http://localhost:30509/basket)"
+      "Bash(do timeout 3 curl -s http://localhost:30509/basket)",
+      "Bash(do timeout 3 kubectl logs postgres-0 --context docker-desktop --tail=5)",
+      "Bash(do timeout 3 kubectl logs postgres-0 --context docker-desktop --tail=3)"
     ],
     "deny": [],
     "ask": [],

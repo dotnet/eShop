@@ -16,21 +16,16 @@ builder.Configuration["DOTNET_DASHBOARD_OTLP_AUTH_MODE"] = "ApiKey";
 builder.Configuration["DOTNET_DASHBOARD_OTLP_PRIMARY_API_KEY"] = otlpApiKey;
 builder.Configuration["DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS"] = "false";
 
-builder.Services.Configure<Microsoft.Extensions.Logging.LoggerFilterOptions>(options =>
-{
-    options.AddFilter("Microsoft.Hosting.Lifetime", LogLevel.Information);
-});
-
 var redis = builder.AddRedis("redis");
 var rabbitMq = builder.AddRabbitMQ("eventbus")
     .WithLifetime(ContainerLifetime.Persistent);
 var postgres = builder.AddPostgres("postgres")
     .WithImage("ankane/pgvector")
     .WithImageTag("latest")
-    .WithEnvironment("POSTGRES_HOST_AUTH_METHOD", "md5")
-    .WithEnvironment("POSTGRES_INITDB_ARGS", "--auth-host=md5 --auth-local=md5")
     .WithDataVolume()
-    .WithLifetime(ContainerLifetime.Persistent);
+    .WithLifetime(ContainerLifetime.Persistent)
+    .WithEnvironment("POSTGRES_HOST_AUTH_METHOD", "md5")
+    .WithEnvironment("POSTGRES_INITDB_ARGS", "--auth-host=md5 --auth-local=md5");
 
 var catalogDb = postgres.AddDatabase("catalogdb");
 // var identityDb = postgres.AddDatabase("identitydb"); // Identity disabled
