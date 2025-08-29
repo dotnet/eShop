@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using eShop.WebAppComponents.Catalog;
+﻿using eShop.WebAppComponents.Catalog;
 
 namespace eShop.WebAppComponents.Services
 {

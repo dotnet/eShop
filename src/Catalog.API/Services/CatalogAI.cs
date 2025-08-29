@@ -10,14 +10,12 @@ public sealed class CatalogAI : ICatalogAI
     private readonly IEmbeddingGenerator<string, Embedding<float>> _embeddingGenerator;
 
     /// <summary>The web host environment.</summary>
-    private readonly IWebHostEnvironment _environment;
     /// <summary>Logger for use in AI operations.</summary>
     private readonly ILogger _logger;
 
-    public CatalogAI(IWebHostEnvironment environment, ILogger<CatalogAI> logger, IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator = null)
+    public CatalogAI(ILogger<CatalogAI> logger, IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator = null)
     {
         _embeddingGenerator = embeddingGenerator;
-        _environment = environment;
         _logger = logger;
     }
 
