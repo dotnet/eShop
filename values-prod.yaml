@@ -1,0 +1,6 @@
+image:
+  repository: ealinour/eshop
+  tag: "v1.0.0"
+service:
+  type: ClusterIP
+  port: 80
