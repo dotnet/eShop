@@ -209,14 +209,14 @@ public static class CatalogApi
     {
         var item = await context.CatalogItems.FindAsync(id);
 
-        if (item is null)
+        if (item is null || item.PictureFileName is null)
         {
             return TypedResults.NotFound();
         }
 
-        var path = GetFullPath(environment.ContentRootPath, item.PictureFileName ?? string.Empty);
+        var path = GetFullPath(environment.ContentRootPath, item.PictureFileName);
 
-        string imageFileExtension = Path.GetExtension(item.PictureFileName ?? string.Empty) ?? string.Empty;
+        string imageFileExtension = Path.GetExtension(item.PictureFileName) ?? string.Empty;
         string mimetype = GetImageMimeTypeFromImageFileExtension(imageFileExtension);
         DateTime lastModified = File.GetLastWriteTimeUtc(path);
 
