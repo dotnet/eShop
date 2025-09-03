@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Microsoft.Extensions.AI;
 using Pgvector;
 
@@ -7,14 +7,14 @@ namespace eShop.Catalog.API.Services;
 public sealed class CatalogAI : ICatalogAI
 {
     private const int EmbeddingDimensions = 384;
-    private readonly IEmbeddingGenerator<string, Embedding<float>> _embeddingGenerator;
+    private readonly IEmbeddingGenerator<string, Embedding<float>>? _embeddingGenerator;
 
     /// <summary>The web host environment.</summary>
     private readonly IWebHostEnvironment _environment;
     /// <summary>Logger for use in AI operations.</summary>
     private readonly ILogger _logger;
 
-    public CatalogAI(IWebHostEnvironment environment, ILogger<CatalogAI> logger, IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator = null)
+    public CatalogAI(IWebHostEnvironment environment, ILogger<CatalogAI> logger, IEmbeddingGenerator<string, Embedding<float>>? embeddingGenerator = null)
     {
         _embeddingGenerator = embeddingGenerator;
         _environment = environment;
@@ -25,19 +25,19 @@ public sealed class CatalogAI : ICatalogAI
     public bool IsEnabled => _embeddingGenerator is not null;
 
     /// <inheritdoc/>
-    public ValueTask<Vector> GetEmbeddingAsync(CatalogItem item) =>
+    public ValueTask<Vector?> GetEmbeddingAsync(CatalogItem item) =>
         IsEnabled ?
             GetEmbeddingAsync(CatalogItemToString(item)) :
-            ValueTask.FromResult<Vector>(null);
+            ValueTask.FromResult<Vector?>(null);
 
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyList<Vector>> GetEmbeddingsAsync(IEnumerable<CatalogItem> items)
+    public async ValueTask<IReadOnlyList<Vector>?> GetEmbeddingsAsync(IEnumerable<CatalogItem> items)
     {
         if (IsEnabled)
         {
             long timestamp = Stopwatch.GetTimestamp();
 
-            GeneratedEmbeddings<Embedding<float>> embeddings = await _embeddingGenerator.GenerateAsync(items.Select(CatalogItemToString));
+            GeneratedEmbeddings<Embedding<float>> embeddings = await _embeddingGenerator!.GenerateAsync(items.Select(CatalogItemToString));
             var results = embeddings.Select(m => new Vector(m.Vector[0..EmbeddingDimensions])).ToList();
 
             if (_logger.IsEnabled(LogLevel.Trace))
@@ -52,13 +52,13 @@ public sealed class CatalogAI : ICatalogAI
     }
 
     /// <inheritdoc/>
-    public async ValueTask<Vector> GetEmbeddingAsync(string text)
+    public async ValueTask<Vector?> GetEmbeddingAsync(string text)
     {
         if (IsEnabled)
         {
             long timestamp = Stopwatch.GetTimestamp();
 
-            var embedding = await _embeddingGenerator.GenerateVectorAsync(text);
+            var embedding = await _embeddingGenerator!.GenerateVectorAsync(text);
             embedding = embedding[0..EmbeddingDimensions];
 
             if (_logger.IsEnabled(LogLevel.Trace))

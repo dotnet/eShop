@@ -19,6 +19,7 @@
             "name": "ids",
             "in": "query",
             "description": "List of ids for catalog items to return",
+            "required": true,
             "schema": {
               "type": "array",
               "items": {
@@ -195,7 +196,8 @@
                 "$ref": "#/components/schemas/CatalogItem"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "201": {
@@ -447,7 +449,8 @@
                 "$ref": "#/components/schemas/CatalogItem"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "201": {
@@ -642,8 +645,7 @@
             "format": "int32"
           },
           "brand": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         }
       },
@@ -658,8 +660,7 @@
             "format": "int32"
           },
           "name": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "description": {
             "type": "string"
@@ -713,8 +714,7 @@
             "format": "int32"
           },
           "type": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         }
       },
@@ -743,8 +743,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/CatalogItem"
-            },
-            "nullable": true
+            }
           }
         }
       },
