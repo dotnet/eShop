@@ -199,7 +199,7 @@ internal static class OpenApiOptionsExtensions
         return options;
     }
 
-    private class SecuritySchemeDefinitionsTransformer(IConfiguration configuration) : IOpenApiDocumentTransformer
+    private class SecuritySchemeDefinitionsTransformer(IConfiguration configuration)
     {
         public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
         {
