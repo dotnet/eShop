@@ -160,11 +160,13 @@ internal static class OpenApiOptionsExtensions
                 switch (context.DocumentName) {
                     case "v1":
                         if (apiVersionParameter.Schema != null)
-                            apiVersionParameter.Schema.Example = new OpenApiString("1.0");
+                            if (apiVersionParameter.Schema is OpenApiSchema schema)
+                                schema.Example = new OpenApiString("1.0");
                         break;
                     case "v2":
                         if (apiVersionParameter.Schema != null)
-                            apiVersionParameter.Schema.Example = new OpenApiString("2.0");
+                            if (apiVersionParameter.Schema is OpenApiSchema schema)
+                                schema.Example = new OpenApiString("2.0");
                         break;
                 }
             }
