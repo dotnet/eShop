@@ -155,33 +155,18 @@ internal static class OpenApiOptionsExtensions
             if (apiVersionParameter is not null)
             {
                 apiVersionParameter.Description = "The API version, in the format 'major.minor'.";
-                // Note: Example property is read-only in OpenAPI 3.1
-                // Examples are now handled differently through the OpenAPI 3.1 specification
-            }
-            return Task.CompletedTask;
-        });
-        return options;
-    }
-
-    // This extension method adds a schema transformer that sets "nullable" to false for all optional properties.
-    // Note: In OpenAPI 3.1, nullable is handled differently through type arrays that include null
-    public static OpenApiOptions ApplySchemaNullableFalse(this OpenApiOptions options)
-    {
-        options.AddSchemaTransformer((schema, context, cancellationToken) =>
-        {
-            if (schema.Properties is not null)
-            {
-                foreach (var property in schema.Properties)
+                if (apiVersionParameter.Schema is OpenApiSchema targetSchema)
                 {
-                    if (schema.Required?.Contains(property.Key) != true)
-                    {
-                        // In OpenAPI 3.1, nullable is represented through type arrays
-                        // This transformer is kept for API compatibility but doesn't modify the schema
-                        // as the nullable concept is handled differently in OpenAPI 3.1
+                    switch (context.DocumentName) {
+                        case "v1":
+                            targetSchema.Example = JsonNode.Parse("\"1.0\"");
+                            break;
+                        case "v2":
+                            targetSchema.Example = JsonNode.Parse("\"2.0\"");
+                            break;
                     }
                 }
             }
-
             return Task.CompletedTask;
         });
         return options;
@@ -214,7 +199,8 @@ internal static class OpenApiOptionsExtensions
                 }
             };
             document.Components ??= new();
-            document.Components?.SecuritySchemes?.Add("oauth2", securityScheme);
+            document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();  
+            document.Components.SecuritySchemes.Add("oauth2", securityScheme);
             return Task.CompletedTask;
         }
     }
