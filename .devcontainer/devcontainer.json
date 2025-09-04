@@ -39,62 +39,46 @@
 	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [5243, 5223, 5045,  7298, 18848, 19888],
+	// "forwardPorts": [5243, 5223, 5045,  7298, 18848, 19888],
   "portsAttributes": {
-		"5243": {
-			"label": "Identity HTTPS"
-		},
-    "5221": {
-      "label": "Basket API HTTP"
-    },
-    "5222": {
-      "label": "Catalog API HTTP"
-    },
-		"5062": {
-			"label": "WebHooks Client HTTP"
-		},
-		"5223": {
-			"label": "Identity HTTP"
-		},
-    "5224": {
-      "label": "Ordering API HTTP"
-    },
-    "5226": {
-      "label": "Payment Processor HTTP"
-    },
-    "5227": {
-      "label": "WebHooks API HTTP"
-    },
 		"5045": {
-			"label": "Web App HTTP"
+			"label": "Web App HTTP",
+			"onAutoForward": "openBrowserOnce"
 		},
 		"7298": {
-			"label": "Web App HTTPS"
+			"label": "Web App HTTPS",
+			"onAutoForward": "openBrowserOnce"
 		},
 		"18848": {
-			"label": "Dashboard HTTP"
+			"label": "Dashboard HTTP",
+			"onAutoForward": "silent"
 		},
 		"19888": {
-			"label": "Dashboard HTTPS"
-		},
-		"11632": {
-			"label": "Mobile BFF HTTP"
-		},
-		"16888": {
-			"label": "Order Processor HTTP"
+			"label": "Dashboard HTTPS",
+			"onAutoForward": "silent"
 		}
+	},
+
+	// Don't prompt to open other services than the ones listed above.
+	"otherPortsAttributes": {
+		"onAutoForward": "silent"
 	},
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "dotnet workload restore",
 	"postStartCommand": {
-		"dotnet-workload-restore": ["dotnet", "workload", "restore"],
+		"dotnet-workload-restore": ["dotnet", "workload", "restore", "src/eShop.AppHost/eShop.AppHost.csproj"],
 		"dotnet-dev-certs-trust": ["dotnet", "dev-certs", "https", "--trust"],
 		"copy-root-config": ["sh", "-c", "if [ -e /root/.vscode-remote ]; then cp -r /root/.vscode-remote /home/vscode/; fi"]
   },
 
 	// Configure tool-specific properties.
 	// "customizations": {},
+
+	"hostRequirements": {
+		"cpus": 4,
+		"memory": "8gb"
+	},
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	"remoteUser": "root"
