@@ -2,7 +2,6 @@
 using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Any;
 using System.Threading;
@@ -118,8 +117,8 @@ internal static class OpenApiOptionsExtensions
                 return Task.CompletedTask;
             }
 
-            operation.Responses?.TryAdd("401", new OpenApiResponse { Description = "Unauthorized" });
-            operation.Responses?.TryAdd("403", new OpenApiResponse { Description = "Forbidden" });
+            operation.Responses?.TryAdd("401", new Microsoft.OpenApi.Models.OpenApiResponse { Description = "Unauthorized" });
+            operation.Responses?.TryAdd("403", new Microsoft.OpenApi.Models.OpenApiResponse { Description = "Forbidden" });
 
             var oAuthSchemeRef = new OpenApiSecuritySchemeReference
             {
