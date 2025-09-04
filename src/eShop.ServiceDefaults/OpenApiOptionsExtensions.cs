@@ -200,7 +200,7 @@ internal static class OpenApiOptionsExtensions
 
     private class SecuritySchemeDefinitionsTransformer(IConfiguration configuration)
     {
-        public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
+        public Task TransformAsync(OpenApiDocument document, object context, CancellationToken cancellationToken)
         {
             var identitySection = configuration.GetSection("Identity");
             if (!identitySection.Exists())
