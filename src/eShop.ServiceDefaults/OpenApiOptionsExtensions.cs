@@ -3,7 +3,6 @@ using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Any;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
