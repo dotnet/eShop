@@ -116,8 +116,8 @@ internal static class OpenApiOptionsExtensions
                 return Task.CompletedTask;
             }
 
-            operation.Responses.TryAdd("401", new OpenApiResponse { Description = "Unauthorized" });
-            operation.Responses.TryAdd("403", new OpenApiResponse { Description = "Forbidden" });
+            operation.Responses?.TryAdd("401", new OpenApiResponse { Description = "Unauthorized" });
+            operation.Responses?.TryAdd("403", new OpenApiResponse { Description = "Forbidden" });
 
             var oAuthScheme = new OpenApiSecurityScheme
             {
@@ -159,10 +159,12 @@ internal static class OpenApiOptionsExtensions
                 apiVersionParameter.Description = "The API version, in the format 'major.minor'.";
                 switch (context.DocumentName) {
                     case "v1":
-                        apiVersionParameter.Schema.Example = new OpenApiString("1.0");
+                        if (apiVersionParameter.Schema != null)
+                            apiVersionParameter.Schema.Example = new OpenApiString("1.0");
                         break;
                     case "v2":
-                        apiVersionParameter.Schema.Example = new OpenApiString("2.0");
+                        if (apiVersionParameter.Schema != null)
+                            apiVersionParameter.Schema.Example = new OpenApiString("2.0");
                         break;
                 }
             }
