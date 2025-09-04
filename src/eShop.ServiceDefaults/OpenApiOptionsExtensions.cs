@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Microsoft.OpenApi.Models;
+using System.Text;
 using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
