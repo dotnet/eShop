@@ -2,14 +2,14 @@
 using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi;
+using Microsoft.OpenApi.Any;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
-
 
 namespace eShop.ServiceDefaults;
 
@@ -44,7 +44,7 @@ internal static class OpenApiOptionsExtensions
             {
                 if (text[^1] != '.')
                 {
-                    text.Append('.');
+                    text.Append('.') ;
                 }
 
                 text.Append(' ');
@@ -121,7 +121,7 @@ internal static class OpenApiOptionsExtensions
             operation.Responses?.TryAdd("401", new OpenApiResponse { Description = "Unauthorized" });
             operation.Responses?.TryAdd("403", new OpenApiResponse { Description = "Forbidden" });
 
-            var oAuthScheme = new OpenApiSecurityScheme
+            var oAuthSchemeRef = new OpenApiSecuritySchemeReference
             {
                 Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
             };
@@ -130,7 +130,7 @@ internal static class OpenApiOptionsExtensions
             {
                 new()
                 {
-                    [oAuthScheme] = scopes
+                    [oAuthSchemeRef] = scopes
                 }
             };
 
@@ -155,20 +155,18 @@ internal static class OpenApiOptionsExtensions
         options.AddOperationTransformer((operation, context, cancellationToken) =>
         {
             // Find parameter named "api-version" and add a description to it
-            var apiVersionParameter = operation.Parameters.FirstOrDefault(p => p.Name == "api-version");
+            var apiVersionParameter = operation.Parameters?.FirstOrDefault(p => p.Name == "api-version");
             if (apiVersionParameter is not null)
             {
                 apiVersionParameter.Description = "The API version, in the format 'major.minor'.";
                 switch (context.DocumentName) {
                     case "v1":
                         if (apiVersionParameter.Schema != null)
-                            if (apiVersionParameter.Schema is OpenApiSchema schema)
-                                schema.Example = new OpenApiString("1.0");
+                            apiVersionParameter.Schema.Example = new OpenApiString("1.0");
                         break;
                     case "v2":
                         if (apiVersionParameter.Schema != null)
-                            if (apiVersionParameter.Schema is OpenApiSchema schema)
-                                schema.Example = new OpenApiString("2.0");
+                            apiVersionParameter.Schema.Example = new OpenApiString("2.0");
                         break;
                 }
             }
@@ -188,7 +186,12 @@ internal static class OpenApiOptionsExtensions
                 {
                     if (schema.Required?.Contains(property.Key) != true)
                     {
-                        property.Value.Nullable = false;
+                        // Note: Nullable property may not be available in newer versions
+                        // This might need to be handled differently in .NET 10
+                        if (property.Value is OpenApiSchema openApiSchema)
+                        {
+                            openApiSchema.Nullable = false;
+                        }
                     }
                 }
             }
@@ -198,9 +201,9 @@ internal static class OpenApiOptionsExtensions
         return options;
     }
 
-    private class SecuritySchemeDefinitionsTransformer(IConfiguration configuration)
+    private class SecuritySchemeDefinitionsTransformer(IConfiguration configuration) : IOpenApiDocumentTransformer
     {
-        public Task TransformAsync(OpenApiDocument document, object context, CancellationToken cancellationToken)
+        public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
         {
             var identitySection = configuration.GetSection("Identity");
             if (!identitySection.Exists())
@@ -209,7 +212,7 @@ internal static class OpenApiOptionsExtensions
             }
 
             var identityUrlExternal = identitySection.GetRequiredValue("Url");
-            var scopes = identitySection.GetRequiredSection("Scopes").GetChildren().ToDictionary(p => p.Key, p => p.Value);
+            var scopes = identitySection.GetRequiredSection("Scopes").GetChildren().ToDictionary(p => p.Key, p => p.Value ?? string.Empty);
             var securityScheme = new OpenApiSecurityScheme
             {
                 Type = SecuritySchemeType.OAuth2,
