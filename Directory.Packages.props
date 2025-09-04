@@ -43,10 +43,8 @@
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="$(AspnetVersion)" />
-
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.5.0" />
-
     <PackageVersion Include="MSTest.TestFramework" Version="3.8.2" />
     <PackageVersion Include="MSTest.TestAdapter" Version="3.8.2" />
     <!-- Version together with EF -->
@@ -58,8 +56,8 @@
     <PackageVersion Include="Pgvector.EntityFrameworkCore" Version="0.2.1" />
     <!-- Version together with runtime -->
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftExtensionsVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="$(MicrosoftExtensionsVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.0-preview.7.25380.108" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0-preview.7.25380.108" />
     <!-- Xabaril packages -->
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="9.0.0" />
     <!-- AI -->
@@ -100,7 +98,7 @@
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.3.0" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.0.26"/>
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.0.26" />
     <!-- Before license change -->
     <PackageVersion Include="MediatR" Version="12.5.0" />
   </ItemGroup>
