@@ -40,7 +40,7 @@
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [5243, 5223, 5045,  7298, 18848, 19888],
-  "portsAttributes": {
+    "portsAttributes": {
 		"5045": {
 			"label": "Web App HTTP",
 			"onAutoForward": "openBrowserOnce"
@@ -67,10 +67,10 @@
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "dotnet workload restore",
 	"postStartCommand": {
-		"dotnet-workload-restore": ["dotnet", "workload", "restore", "src/eShop.AppHost/eShop.AppHost.csproj"],
+		"dotnet-workload-restore": ["dotnet", "workload", "restore"],
 		"dotnet-dev-certs-trust": ["dotnet", "dev-certs", "https", "--trust"],
 		"copy-root-config": ["sh", "-c", "if [ -e /root/.vscode-remote ]; then cp -r /root/.vscode-remote /home/vscode/; fi"]
-  },
+    },
 
 	// Configure tool-specific properties.
 	// "customizations": {},
