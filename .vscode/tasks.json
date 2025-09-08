@@ -37,6 +37,17 @@
         "${workspaceFolder}/eShop.Web.slnf"
       ],
       "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "test",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "test",
+        "${workspaceFolder}/eShop.Web.slnf"
+      ],
+      "problemMatcher": "$msCompile",
+      "isTestCommand": true
     }
   ]
 }

@@ -1,11 +1,6 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/dotnet
 {
 	"name": "C# (.NET)",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	// "image": "mcr.microsoft.com/devcontainers/dotnet:1.5.0-9.0-bookworm",
 	"build": {
-			// Path is relative to the devcontainer.json file.
 			"dockerfile": "Dockerfile"
 	},
 	"features": {
@@ -38,9 +33,7 @@
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [5243, 5223, 5045,  7298, 18848, 19888],
-    "portsAttributes": {
+  "portsAttributes": {
 		"5045": {
 			"label": "Web App HTTP",
 			"onAutoForward": "openBrowserOnce"
@@ -64,20 +57,22 @@
 		"onAutoForward": "silent"
 	},
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "dotnet workload restore",
-	"postStartCommand": {
-		"dotnet-workload-restore": ["dotnet", "workload", "restore"],
+	// Run these commands before editor connects, to ensure that all extensions initialize properly.
+	"updateContentCommand": {
+		"dotnet-workload-restore": ["dotnet", "workload", "restore", "src/eShop.AppHost/eShop.AppHost.csproj"],
 		"dotnet-dev-certs-trust": ["dotnet", "dev-certs", "https", "--trust"],
-		"copy-root-config": ["sh", "-c", "if [ -e /root/.vscode-remote ]; then cp -r /root/.vscode-remote /home/vscode/; fi"]
-    },
+		"copy-root-config": ["sh", "-c", "if [ -e /root/.vscode-remote ]; then cp -r /root/.vscode-remote /home/vscode/; fi"],
+		"dotnet-restore": ["dotnet", "restore", "eShop.Web.slnf"]
+	},
+
+	"postStartCommand": "dotnet restore eShop.Web.slnf",
 
 	// Configure tool-specific properties.
 	// "customizations": {},
 
 	"hostRequirements": {
 		"cpus": 4,
-		"memory": "8gb"
+		"memory": "6gb"
 	},
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
