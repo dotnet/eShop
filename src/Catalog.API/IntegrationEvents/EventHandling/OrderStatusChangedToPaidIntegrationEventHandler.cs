@@ -14,7 +14,7 @@ public class OrderStatusChangedToPaidIntegrationEventHandler(
         {
             var catalogItem = catalogContext.CatalogItems.Find(orderStockItem.ProductId);
 
-            catalogItem.RemoveStock(orderStockItem.Units);
+            catalogItem?.RemoveStock(orderStockItem.Units);
         }
 
         await catalogContext.SaveChangesAsync();

@@ -125,7 +125,7 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
 bool useOpenAI = false;
 if (useOpenAI)
 {
-    builder.AddOpenAI(catalogApi, webApp);
+    builder.AddOpenAI(catalogApi, webApp, OpenAITarget.OpenAI); // set to AzureOpenAI if you want to use Azure OpenAI
 }
 
 bool useOllama = false;

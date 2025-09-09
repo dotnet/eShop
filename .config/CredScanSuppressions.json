@@ -1,0 +1,13 @@
+{
+  "tool": "Credential Scanner",
+  "suppressions": [
+    {
+      "placeholder": "Pass123$",
+      "_justification": "Dummy."
+    },
+    {
+      "placeholder": "yourWeak(!)Password",
+      "_justification": "Dummy."
+    }
+  ]
+}
