@@ -1,4 +1,6 @@
 resources:
+- prometheus
+- grafana
 - redis
 - eventbus
 - postgres

@@ -1,6 +1,81 @@
 {
   "$schema": "https://json.schemastore.org/aspire-8.0.json",
   "resources": {
+    "prometheus": {
+      "type": "container.v0",
+      "image": "prom/prometheus:latest",
+      "args": [
+        "--config.file=/etc/prometheus/prometheus.yml",
+        "--storage.tsdb.path=/prometheus/",
+        "--web.console.libraries=/etc/prometheus/console_libraries",
+        "--web.console.templates=/etc/prometheus/consoles",
+        "--web.enable-lifecycle"
+      ],
+      "bindMounts": [
+        {
+          "source": "prometheus.yml",
+          "target": "/etc/prometheus/prometheus.yml",
+          "readOnly": false
+        }
+      ],
+      "volumes": [
+        {
+          "name": "prometheus-data",
+          "target": "/prometheus",
+          "readOnly": false
+        }
+      ],
+      "bindings": {
+        "http": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http",
+          "targetPort": 9090,
+          "external": true
+        }
+      }
+    },
+    "grafana": {
+      "type": "container.v0",
+      "image": "grafana/grafana:latest",
+      "bindMounts": [
+        {
+          "source": "grafana-datasources.yml",
+          "target": "/etc/grafana/provisioning/datasources/datasources.yml",
+          "readOnly": false
+        },
+        {
+          "source": "grafana-dashboards.yml",
+          "target": "/etc/grafana/provisioning/dashboards/dashboards.yml",
+          "readOnly": false
+        },
+        {
+          "source": "k6-dashboard.json",
+          "target": "/etc/grafana/dashboards/k6-dashboard.json",
+          "readOnly": false
+        }
+      ],
+      "volumes": [
+        {
+          "name": "grafana-data",
+          "target": "/var/lib/grafana",
+          "readOnly": false
+        }
+      ],
+      "env": {
+        "GF_SECURITY_ADMIN_PASSWORD": "admin123",
+        "GF_INSTALL_PLUGINS": "grafana-piechart-panel"
+      },
+      "bindings": {
+        "http": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http",
+          "targetPort": 3000,
+          "external": true
+        }
+      }
+    },
     "redis": {
       "type": "container.v0",
       "connectionString": "{redis.bindings.tcp.host}:{redis.bindings.tcp.port},password={redis-password.value}",
@@ -88,9 +163,7 @@
         "HTTP_PORTS": "{basket-api.bindings.http.targetPort}",
         "ConnectionStrings__redis": "{redis.connectionString}",
         "ConnectionStrings__eventbus": "{eventbus.connectionString}",
-        "DisableAuth": "true",
-        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://aspire-dashboard:18889",
-        "OTEL_EXPORTER_OTLP_HEADERS": "x-otlp-api-key=bd556687-b71b-4065-95bb-f01077fed6cb1c4ef63a-bc26-4a4c-b29b-f6f4479a4ec6"
+        "DisableAuth": "true"
       },
       "bindings": {
         "http": {
@@ -116,20 +189,20 @@
         "HTTP_PORTS": "{catalog-api.bindings.http.targetPort}",
         "ConnectionStrings__eventbus": "{eventbus.connectionString}",
         "ConnectionStrings__catalogdb": "{catalogdb.connectionString}",
-        "DisableAuth": "true",
-        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://aspire-dashboard:18889",
-        "OTEL_EXPORTER_OTLP_HEADERS": "x-otlp-api-key=bd556687-b71b-4065-95bb-f01077fed6cb1c4ef63a-bc26-4a4c-b29b-f6f4479a4ec6"
+        "DisableAuth": "true"
       },
       "bindings": {
         "http": {
           "scheme": "http",
           "protocol": "tcp",
-          "transport": "http"
+          "transport": "http",
+          "external": true
         },
         "https": {
           "scheme": "https",
           "protocol": "tcp",
-          "transport": "http"
+          "transport": "http",
+          "external": true
         }
       }
     },
@@ -144,9 +217,7 @@
         "HTTP_PORTS": "{ordering-api.bindings.http.targetPort}",
         "ConnectionStrings__eventbus": "{eventbus.connectionString}",
         "ConnectionStrings__orderingdb": "{orderingdb.connectionString}",
-        "DisableAuth": "true",
-        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://aspire-dashboard:18889",
-        "OTEL_EXPORTER_OTLP_HEADERS": "x-otlp-api-key=bd556687-b71b-4065-95bb-f01077fed6cb1c4ef63a-bc26-4a4c-b29b-f6f4479a4ec6"
+        "DisableAuth": "true"
       },
       "bindings": {
         "http": {
@@ -172,9 +243,7 @@
         "HTTP_PORTS": "{order-processor.bindings.http.targetPort}",
         "ConnectionStrings__eventbus": "{eventbus.connectionString}",
         "ConnectionStrings__orderingdb": "{orderingdb.connectionString}",
-        "DisableAuth": "true",
-        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://aspire-dashboard:18889",
-        "OTEL_EXPORTER_OTLP_HEADERS": "x-otlp-api-key=bd556687-b71b-4065-95bb-f01077fed6cb1c4ef63a-bc26-4a4c-b29b-f6f4479a4ec6"
+        "DisableAuth": "true"
       },
       "bindings": {
         "http": {
@@ -199,9 +268,7 @@
         "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
         "HTTP_PORTS": "{payment-processor.bindings.http.targetPort}",
         "ConnectionStrings__eventbus": "{eventbus.connectionString}",
-        "DisableAuth": "true",
-        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://aspire-dashboard:18889",
-        "OTEL_EXPORTER_OTLP_HEADERS": "x-otlp-api-key=bd556687-b71b-4065-95bb-f01077fed6cb1c4ef63a-bc26-4a4c-b29b-f6f4479a4ec6"
+        "DisableAuth": "true"
       },
       "bindings": {
         "http": {
@@ -227,9 +294,7 @@
         "HTTP_PORTS": "{webhooks-api.bindings.http.targetPort}",
         "ConnectionStrings__eventbus": "{eventbus.connectionString}",
         "ConnectionStrings__webhooksdb": "{webhooksdb.connectionString}",
-        "DisableAuth": "true",
-        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://aspire-dashboard:18889",
-        "OTEL_EXPORTER_OTLP_HEADERS": "x-otlp-api-key=bd556687-b71b-4065-95bb-f01077fed6cb1c4ef63a-bc26-4a4c-b29b-f6f4479a4ec6"
+        "DisableAuth": "true"
       },
       "bindings": {
         "http": {
@@ -259,9 +324,7 @@
         "services__ordering-api__https__0": "{ordering-api.bindings.https.url}",
         "services__basket-api__http__0": "{basket-api.bindings.http.url}",
         "services__basket-api__https__0": "{basket-api.bindings.https.url}",
-        "DisableAuth": "true",
-        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://aspire-dashboard:18889",
-        "OTEL_EXPORTER_OTLP_HEADERS": "x-otlp-api-key=bd556687-b71b-4065-95bb-f01077fed6cb1c4ef63a-bc26-4a4c-b29b-f6f4479a4ec6"
+        "DisableAuth": "true"
       },
       "bindings": {
         "http": {
@@ -288,8 +351,6 @@
         "services__webhooks-api__http__0": "{webhooks-api.bindings.http.url}",
         "services__webhooks-api__https__0": "{webhooks-api.bindings.https.url}",
         "DisableAuth": "true",
-        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://aspire-dashboard:18889",
-        "OTEL_EXPORTER_OTLP_HEADERS": "x-otlp-api-key=bd556687-b71b-4065-95bb-f01077fed6cb1c4ef63a-bc26-4a4c-b29b-f6f4479a4ec6",
         "CallBackUrl": "{webhooksclient.bindings.https.url}"
       },
       "bindings": {
@@ -322,8 +383,6 @@
         "services__ordering-api__https__0": "{ordering-api.bindings.https.url}",
         "ConnectionStrings__eventbus": "{eventbus.connectionString}",
         "DisableAuth": "true",
-        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://aspire-dashboard:18889",
-        "OTEL_EXPORTER_OTLP_HEADERS": "x-otlp-api-key=bd556687-b71b-4065-95bb-f01077fed6cb1c4ef63a-bc26-4a4c-b29b-f6f4479a4ec6",
         "CallBackUrl": "{webapp.bindings.https.url}"
       },
       "bindings": {

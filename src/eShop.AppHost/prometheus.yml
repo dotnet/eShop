@@ -1,0 +1,67 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'aspnet-core-apps'
+    kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names:
+            - default
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: true
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+        action: replace
+        target_label: __metrics_path__
+        regex: (.+)
+      - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+        action: replace
+        regex: ([^:]+)(?::\d+)?;(\d+)
+        replacement: ${1}:${2}
+        target_label: __address__
+      - action: labelmap
+        regex: __meta_kubernetes_pod_label_(.+)
+      - source_labels: [__meta_kubernetes_namespace]
+        action: replace
+        target_label: kubernetes_namespace
+      - source_labels: [__meta_kubernetes_pod_name]
+        action: replace
+        target_label: kubernetes_pod_name
+
+  # Static targets for development (when not in Kubernetes)
+  - job_name: 'catalog-api'
+    static_configs:
+      - targets: ['catalog-api:8080']
+    metrics_path: /metrics
+    
+  - job_name: 'basket-api'
+    static_configs:
+      - targets: ['basket-api:8080']
+    metrics_path: /metrics
+    
+  - job_name: 'ordering-api'
+    static_configs:
+      - targets: ['ordering-api:8080']
+    metrics_path: /metrics
+    
+  - job_name: 'webhooks-api'
+    static_configs:
+      - targets: ['webhooks-api:8080']
+    metrics_path: /metrics
+    
+  - job_name: 'mobile-bff'
+    static_configs:
+      - targets: ['mobile-bff:8080']
+    metrics_path: /metrics
+    
+  - job_name: 'webapp'
+    static_configs:
+      - targets: ['webapp:8080']
+    metrics_path: /metrics

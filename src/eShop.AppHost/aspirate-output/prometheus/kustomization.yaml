@@ -1,15 +1,13 @@
 resources:
-- deployment.yaml
+- statefulset.yaml
 - service.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
 
 configMapGenerator:
-- name: eventbus-env
+- name: prometheus-env
   literals:
-    - RABBITMQ_DEFAULT_USER=guest
-    - RABBITMQ_DEFAULT_PASS=oMdfzexkN19VF6HreKTRmK
     - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
-    - OTEL_SERVICE_NAME=eventbus
+    - OTEL_SERVICE_NAME=prometheus
 

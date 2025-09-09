@@ -6,15 +6,30 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 builder.AddForwardedHeaders();
 
-// Configure OTLP endpoint for secure telemetry collection
-var otlpEndpoint = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"] ?? "http://aspire-dashboard:18889";
-var otlpApiKey = "bd556687-b71b-4065-95bb-f01077fed6cb1c4ef63a-bc26-4a4c-b29b-f6f4479a4ec6";
-var otlpHeaders = $"x-otlp-api-key={otlpApiKey}";
+// Add Prometheus for metrics collection
+var prometheus = builder.AddContainer("prometheus", "prom/prometheus:latest")
+    .WithBindMount("./prometheus.yml", "/etc/prometheus/prometheus.yml")
+    .WithArgs("--config.file=/etc/prometheus/prometheus.yml", 
+              "--storage.tsdb.path=/prometheus/", 
+              "--web.console.libraries=/etc/prometheus/console_libraries",
+              "--web.console.templates=/etc/prometheus/consoles",
+              "--web.enable-lifecycle")
+    .WithEndpoint(9090, 9090, "http")
+    .WithExternalHttpEndpoints()
+    .WithVolume("prometheus-data", "/prometheus")
+    .WithLifetime(ContainerLifetime.Persistent);
 
-// Configure dashboard with API key authentication
-builder.Configuration["DOTNET_DASHBOARD_OTLP_AUTH_MODE"] = "ApiKey";
-builder.Configuration["DOTNET_DASHBOARD_OTLP_PRIMARY_API_KEY"] = otlpApiKey;
-builder.Configuration["DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS"] = "false";
+// Add Grafana with Prometheus datasource configured  
+var grafana = builder.AddContainer("grafana", "grafana/grafana:latest")
+    .WithEnvironment("GF_SECURITY_ADMIN_PASSWORD", "admin123")
+    .WithEnvironment("GF_INSTALL_PLUGINS", "grafana-piechart-panel")
+    .WithEndpoint(3000, 3000, "http")
+    .WithExternalHttpEndpoints()
+    .WithVolume("grafana-data", "/var/lib/grafana")
+    .WithBindMount("./grafana-datasources.yml", "/etc/grafana/provisioning/datasources/datasources.yml")
+    .WithBindMount("./grafana-dashboards.yml", "/etc/grafana/provisioning/dashboards/dashboards.yml")
+    .WithBindMount("./k6-dashboard.json", "/etc/grafana/dashboards/k6-dashboard.json")
+    .WithLifetime(ContainerLifetime.Persistent);
 
 var redis = builder.AddRedis("redis");
 var rabbitMq = builder.AddRabbitMQ("eventbus")
@@ -50,48 +65,37 @@ var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
     .WithReference(redis)
     .WithReference(rabbitMq).WaitFor(rabbitMq)
     // .WithEnvironment("Identity__Url", identityEndpoint) // Identity disabled
-    .WithEnvironment("DisableAuth", "true")
-    .WithEnvironment("OTEL_EXPORTER_OTLP_ENDPOINT", otlpEndpoint)
-    .WithEnvironment("OTEL_EXPORTER_OTLP_HEADERS", otlpHeaders);
+    .WithEnvironment("DisableAuth", "true");
 redis.WithParentRelationship(basketApi);
 
 var catalogApi = builder.AddProject<Projects.Catalog_API>("catalog-api")
     .WithReference(rabbitMq).WaitFor(rabbitMq)
     .WithReference(catalogDb)
     .WithEnvironment("DisableAuth", "true")
-    .WithEnvironment("OTEL_EXPORTER_OTLP_ENDPOINT", otlpEndpoint)
-    .WithEnvironment("OTEL_EXPORTER_OTLP_HEADERS", otlpHeaders);
+    .WithExternalHttpEndpoints();
 
 var orderingApi = builder.AddProject<Projects.Ordering_API>("ordering-api")
     .WithReference(rabbitMq).WaitFor(rabbitMq)
     .WithReference(orderDb).WaitFor(orderDb)
     .WithHttpHealthCheck("/health")
     // .WithEnvironment("Identity__Url", identityEndpoint) // Identity disabled
-    .WithEnvironment("DisableAuth", "true")
-    .WithEnvironment("OTEL_EXPORTER_OTLP_ENDPOINT", otlpEndpoint)
-    .WithEnvironment("OTEL_EXPORTER_OTLP_HEADERS", otlpHeaders);
+    .WithEnvironment("DisableAuth", "true");
 
 builder.AddProject<Projects.OrderProcessor>("order-processor")
     .WithReference(rabbitMq).WaitFor(rabbitMq)
     .WithReference(orderDb)
     .WaitFor(orderingApi) // wait for the orderingApi to be ready because that contains the EF migrations
-    .WithEnvironment("DisableAuth", "true")
-    .WithEnvironment("OTEL_EXPORTER_OTLP_ENDPOINT", otlpEndpoint)
-    .WithEnvironment("OTEL_EXPORTER_OTLP_HEADERS", otlpHeaders);
+    .WithEnvironment("DisableAuth", "true");
 
 builder.AddProject<Projects.PaymentProcessor>("payment-processor")
     .WithReference(rabbitMq).WaitFor(rabbitMq)
-    .WithEnvironment("DisableAuth", "true")
-    .WithEnvironment("OTEL_EXPORTER_OTLP_ENDPOINT", otlpEndpoint)
-    .WithEnvironment("OTEL_EXPORTER_OTLP_HEADERS", otlpHeaders);
+    .WithEnvironment("DisableAuth", "true");
 
 var webHooksApi = builder.AddProject<Projects.Webhooks_API>("webhooks-api")
     .WithReference(rabbitMq).WaitFor(rabbitMq)
     .WithReference(webhooksDb)
     // .WithEnvironment("Identity__Url", identityEndpoint) // Identity disabled
-    .WithEnvironment("DisableAuth", "true")
-    .WithEnvironment("OTEL_EXPORTER_OTLP_ENDPOINT", otlpEndpoint)
-    .WithEnvironment("OTEL_EXPORTER_OTLP_HEADERS", otlpHeaders);
+    .WithEnvironment("DisableAuth", "true");
 
 // Reverse proxies
 builder.AddProject<Projects.Mobile_Bff_Shopping>("mobile-bff")
@@ -99,17 +103,13 @@ builder.AddProject<Projects.Mobile_Bff_Shopping>("mobile-bff")
     .WithReference(orderingApi)
     .WithReference(basketApi)
     // .WithReference(identityApi) // Identity disabled
-    .WithEnvironment("DisableAuth", "true")
-    .WithEnvironment("OTEL_EXPORTER_OTLP_ENDPOINT", otlpEndpoint)
-    .WithEnvironment("OTEL_EXPORTER_OTLP_HEADERS", otlpHeaders);
+    .WithEnvironment("DisableAuth", "true");
 
 // Apps
 var webhooksClient = builder.AddProject<Projects.WebhookClient>("webhooksclient", launchProfileName)
     .WithReference(webHooksApi)
     // .WithEnvironment("IdentityUrl", identityEndpoint) // Identity disabled
-    .WithEnvironment("DisableAuth", "true")
-    .WithEnvironment("OTEL_EXPORTER_OTLP_ENDPOINT", otlpEndpoint)
-    .WithEnvironment("OTEL_EXPORTER_OTLP_HEADERS", otlpHeaders);
+    .WithEnvironment("DisableAuth", "true");
 
 var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
     .WithExternalHttpEndpoints()
@@ -119,9 +119,7 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
     .WithReference(orderingApi)
     .WithReference(rabbitMq).WaitFor(rabbitMq)
     // .WithEnvironment("IdentityUrl", identityApi.GetEndpoint("http")) // Identity disabled
-    .WithEnvironment("DisableAuth", "true")
-    .WithEnvironment("OTEL_EXPORTER_OTLP_ENDPOINT", otlpEndpoint)
-    .WithEnvironment("OTEL_EXPORTER_OTLP_HEADERS", otlpHeaders);
+    .WithEnvironment("DisableAuth", "true");
 
 // set to true if you want to use OpenAI
 bool useOpenAI = false;
