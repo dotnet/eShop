@@ -8,11 +8,11 @@ public interface ICatalogAI
     bool IsEnabled { get; }
 
     /// <summary>Gets an embedding vector for the specified text.</summary>
-    ValueTask<Vector> GetEmbeddingAsync(string text);
+    ValueTask<Vector?> GetEmbeddingAsync(string text);
     
     /// <summary>Gets an embedding vector for the specified catalog item.</summary>
-    ValueTask<Vector> GetEmbeddingAsync(CatalogItem item);
+    ValueTask<Vector?> GetEmbeddingAsync(CatalogItem item);
 
     /// <summary>Gets embedding vectors for the specified catalog items.</summary>
-    ValueTask<IReadOnlyList<Vector>> GetEmbeddingsAsync(IEnumerable<CatalogItem> item);
+    ValueTask<IReadOnlyList<Vector>?> GetEmbeddingsAsync(IEnumerable<CatalogItem> item);
 }
