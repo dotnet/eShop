@@ -1,42 +1,47 @@
-﻿namespace eShop.Ordering.API.Application.Commands;
+﻿using eShop.Ordering.API.Application.Commands.Identified;
+
+namespace eShop.Ordering.API.Application.Commands.SetPaidOrderStatus;
 
 // Regular CommandHandler
-public class ShipOrderCommandHandler : IRequestHandler<ShipOrderCommand, bool>
+public class SetPaidOrderStatusCommandHandler : IRequestHandler<SetPaidOrderStatusCommand, bool>
 {
     private readonly IOrderRepository _orderRepository;
 
-    public ShipOrderCommandHandler(IOrderRepository orderRepository)
+    public SetPaidOrderStatusCommandHandler(IOrderRepository orderRepository)
     {
         _orderRepository = orderRepository;
     }
 
     /// <summary>
     /// Handler which processes the command when
-    /// administrator executes ship order from app
+    /// Shipment service confirms the payment
     /// </summary>
     /// <param name="command"></param>
     /// <returns></returns>
-    public async Task<bool> Handle(ShipOrderCommand command, CancellationToken cancellationToken)
+    public async Task<bool> Handle(SetPaidOrderStatusCommand command, CancellationToken cancellationToken)
     {
+        // Simulate a work time for validating the payment
+        await Task.Delay(10000, cancellationToken);
+
         var orderToUpdate = await _orderRepository.GetAsync(command.OrderNumber);
         if (orderToUpdate == null)
         {
             return false;
         }
 
-        orderToUpdate.SetShippedStatus();
+        orderToUpdate.SetPaidStatus();
         return await _orderRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
     }
 }
 
 
 // Use for Idempotency in Command process
-public class ShipOrderIdentifiedCommandHandler : IdentifiedCommandHandler<ShipOrderCommand, bool>
+public class SetPaidIdentifiedOrderStatusCommandHandler : IdentifiedCommandHandler<SetPaidOrderStatusCommand, bool>
 {
-    public ShipOrderIdentifiedCommandHandler(
+    public SetPaidIdentifiedOrderStatusCommandHandler(
         IMediator mediator,
         IRequestManager requestManager,
-        ILogger<IdentifiedCommandHandler<ShipOrderCommand, bool>> logger)
+        ILogger<IdentifiedCommandHandler<SetPaidOrderStatusCommand, bool>> logger)
         : base(mediator, requestManager, logger)
     {
     }

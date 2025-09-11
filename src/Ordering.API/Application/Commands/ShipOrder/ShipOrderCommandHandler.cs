@@ -1,22 +1,24 @@
-﻿namespace eShop.Ordering.API.Application.Commands;
+﻿using eShop.Ordering.API.Application.Commands.Identified;
+
+namespace eShop.Ordering.API.Application.Commands.ShipOrder;
 
 // Regular CommandHandler
-public class SetAwaitingValidationOrderStatusCommandHandler : IRequestHandler<SetAwaitingValidationOrderStatusCommand, bool>
+public class ShipOrderCommandHandler : IRequestHandler<ShipOrderCommand, bool>
 {
     private readonly IOrderRepository _orderRepository;
 
-    public SetAwaitingValidationOrderStatusCommandHandler(IOrderRepository orderRepository)
+    public ShipOrderCommandHandler(IOrderRepository orderRepository)
     {
         _orderRepository = orderRepository;
     }
 
     /// <summary>
     /// Handler which processes the command when
-    /// graceperiod has finished
+    /// administrator executes ship order from app
     /// </summary>
     /// <param name="command"></param>
     /// <returns></returns>
-    public async Task<bool> Handle(SetAwaitingValidationOrderStatusCommand command, CancellationToken cancellationToken)
+    public async Task<bool> Handle(ShipOrderCommand command, CancellationToken cancellationToken)
     {
         var orderToUpdate = await _orderRepository.GetAsync(command.OrderNumber);
         if (orderToUpdate == null)
@@ -24,19 +26,19 @@ public class SetAwaitingValidationOrderStatusCommandHandler : IRequestHandler<Se
             return false;
         }
 
-        orderToUpdate.SetAwaitingValidationStatus();
+        orderToUpdate.SetShippedStatus();
         return await _orderRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
     }
 }
 
 
 // Use for Idempotency in Command process
-public class SetAwaitingValidationIdentifiedOrderStatusCommandHandler : IdentifiedCommandHandler<SetAwaitingValidationOrderStatusCommand, bool>
+public class ShipOrderIdentifiedCommandHandler : IdentifiedCommandHandler<ShipOrderCommand, bool>
 {
-    public SetAwaitingValidationIdentifiedOrderStatusCommandHandler(
+    public ShipOrderIdentifiedCommandHandler(
         IMediator mediator,
         IRequestManager requestManager,
-        ILogger<IdentifiedCommandHandler<SetAwaitingValidationOrderStatusCommand, bool>> logger)
+        ILogger<IdentifiedCommandHandler<ShipOrderCommand, bool>> logger)
         : base(mediator, requestManager, logger)
     {
     }

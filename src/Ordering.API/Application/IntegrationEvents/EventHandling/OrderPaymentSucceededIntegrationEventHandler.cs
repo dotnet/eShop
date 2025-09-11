@@ -1,4 +1,6 @@
-﻿namespace eShop.Ordering.API.Application.IntegrationEvents.EventHandling;
+﻿using eShop.Ordering.API.Application.Commands.SetPaidOrderStatus;
+
+namespace eShop.Ordering.API.Application.IntegrationEvents.EventHandling;
 
 public class OrderPaymentSucceededIntegrationEventHandler(
     IMediator mediator,

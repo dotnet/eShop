@@ -1,4 +1,4 @@
-﻿namespace eShop.Ordering.API.Application.Commands;
+﻿namespace eShop.Ordering.API.Application.Commands.CreateOrderDraft;
 
 using eShop.Ordering.API.Extensions;
 using eShop.Ordering.Domain.AggregatesModel.OrderAggregate;

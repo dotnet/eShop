@@ -1,4 +1,4 @@
-﻿namespace eShop.Ordering.API.Application.Commands;
+﻿namespace eShop.Ordering.API.Application.Commands.Identified;
 
 public class IdentifiedCommand<T, R> : IRequest<R>
     where T : IRequest<R>

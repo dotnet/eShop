@@ -1,4 +1,7 @@
-﻿namespace eShop.Ordering.API.Application.Validations;
+﻿using eShop.Ordering.API.Application.Commands.CreateOrder;
+using eShop.Ordering.API.Application.Commands.CreateOrderDraft;
+
+namespace eShop.Ordering.API.Application.Validations;
 public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
 {
     public CreateOrderCommandValidator(ILogger<CreateOrderCommandValidator> logger)

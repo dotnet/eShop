@@ -1,4 +1,7 @@
-﻿namespace eShop.Ordering.UnitTests.Application;
+﻿using eShop.Ordering.API.Application.Commands.CreateOrder;
+using eShop.Ordering.API.Application.Commands.Identified;
+
+namespace eShop.Ordering.UnitTests.Application;
 
 [TestClass]
 public class IdentifiedCommandHandlerTest
