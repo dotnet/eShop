@@ -6,8 +6,7 @@ using eShop.ClientApp.ViewModels.Base;
 
 namespace eShop.ClientApp.ViewModels;
 
-[QueryProperty(nameof(OrderNumber), "OrderNumber")]
-public partial class OrderDetailViewModel : ViewModelBase
+public partial class OrderDetailViewModel : ViewModelBase, IQueryAttributable
 {
     private readonly IAppEnvironmentService _appEnvironmentService;
     private readonly ISettingsService _settingsService;
@@ -57,5 +56,20 @@ public partial class OrderDetailViewModel : ViewModelBase
         }
 
         IsSubmittedOrder = false;
+    }
+
+    public override void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.TryGetValue("OrderNumber", out var orderNumber))
+        {
+            if (orderNumber is string orderNumberString && int.TryParse(orderNumberString, out var parsedOrderNumber))
+            {
+                OrderNumber = parsedOrderNumber;
+            }
+            else if (orderNumber is int intOrderNumber)
+            {
+                OrderNumber = intOrderNumber;
+            }
+        }
     }
 }

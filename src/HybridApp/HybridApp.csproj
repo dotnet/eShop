@@ -21,6 +21,9 @@
         <Nullable>enable</Nullable>
         <EnableDefaultCssItems>false</EnableDefaultCssItems>
         <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+        
+        <!-- Suppress trimming warnings for Razor-generated code -->
+        <SuppressedTrimAnalysisWarnings>$(SuppressedTrimAnalysisWarnings);IL2111</SuppressedTrimAnalysisWarnings>
 
         <!-- Display name -->
         <ApplicationTitle>eShop App</ApplicationTitle>
