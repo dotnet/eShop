@@ -66,6 +66,7 @@ internal static class Extensions
                     .WithDescription("The Azure OpenAI endpoint to use, e.g. https://<name>.openai.azure.com/")
                     .WithCustomInput(p => new()
                     {
+                        Name = "OpenAIEndpointParameter",
                         Label = "Azure OpenAI Endpoint",
                         InputType = InputType.Text,
                         Value = "https://<name>.openai.azure.com/",
@@ -79,6 +80,7 @@ internal static class Extensions
                     .WithDescription("The OpenAI API key to use.")
                     .WithCustomInput(p => new()
                     {
+                        Name = "OpenAIKeyParameter",
                         Label = "API Key",
                         InputType = InputType.SecretText
                     });
@@ -88,6 +90,7 @@ internal static class Extensions
                 .WithDescription("The chat model to use.")
                 .WithCustomInput(p => new()
                 {
+                    Name = "ChatModelParameter",
                     Label = "Chat Model",
                     InputType = InputType.Text,
                     Value = chatModelName,
@@ -97,6 +100,7 @@ internal static class Extensions
                 .WithDescription("The embedding model to use.")
                 .WithCustomInput(p => new()
                 {
+                    Name = "EmbeddingModelParameter",
                     Label = "Text Embedding Model",
                     InputType = InputType.Text,
                     Value = textEmbeddingModelName,
