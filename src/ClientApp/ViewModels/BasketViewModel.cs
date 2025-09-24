@@ -40,7 +40,10 @@ public partial class BasketViewModel : ViewModelBase
             await _basketItems.ReloadDataAsync(
                 async innerList =>
                 {
-                    foreach (var basketItem in basket.Items.ToArray())
+                    var previousBasketItems = basket.Items.ToArray();
+                    basket.ClearBasket();
+
+                    foreach (var basketItem in previousBasketItems)
                     {
                         var catalogItem =
                             await _appEnvironmentService.CatalogService.GetCatalogItemAsync(basketItem.ProductId);
@@ -98,15 +101,15 @@ public partial class BasketViewModel : ViewModelBase
         await _appEnvironmentService.BasketService.ClearBasketAsync();
 
         ReCalculateTotal();
-
-        WeakReferenceMessenger.Default
-            .Send(new ProductCountChangedMessage(0));
     }
 
     private void ReCalculateTotal()
     {
         OnPropertyChanged(nameof(BadgeCount));
         OnPropertyChanged(nameof(Total));
+
+        WeakReferenceMessenger.Default
+            .Send(new ProductCountChangedMessage(BadgeCount));
     }
 
     [RelayCommand]
