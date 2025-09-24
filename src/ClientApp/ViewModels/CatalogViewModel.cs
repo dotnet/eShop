@@ -16,6 +16,7 @@ public partial class CatalogViewModel : ViewModelBase
     private readonly ObservableCollectionEx<CatalogItem> _products = new();
     private readonly ObservableCollectionEx<CatalogTypeSelectionViewModel> _types = new();
 
+    // Used through the generated property.
     [ObservableProperty] private int _badgeCount;
 
     private bool _initialized;
