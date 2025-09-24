@@ -3,13 +3,8 @@ using eShop.ClientApp.ViewModels.Base;
 
 namespace eShop.ClientApp.ViewModels;
 
-public partial class MainViewModel : ViewModelBase
+public partial class MainViewModel(INavigationService navigationService) : ViewModelBase(navigationService)
 {
-    public MainViewModel(INavigationService navigationService)
-        : base(navigationService)
-    {
-    }
-
     [RelayCommand]
     private async Task SettingsAsync()
     {
