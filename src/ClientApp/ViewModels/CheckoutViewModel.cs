@@ -22,7 +22,9 @@ public partial class CheckoutViewModel : ViewModelBase
 
     public CheckoutViewModel(
         BasketViewModel basketViewModel,
-        IAppEnvironmentService appEnvironmentService, IDialogService dialogService, ISettingsService settingsService,
+        IAppEnvironmentService appEnvironmentService,
+        IDialogService dialogService,
+        ISettingsService settingsService,
         INavigationService navigationService)
         : base(navigationService)
     {
@@ -136,15 +138,16 @@ public partial class CheckoutViewModel : ViewModelBase
         {
             if (!string.IsNullOrEmpty(basketItem.ProductName))
             {
-                orderItems.Add(new OrderItem
-                {
-                    OrderId = null,
-                    ProductId = basketItem.ProductId,
-                    ProductName = basketItem.ProductName,
-                    PictureUrl = basketItem.PictureUrl,
-                    Quantity = basketItem.Quantity,
-                    UnitPrice = basketItem.UnitPrice
-                });
+                orderItems.Add(
+                    new OrderItem
+                    {
+                        OrderId = null,
+                        ProductId = basketItem.ProductId,
+                        ProductName = basketItem.ProductName,
+                        PictureUrl = basketItem.PictureUrl,
+                        Quantity = basketItem.Quantity,
+                        UnitPrice = basketItem.UnitPrice
+                    });
             }
         }
 

@@ -15,7 +15,8 @@ public partial class ProfileViewModel : ViewModelBase
     [ObservableProperty] private Order _selectedOrder;
 
     public ProfileViewModel(
-        IAppEnvironmentService appEnvironmentService, ISettingsService settingsService,
+        IAppEnvironmentService appEnvironmentService,
+        ISettingsService settingsService,
         INavigationService navigationService)
         : base(navigationService)
     {

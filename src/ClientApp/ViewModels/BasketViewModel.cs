@@ -16,7 +16,8 @@ public partial class BasketViewModel : ViewModelBase
 
     public BasketViewModel(
         IAppEnvironmentService appEnvironmentService,
-        INavigationService navigationService, ISettingsService settingsService)
+        INavigationService navigationService,
+        ISettingsService settingsService)
         : base(navigationService)
     {
         _appEnvironmentService = appEnvironmentService;
@@ -43,6 +44,7 @@ public partial class BasketViewModel : ViewModelBase
                     {
                         var catalogItem =
                             await _appEnvironmentService.CatalogService.GetCatalogItemAsync(basketItem.ProductId);
+
                         basketItem.PictureUrl = catalogItem.PictureUri;
                         basketItem.ProductName = catalogItem.Name;
                         basketItem.UnitPrice = catalogItem.Price;
@@ -79,6 +81,7 @@ public partial class BasketViewModel : ViewModelBase
         _basketItems.Remove(item);
 
         var basket = await _appEnvironmentService.BasketService.GetBasketAsync();
+
         if (basket != null)
         {
             basket.RemoveItemFromBasket(item);
@@ -91,7 +94,7 @@ public partial class BasketViewModel : ViewModelBase
     public async Task ClearBasketItems()
     {
         _basketItems.Clear();
-        
+
         await _appEnvironmentService.BasketService.ClearBasketAsync();
 
         ReCalculateTotal();
