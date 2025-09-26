@@ -893,10 +893,7 @@
         "required": [
           "brand"
         ],
-        "type": [
-          "null",
-          "object"
-        ],
+        "type": "object",
         "properties": {
           "id": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -957,7 +954,14 @@
             "format": "int32"
           },
           "catalogType": {
-            "$ref": "#/components/schemas/CatalogType"
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CatalogType"
+              }
+            ]
           },
           "catalogBrandId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -968,7 +972,14 @@
             "format": "int32"
           },
           "catalogBrand": {
-            "$ref": "#/components/schemas/CatalogBrand"
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CatalogBrand"
+              }
+            ]
           },
           "availableStock": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -1003,10 +1014,7 @@
         "required": [
           "type"
         ],
-        "type": [
-          "null",
-          "object"
-        ],
+        "type": "object",
         "properties": {
           "id": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
