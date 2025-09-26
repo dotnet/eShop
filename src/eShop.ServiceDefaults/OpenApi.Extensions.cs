@@ -68,14 +68,6 @@ public static partial class Extensions
                     options.ApplySecuritySchemeDefinitions();
                     options.ApplyOperationDeprecatedStatus();
                     options.ApplyApiVersionDescription();
-                    options.ApplySchemaNullableFalse();
-                    // Clear out the default servers so we can fallback to
-                    // whatever ports have been allocated for the service by Aspire
-                    options.AddDocumentTransformer((document, context, cancellationToken) =>
-                    {
-                        document.Servers = [];
-                        return Task.CompletedTask;
-                    });
                 });
             }
         }
