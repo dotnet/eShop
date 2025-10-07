@@ -12,9 +12,7 @@ public partial class CatalogContextSeed(
 {
     public async Task SeedAsync(CatalogContext context)
     {
-        var useCustomizationData = settings.Value.UseCustomizationData;
         var contentRootPath = env.ContentRootPath;
-        var picturePath = env.WebRootPath;
 
         // Workaround from https://github.com/npgsql/efcore.pg/issues/292#issuecomment-388608426
         context.Database.OpenConnection();
