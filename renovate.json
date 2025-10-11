@@ -1,6 +1,7 @@
 {
   "extends": [
-    "config:recommended"
+    "config:recommended",
+    ":semanticCommitScope(deps)"
   ],
   "timezone": "Europe/Madrid",
   "baseBranches": [
@@ -16,18 +17,8 @@
   "rangeStrategy": "bump",
   "separateMinorPatch": false,
   "schedule": [
-    "before 03:00 every day"
+    "before 03:00"
   ],
-  "postUpgradeTasks": {
-    "commands": [
-      "dotnet restore"
-    ],
-    "fileFilters": [
-      "**/*.csproj",
-      "**/*.sln",
-      "**/*.slnx"
-    ]
-  },
   "forkProcessing": "enabled",
   "packageRules": [
     {
@@ -35,7 +26,7 @@
         "nuget"
       ],
       "groupName": "NuGet updates (per-service)",
-      "matchPaths": [
+      "matchFileNames": [
         "src/**",
         "services/**"
       ],
@@ -67,7 +58,7 @@
         "minor",
         "patch"
       ],
-      "matchFiles": [
+      "matchFileNames": [
         "**/*.csproj",
         "**/Dockerfile",
         ".github/workflows/**"
