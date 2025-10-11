@@ -1,0 +1,98 @@
+{
+  "extends": [
+    "config:recommended"
+  ],
+  "timezone": "Europe/Madrid",
+  "baseBranches": [
+    "main",
+    "develop"
+  ],
+  "labels": [
+    "renovate"
+  ],
+  "dependencyDashboard": true,
+  "prConcurrentLimit": 6,
+  "prHourlyLimit": 2,
+  "rangeStrategy": "bump",
+  "separateMinorPatch": false,
+  "schedule": [
+    "before 03:00 every day"
+  ],
+  "postUpgradeTasks": {
+    "commands": [
+      "dotnet restore"
+    ],
+    "fileFilters": [
+      "**/*.csproj",
+      "**/*.sln",
+      "**/*.slnx"
+    ]
+  },
+  "forkProcessing": "enabled",
+  "packageRules": [
+    {
+      "matchManagers": [
+        "nuget"
+      ],
+      "groupName": "NuGet updates (per-service)",
+      "matchPaths": [
+        "src/**",
+        "services/**"
+      ],
+      "separateMajorMinor": true,
+      "separateMultipleMajor": true
+    },
+    {
+      "matchManagers": [
+        "dockerfile"
+      ],
+      "groupName": "Docker image updates",
+      "separateMajorMinor": true,
+      "separateMultipleMajor": true
+    },
+    {
+      "matchDatasources": [
+        "github-tags"
+      ],
+      "matchPackagePatterns": [
+        "^dotnet/aspire",
+        "^dotnet/"
+      ],
+      "groupName": "Dotnet Aspire / dotnet org packages",
+      "separateMajorMinor": false,
+      "separateMultipleMajor": false
+    },
+    {
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "matchFiles": [
+        "**/*.csproj",
+        "**/Dockerfile",
+        ".github/workflows/**"
+      ],
+      "automerge": true,
+      "automergeType": "branch"
+    },
+    {
+      "matchPackageNames": [
+        "Microsoft.NET.Sdk",
+        "Microsoft.AspNetCore.App"
+      ],
+      "matchManagers": [
+        "nuget"
+      ],
+      "automerge": false,
+      "groupName": "Microsoft SDKs (manual review)"
+    }
+  ],
+  "enabledManagers": [
+    "nuget",
+    "dockerfile",
+    "github-actions"
+  ],
+  "prBodyNotes": [
+    "If this PR needs manual testing, add the `no-automerge` label or disable automerge in the repo Renovate config."
+  ]
+}
