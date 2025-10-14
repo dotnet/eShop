@@ -2,6 +2,9 @@
 
 namespace eShop.WebApp.Services;
 
+#pragma warning disable ASP0029 // Microsoft.Extensions.Validation is experimental
+[Microsoft.Extensions.Validation.ValidatableType]
+#pragma warning restore ASP0029
 public class BasketCheckoutInfo
 {
     [Required]
