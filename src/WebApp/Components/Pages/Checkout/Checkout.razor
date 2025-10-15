@@ -51,6 +51,35 @@
                 </div>
             </div>
             <div class="form-section">
+                <h2>Payment information</h2>
+                <label>
+                    Card number
+                    <InputText @bind-Value="@Info.PaymentCard!.CardNumber" />
+                    <ValidationMessage For="@(() => Info.PaymentCard!.CardNumber)" />
+                </label>
+                <label>
+                    Cardholder name
+                    <InputText @bind-Value="@Info.PaymentCard!.CardHolderName" />
+                    <ValidationMessage For="@(() => Info.PaymentCard!.CardHolderName)" />
+                </label>
+                <div class="form-group">
+                    <div class="form-group-item">
+                        <label>
+                            Expiration date
+                            <InputDate @bind-Value="@Info.PaymentCard!.CardExpiration" />
+                            <ValidationMessage For="@(() => Info.PaymentCard!.CardExpiration)" />
+                        </label>
+                    </div>
+                    <div class="form-group-item">
+                        <label>
+                            Security code (CVV)
+                            <InputText @bind-Value="@Info.PaymentCard!.CardSecurityNumber" />
+                            <ValidationMessage For="@(() => Info.PaymentCard!.CardSecurityNumber)" />
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-section">
                 <div class="form-buttons">
                     <a href="cart" class="button button-secondary"><img role="presentation" src='@Assets["icons/arrow-left.svg"]' />Back to the shopping bag</a>
                     <button class="button button-primary" type="submit">Place order</button>
@@ -91,6 +120,7 @@
             State = ReadClaim("address_state"),
             Country = ReadClaim("address_country"),
             ZipCode = ReadClaim("address_zip_code"),
+            PaymentCard = new PaymentCardInfo(),
             RequestId = Guid.NewGuid()
         };
 
@@ -110,7 +140,7 @@
 
     private async Task HandleValidSubmitAsync()
     {
-        Info.CardTypeId = 1;
+        Info.PaymentCard!.CardTypeId = 1;
         await Basket.CheckoutAsync(Info);
         Nav.NavigateTo("user/orders");
     }
