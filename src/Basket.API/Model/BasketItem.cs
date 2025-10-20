@@ -14,9 +14,14 @@ public class BasketItem : IValidatableObject
     {
         var results = new List<ValidationResult>();
 
-        if (Quantity < 1)
+        if (Quantity < 1 || Quantity > 100)
         {
             results.Add(new ValidationResult("Invalid number of units", new[] { "Quantity" }));
+        }
+
+        if (string.IsNullOrEmpty(ProductName))
+        {
+            results.Add(new ValidationResult("Wir brauchen immer einen Produktnamen!", new[] { "ProductName" }));
         }
 
         return results;
