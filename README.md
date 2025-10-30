@@ -7,10 +7,12 @@ A reference .NET application implementing an e-commerce website using a services
 ![eShop homepage screenshot](img/eshop_homepage.png)
 
 ## Getting Started
+> This version of eShop is based on .NET 10. See the project docs and the .NET 10 release notes for compatibility details.
 
-This version of eShop is based on .NET 9. 
+Last eShop versions:
+* [.NET 9.5 Aspire]
 
-Previous eShop versions:
+Previous eShop release versions:
 * [.NET 8](https://github.com/dotnet/eShop/tree/release/8.0)
 
 ### Prerequisites
