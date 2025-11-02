@@ -1,0 +1,71 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/dotnet
+{
+    "name": ".NET Aspire",
+    // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+    "image": "mcr.microsoft.com/devcontainers/dotnet:dev-10.0-noble@sha256:3920807c7304921773b67d3a76bbff5c5d0f3727bea2f014c29d395c41977a08",
+    // From https://containers.dev/features
+    "features": {
+        "ghcr.io/devcontainers/features/powershell:1": {},
+        // Testing
+        "ghcr.io/devcontainers-extra/features/k6:1": {},
+        // Tunneling
+        "ghcr.io/stuartleeks/dev-container-features/dev-tunnels:0": {},
+        // Signing
+        "ghcr.io/devcontainers-extra/features/cosign:1": {},
+        "ghcr.io/devcontainers-extra/features/gitsign:1": {},
+        "ghcr.io/devcontainers-extra/features/gitsign-credential-cache:1": {},
+        // Git hooks
+        "ghcr.io/devcontainers-extra/features/pre-commit:2": {},
+        "ghcr.io/dhoeric/features/trivy:1": {},
+        "ghcr.io/devcontainers-extra/features/upx:1": {},
+        // Containers and Orchestration
+        "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
+        "ghcr.io/devcontainers-extra/features/argo-cd:1": {},
+        "ghcr.io/prom3theu5/aspirational-manifests/aspirate:latest": {},
+        "ghcr.io/devcontainers-extra/features/dive:1": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "version": "latest",
+            "enableNonRootDocker": true,
+            "moby": true
+        },
+        // Package managers
+        "ghcr.io/devcontainers-extra/features/mise:1": {},
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "lts"
+        }
+    },
+
+    "hostRequirements": {
+        "cpus": 4,
+        "memory": "16gb",
+        "storage": "64gb"
+    },
+
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [5000, 5001],
+    // "portsAttributes": {
+    //		"5001": {
+    //			"protocol": "https"
+    //		}
+    // }
+
+    // Use 'postCreateCommand' to run commands after the container is created.
+    // "postCreateCommand": "dotnet restore",
+    // This is somewhat dangerous
+    "onCreateCommand": "curl -sSL https://aspire.dev/install.sh | bash",
+    "postStartCommand": "dotnet dev-certs https --trust",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "redhat.vscode-yaml",
+                "GitHub.copilot-chat",
+                "GitHub.copilot"
+            ]
+        }
+    },
+    // Configure tool-specific properties.
+    // "customizations": {},
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    // "remoteUser": "root"
+}

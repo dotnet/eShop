@@ -1,0 +1,23 @@
+name: Verify Commit
+description: This action verifies the PR commit using Gitsign.
+on: [pull_request]
+
+concurrency:
+  group: gitsign-verify
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    name: Verify commit
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: chainguard-dev/actions/setup-gitsign@0cda751b114eb55c388e88f7479292668165602a # v1.0.2
+      - shell: bash
+        run: |
+          gitsign verify --certificate-identity-regexp="^.*@gmail.com$" --certificate-oidc-issuer="https://github.com/login/oauth"

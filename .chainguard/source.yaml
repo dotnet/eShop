@@ -1,0 +1,15 @@
+# Copyright 2022 Chainguard, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+spec:
+  authorities:
+    - keyless:
+        url: https://fulcio.sigstore.dev
+        identities:
+          - subjectRegExp: .+@gmail.com$ # Allow commits signed with Gmail accounts, not ideal, for testing purposes only.
+            issuer: https://github.com/login/oauth
+      ctlog:
+        url: https://rekor.sigstore.dev
+    - key:
+        # Allow commits signed by GitHub.
+        kms: https://github.com/web-flow.gpg

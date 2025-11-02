@@ -1,11 +1,11 @@
 {
   "extends": [
     "config:recommended",
-    ":semanticCommitScope(deps)"
+    ":semanticCommitScope(deps)",
+    "mergeConfidence:all-badges"
   ],
   "timezone": "Europe/Madrid",
-  "baseBranches": [
-    "main",
+  "baseBranchPatterns": [
     "develop"
   ],
   "labels": [
@@ -14,12 +14,15 @@
   "dependencyDashboard": true,
   "prConcurrentLimit": 6,
   "prHourlyLimit": 2,
+  "minimumReleaseAge": "3 days",
+  "internalChecksFilter": "strict",
   "rangeStrategy": "bump",
   "separateMinorPatch": false,
   "schedule": [
     "before 03:00"
   ],
   "forkProcessing": "enabled",
+  "lockFileMaintenance": { "enabled": true },
   "packageRules": [
     {
       "matchManagers": [
@@ -45,7 +48,7 @@
       "matchDatasources": [
         "github-tags"
       ],
-      "matchPackagePatterns": [
+      "matchPackageNames": [
         "^dotnet/aspire",
         "^dotnet/"
       ],

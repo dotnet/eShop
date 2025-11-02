@@ -1,0 +1,2494 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "CommunityToolkit.Maui": {
+        "type": "Direct",
+        "requested": "[9.1.1, )",
+        "resolved": "9.1.1",
+        "contentHash": "vDFIMhs/NRKEaHrrxq3AR3qEnfc0L6nno3/ZEFRUctDdwcYKNfmx8aof1lj8++dX+56c282SLHyuCnN6eH2Mpg==",
+        "dependencies": {
+          "CommunityToolkit.Maui.Core": "9.1.1",
+          "Microsoft.Maui.Controls": "8.0.71"
+        }
+      },
+      "CommunityToolkit.Mvvm": {
+        "type": "Direct",
+        "requested": "[8.3.2, )",
+        "resolved": "8.3.2",
+        "contentHash": "m8EolE1A0Updj68WTsZSGI6VWb6mUqHPh7QFo0kt7+JPhYMNXRS1ch8TS/oITAdcxTLrwMOp3ku1KjeG1/Zdpg=="
+      },
+      "Google.Protobuf": {
+        "type": "Direct",
+        "requested": "[3.29.3, )",
+        "resolved": "3.29.3",
+        "contentHash": "t7nZFFUFwigCwZ+nIXHDLweXvwIpsOXi+P7J7smPT/QjI3EKxnCzTQOhBqyEh6XEzc/pNH+bCFOOSjatrPt6Tw=="
+      },
+      "Grpc.Net.Client": {
+        "type": "Direct",
+        "requested": "[2.67.0, )",
+        "resolved": "2.67.0",
+        "contentHash": "ofTjJQfegWkVlk5R4k/LlwpcucpsBzntygd4iAeuKd/eLMkmBWoXN+xcjYJ5IibAahRpIJU461jABZvT6E9dwA==",
+        "dependencies": {
+          "Grpc.Net.Common": "2.67.0",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.0"
+        }
+      },
+      "Grpc.Tools": {
+        "type": "Direct",
+        "requested": "[2.69.0, )",
+        "resolved": "2.69.0",
+        "contentHash": "W5hW4R1h19FCzKb8ToqIJMI5YxnQqGmREEpV8E5XkfCtLPIK5MSHztwQ8gZUfG8qu9fg5MhItjzyPRqQBjnrbA=="
+      },
+      "IdentityModel": {
+        "type": "Direct",
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "to99aLL5Gev1GOb2gUao/UZXT/uXMyjEmHPNrf/vJI2HBD1LMCTeC4SBCe/cqMIB12V9v+eSieq7ff0lju9pOQ=="
+      },
+      "IdentityModel.OidcClient": {
+        "type": "Direct",
+        "requested": "[6.0.0, )",
+        "resolved": "6.0.0",
+        "contentHash": "m2PZbjeG3nXIQ72NLZvFz3FLFk7GmqLnxO/ifUvaTEE3BDZXp7DXAdjDP6TQKaL20+wDnej2ffA1Yh3vVcJOkA==",
+        "dependencies": {
+          "IdentityModel": "7.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
+        }
+      },
+      "Microsoft.Extensions.Logging.Debug": {
+        "type": "Direct",
+        "requested": "[9.0.0, )",
+        "resolved": "9.0.0",
+        "contentHash": "4wGlHsrLhYjLw4sFkfRixu2w4DK7dv60OjbvgbLGhUJk0eUPxYHhnszZ/P18nnAkfrPryvtOJ3ZTVev0kpqM6A==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Logging": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0"
+        }
+      },
+      "Microsoft.Maui.Controls": {
+        "type": "Direct",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "S1EvHfKk060Q6gsf/E60YoZQhFZkfpV0ccYC+b8NJfc8P1iKP52KNEwNY6VxP8Y2Cw8ZfkGNRWPAjq+cb7EaPA==",
+        "dependencies": {
+          "Microsoft.Maui.Controls.Build.Tasks": "9.0.30",
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Controls.Xaml": "9.0.30",
+          "Microsoft.Maui.Resizetizer": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Compatibility": {
+        "type": "Direct",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "6Y4LwwCyw59tCb4i6ZAzpuPYm+14qXxtC0fVK/vBQe+08/dYst7/zmnRqUwqNxY8dUdypGGUyAy3hdQ00SRNpQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Controls.Xaml": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Maps": {
+        "type": "Direct",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "bBqJhxDjWGDZgAkZpmNXXl9GT66fu742v3uMvD6kTo4rbZreWoeC+rm8dP8cHNvFKaciFiRPmYhIDrGXJxc2SQ==",
+        "dependencies": {
+          "Microsoft.Maui.Maps": "9.0.30"
+        }
+      },
+      "CommunityToolkit.Maui.Core": {
+        "type": "Transitive",
+        "resolved": "9.1.1",
+        "contentHash": "2O5bgBnwYLKXUMSA4a0hd3ildtr9t5Rw109y7Lz0udnX4C9JrW8Xi1mLDuUcNmK+U37gulhJGLb2tCMc+cbo3w==",
+        "dependencies": {
+          "Microsoft.Maui.Core": "8.0.71",
+          "Microsoft.Maui.Essentials": "8.0.71"
+        }
+      },
+      "Grpc.Core.Api": {
+        "type": "Transitive",
+        "resolved": "2.67.0",
+        "contentHash": "cL1/2f8kc8lsAGNdfCU25deedXVehhLA6GXKLLN4hAWx16XN7BmjYn3gFU+FBpir5yJynvDTHEypr3Tl0j7x/Q=="
+      },
+      "Grpc.Net.Common": {
+        "type": "Transitive",
+        "resolved": "2.67.0",
+        "contentHash": "gazn1cD2Eol0/W5ZJRV4PYbNrxJ9oMs8pGYux5S9E4MymClvl7aqYSmpqgmWAUWvziRqK9K+yt3cjCMfQ3x/5A==",
+        "dependencies": {
+          "Grpc.Core.Api": "2.67.0"
+        }
+      },
+      "Microsoft.Extensions.Configuration": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "YIMO9T3JL8MeEXgVozKt2v79hquo/EFtnY0vgxmLnUvk1Rei/halI7kOWZL2RBeV9FMGzgM9LZA8CVaNwFMaNA==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Primitives": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Configuration.Abstractions": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "lqvd7W3FGKUO1+ZoUEMaZ5XDJeWvjpy2/M/ptCGz3tXLD4HWVaSzjufsAsjemasBEg+2SxXVtYVvGt5r2nKDlg==",
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "MCPrg7v3QgNMr0vX4vzRXvkNGgLg8vKWX0nKCWUxu2uPyMsaRgiRc1tHBnbTcfJMhMKj2slE/j2M9oGkd25DNw==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "+6f2qv2a3dLwd5w6JanPIPs47CxRbnk+ZocMJUhv9NxP88VlOcJYZs9jY+MYSjxvady08bUZn6qgiNh7DadGgg=="
+      },
+      "Microsoft.Extensions.Logging": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "crjWyORoug0kK7RSNJBTeSE6VX8IQgLf3nUpTB9m62bPXp/tzbnOsnbe8TXEG0AASNaKZddnpHKw7fET8E++Pg==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Options": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "g0UfujELzlLbHoVG8kPKVBaW470Ewi+jnptGS9KUi6jcb+k2StujtK3m26DFSGGwQ/+bVgZfsWqNzlP6YOejvw==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Options": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "y2146b3jrPI3Q0lokKXdKLpmXqakYbDIPDV6r3M8SqvSf45WwOTzkyfDpxnZXJsJQEpAsAqjUq5Pu8RCJMjubg==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Primitives": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Primitives": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "N3qEBzmLMYiASUlKxxFIISP4AiwuPTHF5uCh+2CWSwwzAJiIYx0kBJsS30cp1nvhSySFAVi30jecD307jV+8Kg=="
+      },
+      "Microsoft.Maui.Controls.Build.Tasks": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "hpb9mB3FLMK0UK6euFvkq8X0TEJ0YDWBV2kot5ryrvCBSNyonHVEQVMo0m7Uzzz2fAdqdZzRNV9WNgB6X/Jb4Q==",
+        "dependencies": {
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Controls.Xaml": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Core": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "P2Z45cciD/2yqia/3tm9QCclVhCISdBQfHz4zvpTQslEPZOuxzw06stvfrKYSgGlnJMBDzNMQ70FC/hybkB4kg==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Microsoft.Extensions.Logging": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Maui.Core": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Xaml": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "mQHeyk+Dj7L2vmDXPeMjwLD7dUeqCelxLTPV5pOg+v3pVgQFwYZPoOMPVflS6Qtu+o1BlOZ5XNQjtEEUJ4yShg==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Core": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Core": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "fAt+rtONvnar9IPfj3qmF4UgWAaoB3UkvF1QIlRc9/dwYxSVRyRzx4SfnjwQ0kM160z03IDOK45D3pgDiRRNcw==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Microsoft.Extensions.Logging": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Maui.Essentials": "9.0.30",
+          "Microsoft.Maui.Graphics": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Essentials": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "0jIHgPw+VeQpipYoz0WpTGc6EoAD/i80CgAq9GewOHfWSF3pD2w9MwyAkyNf2Fx8gef37WNJCv/wtRcr96nd2w==",
+        "dependencies": {
+          "Microsoft.Maui.Graphics": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Graphics": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "YnlWLhi0SFuWY1GxUGZs96uHPJdaGK86udh2A/wysTYernzF7bmKNJnPvG17QDgdMuqELGC7fxAkqRuHEciY/A=="
+      },
+      "Microsoft.Maui.Maps": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "2kG+ViQ6FoHHoD10IYJCgPD1BqO4dkaasxktMVzvZqfuDapG81JHkCHXsLwfqxyz/PEVTj/GumIWVzXjuwzFaw=="
+      },
+      "Microsoft.Maui.Resizetizer": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "rJtkoRYWmkBPVxpvrWYvACYfrCqW98ilio6M5wUqu8X7AzcxVp1R17b5XLgFUyJKkmolyqibO06C6wOV3kOOig=="
+      }
+    },
+    "net10.0/android-arm64": {},
+    "net10.0/iossimulator-x64": {},
+    "net10.0/maccatalyst-x64": {},
+    "net10.0/win-x64": {},
+    "net10.0-android36.0": {
+      "CommunityToolkit.Maui": {
+        "type": "Direct",
+        "requested": "[9.1.1, )",
+        "resolved": "9.1.1",
+        "contentHash": "vDFIMhs/NRKEaHrrxq3AR3qEnfc0L6nno3/ZEFRUctDdwcYKNfmx8aof1lj8++dX+56c282SLHyuCnN6eH2Mpg==",
+        "dependencies": {
+          "CommunityToolkit.Maui.Core": "9.1.1",
+          "Microsoft.Maui.Controls": "8.0.71"
+        }
+      },
+      "CommunityToolkit.Mvvm": {
+        "type": "Direct",
+        "requested": "[8.3.2, )",
+        "resolved": "8.3.2",
+        "contentHash": "m8EolE1A0Updj68WTsZSGI6VWb6mUqHPh7QFo0kt7+JPhYMNXRS1ch8TS/oITAdcxTLrwMOp3ku1KjeG1/Zdpg=="
+      },
+      "Google.Protobuf": {
+        "type": "Direct",
+        "requested": "[3.29.3, )",
+        "resolved": "3.29.3",
+        "contentHash": "t7nZFFUFwigCwZ+nIXHDLweXvwIpsOXi+P7J7smPT/QjI3EKxnCzTQOhBqyEh6XEzc/pNH+bCFOOSjatrPt6Tw=="
+      },
+      "Grpc.Net.Client": {
+        "type": "Direct",
+        "requested": "[2.67.0, )",
+        "resolved": "2.67.0",
+        "contentHash": "ofTjJQfegWkVlk5R4k/LlwpcucpsBzntygd4iAeuKd/eLMkmBWoXN+xcjYJ5IibAahRpIJU461jABZvT6E9dwA==",
+        "dependencies": {
+          "Grpc.Net.Common": "2.67.0",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.0"
+        }
+      },
+      "Grpc.Tools": {
+        "type": "Direct",
+        "requested": "[2.69.0, )",
+        "resolved": "2.69.0",
+        "contentHash": "W5hW4R1h19FCzKb8ToqIJMI5YxnQqGmREEpV8E5XkfCtLPIK5MSHztwQ8gZUfG8qu9fg5MhItjzyPRqQBjnrbA=="
+      },
+      "IdentityModel": {
+        "type": "Direct",
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "to99aLL5Gev1GOb2gUao/UZXT/uXMyjEmHPNrf/vJI2HBD1LMCTeC4SBCe/cqMIB12V9v+eSieq7ff0lju9pOQ=="
+      },
+      "IdentityModel.OidcClient": {
+        "type": "Direct",
+        "requested": "[6.0.0, )",
+        "resolved": "6.0.0",
+        "contentHash": "m2PZbjeG3nXIQ72NLZvFz3FLFk7GmqLnxO/ifUvaTEE3BDZXp7DXAdjDP6TQKaL20+wDnej2ffA1Yh3vVcJOkA==",
+        "dependencies": {
+          "IdentityModel": "7.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
+        }
+      },
+      "Microsoft.Extensions.Logging.Debug": {
+        "type": "Direct",
+        "requested": "[9.0.0, )",
+        "resolved": "9.0.0",
+        "contentHash": "4wGlHsrLhYjLw4sFkfRixu2w4DK7dv60OjbvgbLGhUJk0eUPxYHhnszZ/P18nnAkfrPryvtOJ3ZTVev0kpqM6A==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Logging": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0"
+        }
+      },
+      "Microsoft.Maui.Controls": {
+        "type": "Direct",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "S1EvHfKk060Q6gsf/E60YoZQhFZkfpV0ccYC+b8NJfc8P1iKP52KNEwNY6VxP8Y2Cw8ZfkGNRWPAjq+cb7EaPA==",
+        "dependencies": {
+          "Microsoft.Maui.Controls.Build.Tasks": "9.0.30",
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Controls.Xaml": "9.0.30",
+          "Microsoft.Maui.Resizetizer": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Compatibility": {
+        "type": "Direct",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "6Y4LwwCyw59tCb4i6ZAzpuPYm+14qXxtC0fVK/vBQe+08/dYst7/zmnRqUwqNxY8dUdypGGUyAy3hdQ00SRNpQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Controls.Xaml": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Maps": {
+        "type": "Direct",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "bBqJhxDjWGDZgAkZpmNXXl9GT66fu742v3uMvD6kTo4rbZreWoeC+rm8dP8cHNvFKaciFiRPmYhIDrGXJxc2SQ==",
+        "dependencies": {
+          "Microsoft.Maui.Maps": "9.0.30"
+        }
+      },
+      "Microsoft.NET.ILLink.Tasks": {
+        "type": "Direct",
+        "requested": "[10.0.0-rc.1.25451.107, )",
+        "resolved": "10.0.0-rc.1.25451.107",
+        "contentHash": "MnPx3NJT7pLBfOgIVs1/IXL8n5sEErhaJu14TQujaXTMwzv9I3v+nzPqUrUuEunaHeeH10n/3oZBn/Xg4trP0g=="
+      },
+      "CommunityToolkit.Maui.Core": {
+        "type": "Transitive",
+        "resolved": "9.1.1",
+        "contentHash": "2O5bgBnwYLKXUMSA4a0hd3ildtr9t5Rw109y7Lz0udnX4C9JrW8Xi1mLDuUcNmK+U37gulhJGLb2tCMc+cbo3w==",
+        "dependencies": {
+          "Microsoft.Maui.Core": "8.0.71",
+          "Microsoft.Maui.Essentials": "8.0.71"
+        }
+      },
+      "GoogleGson": {
+        "type": "Transitive",
+        "resolved": "2.11.0.3",
+        "contentHash": "nMb6feuXUifEQFQNsMHTB9iBY9nidJq2aVdzyV3Tgs7rLIXF+lXIr3aN+QB2GoSCS+tJJZcO72i3Y3pmmrjiYw==",
+        "dependencies": {
+          "Xamarin.Google.ErrorProne.Annotations": "2.30.0.1"
+        }
+      },
+      "Grpc.Core.Api": {
+        "type": "Transitive",
+        "resolved": "2.67.0",
+        "contentHash": "cL1/2f8kc8lsAGNdfCU25deedXVehhLA6GXKLLN4hAWx16XN7BmjYn3gFU+FBpir5yJynvDTHEypr3Tl0j7x/Q=="
+      },
+      "Grpc.Net.Common": {
+        "type": "Transitive",
+        "resolved": "2.67.0",
+        "contentHash": "gazn1cD2Eol0/W5ZJRV4PYbNrxJ9oMs8pGYux5S9E4MymClvl7aqYSmpqgmWAUWvziRqK9K+yt3cjCMfQ3x/5A==",
+        "dependencies": {
+          "Grpc.Core.Api": "2.67.0"
+        }
+      },
+      "Microsoft.Extensions.Configuration": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "YIMO9T3JL8MeEXgVozKt2v79hquo/EFtnY0vgxmLnUvk1Rei/halI7kOWZL2RBeV9FMGzgM9LZA8CVaNwFMaNA==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Primitives": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Configuration.Abstractions": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "lqvd7W3FGKUO1+ZoUEMaZ5XDJeWvjpy2/M/ptCGz3tXLD4HWVaSzjufsAsjemasBEg+2SxXVtYVvGt5r2nKDlg==",
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "MCPrg7v3QgNMr0vX4vzRXvkNGgLg8vKWX0nKCWUxu2uPyMsaRgiRc1tHBnbTcfJMhMKj2slE/j2M9oGkd25DNw==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "+6f2qv2a3dLwd5w6JanPIPs47CxRbnk+ZocMJUhv9NxP88VlOcJYZs9jY+MYSjxvady08bUZn6qgiNh7DadGgg=="
+      },
+      "Microsoft.Extensions.Logging": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "crjWyORoug0kK7RSNJBTeSE6VX8IQgLf3nUpTB9m62bPXp/tzbnOsnbe8TXEG0AASNaKZddnpHKw7fET8E++Pg==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Options": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "g0UfujELzlLbHoVG8kPKVBaW470Ewi+jnptGS9KUi6jcb+k2StujtK3m26DFSGGwQ/+bVgZfsWqNzlP6YOejvw==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Options": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "y2146b3jrPI3Q0lokKXdKLpmXqakYbDIPDV6r3M8SqvSf45WwOTzkyfDpxnZXJsJQEpAsAqjUq5Pu8RCJMjubg==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Primitives": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Primitives": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "N3qEBzmLMYiASUlKxxFIISP4AiwuPTHF5uCh+2CWSwwzAJiIYx0kBJsS30cp1nvhSySFAVi30jecD307jV+8Kg=="
+      },
+      "Microsoft.Maui.Controls.Build.Tasks": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "hpb9mB3FLMK0UK6euFvkq8X0TEJ0YDWBV2kot5ryrvCBSNyonHVEQVMo0m7Uzzz2fAdqdZzRNV9WNgB6X/Jb4Q==",
+        "dependencies": {
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Controls.Xaml": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Core": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "P2Z45cciD/2yqia/3tm9QCclVhCISdBQfHz4zvpTQslEPZOuxzw06stvfrKYSgGlnJMBDzNMQ70FC/hybkB4kg==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Microsoft.Extensions.Logging": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Maui.Core": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Xaml": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "mQHeyk+Dj7L2vmDXPeMjwLD7dUeqCelxLTPV5pOg+v3pVgQFwYZPoOMPVflS6Qtu+o1BlOZ5XNQjtEEUJ4yShg==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Core": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Core": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "fAt+rtONvnar9IPfj3qmF4UgWAaoB3UkvF1QIlRc9/dwYxSVRyRzx4SfnjwQ0kM160z03IDOK45D3pgDiRRNcw==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Microsoft.Extensions.Logging": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Maui.Essentials": "9.0.30",
+          "Microsoft.Maui.Graphics": "9.0.30",
+          "Xamarin.Android.Glide": "4.16.0.6",
+          "Xamarin.AndroidX.Lifecycle.LiveData": "2.8.5.1",
+          "Xamarin.AndroidX.Navigation.Common": "2.8.0.1",
+          "Xamarin.AndroidX.Navigation.Fragment": "2.8.0.1",
+          "Xamarin.AndroidX.Navigation.Runtime": "2.8.0.1",
+          "Xamarin.AndroidX.Navigation.UI": "2.8.0.1",
+          "Xamarin.AndroidX.SwipeRefreshLayout": "1.1.0.24",
+          "Xamarin.Google.Android.Material": "1.11.0.3"
+        }
+      },
+      "Microsoft.Maui.Essentials": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "0jIHgPw+VeQpipYoz0WpTGc6EoAD/i80CgAq9GewOHfWSF3pD2w9MwyAkyNf2Fx8gef37WNJCv/wtRcr96nd2w==",
+        "dependencies": {
+          "Microsoft.Maui.Graphics": "9.0.30",
+          "Xamarin.AndroidX.Browser": "1.8.0.6",
+          "Xamarin.AndroidX.Security.SecurityCrypto": "1.1.0.2-alpha06",
+          "Xamarin.Google.Crypto.Tink.Android": "1.15.0.1"
+        }
+      },
+      "Microsoft.Maui.Graphics": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "YnlWLhi0SFuWY1GxUGZs96uHPJdaGK86udh2A/wysTYernzF7bmKNJnPvG17QDgdMuqELGC7fxAkqRuHEciY/A=="
+      },
+      "Microsoft.Maui.Maps": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "2kG+ViQ6FoHHoD10IYJCgPD1BqO4dkaasxktMVzvZqfuDapG81JHkCHXsLwfqxyz/PEVTj/GumIWVzXjuwzFaw==",
+        "dependencies": {
+          "Xamarin.GooglePlayServices.Maps": "119.0.0.2"
+        }
+      },
+      "Microsoft.Maui.Resizetizer": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "rJtkoRYWmkBPVxpvrWYvACYfrCqW98ilio6M5wUqu8X7AzcxVp1R17b5XLgFUyJKkmolyqibO06C6wOV3kOOig=="
+      },
+      "Xamarin.Android.Glide": {
+        "type": "Transitive",
+        "resolved": "4.16.0.6",
+        "contentHash": "UlVmpTxb1dc7pmbmnDFzTZ7Pyu2EPpORP1JI+tjx/t9DHvzbdo2dLESMiPwYH5THJ/aHV7O0gY0pmaQjjcotXQ==",
+        "dependencies": {
+          "Xamarin.Android.Glide.Annotations": "4.16.0.6",
+          "Xamarin.Android.Glide.DiskLruCache": "4.16.0.6",
+          "Xamarin.Android.Glide.GifDecoder": "4.16.0.6",
+          "Xamarin.AndroidX.ExifInterface": "1.3.7.5",
+          "Xamarin.AndroidX.Fragment": "1.8.1.1",
+          "Xamarin.AndroidX.Tracing.Tracing": "1.2.0.5",
+          "Xamarin.AndroidX.VectorDrawable.Animated": "1.2.0.1"
+        }
+      },
+      "Xamarin.Android.Glide.Annotations": {
+        "type": "Transitive",
+        "resolved": "4.16.0.6",
+        "contentHash": "/W5J+9sL8u+9shtZlm39Se+GGj1uGt6ORrBL9wEVkfyhC3YSvYZ1bc1/vfeuazACszmWUOO/GPTZet4T0puQKA=="
+      },
+      "Xamarin.Android.Glide.DiskLruCache": {
+        "type": "Transitive",
+        "resolved": "4.16.0.6",
+        "contentHash": "usx8uOeOCI/pEVSgWY68jbpz7PJgOrvNI+v4qLfC2HQV9GP8Yfn1eWo/a56zbSBZIUioRWL2+K73xtmc264Tqg=="
+      },
+      "Xamarin.Android.Glide.GifDecoder": {
+        "type": "Transitive",
+        "resolved": "4.16.0.6",
+        "contentHash": "Cy5xyOl6Rp72fP1rihfpy6A+QBcMEfFF75Zyl6wM5C9LHtKapSu+y7Q6pZTBZm0nOKE200rE8vLfKRo7TuE/FA==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.0.1"
+        }
+      },
+      "Xamarin.AndroidX.Activity": {
+        "type": "Transitive",
+        "resolved": "1.9.2.1",
+        "contentHash": "T5UOWgzjAw3w0hHKhoYuK6xtTN2f2Cyyl02756xN83I6ieb536DjqUyAdnY9hdPCaOYYF2KFZF4o8dwuAnhlOQ==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.Lifecycle.Runtime": "2.8.5.1",
+          "Xamarin.AndroidX.Lifecycle.ViewModel": "2.8.5.1",
+          "Xamarin.AndroidX.Lifecycle.ViewModelSavedState": "2.8.5.1",
+          "Xamarin.AndroidX.ProfileInstaller.ProfileInstaller": "1.3.1.12",
+          "Xamarin.AndroidX.SavedState": "1.2.1.13",
+          "Xamarin.AndroidX.Tracing.Tracing": "1.2.0.7",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.Activity.Ktx": {
+        "type": "Transitive",
+        "resolved": "1.9.2.1",
+        "contentHash": "Y0aqR9p3j+VbA6CfpH32aQF/GYODjgy8l1ShcuhzRY0tfLe2r8DXzfhihweLXZ+yhq3cGaVCQFrSQbuaQAPXxA==",
+        "dependencies": {
+          "Xamarin.AndroidX.Activity": "[1.9.2.1, 1.9.3)",
+          "Xamarin.AndroidX.Core.Core.Ktx": "1.13.1.5",
+          "Xamarin.AndroidX.Lifecycle.Runtime.Ktx": "2.8.5.1",
+          "Xamarin.AndroidX.Lifecycle.ViewModel.Ktx": "2.8.5.1",
+          "Xamarin.AndroidX.SavedState.SavedState.Ktx": "1.2.1.13",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.Annotation": {
+        "type": "Transitive",
+        "resolved": "1.8.2.1",
+        "contentHash": "gswmqJuGKqOow9z8DqfG6RX+lgLbJYuiwXWM3YXtMlVxCpNZIUd1e/BdrJP5lY1vvWFGhEc5P0vApgmiKHPTkg==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation.Jvm": "1.8.2.1",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.Annotation.Experimental": {
+        "type": "Transitive",
+        "resolved": "1.4.1.6",
+        "contentHash": "q/qmC3V0d5YzdCtbny9nDVQhg7z2CXwkBeVaL0QS4Cwj956sUeMoJnue+GnPHpwazfh02Z8gl5FeBoPIhDolpw==",
+        "dependencies": {
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.Annotation.Jvm": {
+        "type": "Transitive",
+        "resolved": "1.8.2.1",
+        "contentHash": "JK60hqe/pkia2XDM2eIhSXKE0kW8DCKCg+ivG6SvG4+AHgY3jR3O53M+VR6C1gFDv/TFC78q7diiXoBPh+OHYQ==",
+        "dependencies": {
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.AppCompat": {
+        "type": "Transitive",
+        "resolved": "1.7.0.3",
+        "contentHash": "Cooa0faYm1YH0+tgSSmYLo1ObEAQf/Zn2rrOmViUHWW4cIrYUCKQyNCNs/N+zbhGNEEc/JdozPD0bY64zGcpIw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Activity": "1.9.2.1",
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.AppCompat.AppCompatResources": "[1.7.0.3, 1.7.1)",
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.Core.Core.Ktx": "1.13.1.5",
+          "Xamarin.AndroidX.CursorAdapter": "1.0.0.29",
+          "Xamarin.AndroidX.DrawerLayout": "1.2.0.13",
+          "Xamarin.AndroidX.Emoji2": "1.5.0.1",
+          "Xamarin.AndroidX.Emoji2.ViewsHelper": "1.5.0.1",
+          "Xamarin.AndroidX.Fragment": "1.8.3.1",
+          "Xamarin.AndroidX.Lifecycle.Runtime": "2.8.5.1",
+          "Xamarin.AndroidX.Lifecycle.ViewModel": "2.8.5.1",
+          "Xamarin.AndroidX.ProfileInstaller.ProfileInstaller": "1.3.1.12",
+          "Xamarin.AndroidX.ResourceInspection.Annotation": "1.0.1.17",
+          "Xamarin.AndroidX.SavedState": "1.2.1.13",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.AppCompat.AppCompatResources": {
+        "type": "Transitive",
+        "resolved": "1.7.0.3",
+        "contentHash": "/pVgJ6JbrHc0BHNz/C2du9Ro/B0StRtmePrV7mznlM9u8nrynlwv8gJgKFmn+sSuHBHJIzHvHU++FzZSqTsAmQ==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.VectorDrawable": "1.2.0.3",
+          "Xamarin.AndroidX.VectorDrawable.Animated": "1.2.0.3"
+        }
+      },
+      "Xamarin.AndroidX.Arch.Core.Common": {
+        "type": "Transitive",
+        "resolved": "2.2.0.13",
+        "contentHash": "aVLhdlDsWKoQw+Jt9NTamJF/6y3koHhuGMY3wDBqwvqwB3etblo1zrEoy/strwYic1/d3Y4f9SEttnSqptFZuQ==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1"
+        }
+      },
+      "Xamarin.AndroidX.Arch.Core.Runtime": {
+        "type": "Transitive",
+        "resolved": "2.2.0.13",
+        "contentHash": "lPttP2Epq5735xff6za+vv/yP9gEPPzP+FMQT//QwDuQjcQSgSziJ0Dz0+Lm9rM9lFXlVWzqvWe3Qze5vEjjow==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Arch.Core.Common": "[2.2.0.13, 2.2.1)"
+        }
+      },
+      "Xamarin.AndroidX.Browser": {
+        "type": "Transitive",
+        "resolved": "1.8.0.6",
+        "contentHash": "jgMK4BmbKWRtqiucuRijgd+hPYbN2kJwl6Xnft/9344h6UbXZDmkIKYN8jCSECxC9kb/DcMAfTyfn59kpMYWeg==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Annotation.Experimental": "1.4.1.6",
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Concurrent.Futures": "1.2.0.3",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.Interpolator": "1.0.0.29",
+          "Xamarin.Google.Guava.ListenableFuture": "1.0.0.24"
+        }
+      },
+      "Xamarin.AndroidX.CardView": {
+        "type": "Transitive",
+        "resolved": "1.0.0.31",
+        "contentHash": "Qvobzed2B7vPwiRJAbZ5+5XMjeqV44lU+L8e1tPNA8N6PTzyfWnfQ+R+g3WCLhQvEQ/YOWF+aulyPCVTlETVKA==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1"
+        }
+      },
+      "Xamarin.AndroidX.Collection": {
+        "type": "Transitive",
+        "resolved": "1.4.3.1",
+        "contentHash": "yh/ozGFJAw4SeTqqYy8Q8/UFRRFFRK1k/7d+DMZTlqX/yJFfsxA3wJ04AD1NRPdEJ5GFuE2miWn9T7NVJRP10g==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Collection.Jvm": "1.4.3.1",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.Collection.Jvm": {
+        "type": "Transitive",
+        "resolved": "1.4.3.1",
+        "contentHash": "AvBaO+WUgohZV1TNFjJtEmfOtH355ngktrUCOJuSPhZsqSfd6cY33bPYNR72AAwuueESMWViATJHC7iuJvfsXA==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation.Jvm": "1.8.2.1",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.Collection.Ktx": {
+        "type": "Transitive",
+        "resolved": "1.4.3.1",
+        "contentHash": "pY1bbHCvFrN7FiFpZqTG0VvgVaffOYlxl/zNh/OIcAvvdvGpoPHdOmPvRkGEB8Q7jjQ2zyvEY8N20kaC3wuM1Q==",
+        "dependencies": {
+          "Xamarin.AndroidX.Collection.Jvm": "[1.4.3.1, 1.4.4)"
+        }
+      },
+      "Xamarin.AndroidX.Concurrent.Futures": {
+        "type": "Transitive",
+        "resolved": "1.2.0.3",
+        "contentHash": "r3lZfkf8MYE9XneCPrxyg06OzS5P3D3zz021ZXX4TRK9p8sXVWRLY5PJOCen+KtcKKEyEl2jtS8rJGJSD/Zvww==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.Google.Guava.ListenableFuture": "1.0.0.24"
+        }
+      },
+      "Xamarin.AndroidX.ConstraintLayout": {
+        "type": "Transitive",
+        "resolved": "2.1.4.16",
+        "contentHash": "2pUdMUbFKjv0f5K1aPc+FUHGk6IGT/HpukkhRWxMZLLGW2RxQiNSqm+1j/vDgvAqZtdvJH16bn7QAfLYcgPDqA==",
+        "dependencies": {
+          "Xamarin.AndroidX.AppCompat": "1.7.0.3",
+          "Xamarin.AndroidX.ConstraintLayout.Core": "1.0.4.16",
+          "Xamarin.AndroidX.Core": "1.13.1.5"
+        }
+      },
+      "Xamarin.AndroidX.ConstraintLayout.Core": {
+        "type": "Transitive",
+        "resolved": "1.0.4.16",
+        "contentHash": "vwjArhkTCaV5ZdqGFbRn30hAFvB1hFmssFTG/FboLDhqpzGL1ONr4u4DhUWJTh1rzFLTqNiDSXzi+o573Yp/0g=="
+      },
+      "Xamarin.AndroidX.CoordinatorLayout": {
+        "type": "Transitive",
+        "resolved": "1.2.0.17",
+        "contentHash": "7HZPgaNOMmuJ6vOElPWgWvccQ+3KOJZ6nhgbt9IeiuY9pKJE5ja54gSs3iJ9QBT5P9XKnomjNE3zSClpMelHQw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.CustomView": "1.1.0.28"
+        }
+      },
+      "Xamarin.AndroidX.Core": {
+        "type": "Transitive",
+        "resolved": "1.13.1.5",
+        "contentHash": "FUIgDDIlZ3eM2dHDCeegXQj9gGqPSs3+MUGvVbtyR3fEJW0oC0wKQJ9XOVl4SgfH69yF60EAZKCMKs2tXLkv5A==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Annotation.Experimental": "1.4.1.6",
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Concurrent.Futures": "1.2.0.3",
+          "Xamarin.AndroidX.Interpolator": "1.0.0.29",
+          "Xamarin.AndroidX.Lifecycle.Runtime": "2.8.5.1",
+          "Xamarin.AndroidX.VersionedParcelable": "1.2.0.7",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.Core.Core.Ktx": {
+        "type": "Transitive",
+        "resolved": "1.13.1.5",
+        "contentHash": "mLmtXJ3W1PEFA+ICmShQ9as5TTKn661X3PZWJB69fiFw95OjWqHHgOM0ytFdQW9HeY/daYjeh7iEz0td0Qgj1g==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.CursorAdapter": {
+        "type": "Transitive",
+        "resolved": "1.0.0.29",
+        "contentHash": "1q7BEzI+DnhtIyLlk6upGGrR0BezRuzpewdyYSGmpf4yTaqd1qNCY+LhEnvkgu6AHh1FNQfnXcaNdG5CLaXSKg==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1"
+        }
+      },
+      "Xamarin.AndroidX.CustomView": {
+        "type": "Transitive",
+        "resolved": "1.1.0.28",
+        "contentHash": "oKFMUsW1kbvbwTGDIiBJFlF5E7wDsi/+6rflTEGMO9Mt5aiHiqLUrBYLUEc68BSsdP3+/Y7Kn1hdJpXUEU7byQ==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5"
+        }
+      },
+      "Xamarin.AndroidX.CustomView.PoolingContainer": {
+        "type": "Transitive",
+        "resolved": "1.0.0.15",
+        "contentHash": "k3UFHNDCFsrjds/+m9GWpeW65GR/rC9C3/z+75DvZlqHNxnWJw6K4XktM6Sov0WTzzjzNwSyYNYNBoJdADBmZg==",
+        "dependencies": {
+          "Xamarin.AndroidX.Core.Core.Ktx": "1.13.1.5",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.DocumentFile": {
+        "type": "Transitive",
+        "resolved": "1.0.1.29",
+        "contentHash": "ggovhzOvhJZ3/GlyWaYaV4tnG/ZEgjHh5NTNndg7MdGo+BM0fKqDgZtFj656ARejo3g6ghCismLShVAX444N0g==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1"
+        }
+      },
+      "Xamarin.AndroidX.DrawerLayout": {
+        "type": "Transitive",
+        "resolved": "1.2.0.13",
+        "contentHash": "XVYf4pL64j0Z9B8c9CfulYQ2Ox2vwghn693ZbTJ6DAiF7MWn+zqSXd7Bw66mJkCUEj5VMTlCAsFOMHD7yoBZUA==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.CustomView": "1.1.0.28"
+        }
+      },
+      "Xamarin.AndroidX.DynamicAnimation": {
+        "type": "Transitive",
+        "resolved": "1.0.0.29",
+        "contentHash": "hw+lW58lONCs9K82UcecWSxHRDwBsh+XzD4/0PT5Hw1Oz9qfaquxfcD+eES7+38BQMM4mawYlSLy4jx1fvs65w==",
+        "dependencies": {
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.Legacy.Support.Core.Utils": "1.0.0.29"
+        }
+      },
+      "Xamarin.AndroidX.Emoji2": {
+        "type": "Transitive",
+        "resolved": "1.5.0.1",
+        "contentHash": "XsQjKsMnGwPCa9nmziOeaPcfH2Fm8xHDiVLzsJ3t6kr0kfHOd0HNZilvGFDHoDT75Jb+8WJL2m5zNoE6gZHn6g==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.Lifecycle.Process": "2.8.5.1",
+          "Xamarin.AndroidX.Startup.StartupRuntime": "1.1.1.17"
+        }
+      },
+      "Xamarin.AndroidX.Emoji2.ViewsHelper": {
+        "type": "Transitive",
+        "resolved": "1.5.0.1",
+        "contentHash": "pOm7001bOdGlE3eGK7NGWGe08HRzEUhSfTKVSVSCTby8YL4uRF236cf0/UummPMQQJLzIU1kQDJM9PxQAGYALw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.Emoji2": "[1.5.0.1, 1.5.1)"
+        }
+      },
+      "Xamarin.AndroidX.ExifInterface": {
+        "type": "Transitive",
+        "resolved": "1.3.7.5",
+        "contentHash": "aDYA8GZRkbYT6+mtN/LC/nLLRKT57p2R/ajrQV3Cs4pN3IJa0hCDxOxl7lkJx/7GBxV2qyvSsE4dYArfkCyk9w==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.0.1"
+        }
+      },
+      "Xamarin.AndroidX.Fragment": {
+        "type": "Transitive",
+        "resolved": "1.8.3.1",
+        "contentHash": "oOFNYyS3l0SOyM+XbsXB3QSCWJXPxSuv1DdpyiKuUNPwcRjJfI+nRvVArsn+kBGkjk5eZB7bSJgZXKYD5rxzRw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Activity": "1.9.2.1",
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Annotation.Experimental": "1.4.1.6",
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core.Core.Ktx": "1.13.1.5",
+          "Xamarin.AndroidX.Lifecycle.LiveData.Core": "2.8.5.1",
+          "Xamarin.AndroidX.Lifecycle.Runtime": "2.8.5.1",
+          "Xamarin.AndroidX.Lifecycle.ViewModel": "2.8.5.1",
+          "Xamarin.AndroidX.Lifecycle.ViewModelSavedState": "2.8.5.1",
+          "Xamarin.AndroidX.Loader": "1.1.0.29",
+          "Xamarin.AndroidX.ProfileInstaller.ProfileInstaller": "1.3.1.12",
+          "Xamarin.AndroidX.SavedState": "1.2.1.13",
+          "Xamarin.AndroidX.ViewPager": "1.0.0.29",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.Fragment.Ktx": {
+        "type": "Transitive",
+        "resolved": "1.8.3.1",
+        "contentHash": "Ph58VgOs+1iS/uWMK1TKkLGQbiSKQ3ho2gJhFMlcUa6NDU9XRkg/9fT7LKv7yiIlkHPk/CZZrns/4t/1yWO5Yw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Activity.Ktx": "1.9.2.1",
+          "Xamarin.AndroidX.Collection.Ktx": "1.4.3.1",
+          "Xamarin.AndroidX.Core.Core.Ktx": "1.13.1.5",
+          "Xamarin.AndroidX.Fragment": "[1.8.3.1, 1.8.4)",
+          "Xamarin.AndroidX.Lifecycle.LiveData.Core.Ktx": "2.8.5.1",
+          "Xamarin.AndroidX.Lifecycle.ViewModel.Ktx": "2.8.5.1",
+          "Xamarin.AndroidX.SavedState.SavedState.Ktx": "1.2.1.13",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.Interpolator": {
+        "type": "Transitive",
+        "resolved": "1.0.0.29",
+        "contentHash": "+rQhhVXbqf+Vsb2st3R/Fu5jQ7Yb5QSb4JMS3yp5zZAElRVtBQDP11OOtWcQRdHMLkYUtwrJ03hBCXPmRecByw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1"
+        }
+      },
+      "Xamarin.AndroidX.Legacy.Support.Core.Utils": {
+        "type": "Transitive",
+        "resolved": "1.0.0.29",
+        "contentHash": "6Na72GNdwyqO4kiYZ2YH3TtnokIBZ9227Snr8khlLYJ2TSKyMQokz2E9eEoHN0GZaYHurAb0M5WRpDgszyqTNA==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.DocumentFile": "1.0.1.29",
+          "Xamarin.AndroidX.Loader": "1.1.0.29",
+          "Xamarin.AndroidX.LocalBroadcastManager": "1.1.0.17",
+          "Xamarin.AndroidX.Print": "1.0.0.29"
+        }
+      },
+      "Xamarin.AndroidX.Lifecycle.Common": {
+        "type": "Transitive",
+        "resolved": "2.8.5.1",
+        "contentHash": "7g+KQSqSqPEo3ui4TplYz3beZt6VhvhSn0gqYQoKSs4fUwY0mYJOBUx4hWgRK9gxKsN77yaA0U3OcP3v2Ctr4A==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Lifecycle.Common.Jvm": "2.8.5.1",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1",
+          "Xamarin.KotlinX.AtomicFU": "0.25.0.3",
+          "Xamarin.KotlinX.Coroutines.Core": "1.8.1.3"
+        }
+      },
+      "Xamarin.AndroidX.Lifecycle.Common.Jvm": {
+        "type": "Transitive",
+        "resolved": "2.8.5.1",
+        "contentHash": "yhlKDl7f1sP1zEzVm2rsohnGyeW8J5HLLqb7kgRqi9lj5m379b8JA4T4GAHCg6Rm0gRFGcpyK/nH5AQ7rIVfUA==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation.Jvm": "1.8.2.1",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1",
+          "Xamarin.KotlinX.Coroutines.Core": "1.8.1.3"
+        }
+      },
+      "Xamarin.AndroidX.Lifecycle.LiveData": {
+        "type": "Transitive",
+        "resolved": "2.8.5.1",
+        "contentHash": "J6oe7tBnjh8+mhekSraEPRg1u1oTJTQDfQjmHhlvTxfU1uK0emP8fINB47Jc8KTvU40Jhfvv6i4WxiV6DDdEdQ==",
+        "dependencies": {
+          "Xamarin.AndroidX.Arch.Core.Common": "2.2.0.13",
+          "Xamarin.AndroidX.Arch.Core.Runtime": "2.2.0.13",
+          "Xamarin.AndroidX.Lifecycle.LiveData.Core": "[2.8.5.1, 2.8.6)",
+          "Xamarin.AndroidX.Lifecycle.LiveData.Core.Ktx": "[2.8.5.1, 2.8.6)",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1",
+          "Xamarin.KotlinX.Coroutines.Core": "1.8.1.3"
+        }
+      },
+      "Xamarin.AndroidX.Lifecycle.LiveData.Core": {
+        "type": "Transitive",
+        "resolved": "2.8.5.1",
+        "contentHash": "lzxNN4bEbOwMhduueTOXm+74Jb0sHO0hKzKGyO6h2daCGMfVgB+1eIiH3kJ9I3iOG4F4cIFLpYi1YVuGDzjRSw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Arch.Core.Common": "2.2.0.13",
+          "Xamarin.AndroidX.Arch.Core.Runtime": "2.2.0.13",
+          "Xamarin.AndroidX.Lifecycle.Common": "[2.8.5.1, 2.8.6)",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.Lifecycle.LiveData.Core.Ktx": {
+        "type": "Transitive",
+        "resolved": "2.8.5.1",
+        "contentHash": "20dME7OSJ+w7vDWS8xq4Srju4qTEjezGmfL1ZuBFIin5Swc7KB4LKpJgVQ7rwfEGAeNXKsxglkwmaYGmkgf5Kw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Lifecycle.LiveData.Core": "[2.8.5.1, 2.8.6)",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.Lifecycle.Process": {
+        "type": "Transitive",
+        "resolved": "2.8.5.1",
+        "contentHash": "wQDc0bW6YhvqZta2D4LUR+EsGWPRkAAA1NYq6DAxcGRY74XT54lDFnO15H/x2aN7D32Tv3nL57vb21cB5PfLfQ==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Lifecycle.Runtime": "[2.8.5.1, 2.8.6)",
+          "Xamarin.AndroidX.Startup.StartupRuntime": "1.1.1.17",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.Lifecycle.Runtime": {
+        "type": "Transitive",
+        "resolved": "2.8.5.1",
+        "contentHash": "gb0OfYIRu6R5hzpNT4W+fK/RXPcilOiwfvSvhwJzeggE4GfmBuB714BgjG/pHGILWkXUVsuFHFUFsoKg4VMsYw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Arch.Core.Common": "2.2.0.13",
+          "Xamarin.AndroidX.Lifecycle.Common": "[2.8.5.1, 2.8.6)",
+          "Xamarin.AndroidX.Lifecycle.Runtime.Android": "2.8.5.1",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.Lifecycle.Runtime.Android": {
+        "type": "Transitive",
+        "resolved": "2.8.5.1",
+        "contentHash": "ccd0jF9JpQGKz08WpRIYo2tTPUpf/hQr2LPlaVk9L90ZEd2c/4lxPFb6BujozSO/C8bGFvmGzj7uzRllHLWA5Q==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation.Jvm": "1.8.2.1",
+          "Xamarin.AndroidX.Arch.Core.Common": "2.2.0.13",
+          "Xamarin.AndroidX.Arch.Core.Runtime": "2.2.0.13",
+          "Xamarin.AndroidX.Lifecycle.Common": "[2.8.5.1, 2.8.6)",
+          "Xamarin.AndroidX.ProfileInstaller.ProfileInstaller": "1.3.1.12",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1",
+          "Xamarin.KotlinX.Coroutines.Android": "1.8.1.3"
+        }
+      },
+      "Xamarin.AndroidX.Lifecycle.Runtime.Ktx": {
+        "type": "Transitive",
+        "resolved": "2.8.5.1",
+        "contentHash": "5KNojH1iVRll7W9EVxoMZWnhgZGshzwYxDw+DdGqbh3UOP+SlEcHGJqIyuy+NdhvbEizBOMDF0YDm0tCtBv2pw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Lifecycle.Runtime": "[2.8.5.1, 2.8.6)",
+          "Xamarin.AndroidX.Lifecycle.Runtime.Ktx.Android": "2.8.5.1",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.Lifecycle.Runtime.Ktx.Android": {
+        "type": "Transitive",
+        "resolved": "2.8.5.1",
+        "contentHash": "HmOp8SVQozzQ9Ym/3ot/PjDQfWSCsoqDbExt4kBDgjf885taILVPAWZ61Va3eOZO0UzWlsC8Ugt2BSiP44awYQ==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation.Jvm": "1.8.2.1",
+          "Xamarin.AndroidX.Lifecycle.Runtime": "[2.8.5.1, 2.8.6)",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1",
+          "Xamarin.KotlinX.Coroutines.Android": "1.8.1.3"
+        }
+      },
+      "Xamarin.AndroidX.Lifecycle.ViewModel": {
+        "type": "Transitive",
+        "resolved": "2.8.5.1",
+        "contentHash": "x759/nmNBBy8M65r2q2rjh56Ww7HwtbJx7+Gh5eVhYYrMiI6L/gm8ZjIiFXXehZwwjqtgWwZ1t70rCli67l39g==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Lifecycle.ViewModel.Android": "2.8.5.1",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1",
+          "Xamarin.KotlinX.Coroutines.Core": "1.8.1.3"
+        }
+      },
+      "Xamarin.AndroidX.Lifecycle.ViewModel.Android": {
+        "type": "Transitive",
+        "resolved": "2.8.5.1",
+        "contentHash": "LujT18szllr2wKNEZ+0CyCUQi0Orimn7NyYZ/eEoO+MO/Ucxknc7Y/RoDXMlkObmRWyd5oIMcRqmq/e3sqaCsA==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation.Jvm": "1.8.2.1",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1",
+          "Xamarin.KotlinX.Coroutines.Android": "1.8.1.3",
+          "Xamarin.KotlinX.Coroutines.Core.Jvm": "1.8.1.3"
+        }
+      },
+      "Xamarin.AndroidX.Lifecycle.ViewModel.Ktx": {
+        "type": "Transitive",
+        "resolved": "2.8.5.1",
+        "contentHash": "gXOwc02DXalQaeXCQ8yQ67TsS0mkogOG/qjX2rqJ/vScsNsPUZVV6WvQxMKLr+HjbFZSrc9b97TziLDfkIn+iQ==",
+        "dependencies": {
+          "Xamarin.AndroidX.Lifecycle.ViewModel": "[2.8.5.1, 2.8.6)",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1",
+          "Xamarin.KotlinX.Coroutines.Android": "1.8.1.3"
+        }
+      },
+      "Xamarin.AndroidX.Lifecycle.ViewModelSavedState": {
+        "type": "Transitive",
+        "resolved": "2.8.5.1",
+        "contentHash": "BskaAVdcNgqqleg7eOzedkhM8zF1WMGhvinx8D474C/KRpVQLcHKbQ7YiSXEEIgI3+sd59QkFtEtJlzT1oU/0g==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Core.Core.Ktx": "1.13.1.5",
+          "Xamarin.AndroidX.Lifecycle.LiveData.Core": "[2.8.5.1, 2.8.6)",
+          "Xamarin.AndroidX.Lifecycle.ViewModel": "[2.8.5.1, 2.8.6)",
+          "Xamarin.AndroidX.SavedState": "1.2.1.13",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1",
+          "Xamarin.KotlinX.Coroutines.Android": "1.8.1.3"
+        }
+      },
+      "Xamarin.AndroidX.Loader": {
+        "type": "Transitive",
+        "resolved": "1.1.0.29",
+        "contentHash": "UrO7XrBl9tuTpfC7FZCBY2X5mH6dMMB+pnDKXjCPT6IigI6Hb9DluN0h2Jdjo4VMTz6xCp+V0zf0/rPzw7MQdQ==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.Lifecycle.LiveData.Core": "2.8.5.1",
+          "Xamarin.AndroidX.Lifecycle.ViewModel": "2.8.5.1"
+        }
+      },
+      "Xamarin.AndroidX.LocalBroadcastManager": {
+        "type": "Transitive",
+        "resolved": "1.1.0.17",
+        "contentHash": "WV4wthZZtbVMlr1Q4OdmoE7lQYjZo9GeJ1PfIxtf2bIlhaa3DqKibDfOrXGAMtbF/NGapRYTwOwMipNRRPWXHA==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1"
+        }
+      },
+      "Xamarin.AndroidX.Navigation.Common": {
+        "type": "Transitive",
+        "resolved": "2.8.0.1",
+        "contentHash": "rQlb+6t9fvQR9nF6cKt3E//JKYIym5e7erydwbMoRCMmJaZ9gjoWh9ad7frLn6LpHgPI7Rc8YXljparAM4wRwA==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Collection.Ktx": "1.4.3.1",
+          "Xamarin.AndroidX.Core.Core.Ktx": "1.13.1.5",
+          "Xamarin.AndroidX.Lifecycle.Common": "2.8.5.1",
+          "Xamarin.AndroidX.Lifecycle.Runtime.Ktx": "2.8.5.1",
+          "Xamarin.AndroidX.Lifecycle.ViewModel.Ktx": "2.8.5.1",
+          "Xamarin.AndroidX.Lifecycle.ViewModelSavedState": "2.8.5.1",
+          "Xamarin.AndroidX.ProfileInstaller.ProfileInstaller": "1.3.1.12",
+          "Xamarin.AndroidX.SavedState.SavedState.Ktx": "1.2.1.13",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1",
+          "Xamarin.KotlinX.Serialization.Core": "1.7.1.3"
+        }
+      },
+      "Xamarin.AndroidX.Navigation.Fragment": {
+        "type": "Transitive",
+        "resolved": "2.8.0.1",
+        "contentHash": "u248khX7pJzPI6gj0D47h5R5saff1+Ma8Bu60M7qTL+C5icPQazuVfnR720XxEtX1fypqJqdn060NQaYtnEgUg==",
+        "dependencies": {
+          "Xamarin.AndroidX.Fragment.Ktx": "1.8.3.1",
+          "Xamarin.AndroidX.Navigation.Runtime": "[2.8.0.1, 2.8.1)",
+          "Xamarin.AndroidX.SlidingPaneLayout": "1.2.0.17",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1",
+          "Xamarin.KotlinX.Serialization.Core": "1.7.1.3"
+        }
+      },
+      "Xamarin.AndroidX.Navigation.Runtime": {
+        "type": "Transitive",
+        "resolved": "2.8.0.1",
+        "contentHash": "PtHik8BHT3UT6Yqxf619lXjBAaXFjpTJLeFupPKEPZJt8WH6MlPSQYSCoXJ/7SGpJfwKzO+w+IosVrZJEOSe1g==",
+        "dependencies": {
+          "Xamarin.AndroidX.Activity.Ktx": "1.9.2.1",
+          "Xamarin.AndroidX.Annotation.Experimental": "1.4.1.6",
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Lifecycle.Runtime.Ktx": "2.8.5.1",
+          "Xamarin.AndroidX.Lifecycle.ViewModel.Ktx": "2.8.5.1",
+          "Xamarin.AndroidX.Navigation.Common": "[2.8.0.1, 2.8.1)",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1",
+          "Xamarin.KotlinX.Serialization.Core": "1.7.1.3"
+        }
+      },
+      "Xamarin.AndroidX.Navigation.UI": {
+        "type": "Transitive",
+        "resolved": "2.8.0.1",
+        "contentHash": "g8E5XIalsjqsfarg1lrQjF+JHWSAX9XJxioXHhMPSTTUasAr6WGUIDTMN+ftRYTfhe/fj5GgksOrflDXGs6Vlw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation.Experimental": "1.4.1.6",
+          "Xamarin.AndroidX.CustomView": "1.1.0.28",
+          "Xamarin.AndroidX.DrawerLayout": "1.2.0.13",
+          "Xamarin.AndroidX.Navigation.Runtime": "[2.8.0.1, 2.8.1)",
+          "Xamarin.AndroidX.Transition": "1.5.1.2",
+          "Xamarin.Google.Android.Material": "1.11.0.3"
+        }
+      },
+      "Xamarin.AndroidX.Print": {
+        "type": "Transitive",
+        "resolved": "1.0.0.29",
+        "contentHash": "/MQRPzG6YZMV7hfCSzWuDfTzy9V5aCxApXND0edFxywRDTnypJY50XKbESqrq4g1LfozcarljenUwtPqMSMpJw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1"
+        }
+      },
+      "Xamarin.AndroidX.ProfileInstaller.ProfileInstaller": {
+        "type": "Transitive",
+        "resolved": "1.3.1.12",
+        "contentHash": "ovxMQPQjbR7eGFpycW6i9sQw4MYwOwki74t9F6n5x3xXTTnibVgUnkzdrMaRGg65ZsnOyBP2gt/CdUg/T//BHQ==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Concurrent.Futures": "1.2.0.3",
+          "Xamarin.AndroidX.Startup.StartupRuntime": "1.1.1.17",
+          "Xamarin.Google.Guava.ListenableFuture": "1.0.0.24"
+        }
+      },
+      "Xamarin.AndroidX.RecyclerView": {
+        "type": "Transitive",
+        "resolved": "1.3.2.8",
+        "contentHash": "7zDGO1Nv0ObrbBP35sMfO9oV0O4Zqakg3tLB7Ii1g2lklp+WNTO3ki8HX9DWw9Ebu/E7PAG08jjuMvJEUuRofA==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.CustomView": "1.1.0.28",
+          "Xamarin.AndroidX.CustomView.PoolingContainer": "1.0.0.15"
+        }
+      },
+      "Xamarin.AndroidX.ResourceInspection.Annotation": {
+        "type": "Transitive",
+        "resolved": "1.0.1.17",
+        "contentHash": "ONv2QkzWFvIblLpdxbnAGO7nKYcdkeSyYNUXDlu8btRnnmrBNrkHYkKK3Kw8eNNf2JPTfNqOKqoo9NO1BYqBcg==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1"
+        }
+      },
+      "Xamarin.AndroidX.SavedState": {
+        "type": "Transitive",
+        "resolved": "1.2.1.13",
+        "contentHash": "5o6BZsrpg84Xco/lxO6rKTIUY5mWL1W2UJObd5sEtqcabDcAEDYeve1ffIig0Om7xMu3VVrgYLUIcuvPhg4Yfg==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Arch.Core.Common": "2.2.0.13",
+          "Xamarin.AndroidX.Lifecycle.Common": "2.8.5.1",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.SavedState.SavedState.Ktx": {
+        "type": "Transitive",
+        "resolved": "1.2.1.13",
+        "contentHash": "BWCI9zYVg3S+qnboY9g6Wf6jygcT1HfCHuphWIJrKEG01CH5LIE/KBirGjQnDEDR0/ZKxc+4yBK9r544xyAzYQ==",
+        "dependencies": {
+          "Xamarin.AndroidX.SavedState": "[1.2.1.13, 1.2.2)",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.AndroidX.Security.SecurityCrypto": {
+        "type": "Transitive",
+        "resolved": "1.1.0.2-alpha06",
+        "contentHash": "+icBMd2Y9SGwmxF+1jb37U2KbDFH6tzRVH6unWWf6qdnMxyJlrrTqLCCxDBmteQzOShNEyDxgFxE88KHHbM+8g==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.7.1.4",
+          "Xamarin.AndroidX.Collection": "1.4.0.5",
+          "Xamarin.Google.Crypto.Tink.Android": "1.13.0.3"
+        }
+      },
+      "Xamarin.AndroidX.SlidingPaneLayout": {
+        "type": "Transitive",
+        "resolved": "1.2.0.17",
+        "contentHash": "0LUQu+gsHWKtaJHoZ63ONJczvQJBB+MI9xe/Sm1ETEyax4wKE5zObdnJpSJAdJMna1k/N/Iz/Ok4t7Ew0Cu1HA==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.CustomView": "1.1.0.28",
+          "Xamarin.AndroidX.Transition": "1.5.1.2",
+          "Xamarin.AndroidX.Window": "1.3.0.3"
+        }
+      },
+      "Xamarin.AndroidX.Startup.StartupRuntime": {
+        "type": "Transitive",
+        "resolved": "1.1.1.17",
+        "contentHash": "F7Lt6iX/3NF2kkaUFxC+J8Nd5f981Oko3gfIMZ3tAcHbWK/xopu6h90WMOCsJ7cDEn4Fb2iqgyHu22EG7Ack1w==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Tracing.Tracing": "1.2.0.7"
+        }
+      },
+      "Xamarin.AndroidX.SwipeRefreshLayout": {
+        "type": "Transitive",
+        "resolved": "1.1.0.24",
+        "contentHash": "GAmdULjxDSlAlKC3fgPZQufWPCbLlLLPzXlZmil49AqVAybG0AqgS1V9os0ia2+M4mgx4Fh5jTIthoQqKEHKhQ==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.Interpolator": "1.0.0.29"
+        }
+      },
+      "Xamarin.AndroidX.Tracing.Tracing": {
+        "type": "Transitive",
+        "resolved": "1.2.0.7",
+        "contentHash": "QiZJJoqEjd9Uua5jqbzl5/Pr74Fn8f90dz5/JVZrBWsoHXzoGoN7IRDTxvhDObHaXyYQ3EAdZllKF58LK1x6Zw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1"
+        }
+      },
+      "Xamarin.AndroidX.Transition": {
+        "type": "Transitive",
+        "resolved": "1.5.1.2",
+        "contentHash": "dQ0CK3kYLanlGpk0KC1rWOMddSZUmrsojDBWeMYW9Y9HQWQ0UBKyQEklPK2UuE4Vyx0b7VCuAYIEZvq4MHy21Q==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.DynamicAnimation": "1.0.0.29",
+          "Xamarin.AndroidX.Fragment": "1.8.3.1"
+        }
+      },
+      "Xamarin.AndroidX.VectorDrawable": {
+        "type": "Transitive",
+        "resolved": "1.2.0.3",
+        "contentHash": "rclxqnEcnR4uhcuqzEDoIDb4o7szV3TuUBN2eypSmR3fy6R3JX9AToVxdKghLs89HqJumOzGYZPM0jOB+Zly4g==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5"
+        }
+      },
+      "Xamarin.AndroidX.VectorDrawable.Animated": {
+        "type": "Transitive",
+        "resolved": "1.2.0.3",
+        "contentHash": "zVK5Q3DyvviPUqFiKU0CAK5yNNFg0is3xxZ85xy0kBMXVxA1obZtfsSL0IFZ5M4Tvgj/zT2geKDpNy+ZYBIYTw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.Interpolator": "1.0.0.29",
+          "Xamarin.AndroidX.VectorDrawable": "1.2.0.3"
+        }
+      },
+      "Xamarin.AndroidX.VersionedParcelable": {
+        "type": "Transitive",
+        "resolved": "1.2.0.7",
+        "contentHash": "IHCXIfnZ/e7iY5bx8a7DIBP2CTFd7psT94UeM/HBaAQQq1ehRUHFJRQVr94iZLDDajB5bWPDmfT/VsNUCLFJKw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Collection": "1.4.3.1"
+        }
+      },
+      "Xamarin.AndroidX.ViewPager": {
+        "type": "Transitive",
+        "resolved": "1.0.0.29",
+        "contentHash": "wxBwXF8z/Ui9TskA6yfqzDcZf6hA9ZKVzllhMwU46J50L8EjM0ba9hRNGa8Z4nynAqY1Rhw4KKjLAJ4TsrNS3w==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.CustomView": "1.1.0.28"
+        }
+      },
+      "Xamarin.AndroidX.ViewPager2": {
+        "type": "Transitive",
+        "resolved": "1.1.0.3",
+        "contentHash": "TF910YyEGJFcMZdxJAanstwd2vdHCKNv/62JF7RxqD4Al5vpmb42TsKi4cHJPtsZ7c7yL9E1fpjRyS/S7uQEcw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Annotation.Experimental": "1.4.1.6",
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.Fragment": "1.8.3.1",
+          "Xamarin.AndroidX.RecyclerView": "1.3.2.8"
+        }
+      },
+      "Xamarin.AndroidX.Window": {
+        "type": "Transitive",
+        "resolved": "1.3.0.3",
+        "contentHash": "QX13JwRNjVCQzYPEaXQsgT0kB9jZE6YWAl+0n2F8tKBFbQx0FUh4KEjTdp7kurl9MIkY6iy7wlReMFrMGF4umg==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.Window.Extensions.Core.Core": "1.0.0.11",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1",
+          "Xamarin.KotlinX.Coroutines.Android": "1.8.1.3"
+        }
+      },
+      "Xamarin.AndroidX.Window.Extensions.Core.Core": {
+        "type": "Transitive",
+        "resolved": "1.0.0.11",
+        "contentHash": "9CPw25xUuzUodQGHT25mrPlO1x+PIJRTDd7zJG7ECCoWPz9aYpniDTiEz3ubyn0iK9eobU/h3YO2HHUkqNE6HA==",
+        "dependencies": {
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.Build.Download": {
+        "type": "Transitive",
+        "resolved": "0.11.4",
+        "contentHash": "u2ROt0h6P7mfs0jbmgvmTrqU/YEpEZcf16xcHa78GSEp7fOZunNtJLCZxooeI1V5p+lrr9kYdg3Pa8FoTbgcXQ=="
+      },
+      "Xamarin.Google.Android.Material": {
+        "type": "Transitive",
+        "resolved": "1.11.0.3",
+        "contentHash": "Vq0EuJdA99sC2/TuK0MgMrKkFOGXQJk6gQAwE3XHLzXriVgTOAPj7ruzl5RNmWOWQHoFnLKfGigy72uC821YWg==",
+        "dependencies": {
+          "Xamarin.AndroidX.Activity": "1.9.2.1",
+          "Xamarin.AndroidX.Annotation": "1.8.2.1",
+          "Xamarin.AndroidX.Annotation.Experimental": "1.4.1.6",
+          "Xamarin.AndroidX.AppCompat": "1.7.0.3",
+          "Xamarin.AndroidX.CardView": "1.0.0.31",
+          "Xamarin.AndroidX.ConstraintLayout": "2.1.4.16",
+          "Xamarin.AndroidX.CoordinatorLayout": "1.2.0.17",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.DrawerLayout": "1.2.0.13",
+          "Xamarin.AndroidX.DynamicAnimation": "1.0.0.29",
+          "Xamarin.AndroidX.Fragment": "1.8.3.1",
+          "Xamarin.AndroidX.Lifecycle.Runtime": "2.8.5.1",
+          "Xamarin.AndroidX.RecyclerView": "1.3.2.8",
+          "Xamarin.AndroidX.ResourceInspection.Annotation": "1.0.1.17",
+          "Xamarin.AndroidX.Transition": "1.5.1.2",
+          "Xamarin.AndroidX.VectorDrawable": "1.2.0.3",
+          "Xamarin.AndroidX.ViewPager2": "1.1.0.3",
+          "Xamarin.Google.ErrorProne.Annotations": "2.30.0.1"
+        }
+      },
+      "Xamarin.Google.Code.FindBugs.JSR305": {
+        "type": "Transitive",
+        "resolved": "3.0.2.16",
+        "contentHash": "S23hFqnJa+DBiBoW7gkmrgbF8kLj60HHzcxh2A8rkU6/Y6mPzUPox09/i676QYVDLfdHeaDIerC+t/3D94Z2HA=="
+      },
+      "Xamarin.Google.Crypto.Tink.Android": {
+        "type": "Transitive",
+        "resolved": "1.15.0.1",
+        "contentHash": "gWTttwbZQqXvj0kWM5df51DaREp0YrbhUZecjg0zs5/PZ5acXL90mt1sww7katPLSvVejq3viEmXUvOxv3jEuA==",
+        "dependencies": {
+          "GoogleGson": "2.11.0.3",
+          "Xamarin.AndroidX.Annotation.Jvm": "1.8.2.1",
+          "Xamarin.Google.Code.FindBugs.JSR305": "3.0.2.16",
+          "Xamarin.Google.ErrorProne.Annotations": "2.30.0.1"
+        }
+      },
+      "Xamarin.Google.ErrorProne.Annotations": {
+        "type": "Transitive",
+        "resolved": "2.30.0.1",
+        "contentHash": "3dBIjRvW03VjUqyZKoXV4MjiFoRAsErEAFpa434ktevNCHCfjcaqlebCpr4qWaWiC8DZjjSAbTrLFz4HtEFnAg=="
+      },
+      "Xamarin.Google.Guava.ListenableFuture": {
+        "type": "Transitive",
+        "resolved": "1.0.0.24",
+        "contentHash": "qn7LH3vHkMR73GxSJdp7dFwuunjzW3goLOFrXmrsDYAa5Cc5l/PQDscqRL+onPb73p8tZo1QvPNScdR91cTeXg=="
+      },
+      "Xamarin.GooglePlayServices.Base": {
+        "type": "Transitive",
+        "resolved": "118.5.0.2",
+        "contentHash": "0AEDf+TKW7Q//HxyS/9RPuCk6fJfq0Js2iiLBkvumZfbe57gFNnkoJEQXNw8DTbJqjEEpHapjEAGzh3UoQGxeg==",
+        "dependencies": {
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.Fragment": "1.8.3.1",
+          "Xamarin.Build.Download": "0.11.4",
+          "Xamarin.GooglePlayServices.Basement": "118.4.0.2",
+          "Xamarin.GooglePlayServices.Tasks": "118.2.0.2"
+        }
+      },
+      "Xamarin.GooglePlayServices.Basement": {
+        "type": "Transitive",
+        "resolved": "118.4.0.2",
+        "contentHash": "UpwAhcBs2fdveLwMbazNJ+zrMwyeiE9KwKl+aaim81/FtUZLEuYgmli+7psP1DtyxUKlJvNEllRKdA9V3AF7iw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Collection": "1.4.3.1",
+          "Xamarin.AndroidX.Core": "1.13.1.5",
+          "Xamarin.AndroidX.Fragment": "1.8.3.1",
+          "Xamarin.Build.Download": "0.11.4"
+        }
+      },
+      "Xamarin.GooglePlayServices.Maps": {
+        "type": "Transitive",
+        "resolved": "119.0.0.2",
+        "contentHash": "U5pSjQ2XxiVs9kCs/mdWRCDDTKsx0ggFXZQvISsiC1dbjidztWJKJk/lAGutiG6Ei9TqVpqWt/WCXzMP2f0YCw==",
+        "dependencies": {
+          "Xamarin.AndroidX.Fragment": "1.8.3.1",
+          "Xamarin.Build.Download": "0.11.4",
+          "Xamarin.GooglePlayServices.Base": "118.5.0.2",
+          "Xamarin.GooglePlayServices.Basement": "118.4.0.2",
+          "Xamarin.GooglePlayServices.Tasks": "118.2.0.2"
+        }
+      },
+      "Xamarin.GooglePlayServices.Tasks": {
+        "type": "Transitive",
+        "resolved": "118.2.0.2",
+        "contentHash": "TeRLg7xe+F5t2T5xzIBYzQkfd4Xsj68kcTZj7W7BnZKkGzx9iS29hiDQCft4Qtsu2Zj1ElBRh68VZ6VcHoUtrA==",
+        "dependencies": {
+          "Xamarin.Build.Download": "0.11.4",
+          "Xamarin.GooglePlayServices.Basement": "118.4.0.2"
+        }
+      },
+      "Xamarin.Jetbrains.Annotations": {
+        "type": "Transitive",
+        "resolved": "24.1.0.8",
+        "contentHash": "eY7msmiIPk+5Kt5h/HjJ8uC/qqxFrpQ/H2M6EVSmWXW10l4qj1tN2wwiIyB2PKYNXAu9FI/OFcnBwkO2ImBK/Q=="
+      },
+      "Xamarin.Kotlin.StdLib": {
+        "type": "Transitive",
+        "resolved": "2.0.10.1",
+        "contentHash": "Ik7W9GTPjD0ajV1VCiOwwhDvgLrFY6V5PxQnA7cJej7vgn2EG7wPOMQAn2P+qEBhjxFlm2MgkQN4l66CcjLCeA==",
+        "dependencies": {
+          "Xamarin.Jetbrains.Annotations": "24.1.0.8"
+        }
+      },
+      "Xamarin.Kotlin.StdLib.Common": {
+        "type": "Transitive",
+        "resolved": "2.0.10.1",
+        "contentHash": "9OwAvxkfV6RiaAwZfSPrk4OkEaQVWSA/UvCCiwyiMiD+2F5dnHLiS4ClJ15LJoLUk1yPAEK9J/7f5rpTwPmFwQ==",
+        "dependencies": {
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.KotlinX.AtomicFU": {
+        "type": "Transitive",
+        "resolved": "0.25.0.3",
+        "contentHash": "r3A/sSEmIv6OVEFO0cp6hN7A9CBUPbuw41QFMk1wokTu9+SiXNqXs64PLgDgqrskqa52EI8aQy4bKmHfqL5iXw==",
+        "dependencies": {
+          "Xamarin.KotlinX.AtomicFU.Jvm": "0.25.0.3"
+        }
+      },
+      "Xamarin.KotlinX.AtomicFU.Jvm": {
+        "type": "Transitive",
+        "resolved": "0.25.0.3",
+        "contentHash": "x5IsWrShx+Iqhb7/NAfKKgkgdn02RtxZ2bDiDCx7or9aXhrymMMkQpQvFfVe3cCqVr2DtANq09imys8dVbZpnA==",
+        "dependencies": {
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.KotlinX.Coroutines.Android": {
+        "type": "Transitive",
+        "resolved": "1.8.1.3",
+        "contentHash": "1HlfAAg+oCmA5wNGbS3Vq1jY50boHg8b0HKmRA6oKLnpK5lnSPlKY92KPE2BlSFS86qiJP+MZSFCB0LmdhtjRg==",
+        "dependencies": {
+          "Xamarin.Kotlin.StdLib": "2.0.10.1",
+          "Xamarin.KotlinX.Coroutines.Core.Jvm": "1.8.1.3"
+        }
+      },
+      "Xamarin.KotlinX.Coroutines.Core": {
+        "type": "Transitive",
+        "resolved": "1.8.1.3",
+        "contentHash": "uUncouqPbBxN9jfLr4rNvAmJfS04hNg1ugeMTbQ3dryd9PbJurRKGomaaNeiPgz3gF1qSqFIEcp3yxZE/G/neA==",
+        "dependencies": {
+          "Xamarin.KotlinX.Coroutines.Core.Jvm": "1.8.1.3"
+        }
+      },
+      "Xamarin.KotlinX.Coroutines.Core.Jvm": {
+        "type": "Transitive",
+        "resolved": "1.8.1.3",
+        "contentHash": "b2QMyZM27KKSkSIGQrFjtPf7pLIdiOdE8iSZEcapYY1Idy4pHMKDSicJ7hQ/K7jy1hV+Uua/PpYtttPONJuL5Q==",
+        "dependencies": {
+          "Xamarin.Jetbrains.Annotations": "24.1.0.8",
+          "Xamarin.Kotlin.StdLib": "2.0.10.1"
+        }
+      },
+      "Xamarin.KotlinX.Serialization.Core": {
+        "type": "Transitive",
+        "resolved": "1.7.1.3",
+        "contentHash": "ix/8XuwNt0j74jCQiAxxOSYaTsIlwqyWKRPsIcNkcN3UGncMwspeQYUR1Vmq6ZelKqkFDynfdiGxY6QjKwCYbw==",
+        "dependencies": {
+          "Xamarin.KotlinX.Serialization.Core.Jvm": "1.7.1.3"
+        }
+      },
+      "Xamarin.KotlinX.Serialization.Core.Jvm": {
+        "type": "Transitive",
+        "resolved": "1.7.1.3",
+        "contentHash": "6cY/lGoOKvnLDUDmoEuadO9pusY6UrnbbTn0k+VpCgm0gvOrFZ3aynt20mrrPi4/bpII9L7MotWK3NPITU4UcA==",
+        "dependencies": {
+          "Xamarin.Kotlin.StdLib": "2.0.10.1",
+          "Xamarin.Kotlin.StdLib.Common": "2.0.10.1"
+        }
+      }
+    },
+    "net10.0-android36.0/android-arm64": {},
+    "net10.0-android36.0/iossimulator-x64": {},
+    "net10.0-android36.0/maccatalyst-x64": {},
+    "net10.0-android36.0/win-x64": {},
+    "net10.0-ios18.5": {
+      "CommunityToolkit.Maui": {
+        "type": "Direct",
+        "requested": "[9.1.1, )",
+        "resolved": "9.1.1",
+        "contentHash": "vDFIMhs/NRKEaHrrxq3AR3qEnfc0L6nno3/ZEFRUctDdwcYKNfmx8aof1lj8++dX+56c282SLHyuCnN6eH2Mpg==",
+        "dependencies": {
+          "CommunityToolkit.Maui.Core": "9.1.1",
+          "Microsoft.Maui.Controls": "8.0.71"
+        }
+      },
+      "CommunityToolkit.Mvvm": {
+        "type": "Direct",
+        "requested": "[8.3.2, )",
+        "resolved": "8.3.2",
+        "contentHash": "m8EolE1A0Updj68WTsZSGI6VWb6mUqHPh7QFo0kt7+JPhYMNXRS1ch8TS/oITAdcxTLrwMOp3ku1KjeG1/Zdpg=="
+      },
+      "Google.Protobuf": {
+        "type": "Direct",
+        "requested": "[3.29.3, )",
+        "resolved": "3.29.3",
+        "contentHash": "t7nZFFUFwigCwZ+nIXHDLweXvwIpsOXi+P7J7smPT/QjI3EKxnCzTQOhBqyEh6XEzc/pNH+bCFOOSjatrPt6Tw=="
+      },
+      "Grpc.Net.Client": {
+        "type": "Direct",
+        "requested": "[2.67.0, )",
+        "resolved": "2.67.0",
+        "contentHash": "ofTjJQfegWkVlk5R4k/LlwpcucpsBzntygd4iAeuKd/eLMkmBWoXN+xcjYJ5IibAahRpIJU461jABZvT6E9dwA==",
+        "dependencies": {
+          "Grpc.Net.Common": "2.67.0",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.0"
+        }
+      },
+      "Grpc.Tools": {
+        "type": "Direct",
+        "requested": "[2.69.0, )",
+        "resolved": "2.69.0",
+        "contentHash": "W5hW4R1h19FCzKb8ToqIJMI5YxnQqGmREEpV8E5XkfCtLPIK5MSHztwQ8gZUfG8qu9fg5MhItjzyPRqQBjnrbA=="
+      },
+      "IdentityModel": {
+        "type": "Direct",
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "to99aLL5Gev1GOb2gUao/UZXT/uXMyjEmHPNrf/vJI2HBD1LMCTeC4SBCe/cqMIB12V9v+eSieq7ff0lju9pOQ=="
+      },
+      "IdentityModel.OidcClient": {
+        "type": "Direct",
+        "requested": "[6.0.0, )",
+        "resolved": "6.0.0",
+        "contentHash": "m2PZbjeG3nXIQ72NLZvFz3FLFk7GmqLnxO/ifUvaTEE3BDZXp7DXAdjDP6TQKaL20+wDnej2ffA1Yh3vVcJOkA==",
+        "dependencies": {
+          "IdentityModel": "7.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
+        }
+      },
+      "Microsoft.Extensions.Logging.Debug": {
+        "type": "Direct",
+        "requested": "[9.0.0, )",
+        "resolved": "9.0.0",
+        "contentHash": "4wGlHsrLhYjLw4sFkfRixu2w4DK7dv60OjbvgbLGhUJk0eUPxYHhnszZ/P18nnAkfrPryvtOJ3ZTVev0kpqM6A==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Logging": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0"
+        }
+      },
+      "Microsoft.Maui.Controls": {
+        "type": "Direct",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "S1EvHfKk060Q6gsf/E60YoZQhFZkfpV0ccYC+b8NJfc8P1iKP52KNEwNY6VxP8Y2Cw8ZfkGNRWPAjq+cb7EaPA==",
+        "dependencies": {
+          "Microsoft.Maui.Controls.Build.Tasks": "9.0.30",
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Controls.Xaml": "9.0.30",
+          "Microsoft.Maui.Resizetizer": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Compatibility": {
+        "type": "Direct",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "6Y4LwwCyw59tCb4i6ZAzpuPYm+14qXxtC0fVK/vBQe+08/dYst7/zmnRqUwqNxY8dUdypGGUyAy3hdQ00SRNpQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Controls.Xaml": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Maps": {
+        "type": "Direct",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "bBqJhxDjWGDZgAkZpmNXXl9GT66fu742v3uMvD6kTo4rbZreWoeC+rm8dP8cHNvFKaciFiRPmYhIDrGXJxc2SQ==",
+        "dependencies": {
+          "Microsoft.Maui.Maps": "9.0.30"
+        }
+      },
+      "Microsoft.NET.ILLink.Tasks": {
+        "type": "Direct",
+        "requested": "[10.0.0-rc.1.25451.107, )",
+        "resolved": "10.0.0-rc.1.25451.107",
+        "contentHash": "MnPx3NJT7pLBfOgIVs1/IXL8n5sEErhaJu14TQujaXTMwzv9I3v+nzPqUrUuEunaHeeH10n/3oZBn/Xg4trP0g=="
+      },
+      "CommunityToolkit.Maui.Core": {
+        "type": "Transitive",
+        "resolved": "9.1.1",
+        "contentHash": "2O5bgBnwYLKXUMSA4a0hd3ildtr9t5Rw109y7Lz0udnX4C9JrW8Xi1mLDuUcNmK+U37gulhJGLb2tCMc+cbo3w==",
+        "dependencies": {
+          "Microsoft.Maui.Core": "8.0.71",
+          "Microsoft.Maui.Essentials": "8.0.71"
+        }
+      },
+      "Grpc.Core.Api": {
+        "type": "Transitive",
+        "resolved": "2.67.0",
+        "contentHash": "cL1/2f8kc8lsAGNdfCU25deedXVehhLA6GXKLLN4hAWx16XN7BmjYn3gFU+FBpir5yJynvDTHEypr3Tl0j7x/Q=="
+      },
+      "Grpc.Net.Common": {
+        "type": "Transitive",
+        "resolved": "2.67.0",
+        "contentHash": "gazn1cD2Eol0/W5ZJRV4PYbNrxJ9oMs8pGYux5S9E4MymClvl7aqYSmpqgmWAUWvziRqK9K+yt3cjCMfQ3x/5A==",
+        "dependencies": {
+          "Grpc.Core.Api": "2.67.0"
+        }
+      },
+      "Microsoft.Extensions.Configuration": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "YIMO9T3JL8MeEXgVozKt2v79hquo/EFtnY0vgxmLnUvk1Rei/halI7kOWZL2RBeV9FMGzgM9LZA8CVaNwFMaNA==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Primitives": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Configuration.Abstractions": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "lqvd7W3FGKUO1+ZoUEMaZ5XDJeWvjpy2/M/ptCGz3tXLD4HWVaSzjufsAsjemasBEg+2SxXVtYVvGt5r2nKDlg==",
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "MCPrg7v3QgNMr0vX4vzRXvkNGgLg8vKWX0nKCWUxu2uPyMsaRgiRc1tHBnbTcfJMhMKj2slE/j2M9oGkd25DNw==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "+6f2qv2a3dLwd5w6JanPIPs47CxRbnk+ZocMJUhv9NxP88VlOcJYZs9jY+MYSjxvady08bUZn6qgiNh7DadGgg=="
+      },
+      "Microsoft.Extensions.Logging": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "crjWyORoug0kK7RSNJBTeSE6VX8IQgLf3nUpTB9m62bPXp/tzbnOsnbe8TXEG0AASNaKZddnpHKw7fET8E++Pg==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Options": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "g0UfujELzlLbHoVG8kPKVBaW470Ewi+jnptGS9KUi6jcb+k2StujtK3m26DFSGGwQ/+bVgZfsWqNzlP6YOejvw==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Options": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "y2146b3jrPI3Q0lokKXdKLpmXqakYbDIPDV6r3M8SqvSf45WwOTzkyfDpxnZXJsJQEpAsAqjUq5Pu8RCJMjubg==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Primitives": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Primitives": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "N3qEBzmLMYiASUlKxxFIISP4AiwuPTHF5uCh+2CWSwwzAJiIYx0kBJsS30cp1nvhSySFAVi30jecD307jV+8Kg=="
+      },
+      "Microsoft.Maui.Controls.Build.Tasks": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "hpb9mB3FLMK0UK6euFvkq8X0TEJ0YDWBV2kot5ryrvCBSNyonHVEQVMo0m7Uzzz2fAdqdZzRNV9WNgB6X/Jb4Q==",
+        "dependencies": {
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Controls.Xaml": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Core": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "P2Z45cciD/2yqia/3tm9QCclVhCISdBQfHz4zvpTQslEPZOuxzw06stvfrKYSgGlnJMBDzNMQ70FC/hybkB4kg==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Microsoft.Extensions.Logging": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Maui.Core": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Xaml": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "mQHeyk+Dj7L2vmDXPeMjwLD7dUeqCelxLTPV5pOg+v3pVgQFwYZPoOMPVflS6Qtu+o1BlOZ5XNQjtEEUJ4yShg==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Core": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Core": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "fAt+rtONvnar9IPfj3qmF4UgWAaoB3UkvF1QIlRc9/dwYxSVRyRzx4SfnjwQ0kM160z03IDOK45D3pgDiRRNcw==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Microsoft.Extensions.Logging": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Maui.Essentials": "9.0.30",
+          "Microsoft.Maui.Graphics": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Essentials": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "0jIHgPw+VeQpipYoz0WpTGc6EoAD/i80CgAq9GewOHfWSF3pD2w9MwyAkyNf2Fx8gef37WNJCv/wtRcr96nd2w==",
+        "dependencies": {
+          "Microsoft.Maui.Graphics": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Graphics": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "YnlWLhi0SFuWY1GxUGZs96uHPJdaGK86udh2A/wysTYernzF7bmKNJnPvG17QDgdMuqELGC7fxAkqRuHEciY/A=="
+      },
+      "Microsoft.Maui.Maps": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "2kG+ViQ6FoHHoD10IYJCgPD1BqO4dkaasxktMVzvZqfuDapG81JHkCHXsLwfqxyz/PEVTj/GumIWVzXjuwzFaw=="
+      },
+      "Microsoft.Maui.Resizetizer": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "rJtkoRYWmkBPVxpvrWYvACYfrCqW98ilio6M5wUqu8X7AzcxVp1R17b5XLgFUyJKkmolyqibO06C6wOV3kOOig=="
+      }
+    },
+    "net10.0-ios18.5/android-arm64": {},
+    "net10.0-ios18.5/iossimulator-x64": {},
+    "net10.0-ios18.5/maccatalyst-x64": {},
+    "net10.0-ios18.5/win-x64": {},
+    "net10.0-maccatalyst18.5": {
+      "CommunityToolkit.Maui": {
+        "type": "Direct",
+        "requested": "[9.1.1, )",
+        "resolved": "9.1.1",
+        "contentHash": "vDFIMhs/NRKEaHrrxq3AR3qEnfc0L6nno3/ZEFRUctDdwcYKNfmx8aof1lj8++dX+56c282SLHyuCnN6eH2Mpg==",
+        "dependencies": {
+          "CommunityToolkit.Maui.Core": "9.1.1",
+          "Microsoft.Maui.Controls": "8.0.71"
+        }
+      },
+      "CommunityToolkit.Mvvm": {
+        "type": "Direct",
+        "requested": "[8.3.2, )",
+        "resolved": "8.3.2",
+        "contentHash": "m8EolE1A0Updj68WTsZSGI6VWb6mUqHPh7QFo0kt7+JPhYMNXRS1ch8TS/oITAdcxTLrwMOp3ku1KjeG1/Zdpg=="
+      },
+      "Google.Protobuf": {
+        "type": "Direct",
+        "requested": "[3.29.3, )",
+        "resolved": "3.29.3",
+        "contentHash": "t7nZFFUFwigCwZ+nIXHDLweXvwIpsOXi+P7J7smPT/QjI3EKxnCzTQOhBqyEh6XEzc/pNH+bCFOOSjatrPt6Tw=="
+      },
+      "Grpc.Net.Client": {
+        "type": "Direct",
+        "requested": "[2.67.0, )",
+        "resolved": "2.67.0",
+        "contentHash": "ofTjJQfegWkVlk5R4k/LlwpcucpsBzntygd4iAeuKd/eLMkmBWoXN+xcjYJ5IibAahRpIJU461jABZvT6E9dwA==",
+        "dependencies": {
+          "Grpc.Net.Common": "2.67.0",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.0"
+        }
+      },
+      "Grpc.Tools": {
+        "type": "Direct",
+        "requested": "[2.69.0, )",
+        "resolved": "2.69.0",
+        "contentHash": "W5hW4R1h19FCzKb8ToqIJMI5YxnQqGmREEpV8E5XkfCtLPIK5MSHztwQ8gZUfG8qu9fg5MhItjzyPRqQBjnrbA=="
+      },
+      "IdentityModel": {
+        "type": "Direct",
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "to99aLL5Gev1GOb2gUao/UZXT/uXMyjEmHPNrf/vJI2HBD1LMCTeC4SBCe/cqMIB12V9v+eSieq7ff0lju9pOQ=="
+      },
+      "IdentityModel.OidcClient": {
+        "type": "Direct",
+        "requested": "[6.0.0, )",
+        "resolved": "6.0.0",
+        "contentHash": "m2PZbjeG3nXIQ72NLZvFz3FLFk7GmqLnxO/ifUvaTEE3BDZXp7DXAdjDP6TQKaL20+wDnej2ffA1Yh3vVcJOkA==",
+        "dependencies": {
+          "IdentityModel": "7.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
+        }
+      },
+      "Microsoft.Extensions.Logging.Debug": {
+        "type": "Direct",
+        "requested": "[9.0.0, )",
+        "resolved": "9.0.0",
+        "contentHash": "4wGlHsrLhYjLw4sFkfRixu2w4DK7dv60OjbvgbLGhUJk0eUPxYHhnszZ/P18nnAkfrPryvtOJ3ZTVev0kpqM6A==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Logging": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0"
+        }
+      },
+      "Microsoft.Maui.Controls": {
+        "type": "Direct",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "S1EvHfKk060Q6gsf/E60YoZQhFZkfpV0ccYC+b8NJfc8P1iKP52KNEwNY6VxP8Y2Cw8ZfkGNRWPAjq+cb7EaPA==",
+        "dependencies": {
+          "Microsoft.Maui.Controls.Build.Tasks": "9.0.30",
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Controls.Xaml": "9.0.30",
+          "Microsoft.Maui.Resizetizer": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Compatibility": {
+        "type": "Direct",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "6Y4LwwCyw59tCb4i6ZAzpuPYm+14qXxtC0fVK/vBQe+08/dYst7/zmnRqUwqNxY8dUdypGGUyAy3hdQ00SRNpQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Controls.Xaml": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Maps": {
+        "type": "Direct",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "bBqJhxDjWGDZgAkZpmNXXl9GT66fu742v3uMvD6kTo4rbZreWoeC+rm8dP8cHNvFKaciFiRPmYhIDrGXJxc2SQ==",
+        "dependencies": {
+          "Microsoft.Maui.Maps": "9.0.30"
+        }
+      },
+      "Microsoft.NET.ILLink.Tasks": {
+        "type": "Direct",
+        "requested": "[10.0.0-rc.1.25451.107, )",
+        "resolved": "10.0.0-rc.1.25451.107",
+        "contentHash": "MnPx3NJT7pLBfOgIVs1/IXL8n5sEErhaJu14TQujaXTMwzv9I3v+nzPqUrUuEunaHeeH10n/3oZBn/Xg4trP0g=="
+      },
+      "CommunityToolkit.Maui.Core": {
+        "type": "Transitive",
+        "resolved": "9.1.1",
+        "contentHash": "2O5bgBnwYLKXUMSA4a0hd3ildtr9t5Rw109y7Lz0udnX4C9JrW8Xi1mLDuUcNmK+U37gulhJGLb2tCMc+cbo3w==",
+        "dependencies": {
+          "Microsoft.Maui.Core": "8.0.71",
+          "Microsoft.Maui.Essentials": "8.0.71"
+        }
+      },
+      "Grpc.Core.Api": {
+        "type": "Transitive",
+        "resolved": "2.67.0",
+        "contentHash": "cL1/2f8kc8lsAGNdfCU25deedXVehhLA6GXKLLN4hAWx16XN7BmjYn3gFU+FBpir5yJynvDTHEypr3Tl0j7x/Q=="
+      },
+      "Grpc.Net.Common": {
+        "type": "Transitive",
+        "resolved": "2.67.0",
+        "contentHash": "gazn1cD2Eol0/W5ZJRV4PYbNrxJ9oMs8pGYux5S9E4MymClvl7aqYSmpqgmWAUWvziRqK9K+yt3cjCMfQ3x/5A==",
+        "dependencies": {
+          "Grpc.Core.Api": "2.67.0"
+        }
+      },
+      "Microsoft.Extensions.Configuration": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "YIMO9T3JL8MeEXgVozKt2v79hquo/EFtnY0vgxmLnUvk1Rei/halI7kOWZL2RBeV9FMGzgM9LZA8CVaNwFMaNA==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Primitives": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Configuration.Abstractions": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "lqvd7W3FGKUO1+ZoUEMaZ5XDJeWvjpy2/M/ptCGz3tXLD4HWVaSzjufsAsjemasBEg+2SxXVtYVvGt5r2nKDlg==",
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "MCPrg7v3QgNMr0vX4vzRXvkNGgLg8vKWX0nKCWUxu2uPyMsaRgiRc1tHBnbTcfJMhMKj2slE/j2M9oGkd25DNw==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "+6f2qv2a3dLwd5w6JanPIPs47CxRbnk+ZocMJUhv9NxP88VlOcJYZs9jY+MYSjxvady08bUZn6qgiNh7DadGgg=="
+      },
+      "Microsoft.Extensions.Logging": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "crjWyORoug0kK7RSNJBTeSE6VX8IQgLf3nUpTB9m62bPXp/tzbnOsnbe8TXEG0AASNaKZddnpHKw7fET8E++Pg==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Options": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "g0UfujELzlLbHoVG8kPKVBaW470Ewi+jnptGS9KUi6jcb+k2StujtK3m26DFSGGwQ/+bVgZfsWqNzlP6YOejvw==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Options": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "y2146b3jrPI3Q0lokKXdKLpmXqakYbDIPDV6r3M8SqvSf45WwOTzkyfDpxnZXJsJQEpAsAqjUq5Pu8RCJMjubg==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Primitives": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Primitives": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "N3qEBzmLMYiASUlKxxFIISP4AiwuPTHF5uCh+2CWSwwzAJiIYx0kBJsS30cp1nvhSySFAVi30jecD307jV+8Kg=="
+      },
+      "Microsoft.Maui.Controls.Build.Tasks": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "hpb9mB3FLMK0UK6euFvkq8X0TEJ0YDWBV2kot5ryrvCBSNyonHVEQVMo0m7Uzzz2fAdqdZzRNV9WNgB6X/Jb4Q==",
+        "dependencies": {
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Controls.Xaml": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Core": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "P2Z45cciD/2yqia/3tm9QCclVhCISdBQfHz4zvpTQslEPZOuxzw06stvfrKYSgGlnJMBDzNMQ70FC/hybkB4kg==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Microsoft.Extensions.Logging": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Maui.Core": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Xaml": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "mQHeyk+Dj7L2vmDXPeMjwLD7dUeqCelxLTPV5pOg+v3pVgQFwYZPoOMPVflS6Qtu+o1BlOZ5XNQjtEEUJ4yShg==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Core": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Core": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "fAt+rtONvnar9IPfj3qmF4UgWAaoB3UkvF1QIlRc9/dwYxSVRyRzx4SfnjwQ0kM160z03IDOK45D3pgDiRRNcw==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Microsoft.Extensions.Logging": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Maui.Essentials": "9.0.30",
+          "Microsoft.Maui.Graphics": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Essentials": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "0jIHgPw+VeQpipYoz0WpTGc6EoAD/i80CgAq9GewOHfWSF3pD2w9MwyAkyNf2Fx8gef37WNJCv/wtRcr96nd2w==",
+        "dependencies": {
+          "Microsoft.Maui.Graphics": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Graphics": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "YnlWLhi0SFuWY1GxUGZs96uHPJdaGK86udh2A/wysTYernzF7bmKNJnPvG17QDgdMuqELGC7fxAkqRuHEciY/A=="
+      },
+      "Microsoft.Maui.Maps": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "2kG+ViQ6FoHHoD10IYJCgPD1BqO4dkaasxktMVzvZqfuDapG81JHkCHXsLwfqxyz/PEVTj/GumIWVzXjuwzFaw=="
+      },
+      "Microsoft.Maui.Resizetizer": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "rJtkoRYWmkBPVxpvrWYvACYfrCqW98ilio6M5wUqu8X7AzcxVp1R17b5XLgFUyJKkmolyqibO06C6wOV3kOOig=="
+      }
+    },
+    "net10.0-maccatalyst18.5/android-arm64": {},
+    "net10.0-maccatalyst18.5/iossimulator-x64": {},
+    "net10.0-maccatalyst18.5/maccatalyst-x64": {},
+    "net10.0-maccatalyst18.5/win-x64": {},
+    "net10.0-windows10.0.19041": {
+      "CommunityToolkit.Maui": {
+        "type": "Direct",
+        "requested": "[9.1.1, )",
+        "resolved": "9.1.1",
+        "contentHash": "vDFIMhs/NRKEaHrrxq3AR3qEnfc0L6nno3/ZEFRUctDdwcYKNfmx8aof1lj8++dX+56c282SLHyuCnN6eH2Mpg==",
+        "dependencies": {
+          "CommunityToolkit.Maui.Core": "9.1.1",
+          "Microsoft.Maui.Controls": "8.0.71"
+        }
+      },
+      "CommunityToolkit.Mvvm": {
+        "type": "Direct",
+        "requested": "[8.3.2, )",
+        "resolved": "8.3.2",
+        "contentHash": "m8EolE1A0Updj68WTsZSGI6VWb6mUqHPh7QFo0kt7+JPhYMNXRS1ch8TS/oITAdcxTLrwMOp3ku1KjeG1/Zdpg=="
+      },
+      "Google.Protobuf": {
+        "type": "Direct",
+        "requested": "[3.29.3, )",
+        "resolved": "3.29.3",
+        "contentHash": "t7nZFFUFwigCwZ+nIXHDLweXvwIpsOXi+P7J7smPT/QjI3EKxnCzTQOhBqyEh6XEzc/pNH+bCFOOSjatrPt6Tw=="
+      },
+      "Grpc.Net.Client": {
+        "type": "Direct",
+        "requested": "[2.67.0, )",
+        "resolved": "2.67.0",
+        "contentHash": "ofTjJQfegWkVlk5R4k/LlwpcucpsBzntygd4iAeuKd/eLMkmBWoXN+xcjYJ5IibAahRpIJU461jABZvT6E9dwA==",
+        "dependencies": {
+          "Grpc.Net.Common": "2.67.0",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.0"
+        }
+      },
+      "Grpc.Tools": {
+        "type": "Direct",
+        "requested": "[2.69.0, )",
+        "resolved": "2.69.0",
+        "contentHash": "W5hW4R1h19FCzKb8ToqIJMI5YxnQqGmREEpV8E5XkfCtLPIK5MSHztwQ8gZUfG8qu9fg5MhItjzyPRqQBjnrbA=="
+      },
+      "IdentityModel": {
+        "type": "Direct",
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "to99aLL5Gev1GOb2gUao/UZXT/uXMyjEmHPNrf/vJI2HBD1LMCTeC4SBCe/cqMIB12V9v+eSieq7ff0lju9pOQ=="
+      },
+      "IdentityModel.OidcClient": {
+        "type": "Direct",
+        "requested": "[6.0.0, )",
+        "resolved": "6.0.0",
+        "contentHash": "m2PZbjeG3nXIQ72NLZvFz3FLFk7GmqLnxO/ifUvaTEE3BDZXp7DXAdjDP6TQKaL20+wDnej2ffA1Yh3vVcJOkA==",
+        "dependencies": {
+          "IdentityModel": "7.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
+        }
+      },
+      "Microsoft.Extensions.Logging.Debug": {
+        "type": "Direct",
+        "requested": "[9.0.0, )",
+        "resolved": "9.0.0",
+        "contentHash": "4wGlHsrLhYjLw4sFkfRixu2w4DK7dv60OjbvgbLGhUJk0eUPxYHhnszZ/P18nnAkfrPryvtOJ3ZTVev0kpqM6A==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Logging": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0"
+        }
+      },
+      "Microsoft.Maui.Controls": {
+        "type": "Direct",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "S1EvHfKk060Q6gsf/E60YoZQhFZkfpV0ccYC+b8NJfc8P1iKP52KNEwNY6VxP8Y2Cw8ZfkGNRWPAjq+cb7EaPA==",
+        "dependencies": {
+          "Microsoft.Maui.Controls.Build.Tasks": "9.0.30",
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Controls.Xaml": "9.0.30",
+          "Microsoft.Maui.Resizetizer": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Compatibility": {
+        "type": "Direct",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "6Y4LwwCyw59tCb4i6ZAzpuPYm+14qXxtC0fVK/vBQe+08/dYst7/zmnRqUwqNxY8dUdypGGUyAy3hdQ00SRNpQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Controls.Xaml": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Maps": {
+        "type": "Direct",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "bBqJhxDjWGDZgAkZpmNXXl9GT66fu742v3uMvD6kTo4rbZreWoeC+rm8dP8cHNvFKaciFiRPmYhIDrGXJxc2SQ==",
+        "dependencies": {
+          "Microsoft.Maui.Maps": "9.0.30"
+        }
+      },
+      "CommunityToolkit.Maui.Core": {
+        "type": "Transitive",
+        "resolved": "9.1.1",
+        "contentHash": "2O5bgBnwYLKXUMSA4a0hd3ildtr9t5Rw109y7Lz0udnX4C9JrW8Xi1mLDuUcNmK+U37gulhJGLb2tCMc+cbo3w==",
+        "dependencies": {
+          "Microsoft.Maui.Core": "8.0.71",
+          "Microsoft.Maui.Essentials": "8.0.71",
+          "System.Speech": "8.0.0"
+        }
+      },
+      "Grpc.Core.Api": {
+        "type": "Transitive",
+        "resolved": "2.67.0",
+        "contentHash": "cL1/2f8kc8lsAGNdfCU25deedXVehhLA6GXKLLN4hAWx16XN7BmjYn3gFU+FBpir5yJynvDTHEypr3Tl0j7x/Q=="
+      },
+      "Grpc.Net.Common": {
+        "type": "Transitive",
+        "resolved": "2.67.0",
+        "contentHash": "gazn1cD2Eol0/W5ZJRV4PYbNrxJ9oMs8pGYux5S9E4MymClvl7aqYSmpqgmWAUWvziRqK9K+yt3cjCMfQ3x/5A==",
+        "dependencies": {
+          "Grpc.Core.Api": "2.67.0"
+        }
+      },
+      "Microsoft.Extensions.Configuration": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "YIMO9T3JL8MeEXgVozKt2v79hquo/EFtnY0vgxmLnUvk1Rei/halI7kOWZL2RBeV9FMGzgM9LZA8CVaNwFMaNA==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Primitives": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Configuration.Abstractions": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "lqvd7W3FGKUO1+ZoUEMaZ5XDJeWvjpy2/M/ptCGz3tXLD4HWVaSzjufsAsjemasBEg+2SxXVtYVvGt5r2nKDlg==",
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "MCPrg7v3QgNMr0vX4vzRXvkNGgLg8vKWX0nKCWUxu2uPyMsaRgiRc1tHBnbTcfJMhMKj2slE/j2M9oGkd25DNw==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "+6f2qv2a3dLwd5w6JanPIPs47CxRbnk+ZocMJUhv9NxP88VlOcJYZs9jY+MYSjxvady08bUZn6qgiNh7DadGgg=="
+      },
+      "Microsoft.Extensions.Logging": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "crjWyORoug0kK7RSNJBTeSE6VX8IQgLf3nUpTB9m62bPXp/tzbnOsnbe8TXEG0AASNaKZddnpHKw7fET8E++Pg==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Options": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "g0UfujELzlLbHoVG8kPKVBaW470Ewi+jnptGS9KUi6jcb+k2StujtK3m26DFSGGwQ/+bVgZfsWqNzlP6YOejvw==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Options": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "y2146b3jrPI3Q0lokKXdKLpmXqakYbDIPDV6r3M8SqvSf45WwOTzkyfDpxnZXJsJQEpAsAqjUq5Pu8RCJMjubg==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Primitives": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Primitives": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "N3qEBzmLMYiASUlKxxFIISP4AiwuPTHF5uCh+2CWSwwzAJiIYx0kBJsS30cp1nvhSySFAVi30jecD307jV+8Kg=="
+      },
+      "Microsoft.Graphics.Win2D": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "7bAo8ObjCy/br0eW0nONRfVKehJu5aDe/KQekWeNXslwTOO2rhrIfWaVGepsXyVqmqwHoLJ31g1HsT7FLdBCoQ==",
+        "dependencies": {
+          "Microsoft.WindowsAppSDK": "1.5.240227000"
+        }
+      },
+      "Microsoft.IO.RecyclableMemoryStream": {
+        "type": "Transitive",
+        "resolved": "3.0.1",
+        "contentHash": "s/s20YTVY9r9TPfTrN5g8zPF1YhwxyqO6PxUkrYTGI2B+OGPe9AdajWZrLhFqXIvqIW23fnUE4+ztrUWNU1+9g=="
+      },
+      "Microsoft.Maui.Controls.Build.Tasks": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "hpb9mB3FLMK0UK6euFvkq8X0TEJ0YDWBV2kot5ryrvCBSNyonHVEQVMo0m7Uzzz2fAdqdZzRNV9WNgB6X/Jb4Q==",
+        "dependencies": {
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Controls.Xaml": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Core": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "P2Z45cciD/2yqia/3tm9QCclVhCISdBQfHz4zvpTQslEPZOuxzw06stvfrKYSgGlnJMBDzNMQ70FC/hybkB4kg==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Microsoft.Extensions.Logging": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Maui.Core": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Controls.Xaml": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "mQHeyk+Dj7L2vmDXPeMjwLD7dUeqCelxLTPV5pOg+v3pVgQFwYZPoOMPVflS6Qtu+o1BlOZ5XNQjtEEUJ4yShg==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Maui.Controls.Core": "9.0.30",
+          "Microsoft.Maui.Core": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Core": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "fAt+rtONvnar9IPfj3qmF4UgWAaoB3UkvF1QIlRc9/dwYxSVRyRzx4SfnjwQ0kM160z03IDOK45D3pgDiRRNcw==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Microsoft.Extensions.Logging": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Graphics.Win2D": "1.2.0",
+          "Microsoft.Maui.Essentials": "9.0.30",
+          "Microsoft.Maui.Graphics": "9.0.30",
+          "Microsoft.Maui.Graphics.Win2D.WinUI.Desktop": "9.0.30",
+          "Microsoft.Web.WebView2": "1.0.2792.45",
+          "Microsoft.Windows.SDK.BuildTools": "10.0.22621.756",
+          "Microsoft.WindowsAppSDK": "1.6.241114003"
+        }
+      },
+      "Microsoft.Maui.Essentials": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "0jIHgPw+VeQpipYoz0WpTGc6EoAD/i80CgAq9GewOHfWSF3pD2w9MwyAkyNf2Fx8gef37WNJCv/wtRcr96nd2w==",
+        "dependencies": {
+          "Microsoft.Maui.Graphics": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Graphics": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "YnlWLhi0SFuWY1GxUGZs96uHPJdaGK86udh2A/wysTYernzF7bmKNJnPvG17QDgdMuqELGC7fxAkqRuHEciY/A==",
+        "dependencies": {
+          "Microsoft.Graphics.Win2D": "1.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1"
+        }
+      },
+      "Microsoft.Maui.Graphics.Win2D.WinUI.Desktop": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "eAVew0rSPlv3ZLgCzzzhPub5BFMq58w7su2hhjjEdZ9woovilb073uqBMP8saaIdApccDN8Xojh8MiydcSXdTw==",
+        "dependencies": {
+          "Microsoft.Graphics.Win2D": "1.2.0",
+          "Microsoft.Maui.Graphics": "9.0.30"
+        }
+      },
+      "Microsoft.Maui.Maps": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "2kG+ViQ6FoHHoD10IYJCgPD1BqO4dkaasxktMVzvZqfuDapG81JHkCHXsLwfqxyz/PEVTj/GumIWVzXjuwzFaw=="
+      },
+      "Microsoft.Maui.Resizetizer": {
+        "type": "Transitive",
+        "resolved": "9.0.30",
+        "contentHash": "rJtkoRYWmkBPVxpvrWYvACYfrCqW98ilio6M5wUqu8X7AzcxVp1R17b5XLgFUyJKkmolyqibO06C6wOV3kOOig=="
+      },
+      "Microsoft.Web.WebView2": {
+        "type": "Transitive",
+        "resolved": "1.0.2792.45",
+        "contentHash": "KOlLJSq70OySfU8mdhWdh9iOyApazWsIb6CmSz+YTJ5MmwLcsCLMW0qemORo7Si3A7VhLDIH3jwpMhPxodfkuA=="
+      },
+      "Microsoft.Windows.SDK.BuildTools": {
+        "type": "Transitive",
+        "resolved": "10.0.22621.756",
+        "contentHash": "7ZL2sFSioYm1Ry067Kw1hg0SCcW5kuVezC2SwjGbcPE61Nn+gTbH86T73G3LcEOVj0S3IZzNuE/29gZvOLS7VA=="
+      },
+      "Microsoft.WindowsAppSDK": {
+        "type": "Transitive",
+        "resolved": "1.6.241114003",
+        "contentHash": "5XBNubjJi7+7DDI5lUXR3Jc0/memeFJyP6zmGTGgQcmTTbUf2T6U1f+qwcXHT+2yoXpaDuZCE86/aDLdU30e5A==",
+        "dependencies": {
+          "Microsoft.Web.WebView2": "1.0.2651.64",
+          "Microsoft.Windows.SDK.BuildTools": "10.0.22621.756"
+        }
+      },
+      "System.Speech": {
+        "type": "Transitive",
+        "resolved": "8.0.0",
+        "contentHash": "CNuiA6vb95Oe5PRjClZEBiaju31vwB8OIeCgeSBXyZL6+MS4RVVB2X/C11z0xCkooHE3Vy91nM2z76emIzR+sg=="
+      }
+    },
+    "net10.0-windows10.0.19041/android-arm64": {
+      "Microsoft.Graphics.Win2D": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "7bAo8ObjCy/br0eW0nONRfVKehJu5aDe/KQekWeNXslwTOO2rhrIfWaVGepsXyVqmqwHoLJ31g1HsT7FLdBCoQ==",
+        "dependencies": {
+          "Microsoft.WindowsAppSDK": "1.5.240227000"
+        }
+      },
+      "Microsoft.Web.WebView2": {
+        "type": "Transitive",
+        "resolved": "1.0.2792.45",
+        "contentHash": "KOlLJSq70OySfU8mdhWdh9iOyApazWsIb6CmSz+YTJ5MmwLcsCLMW0qemORo7Si3A7VhLDIH3jwpMhPxodfkuA=="
+      },
+      "Microsoft.WindowsAppSDK": {
+        "type": "Transitive",
+        "resolved": "1.6.241114003",
+        "contentHash": "5XBNubjJi7+7DDI5lUXR3Jc0/memeFJyP6zmGTGgQcmTTbUf2T6U1f+qwcXHT+2yoXpaDuZCE86/aDLdU30e5A==",
+        "dependencies": {
+          "Microsoft.Web.WebView2": "1.0.2651.64",
+          "Microsoft.Windows.SDK.BuildTools": "10.0.22621.756"
+        }
+      },
+      "System.Speech": {
+        "type": "Transitive",
+        "resolved": "8.0.0",
+        "contentHash": "CNuiA6vb95Oe5PRjClZEBiaju31vwB8OIeCgeSBXyZL6+MS4RVVB2X/C11z0xCkooHE3Vy91nM2z76emIzR+sg=="
+      }
+    },
+    "net10.0-windows10.0.19041/iossimulator-x64": {
+      "Microsoft.Graphics.Win2D": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "7bAo8ObjCy/br0eW0nONRfVKehJu5aDe/KQekWeNXslwTOO2rhrIfWaVGepsXyVqmqwHoLJ31g1HsT7FLdBCoQ==",
+        "dependencies": {
+          "Microsoft.WindowsAppSDK": "1.5.240227000"
+        }
+      },
+      "Microsoft.Web.WebView2": {
+        "type": "Transitive",
+        "resolved": "1.0.2792.45",
+        "contentHash": "KOlLJSq70OySfU8mdhWdh9iOyApazWsIb6CmSz+YTJ5MmwLcsCLMW0qemORo7Si3A7VhLDIH3jwpMhPxodfkuA=="
+      },
+      "Microsoft.WindowsAppSDK": {
+        "type": "Transitive",
+        "resolved": "1.6.241114003",
+        "contentHash": "5XBNubjJi7+7DDI5lUXR3Jc0/memeFJyP6zmGTGgQcmTTbUf2T6U1f+qwcXHT+2yoXpaDuZCE86/aDLdU30e5A==",
+        "dependencies": {
+          "Microsoft.Web.WebView2": "1.0.2651.64",
+          "Microsoft.Windows.SDK.BuildTools": "10.0.22621.756"
+        }
+      },
+      "System.Speech": {
+        "type": "Transitive",
+        "resolved": "8.0.0",
+        "contentHash": "CNuiA6vb95Oe5PRjClZEBiaju31vwB8OIeCgeSBXyZL6+MS4RVVB2X/C11z0xCkooHE3Vy91nM2z76emIzR+sg=="
+      }
+    },
+    "net10.0-windows10.0.19041/maccatalyst-x64": {
+      "Microsoft.Graphics.Win2D": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "7bAo8ObjCy/br0eW0nONRfVKehJu5aDe/KQekWeNXslwTOO2rhrIfWaVGepsXyVqmqwHoLJ31g1HsT7FLdBCoQ==",
+        "dependencies": {
+          "Microsoft.WindowsAppSDK": "1.5.240227000"
+        }
+      },
+      "Microsoft.Web.WebView2": {
+        "type": "Transitive",
+        "resolved": "1.0.2792.45",
+        "contentHash": "KOlLJSq70OySfU8mdhWdh9iOyApazWsIb6CmSz+YTJ5MmwLcsCLMW0qemORo7Si3A7VhLDIH3jwpMhPxodfkuA=="
+      },
+      "Microsoft.WindowsAppSDK": {
+        "type": "Transitive",
+        "resolved": "1.6.241114003",
+        "contentHash": "5XBNubjJi7+7DDI5lUXR3Jc0/memeFJyP6zmGTGgQcmTTbUf2T6U1f+qwcXHT+2yoXpaDuZCE86/aDLdU30e5A==",
+        "dependencies": {
+          "Microsoft.Web.WebView2": "1.0.2651.64",
+          "Microsoft.Windows.SDK.BuildTools": "10.0.22621.756"
+        }
+      },
+      "System.Speech": {
+        "type": "Transitive",
+        "resolved": "8.0.0",
+        "contentHash": "CNuiA6vb95Oe5PRjClZEBiaju31vwB8OIeCgeSBXyZL6+MS4RVVB2X/C11z0xCkooHE3Vy91nM2z76emIzR+sg=="
+      }
+    },
+    "net10.0-windows10.0.19041/win-x64": {
+      "Microsoft.Graphics.Win2D": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "7bAo8ObjCy/br0eW0nONRfVKehJu5aDe/KQekWeNXslwTOO2rhrIfWaVGepsXyVqmqwHoLJ31g1HsT7FLdBCoQ==",
+        "dependencies": {
+          "Microsoft.WindowsAppSDK": "1.5.240227000"
+        }
+      },
+      "Microsoft.Web.WebView2": {
+        "type": "Transitive",
+        "resolved": "1.0.2792.45",
+        "contentHash": "KOlLJSq70OySfU8mdhWdh9iOyApazWsIb6CmSz+YTJ5MmwLcsCLMW0qemORo7Si3A7VhLDIH3jwpMhPxodfkuA=="
+      },
+      "Microsoft.WindowsAppSDK": {
+        "type": "Transitive",
+        "resolved": "1.6.241114003",
+        "contentHash": "5XBNubjJi7+7DDI5lUXR3Jc0/memeFJyP6zmGTGgQcmTTbUf2T6U1f+qwcXHT+2yoXpaDuZCE86/aDLdU30e5A==",
+        "dependencies": {
+          "Microsoft.Web.WebView2": "1.0.2651.64",
+          "Microsoft.Windows.SDK.BuildTools": "10.0.22621.756"
+        }
+      },
+      "System.Speech": {
+        "type": "Transitive",
+        "resolved": "8.0.0",
+        "contentHash": "CNuiA6vb95Oe5PRjClZEBiaju31vwB8OIeCgeSBXyZL6+MS4RVVB2X/C11z0xCkooHE3Vy91nM2z76emIzR+sg=="
+      }
+    }
+  }
+}

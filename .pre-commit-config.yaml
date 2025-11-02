@@ -1,0 +1,64 @@
+default_stages:
+  - "pre-commit"
+default_install_hook_types:
+  - "pre-commit"
+  - "commit-msg"
+  - "pre-push"
+  - "post-checkout"
+  - "post-merge"
+
+fail_fast: true
+
+repos:
+  ############################################################################
+  #                         COMMIT MESSAGE TOOLS
+  ############################################################################
+  - repo: local
+    hooks:
+      - id: cocogitto-commit-msg
+        name: Cocogitto verify
+        language: system
+        entry: "cog"
+        args: ["verify", "--file"]
+        stages: [commit-msg]
+        pass_filenames: true
+  ############################################################################
+  #                         SAST & SCA SCANNING TOOLS
+  ############################################################################
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.28.0
+    hooks:
+      - id: gitleaks
+        name: Gitleaks secret detection
+        description: Scan for secrets using gitleaks.
+        args: ["--staged","--redact", "--no-banner", "--platform", "github", "--verbose"]
+        stages: ["pre-commit"]
+  - repo: local
+    hooks:
+      - id: trivy
+        name: Trivy
+        description: Vulnerability and license scan with Trivy
+        language: system
+        entry: trivy
+        args: ["repo", "--scanners", "vuln,license", "--severity", "CRITICAL", "--quiet", "--exit-code", "1", "--disable-telemetry", "."]
+        pass_filenames: false
+        stages: ["pre-commit"]
+  - repo: https://github.com/renovatebot/pre-commit-hooks
+    rev: 41.158.2
+    hooks:
+      - id: renovate-config-validator
+        args: [--strict]
+        stages: ["pre-push"]    
+  ############################################################################
+  #                         IMAGE COMPRESSION TOOLS
+  ############################################################################
+  - repo: https://github.com/oxipng/oxipng
+    rev: v9.1.5
+    hooks:
+      - id: oxipng
+        name: Oxipng compression
+        description: Visually lossless optimization of PNG files.
+        args: ["-o", "4", "--strip", "safe", "--alpha"]
+        pass_filenames: true
+        types: [png]
+        stages: ["pre-push"]
