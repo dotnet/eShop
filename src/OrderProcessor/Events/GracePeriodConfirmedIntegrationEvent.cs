@@ -1,12 +1,11 @@
-﻿namespace eShop.OrderProcessor.Events
+﻿namespace eShop.OrderProcessor.Events;
+
+using eShop.EventBus.Events;
+
+public record GracePeriodConfirmedIntegrationEvent : IntegrationEvent
 {
-    using eShop.EventBus.Events;
+    public int OrderId { get; }
 
-    public record GracePeriodConfirmedIntegrationEvent : IntegrationEvent
-    {
-        public int OrderId { get; }
-
-        public GracePeriodConfirmedIntegrationEvent(int orderId) =>
-            OrderId = orderId;
-    }
+    public GracePeriodConfirmedIntegrationEvent(int orderId) =>
+        OrderId = orderId;
 }
