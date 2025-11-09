@@ -77,4 +77,21 @@ public class BasketServiceTests
         Assert.IsInstanceOfType<CustomerBasketResponse>(response);
         Assert.AreEqual(response.Items.Count(), 0);
     }
+
+        [TestMethod]
+    public async Task GetBasketReturnsEmptyForInvalidUserId3()
+    {
+        var mockRepository = Substitute.For<IBasketRepository>();
+        List<BasketItem> items = [new BasketItem { Id = "some-id3" }];
+        mockRepository.GetBasketAsync("1").Returns(Task.FromResult(new CustomerBasket { BuyerId = "1", Items = items }));
+        var service = new BasketService(mockRepository, NullLogger<BasketService>.Instance);
+        var serverCallContext = TestServerCallContext.Create();
+        var httpContext = new DefaultHttpContext();
+        serverCallContext.SetUserState("__HttpContext", httpContext);
+
+        var response = await service.GetBasket(new GetBasketRequest(), serverCallContext);
+
+        Assert.IsInstanceOfType<CustomerBasketResponse>(response);
+        Assert.AreEqual(response.Items.Count(), 0);
+    }
 }
