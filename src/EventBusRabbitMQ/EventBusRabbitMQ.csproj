@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.RabbitMQ.Client" />
+    <PackageReference Include="Aspire.RabbitMQ.Client.v6" />
   </ItemGroup>
 
   <ItemGroup>
