@@ -1,5 +1,4 @@
 # Orchestration in a Modular Monolith  
-Why Orchestrators Belong to Infrastructure
 
 This architecture uses DataArc Orchestration-style coordination to unify multiple persistence boundaries inside a modular monolith. It is important to understand what orchestration actually does and what it does not do.
 
