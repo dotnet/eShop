@@ -1,5 +1,44 @@
 # EShop in Process using Orchestration in a Modular Monolith  
 
+```mermaid
+flowchart LR
+    subgraph InProcess["eShop In-Process (Modular Monolith)"]
+    
+        subgraph app["app"]
+            features["features"]
+            modules["modules"]
+        end
+
+        subgraph core["core"]
+            domain["domain"]
+            usecases["usecases"]
+        end
+
+        subgraph infra["infrastructure"]
+            orchestrators["orchestration"]
+            
+            subgraph persistence["persistence"]
+                contexts["contexts"]
+                models["models"]
+            end
+        end
+
+        tests["tests"]
+    end
+
+    features --> domain
+    modules --> domain
+
+    domain --> orchestrators
+    usecases --> orchestrators
+
+    orchestrators --> contexts
+    orchestrators --> models
+
+    tests --> InProcess
+```
+
+
 +--------------------------------------------------------------+
 |                       Domain Layer                           |
 |--------------------------------------------------------------|
