@@ -1,4 +1,56 @@
-# Orchestration in a Modular Monolith  
+# EShop in Process using Orchestration in a Modular Monolith  
+
++--------------------------------------------------------------+
+|                       Domain Layer                           |
+|--------------------------------------------------------------|
+|  - Aggregates                                                |
+|  - Entities                                                  |
+|  - Value Objects                                             |
+|  - Domain Policies                                           |
+|  - Domain Events                                             |
++-------------------------------^------------------------------+
+                                |
+                                |  Pure business logic
+                                |
++-------------------------------|------------------------------+
+|                   Application (Use Cases)                    |
+|--------------------------------------------------------------|
+|  - Input DTOs                                                |
+|  - Output DTOs                                               |
+|  - Ports (Interfaces)                                        |
+|  - Use Case Services                                         |
+|  - Validation                                                |
++-------------------------------v------------------------------+
+                                |
+                                |  Calls orchestrators through
+                                |  IOrchestratorHandler
+                                |
++-------------------------------|------------------------------+
+|                     Orchestration Layer                      |
+|--------------------------------------------------------------|
+|  - Orchestrators                                              |
+|      * Coordinates infrastructure flows                       |
+|      * Multi-context sequencing                               |
+|      * Transaction fabric                                     |
+|      * EF Core + SQL pipelines                                |
+|      * No domain logic                                        |
+|  - Maps Input -> Infra Ops -> Output                          |
++-------------------------------v------------------------------+
+                                |
+                                |  Executes EF/SQL operations
+                                |  through DataArc builders
+                                |
++-------------------------------|------------------------------+
+|                     Infrastructure Layer                      |
+|--------------------------------------------------------------|
+|  - EF Core DbContexts (multiple persistence boundaries)       |
+|  - SQL Pipeline Builders                                      |
+|  - Database Command Builders                                  |
+|  - Database Query Builders                                    |
+|  - External Systems (Email, File IO, APIs)                    |
+|  - DDL Builder (schema evolution)                             |
++--------------------------------------------------------------+
+
 
 This architecture uses DataArc Orchestration-style coordination to unify multiple persistence boundaries inside a modular monolith. It is important to understand what orchestration actually does and what it does not do.
 
