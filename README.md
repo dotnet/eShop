@@ -38,6 +38,7 @@ flowchart LR
     tests --> InProcess
 ```
 
+<img src="img/solution-structure.png" width="550">
 
 +--------------------------------------------------------------+
 |                       Domain Layer                           |
