@@ -1,142 +1,118 @@
-# eShop Reference Application - "AdventureWorks"
+# Orchestration in a Modular Monolith  
+Why Orchestrators Belong to Infrastructure
 
-A reference .NET application implementing an e-commerce website using a services-based architecture using [.NET Aspire](https://learn.microsoft.com/dotnet/aspire/).
+This architecture uses DataArc Orchestration-style coordination to unify multiple persistence boundaries inside a modular monolith. It is important to understand what orchestration actually does and what it does not do.
 
-![eShop Reference Application architecture diagram](img/eshop_architecture.png)
+---
 
-![eShop homepage screenshot](img/eshop_homepage.png)
+What Orchestration Actually Does
 
-## Getting Started
+Orchestration is infrastructure coordination.  
+It is responsible for:
 
-This version of eShop is based on .NET 9. 
+- SQL pipelines
+- EF Core operations
+- Multi-DbContext coordination
+- Transaction fabric
+- Context switching
+- Schema generation
+- Batch operations
+- SQL -> EF -> SQL sequences
+- External infrastructure events
 
-Previous eShop versions:
-* [.NET 8](https://github.com/dotnet/eShop/tree/release/8.0)
+These are all pure infrastructure concerns, not domain or application logic.
 
-### Prerequisites
+---
 
-- Clone the eShop repository: https://github.com/dotnet/eshop
-- [Install & start Docker Desktop](https://docs.docker.com/engine/install/)
+Why Orchestrators Belong in Infrastructure
 
-#### Windows with Visual Studio
-- Install [Visual Studio 2022 version 17.10 or newer](https://visualstudio.microsoft.com/vs/).
-  - Select the following workloads:
-    - `ASP.NET and web development` workload.
-    - `.NET Aspire SDK` component in `Individual components`.
-    - Optional: `.NET Multi-platform App UI development` to run client apps
+Orchestrators sit alongside other infrastructure utilities such as:
 
-Or
+- Repositories
+- Message brokers
+- Database gateways
+- File system implementations
+- Email senders
+- External API clients
 
-- Run the following commands in a Powershell & Terminal running as `Administrator` to automatically configure your environment with the required tools to build and run this application. (Note: A restart is required and included in the script below.)
+These components are called by application layers, but they never sit between Core and Infrastructure, and they never contain domain logic.
 
-```powershell
-install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense -Force
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-get-WinGetConfiguration -file .\.configurations\vside.dsc.yaml | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
-```
+Orchestrators coordinate infrastructure; they do not run domain behavior.
 
-Or
+---
 
-- From Dev Home go to `Machine Configuration -> Clone repositories`. Enter the URL for this repository. In the confirmation screen look for the section `Configuration File Detected` and click `Run File`.
+Why Not Use DbContexts Directly?
 
-#### Mac, Linux, & Windows without Visual Studio
-- Install the latest [.NET 9 SDK](https://dot.net/download?cid=eshop)
+This is where DataArc's orchestration model becomes superior to plain EF Core.
 
-Or
+EF Core is not orchestration-aware.
 
-- Run the following commands in a Powershell & Terminal running as `Administrator` to automatically configuration your environment with the required tools to build and run this application. (Note: A restart is required after running the script below.)
+A single DbContext cannot:
 
-##### Install Visual Studio Code and related extensions
-```powershell
-install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense  -Force
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-get-WinGetConfiguration -file .\.configurations\vscode.dsc.yaml | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
-```
+- Coordinate across multiple DbContexts
+- Enforce multi-persistence-boundary consistency
+- Sequence operations safely
+- Share state across boundaries
+- Unify transactions without DTC
+- Build SQL pipelines
+- Handle parallel EF pipelines safely
+- Integrate schema evolution
+- Apply multi-context DDL operations
+- Produce immutable, ordered pipelines
+- Emit consistent telemetry and summaries
 
-> Note: These commands may require `sudo`
+A DbContext has one job:
+Operate on a single persistence boundary in isolation.
 
-- Optional: Install [Visual Studio Code with C# Dev Kit](https://code.visualstudio.com/docs/csharp/get-started)
-- Optional: Install [.NET MAUI Workload](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=visual-studio-code)
+---
 
-> Note: When running on Mac with Apple Silicon (M series processor), Rosetta 2 for grpc-tools. 
+Why Builders Exist
 
-### Running the solution
+DataArc introduces builders because EF Core alone cannot perform multi-context orchestration.
 
-> [!WARNING]
-> Remember to ensure that Docker is started
+1. Builders abstract coordination across multiple DbContexts  
+   DbContexts know only themselves. Builders understand all participating contexts.
 
-* (Windows only) Run the application from Visual Studio:
- - Open the `eShop.Web.slnf` file in Visual Studio
- - Ensure that `eShop.AppHost.csproj` is your startup project
- - Hit Ctrl-F5 to launch Aspire
+2. Builders coordinate operations EF Core cannot  
+   Bulk operations, ordered pipelines, batching, optimized SQL.
 
-* Or run the application from your terminal:
-```powershell
-dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj
-```
-then look for lines like this in the console output in order to find the URL to open the Aspire dashboard:
-```sh
-Login to the dashboard at: http://localhost:19888/login?t=uniquelogincodeforyou
-```
+3. Builders provide unified transaction safety  
+   A cross-context transaction fabric without DTC. No other .NET library provides this.
 
-> You may need to install ASP.NET Core HTTPS development certificates first, and then close all browser tabs. Learn more at https://aka.ms/aspnet/https-trust-dev-cert
+4. Builders construct operations, not ad-hoc database calls  
+   Core requests an operation.  
+   Orchestrators compose it.  
+   Builders transform it into EF plus SQL pipelines.
 
-### Azure Open AI
+5. Builders enable tracing, ordering, and immutability  
+   Direct DbContext usage cannot produce:
+   - Execution timings
+   - Telemetry
+   - SQL batching
+   - Cross-context summaries
+   - Pipeline events
 
-When using Azure OpenAI, inside *eShop.AppHost/appsettings.json*, add the following section:
+   Builders can.
 
-```json
-  "ConnectionStrings": {
-    "OpenAi": "Endpoint=xxx;Key=xxx;"
-  }
-```
+6. Builders abstract infrastructure from the application layer  
+   Applications never touch:
+   - EF Core  
+   - SQL  
+   - Transactions  
+   - DbSets  
+   - DbCommands  
+   - Query providers  
 
-Replace the values with your own. Then, in the eShop.AppHost *Program.cs*, set this value to **true**
+   They work exclusively with orchestration, keeping application logic clean.
 
-```csharp
-bool useOpenAI = false;
-```
+---
 
-Here's additional guidance on the [.NET Aspire OpenAI component](https://learn.microsoft.com/dotnet/aspire/azureai/azureai-openai-component?tabs=dotnet-cli). 
+Summary
 
-### Use Azure Developer CLI
+Orchestration is not a domain layer.  
+It is not an application layer.  
+It is not a workflow engine.
 
-You can use the [Azure Developer CLI](https://aka.ms/azd) to run this project on Azure with only a few commands. Follow the next instructions:
+It is a coordination layer inside Infrastructure, built to unify persistence boundaries and manage multi-context operations that EF Core cannot handle on its own.
 
-- Install the latest or update to the latest [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install).
-- Log in `azd` (if you haven't done it before) to your Azure account:
-```sh
-azd auth login
-```
-- Initialize `azd` from the root of the repo.
-```sh
-azd init
-```
-- During init:
-  - Select `Use code in the current directory`. Azd will automatically detect the .NET Aspire project.
-  - Confirm `.NET (Aspire)` and continue.
-  - Select which services to expose to the Internet (exposing `webapp` is enough to test the sample).
-  - Finalize the initialization by giving a name to your environment.
-
-- Create Azure resources and deploy the sample by running:
-```sh
-azd up
-```
-Notes:
-  - The operation takes a few minutes the first time it is ever run for an environment.
-  - At the end of the process, `azd` will display the `url` for the webapp. Follow that link to test the sample.
-  - You can run `azd up` after saving changes to the sample to re-deploy and update the sample.
-  - Report any issues to [azure-dev](https://github.com/Azure/azure-dev/issues) repo.
-  - [FAQ and troubleshoot](https://learn.microsoft.com/azure/developer/azure-developer-cli/troubleshoot?tabs=Browser) for azd.
-
-## Contributing
-
-For more information on contributing to this repo, read [the contribution documentation](./CONTRIBUTING.md) and [the Code of Conduct](CODE-OF-CONDUCT.md).
-
-### Sample data
-
-The sample catalog data is defined in [catalog.json](https://github.com/dotnet/eShop/blob/main/src/Catalog.API/Setup/catalog.json). Those product names, descriptions, and brand names are fictional and were generated using [GPT-35-Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/chatgpt), and the corresponding [product images](https://github.com/dotnet/eShop/tree/main/src/Catalog.API/Pics) were generated using [DALL·E 3](https://openai.com/dall-e-3).
-
-## eShop on Azure
-
-For a version of this app configured for deployment on Azure, please view [the eShop on Azure](https://github.com/Azure-Samples/eShopOnAzure) repo.
+This is why orchestrators live in the Infrastructure project of this solution.

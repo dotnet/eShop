@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Observers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DataArc.OrchestratR.Abstractions" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\domain\EShop.Domain.Ordering\EShop.Domain.Ordering.csproj" />
+  </ItemGroup>
+
+</Project>

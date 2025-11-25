@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DataArc.OrchestratR" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\persistence\contexts\EShop.Persistence.Contexts.Cataloging\EShop.Persistence.Contexts.Cataloging.csproj" />
+    <ProjectReference Include="..\..\persistence\contexts\EShop.Persistence.Contexts.Ordering\EShop.Persistence.Contexts.Ordering.csproj" />
+  </ItemGroup>
+
+</Project>
