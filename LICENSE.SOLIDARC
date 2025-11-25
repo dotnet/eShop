@@ -1,0 +1,19 @@
+Copyright (c) 2025 Solid Arc Software. 
+All rights reserved.
+
+This repository contains architecture, structure, patterns, 
+and design concepts that are proprietary to Solid Arc Software.
+
+The orchestration code references, abstractions, modules, 
+and architectural patterns are part of the commercial 
+DataArc Orchestration Framework.
+
+The DataArc packages required to compile or run this project 
+are not open source and are not included in this repository.
+
+No rights are granted to modify, redistribute, or use any part 
+of the DataArc libraries, implementations, or commercial 
+packages referenced herein.
+
+Use of DataArc requires a valid commercial license. 
+See https://www.dataarc.dev for more information.
