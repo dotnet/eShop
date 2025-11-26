@@ -1,4 +1,5 @@
-﻿using Aspire.Hosting.Lifecycle;
+﻿using Aspire.Hosting.Eventing;
+using Aspire.Hosting.Lifecycle;
 using Aspire.Hosting.Yarp;
 using Aspire.Hosting.Yarp.Transforms;
 using Yarp.ReverseProxy.Configuration;
@@ -20,21 +21,26 @@ internal static class Extensions
     /// </summary>
     public static IDistributedApplicationBuilder AddForwardedHeaders(this IDistributedApplicationBuilder builder)
     {
-        builder.Services.TryAddLifecycleHook<AddForwardHeadersHook>();
+        builder.Services.TryAddEventingSubscriber<AddForwardHeadersSubscriber>();
         return builder;
     }
 
-    private class AddForwardHeadersHook : IDistributedApplicationLifecycleHook
+    private class AddForwardHeadersSubscriber : IDistributedApplicationEventingSubscriber
     {
-        public Task BeforeStartAsync(DistributedApplicationModel appModel, CancellationToken cancellationToken = default)
+        public Task SubscribeAsync(IDistributedApplicationEventing eventing, DistributedApplicationExecutionContext executionContext, CancellationToken cancellationToken)
         {
-            foreach (var p in appModel.GetProjectResources())
+            eventing.Subscribe<BeforeStartEvent>((@event, ct) =>
             {
-                p.Annotations.Add(new EnvironmentCallbackAnnotation(context =>
+                foreach (var p in @event.Model.GetProjectResources())
                 {
-                    context.EnvironmentVariables["ASPNETCORE_FORWARDEDHEADERS_ENABLED"] = "true";
-                }));
-            }
+                    p.Annotations.Add(new EnvironmentCallbackAnnotation(context =>
+                    {
+                        context.EnvironmentVariables["ASPNETCORE_FORWARDEDHEADERS_ENABLED"] = "true";
+                    }));
+                }
+
+                return Task.CompletedTask;
+            });
 
             return Task.CompletedTask;
         }

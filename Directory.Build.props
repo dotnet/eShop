@@ -9,6 +9,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <!-- Temporarily disable security warnings for transitive packages. -->
     <NoWarn>NU1901;NU1902;NU1903;NU1904</NoWarn>
+    <UseArtifactsOutput>true</UseArtifactsOutput>
   </PropertyGroup>
 
   <!-- Enable OpenAI OpenTelemetry so OpenAI calls participate in tracing and metrics. -->
