@@ -7,8 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\core\domain\EShop.Domain.Ordering\EShop.Domain.Ordering.csproj" />
-    <ProjectReference Include="..\EShop.Persistence.Models.Products\EShop.Persistence.Models.Products.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
   </ItemGroup>
 
 </Project>

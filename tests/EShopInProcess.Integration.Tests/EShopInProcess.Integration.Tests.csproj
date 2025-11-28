@@ -11,8 +11,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="DataArc" Version="1.0.0" />
-    <PackageReference Include="DataArc.OrchestratR" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="NUnit" Version="3.14.0" />
@@ -28,13 +26,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Modules\" />
+    <ProjectReference Include="..\..\src\infrastructure\orchestration\EShop.Orchestration.System\EShop.Orchestration.System.csproj" />
+    <ProjectReference Include="..\..\src\infrastructure\persistence\contexts\EShop.Persistence.Contexts.Cataloging\EShop.Persistence.Contexts.Cataloging.csproj" />
+    <ProjectReference Include="..\..\src\infrastructure\persistence\contexts\EShop.Persistence.Contexts.Identity\EShop.Persistence.Contexts.Identity.csproj" />
+    <ProjectReference Include="..\..\src\infrastructure\persistence\contexts\EShop.Persistence.Contexts.Ordering\EShop.Persistence.Contexts.Ordering.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\infrastructure\orchestration\EShop.Orchestration.System\EShop.Orchestration.System.csproj" />
-    <ProjectReference Include="..\..\src\infrastructure\persistence\contexts\EShop.Persistence.Contexts.Cataloging\EShop.Persistence.Contexts.Cataloging.csproj" />
-    <ProjectReference Include="..\..\src\infrastructure\persistence\contexts\EShop.Persistence.Contexts.Ordering\EShop.Persistence.Contexts.Ordering.csproj" />
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

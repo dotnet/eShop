@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\models\EShop.Persistence.Models.Ordering\EShop.Persistence.Models.Ordering.csproj" />
+    <ProjectReference Include="..\..\models\EShop.Persistence.Models.Products\EShop.Persistence.Models.Products.csproj" />
   </ItemGroup>
 
 </Project>

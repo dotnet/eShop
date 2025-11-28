@@ -1,9 +1,9 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EShop.Persistence.Models.Catalog
 {
-    public class CatalogType
+    public class Catalog
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -15,7 +15,12 @@ namespace EShop.Persistence.Models.Catalog
         [Required]
         public string Description { get; set; }
 
-        // Navigation to Catalogs
-        public virtual ICollection<Catalog> Catalogs { get; set; } = new List<Catalog>();
+        // FK
+        [Required]
+        public int CatalogTypeId { get; set; }
+
+        // Navigation
+        public virtual CatalogType CatalogType { get; set; }
     }
+
 }

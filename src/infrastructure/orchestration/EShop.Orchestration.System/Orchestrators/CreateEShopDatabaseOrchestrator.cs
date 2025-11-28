@@ -3,7 +3,10 @@ using DataArc.OrchestratR;
 
 using EShop.Orchestration.System.Contracts.Input;
 using EShop.Orchestration.System.Contracts.Output;
+
+using EShop.Persistence.Context.Products;
 using EShop.Persistence.Contexts.Cataloging;
+using EShop.Persistence.Contexts.Identity;
 using EShop.Persistence.Contexts.Ordering;
 
 namespace EShop.Orchestration.System.Orchestrators
@@ -16,6 +19,8 @@ namespace EShop.Orchestration.System.Orchestrators
             try
             {
                 var database = databaseDefinitionBuilder
+                                .UseContext<EShopIdentityContext>()
+                                .UseContext<ProductsContext>()
                                 .UseContext<OrderingContext>()
                                 .UseContext<CatalogContext>()
                                 .Build(generateScripts: input.GenerateScripts, applyChanges: input.ApplyChanges);

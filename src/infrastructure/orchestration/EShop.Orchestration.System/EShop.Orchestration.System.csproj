@@ -7,11 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DataArc.OrchestratR" Version="1.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\usecases\EShop.UseCases.Identity\EShop.UseCases.Identity.csproj" />
+    <ProjectReference Include="..\..\persistence\contexts\EShop.Persistence.Context.Products\EShop.Persistence.Context.Products.csproj" />
     <ProjectReference Include="..\..\persistence\contexts\EShop.Persistence.Contexts.Cataloging\EShop.Persistence.Contexts.Cataloging.csproj" />
+    <ProjectReference Include="..\..\persistence\contexts\EShop.Persistence.Contexts.Identity\EShop.Persistence.Contexts.Identity.csproj" />
     <ProjectReference Include="..\..\persistence\contexts\EShop.Persistence.Contexts.Ordering\EShop.Persistence.Contexts.Ordering.csproj" />
   </ItemGroup>
 

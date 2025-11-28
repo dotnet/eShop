@@ -6,12 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Observers\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\domain\EShop.Domain.Ordering\EShop.Domain.Ordering.csproj" />
-  </ItemGroup>
-
 </Project>

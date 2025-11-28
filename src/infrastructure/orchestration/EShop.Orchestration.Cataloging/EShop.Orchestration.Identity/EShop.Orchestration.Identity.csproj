@@ -7,8 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\core\domain\EShop.Domain.Ordering\EShop.Domain.Ordering.csproj" />
-    <ProjectReference Include="..\EShop.Persistence.Models.Products\EShop.Persistence.Models.Products.csproj" />
+    <Folder Include="Contracts\Input\" />
+    <Folder Include="Contracts\Output\" />
+    <Folder Include="Orchestrators\" />
   </ItemGroup>
 
 </Project>

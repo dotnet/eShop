@@ -10,13 +10,11 @@ namespace EShop.Persistence.Models.Ordering
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public DateTime OrderDate { get; private set; }
-        [Required]
-        public Address Address { get; private set; }
-        public int? BuyerId { get; private set; }
-        public Buyer Buyer { get; }
-        public OrderStatus OrderStatus { get; private set; }
-        public string Description { get; private set; }
-        public int? PaymentId { get; private set; }
+        public DateTime OrderDate { get; set; }
+        public int? BuyerId { get; set; }
+        //public OrderStatus OrderStatus { get; set; }
+        public int OrderStatus { get; set; }
+        public string Description { get; set; }
+        public int? PaymentId { get; set; }
     }
 }
