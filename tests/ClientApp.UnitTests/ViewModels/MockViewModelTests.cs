@@ -24,8 +24,8 @@ public class MockViewModelTests
         Assert.IsNull(mockViewModel.Surname.Value);
         Assert.IsFalse(mockViewModel.Forename.IsValid);
         Assert.IsFalse(mockViewModel.Surname.IsValid);
-        Assert.AreNotEqual(mockViewModel.Forename.Errors.Count(), 0);
-        Assert.AreNotEqual(mockViewModel.Surname.Errors.Count(), 0);
+        Assert.AreNotEqual(0, mockViewModel.Forename.Errors.Count());
+        Assert.AreNotEqual(0, mockViewModel.Surname.Errors.Count());
     }
 
     [TestMethod]
@@ -41,8 +41,8 @@ public class MockViewModelTests
         Assert.IsNull(mockViewModel.Surname.Value);
         Assert.IsTrue(mockViewModel.Forename.IsValid);
         Assert.IsFalse(mockViewModel.Surname.IsValid);
-        Assert.AreEqual(mockViewModel.Forename.Errors.Count(), 0);
-        Assert.AreNotEqual(mockViewModel.Surname.Errors.Count(), 0);
+        Assert.AreEqual(0, mockViewModel.Forename.Errors.Count());
+        Assert.AreNotEqual(0, mockViewModel.Surname.Errors.Count());
     }
 
     [TestMethod]
@@ -58,8 +58,8 @@ public class MockViewModelTests
         Assert.IsNotNull(mockViewModel.Surname.Value);
         Assert.IsFalse(mockViewModel.Forename.IsValid);
         Assert.IsTrue(mockViewModel.Surname.IsValid);
-        Assert.AreNotEqual(mockViewModel.Forename.Errors.Count(), 0);
-        Assert.AreEqual(mockViewModel.Surname.Errors.Count(), 0);
+        Assert.AreNotEqual(0, mockViewModel.Forename.Errors.Count());
+        Assert.AreEqual(0, mockViewModel.Surname.Errors.Count());
     }
 
     [TestMethod]
@@ -76,8 +76,8 @@ public class MockViewModelTests
         Assert.IsNotNull(mockViewModel.Surname.Value);
         Assert.IsTrue(mockViewModel.Forename.IsValid);
         Assert.IsTrue(mockViewModel.Surname.IsValid);
-        Assert.AreEqual(mockViewModel.Forename.Errors.Count(), 0);
-        Assert.AreEqual(mockViewModel.Surname.Errors.Count(), 0);
+        Assert.AreEqual(0, mockViewModel.Forename.Errors.Count());
+        Assert.AreEqual(0, mockViewModel.Surname.Errors.Count());
     }
 
     [TestMethod]

@@ -45,8 +45,7 @@
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.0.0" />
     <PackageVersion Include="Microsoft.OpenApi" Version="2.3.2" />
-    <PackageVersion Include="MSTest.TestFramework" Version="3.10.4" />
-    <PackageVersion Include="MSTest.TestAdapter" Version="3.10.4" />
+    <PackageVersion Include="MSTest" Version="4.0.2" />
     <!-- Version together with EF -->
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.0" />
@@ -76,8 +75,6 @@
     <PackageVersion Include="Duende.IdentityServer.EntityFramework" Version="7.3.2" />
     <PackageVersion Include="Duende.IdentityServer.EntityFramework.Storage" Version="7.3.2" />
     <PackageVersion Include="Duende.IdentityServer.Storage" Version="7.3.2" />
-    <!-- VS Test -->
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <!-- Scaffolding -->
     <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0-rc.1.23461.3" />
     <!-- Grpc -->
@@ -91,8 +88,7 @@
     <PackageVersion Include="Google.Protobuf" Version="3.33.0" />
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="3.0.71" />
     <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
-    <PackageVersion Include="xunit" Version="2.9.3" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <PackageVersion Include="xunit.v3.mtp-v2" Version="3.2.1" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.8.6" />
     <!-- Before license change -->
