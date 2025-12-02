@@ -126,7 +126,6 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
             Headers = { { "x-requestid", Guid.Empty.ToString() } }
         };
         var response = await _httpClient.PostAsync("api/orders", content);
-        var s = await response.Content.ReadAsStringAsync();
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -147,14 +146,12 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
             PictureUrl = null
         };
         var cardExpirationDate = Convert.ToDateTime("2023-12-22T12:34:24.334Z");
-        var OrderRequest = new CreateOrderRequest("1", "TestUser", null, null, null, null, null, "XXXXXXXXXXXX0005", "Test User", cardExpirationDate, "test buyer", 1, null, new List<BasketItem> { item });
-        var content = new StringContent(JsonSerializer.Serialize(OrderRequest), UTF8Encoding.UTF8, "application/json")
+        var orderRequest = new CreateOrderRequest("1", "TestUser", null, null, null, null, null, "XXXXXXXXXXXX0005", "Test User", cardExpirationDate, "test buyer", 1, null, new List<BasketItem> { item });
+        var content = new StringContent(JsonSerializer.Serialize(orderRequest), UTF8Encoding.UTF8, "application/json")
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
         var response = await _httpClient.PostAsync("api/orders", content);
-        var s = await response.Content.ReadAsStringAsync();
-
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
@@ -173,16 +170,23 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
             Quantity = 1,
             PictureUrl = null
         };
-        var bodyContent = new CustomerBasket("1", new List<BasketItem> { item });
+        var basketItems = new List<BasketItem> { item };
+        var bodyContent = new CustomerBasket("1", basketItems);
         var content = new StringContent(JsonSerializer.Serialize(bodyContent), UTF8Encoding.UTF8, "application/json")
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
         var response = await _httpClient.PostAsync("api/orders/draft", content);
         var s = await response.Content.ReadAsStringAsync();
-
+        var responseData = JsonSerializer.Deserialize<OrderDraftDTO>(s, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(responseData.OrderItems.Count(), basketItems.Count);
+        var orderItem = responseData.OrderItems.First();
+        Assert.Equal(orderItem.ProductId, item.ProductId);
+        Assert.Equal(orderItem.ProductName, item.ProductName);
+        Assert.Equal(orderItem.UnitPrice, item.UnitPrice);
+        Assert.Equal(orderItem.Units, item.Quantity);
     }
 
     [Fact]
