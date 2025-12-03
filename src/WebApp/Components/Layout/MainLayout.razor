@@ -1,13 +1,25 @@
 ﻿@using eShop.WebApp.Components.Chatbot
 @inherits LayoutComponentBase
-
-<HeaderBar />
-@Body
-<ShowChatbotButton />
-<FooterBar />
-
+@inject NavigationManager Navigation
+<div class="@GetLayoutClass()">
+    <div>
+        <HeaderBar />
+        @Body
+        <ShowChatbotButton />
+    </div>
+    <FooterBar />
+</div>
 <div id="blazor-error-ui">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code {
+    private string GetLayoutClass()
+    {
+        var currentUrl = Navigation.ToBaseRelativePath(Navigation.Uri);
+        return currentUrl.StartsWith("user/orders") || currentUrl.StartsWith("cart") ? "layout-container sticky-footer-page" :
+        "layout-container";
+    }
+}
