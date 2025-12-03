@@ -9,7 +9,7 @@ public class CatalogServiceTests
         var catalogMockService = new CatalogMockService();
         var catalog = await catalogMockService.GetCatalogAsync();
 
-        Assert.AreNotEqual(catalog.Count(), 0);
+        Assert.AreNotEqual(0, catalog.Count());
     }
 
     [TestMethod]
@@ -18,7 +18,7 @@ public class CatalogServiceTests
         var catalogMockService = new CatalogMockService();
         var catalogBrand = await catalogMockService.GetCatalogBrandAsync();
 
-        Assert.AreNotEqual(catalogBrand.Count(), 0);
+        Assert.AreNotEqual(0, catalogBrand.Count());
     }
 
     [TestMethod]
@@ -27,6 +27,6 @@ public class CatalogServiceTests
         var catalogMockService = new CatalogMockService();
         var catalogType = await catalogMockService.GetCatalogTypeAsync();
 
-        Assert.AreNotEqual(catalogType.Count(), 0);
+        Assert.AreNotEqual(0, catalogType.Count());
     }
 }

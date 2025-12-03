@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="MSTest.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <UseMaui>true</UseMaui>
+    <OutputType>Exe</OutputType>
     <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
@@ -15,17 +16,6 @@
 
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.40" />
     <PackageReference Include="Microsoft.Maui.Controls.Maps" Version="9.0.40" />
-    
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
-    
-    <PackageReference Include="coverlet.collector" Version="6.0.4">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    
-    <PackageReference Include="MSTest.TestAdapter" Version="3.8.2" />
-    
-    <PackageReference Include="MSTest.TestFramework" Version="3.8.2" />
   </ItemGroup>
 
   <ItemGroup>

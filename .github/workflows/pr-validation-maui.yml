@@ -39,4 +39,4 @@ jobs:
         run: dotnet build src/ClientApp/ClientApp.csproj
         
       - name: Test
-        run: dotnet test tests/ClientApp.UnitTests/ClientApp.UnitTests.csproj
+        run: dotnet test --project tests/ClientApp.UnitTests/ClientApp.UnitTests.csproj --no-progress --output detailed

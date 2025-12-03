@@ -1,10 +1,8 @@
 ﻿namespace eShop.Ordering.UnitTests.Domain.SeedWork;
 
+[TestClass]
 public class ValueObjectTests
 {
-    public ValueObjectTests()
-    { }
-
     [TestMethod]
     [DynamicData(nameof(EqualValueObjects))]
     public void Equals_EqualValueObjects_ReturnsTrue(ValueObject instanceA, ValueObject instanceB, string reason)

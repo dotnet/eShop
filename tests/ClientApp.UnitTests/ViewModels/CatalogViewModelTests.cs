@@ -46,14 +46,14 @@ public class CatalogViewModelTests
     public void ProductsPropertyIsEmptyWhenViewModelInstantiatedTest()
     {
         var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
-        Assert.AreEqual(catalogViewModel.Products.Count,0);
+        Assert.IsEmpty(catalogViewModel.Products);
     }
 
     [TestMethod]
     public void BrandsPropertyIsEmptyWhenViewModelInstantiatedTest()
     {
         var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
-        Assert.AreEqual(catalogViewModel.Brands.Count, 0);
+        Assert.IsEmpty(catalogViewModel.Brands);
     }
 
     [TestMethod]
@@ -67,7 +67,7 @@ public class CatalogViewModelTests
     public void TypesPropertyIsEmptyWhenViewModelInstantiatedTest()
     {
         var catalogViewModel = new CatalogViewModel(_appEnvironmentService, _navigationService);
-        Assert.AreEqual(catalogViewModel.Types.Count, 0);
+        Assert.IsEmpty(catalogViewModel.Types);
     }
 
     [TestMethod]

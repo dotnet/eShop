@@ -1,4 +1,4 @@
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using System.Text.Json;
 using Asp.Versioning;
 using Asp.Versioning.Http;
@@ -31,15 +31,15 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var _httpClient = CreateHttpClient(new ApiVersion(version));
 
         // Act
-        var response = await _httpClient.GetAsync("/api/catalog/items?pageIndex=0&pageSize=5");
+        var response = await _httpClient.GetAsync("/api/catalog/items?pageIndex=0&pageSize=5", TestContext.Current.CancellationToken);
 
         // Assert
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadAsStringAsync();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
 
-        // Assert 12 total items with 5 retrieved from index 0
-        Assert.Equal(101, result.Count);
+        // Assert 103 total items (101 seeded + 2 added by AddCatalogItem tests) with 5 retrieved from index 0
+        Assert.Equal(103, result.Count);
         Assert.Equal(0, result.PageIndex);
         Assert.Equal(5, result.PageSize);
     }
@@ -52,9 +52,9 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var _httpClient = CreateHttpClient(new ApiVersion(version));
 
         // Act - 1
-        var response = await _httpClient.GetAsync("/api/catalog/items/1");
+        var response = await _httpClient.GetAsync("/api/catalog/items/1", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadAsStringAsync();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var itemToUpdate = JsonSerializer.Deserialize<CatalogItem>(body, _jsonSerializerOptions);
 
         // Act - 2
@@ -62,16 +62,16 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         itemToUpdate.AvailableStock -= 1;
         response = version switch
         {
-            1.0 => await _httpClient.PutAsJsonAsync("/api/catalog/items", itemToUpdate),
-            2.0 => await _httpClient.PutAsJsonAsync($"/api/catalog/items/{itemToUpdate.Id}", itemToUpdate),
+            1.0 => await _httpClient.PutAsJsonAsync("/api/catalog/items", itemToUpdate, TestContext.Current.CancellationToken),
+            2.0 => await _httpClient.PutAsJsonAsync($"/api/catalog/items/{itemToUpdate.Id}", itemToUpdate, TestContext.Current.CancellationToken),
             _ => throw new ArgumentOutOfRangeException(nameof(version), version, null)
         };
         response.EnsureSuccessStatusCode();
 
         // Act - 3
-        response = await _httpClient.GetAsync("/api/catalog/items/1");
+        response = await _httpClient.GetAsync("/api/catalog/items/1", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
-        body = await response.Content.ReadAsStringAsync();
+        body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var updatedItem = JsonSerializer.Deserialize<CatalogItem>(body, _jsonSerializerOptions);
 
         // Assert - 1
@@ -87,9 +87,9 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var _httpClient = CreateHttpClient(new ApiVersion(version));
 
         // Act - 1
-        var response = await _httpClient.GetAsync("/api/catalog/items/1");
+        var response = await _httpClient.GetAsync("/api/catalog/items/1", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadAsStringAsync();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var itemToUpdate = JsonSerializer.Deserialize<CatalogItem>(body, _jsonSerializerOptions);
 
         // Act - 2
@@ -98,16 +98,16 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         itemToUpdate.Price = 1.99m;
         response = version switch
         {
-            1.0 => await _httpClient.PutAsJsonAsync("/api/catalog/items", itemToUpdate),
-            2.0 => await _httpClient.PutAsJsonAsync($"/api/catalog/items/{itemToUpdate.Id}", itemToUpdate),
+            1.0 => await _httpClient.PutAsJsonAsync("/api/catalog/items", itemToUpdate, TestContext.Current.CancellationToken),
+            2.0 => await _httpClient.PutAsJsonAsync($"/api/catalog/items/{itemToUpdate.Id}", itemToUpdate, TestContext.Current.CancellationToken),
             _ => throw new ArgumentOutOfRangeException(nameof(version), version, null)
         };
         response.EnsureSuccessStatusCode();
 
         // Act - 3
-        response = await _httpClient.GetAsync("/api/catalog/items/1");
+        response = await _httpClient.GetAsync("/api/catalog/items/1", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
-        body = await response.Content.ReadAsStringAsync();
+        body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var updatedItem = JsonSerializer.Deserialize<CatalogItem>(body, _jsonSerializerOptions);
 
         // Assert - 1
@@ -124,11 +124,11 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var _httpClient = CreateHttpClient(new ApiVersion(version));
 
         // Act
-        var response = await _httpClient.GetAsync("/api/catalog/items/by?ids=1&ids=2&ids=3");
+        var response = await _httpClient.GetAsync("/api/catalog/items/by?ids=1&ids=2&ids=3", TestContext.Current.CancellationToken);
 
         // Arrange
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadAsStringAsync();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<List<CatalogItem>>(body, _jsonSerializerOptions);
 
         // Assert 3 items
@@ -143,11 +143,11 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var _httpClient = CreateHttpClient(new ApiVersion(version));
 
         // Act
-        var response = await _httpClient.GetAsync("/api/catalog/items/2");
+        var response = await _httpClient.GetAsync("/api/catalog/items/2", TestContext.Current.CancellationToken);
 
         // Arrange
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadAsStringAsync();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<CatalogItem>(body, _jsonSerializerOptions);
 
         // Assert
@@ -165,14 +165,14 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         // Act
         var response = version switch
         {
-            1.0 => await _httpClient.GetAsync("api/catalog/items/by/Wanderer%20Black%20Hiking%20Boots?PageSize=5&PageIndex=0"),
-            2.0 => await _httpClient.GetAsync("api/catalog/items?name=Wanderer%20Black%20Hiking%20Boots&PageSize=5&PageIndex=0"),
+            1.0 => await _httpClient.GetAsync("api/catalog/items/by/Wanderer%20Black%20Hiking%20Boots?PageSize=5&PageIndex=0", TestContext.Current.CancellationToken),
+            2.0 => await _httpClient.GetAsync("api/catalog/items?name=Wanderer%20Black%20Hiking%20Boots&PageSize=5&PageIndex=0", TestContext.Current.CancellationToken),
             _ => throw new ArgumentOutOfRangeException(nameof(version), version, null)
         };
 
         // Arrange
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadAsStringAsync();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
 
         // Assert
@@ -193,14 +193,14 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         // Act
         var response = version switch
         {
-            1.0 => await _httpClient.GetAsync("api/catalog/items/by/Alpine?PageSize=5&PageIndex=0"),
-            2.0 => await _httpClient.GetAsync("api/catalog/items?name=Alpine&PageSize=5&PageIndex=0"),
+            1.0 => await _httpClient.GetAsync("api/catalog/items/by/Alpine?PageSize=5&PageIndex=0", TestContext.Current.CancellationToken),
+            2.0 => await _httpClient.GetAsync("api/catalog/items?name=Alpine&PageSize=5&PageIndex=0", TestContext.Current.CancellationToken),
             _ => throw new ArgumentOutOfRangeException(nameof(version), version, null)
         };
 
         // Arrange
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadAsStringAsync();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
 
         // Assert
@@ -219,7 +219,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var _httpClient = CreateHttpClient(new ApiVersion(version));
 
         // Act
-        var response = await _httpClient.GetAsync("api/catalog/items/1/pic");
+        var response = await _httpClient.GetAsync("api/catalog/items/1/pic", TestContext.Current.CancellationToken);
 
         // Arrange
         response.EnsureSuccessStatusCode();
@@ -239,14 +239,14 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         // Act
         var response = version switch
         {
-            1.0 => await _httpClient.GetAsync("api/catalog/items/withsemanticrelevance/Wanderer?PageSize=5&PageIndex=0"),
-            2.0 => await _httpClient.GetAsync("api/catalog/items/withsemanticrelevance?text=Wanderer&PageSize=5&PageIndex=0"),
+            1.0 => await _httpClient.GetAsync("api/catalog/items/withsemanticrelevance/Wanderer?PageSize=5&PageIndex=0", TestContext.Current.CancellationToken),
+            2.0 => await _httpClient.GetAsync("api/catalog/items/withsemanticrelevance?text=Wanderer&PageSize=5&PageIndex=0", TestContext.Current.CancellationToken),
             _ => throw new ArgumentOutOfRangeException(nameof(version), version, null)
         };
 
         // Arrange
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadAsStringAsync();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
 
         // Assert
@@ -266,14 +266,14 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         // Act
         var response = version switch
         {
-            1.0 => await _httpClient.GetAsync("api/catalog/items/type/3/brand/3?PageSize=5&PageIndex=0"),
-            2.0 => await _httpClient.GetAsync("api/catalog/items?type=3&brand=3&PageSize=5&PageIndex=0"),
+            1.0 => await _httpClient.GetAsync("api/catalog/items/type/3/brand/3?PageSize=5&PageIndex=0", TestContext.Current.CancellationToken),
+            2.0 => await _httpClient.GetAsync("api/catalog/items?type=3&brand=3&PageSize=5&PageIndex=0", TestContext.Current.CancellationToken),
             _ => throw new ArgumentOutOfRangeException(nameof(version), version, null)
         };
 
         // Arrange
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadAsStringAsync();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
 
         // Assert
@@ -295,14 +295,14 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         // Act
         var response = version switch
         {
-            1.0 => await _httpClient.GetAsync("api/catalog/items/type/all/brand/3?PageSize=5&PageIndex=0"),
-            2.0 => await _httpClient.GetAsync("api/catalog/items?brand=3&PageSize=5&PageIndex=0"),
+            1.0 => await _httpClient.GetAsync("api/catalog/items/type/all/brand/3?PageSize=5&PageIndex=0", TestContext.Current.CancellationToken),
+            2.0 => await _httpClient.GetAsync("api/catalog/items?brand=3&PageSize=5&PageIndex=0", TestContext.Current.CancellationToken),
             _ => throw new ArgumentOutOfRangeException(nameof(version), version, null)
         };
 
         // Arrange
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadAsStringAsync();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
 
         // Assert
@@ -321,11 +321,11 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var _httpClient = CreateHttpClient(new ApiVersion(version));
 
         // Act
-        var response = await _httpClient.GetAsync("api/catalog/catalogtypes");
+        var response = await _httpClient.GetAsync("api/catalog/catalogtypes", TestContext.Current.CancellationToken);
 
         // Arrange
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadAsStringAsync();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<List<CatalogType>>(body, _jsonSerializerOptions);
 
         // Assert
@@ -341,11 +341,11 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var _httpClient = CreateHttpClient(new ApiVersion(version));
 
         // Act
-        var response = await _httpClient.GetAsync("api/catalog/catalogbrands");
+        var response = await _httpClient.GetAsync("api/catalog/catalogbrands", TestContext.Current.CancellationToken);
 
         // Arrange
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadAsStringAsync();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<List<CatalogBrand>>(body, _jsonSerializerOptions);
 
         // Assert
@@ -381,13 +381,13 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
             MaxStockThreshold = 200,
             OnReorder = false
         };
-        var response = await _httpClient.PostAsJsonAsync("/api/catalog/items", bodyContent);
+        var response = await _httpClient.PostAsJsonAsync("/api/catalog/items", bodyContent, TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
         // Act - 2
-        response = await _httpClient.GetAsync($"/api/catalog/items/{id}");
+        response = await _httpClient.GetAsync($"/api/catalog/items/{id}", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadAsStringAsync();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var addedItem = JsonSerializer.Deserialize<CatalogItem>(body, _jsonSerializerOptions);
 
         // Assert - 1
@@ -409,11 +409,11 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         };
 
         //Act - 1
-        var response = await _httpClient.DeleteAsync($"/api/catalog/items/{id}");
+        var response = await _httpClient.DeleteAsync($"/api/catalog/items/{id}", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
         // Act - 2
-        var response1 = await _httpClient.GetAsync($"/api/catalog/items/{id}");
+        var response1 = await _httpClient.GetAsync($"/api/catalog/items/{id}", TestContext.Current.CancellationToken);
         var responseStatus = response1.StatusCode;
 
         // Assert - 1

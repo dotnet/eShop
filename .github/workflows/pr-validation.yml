@@ -26,4 +26,4 @@ jobs:
       - name: Build 
         run: dotnet build eShop.Web.slnf
       - name: Test
-        run: dotnet test eShop.Web.slnf
+        run: dotnet test --solution eShop.Web.slnf --no-build --no-progress --output detailed

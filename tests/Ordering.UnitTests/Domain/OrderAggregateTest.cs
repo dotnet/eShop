@@ -125,7 +125,7 @@ public class OrderAggregateTest
         var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
 
         //Assert
-        Assert.AreEqual(fakeOrder.DomainEvents.Count, expectedResult);
+        Assert.HasCount(expectedResult, fakeOrder.DomainEvents);
     }
 
     [TestMethod]
@@ -148,7 +148,7 @@ public class OrderAggregateTest
         var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
         fakeOrder.AddDomainEvent(new OrderStartedDomainEvent(fakeOrder, "fakeName", "1", cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration));
         //Assert
-        Assert.AreEqual(fakeOrder.DomainEvents.Count, expectedResult);
+        Assert.HasCount(expectedResult, fakeOrder.DomainEvents);
     }
 
     [TestMethod]
@@ -173,6 +173,6 @@ public class OrderAggregateTest
         fakeOrder.AddDomainEvent(@fakeEvent);
         fakeOrder.RemoveDomainEvent(@fakeEvent);
         //Assert
-        Assert.AreEqual(fakeOrder.DomainEvents.Count, expectedResult);
+        Assert.HasCount(expectedResult, fakeOrder.DomainEvents);
     }
 }

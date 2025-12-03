@@ -27,6 +27,6 @@ public class OrdersServiceTests
         var ordersMockService = new OrderMockService();
         var result = await ordersMockService.GetOrdersAsync();
 
-        Assert.AreNotEqual(result.Count(), 0);
+        Assert.AreNotEqual(0, result.Count());
     }
 }
