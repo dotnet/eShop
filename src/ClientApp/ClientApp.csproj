@@ -68,7 +68,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="IdentityModel.OidcClient" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.30" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.50" />
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.30" />
     <PackageReference Include="Microsoft.Maui.Controls.Maps" Version="9.0.30" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
