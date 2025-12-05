@@ -313,6 +313,7 @@ body {
     align-items: flex-end;
     gap: 8px;
     align-self: stretch;
+    color: #FFFFFF;
     background: #000;
 }
 
