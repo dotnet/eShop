@@ -90,7 +90,7 @@
     <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
     <PackageVersion Include="xunit.v3.mtp-v2" Version="3.2.1" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.8.6" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.11.1" />
     <!-- Before license change -->
     <PackageVersion Include="MediatR" Version="13.0.0" />
   </ItemGroup>
