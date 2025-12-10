@@ -1,9 +1,8 @@
-﻿namespace eShop.Identity.API.Models.AccountViewModels
+﻿namespace eShop.Identity.API.Models.AccountViewModels;
+
+public record ForgotPasswordViewModel
 {
-    public record ForgotPasswordViewModel
-    {
-        [Required]
-        [EmailAddress]
-        public string Email { get; init; }
-    }
+    [Required]
+    [EmailAddress]
+    public string Email { get; init; }
 }
