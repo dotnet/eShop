@@ -1,0 +1,62 @@
+pipeline {
+    agent any
+
+    environment {
+        KUBECONFIG_CREDENTIALS = 'kubeconfig-dev'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Show workspace files') {
+            steps {
+                sh 'pwd'
+                sh 'ls -l'
+                sh 'ls -l helm'
+                sh 'ls -l helm/eshop'
+                sh 'ls -l helm/eshop/templates'
+                sh 'ls -l *.yaml'
+            }
+        }
+
+        stage('Deploy to DEV') {
+            steps {
+                withCredentials([file(credentialsId: env.KUBECONFIG_CREDENTIALS, variable: 'KUBECONFIG')]) {
+                    sh '''
+                    helm upgrade --install eshop ./helm/eshop -f values-dev.yaml -n eshop-dev --create-namespace --kubeconfig $KUBECONFIG
+                    '''
+                }
+            }
+        }
+
+        stage('Approval before PROD') {
+            steps {
+                input message: 'Valider le déploiement en PROD ?'
+            }
+        }
+
+        stage('Deploy to PROD') {
+            steps {
+                withCredentials([file(credentialsId: env.KUBECONFIG_CREDENTIALS, variable: 'KUBECONFIG')]) {
+                    sh '''
+                    helm upgrade --install eshop ./helm/eshop -f values-prod.yaml -n eshop-prod --create-namespace --kubeconfig $KUBECONFIG
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Pipeline de déploiement réussi.'
+        }
+        failure {
+            echo '❌ Pipeline de déploiement échoué.'
+        }
+    }
+}
+
