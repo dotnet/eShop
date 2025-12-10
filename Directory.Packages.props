@@ -12,16 +12,16 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Version together with Aspire -->
-    <PackageVersion Include="Aspire.Hosting.Azure.CognitiveServices" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Hosting.Redis" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Hosting.Yarp" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Npgsql" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.RabbitMQ.Client" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.StackExchange.Redis" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Azure.AI.OpenAI" Version="$(AspireUnstablePackagesVersion)" />
+    <PackageVersion Include="Aspire.Hosting.Azure.CognitiveServices" Version="13.1.0-pr.13442.g1a20fefc" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.1.0-pr.13442.g1a20fefc" />
+    <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="13.1.0-pr.13442.g1a20fefc" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="13.1.0-pr.13442.g1a20fefc" />
+    <PackageVersion Include="Aspire.Hosting.Yarp" Version="13.1.0-pr.13442.g1a20fefc" />
+    <PackageVersion Include="Aspire.Npgsql" Version="13.1.0-pr.13442.g1a20fefc" />
+    <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.1.0-pr.13442.g1a20fefc" />
+    <PackageVersion Include="Aspire.RabbitMQ.Client" Version="13.1.0-pr.13442.g1a20fefc" />
+    <PackageVersion Include="Aspire.StackExchange.Redis" Version="13.1.0-pr.13442.g1a20fefc" />
+    <PackageVersion Include="Aspire.Azure.AI.OpenAI" Version="13.1.0-pr.13442.g1a20fefc" />
     <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -63,12 +63,12 @@
     <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="9.8.0-beta.395" />
     <PackageVersion Include="CommunityToolkit.Aspire.OllamaSharp" Version="9.8.0-beta.395" />
     <!-- Open Telemetry -->
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.12.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.12.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.12.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.12.0-beta.1" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.12.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.12.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.14.0-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.14.0" />
     <!-- IdentityServer -->
     <PackageVersion Include="Duende.IdentityServer" Version="7.3.2" />
     <PackageVersion Include="Duende.IdentityServer.AspNetIdentity" Version="7.3.2" />
