@@ -1,4 +1,4 @@
-# eShop Reference Application - "AdventureWorks"
+# eShop 13-Aug-23 Reference Application - "AdventureWorks"
 
 A reference .NET application implementing an e-commerce website using a services-based architecture using [.NET Aspire](https://learn.microsoft.com/dotnet/aspire/).
 
@@ -6,9 +6,9 @@ A reference .NET application implementing an e-commerce website using a services
 
 ![eShop homepage screenshot](img/eshop_homepage.png)
 
-## Getting Started
+## Getting Started ## Teat ## Test2 ## MCP ##
 
-This version of eShop is based on .NET 9. 
+This version of eShop is based on .NET 9. ++++++++++++++++++ My 10-aug test ===========================
 
 Previous eShop versions:
 * [.NET 8](https://github.com/dotnet/eShop/tree/release/8.0)
