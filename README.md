@@ -8,7 +8,85 @@ A reference .NET application implementing an e-commerce website using a services
 
 ## Getting Started
 
-This version of eShop is based on .NET 9. 
+[.NET 10 Support]
+
+The eShop project now includes support for .NET 10 Preview, allowing developers to take advantage of the newest runtime improvements, performance updates, and ASP.NET Core features. While .NET 9 remains fully supported, users running newer SDKs can build and run the application on .NET 10 without making any code changes.
+
+Install the .NET 10 Preview SDK
+
+To run eShop using .NET 10, install the latest SDK from Microsoft:
+
+Download: https://dotnet.microsoft.com/download/dotnet/10.0
+
+Verify installation:
+
+dotnet --version
+
+
+You should see a version starting with 10.0.
+
+Running the application with .NET 10
+
+Once .NET 10 Preview is installed, you can run eShop exactly the same way:
+
+dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj
+
+
+The Aspire dashboard should appear as usual, and all microservices will be launched through eShop.AppHost.
+
+Global.json behavior
+
+If your environment contains multiple .NET SDK versions, .NET 10 will be used automatically, unless the repo contains a global.json specifying another version.
+
+To explicitly use .NET 10, you may create or update global.json:
+
+{
+  "sdk": {
+    "version": "10.0.0-preview.1"
+  }
+}
+
+
+(This step is optional but ensures consistency across development machines.)
+
+Compatibility Notes
+
+.NET 10 is still in preview, so APIs and tooling may change.
+
+Some IDEs, such as Visual Studio, may require the latest preview version to fully support .NET 10 projects.
+
+Docker container images for .NET 10 Preview must be pulled manually if using containerized builds.
+
+Example Docker base image:
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-preview
+
+### Troubleshooting
+
+If the project fails to build with .NET 10:
+
+Ensure Docker Desktop is running
+
+Rebuild NuGet packages:
+
+dotnet restore --force
+
+
+Clear old build outputs:
+
+dotnet clean
+
+
+Confirm your SDK version:
+
+dotnet --list-sdks
+
+
+If .NET 10 does not appear in the list, reinstall the SDK.
+
+Ongoing updates
+
+As .NET 10 Preview evolves, the eShop team will continue updating this repository to ensure compatibility and incorporate new Aspire features. Developers are encouraged to report any preview-related issues through the GitHub issue tracker so they can be addressed before the final release.
 
 Previous eShop versions:
 * [.NET 8](https://github.com/dotnet/eShop/tree/release/8.0)
