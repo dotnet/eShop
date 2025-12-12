@@ -49,9 +49,12 @@
 @code {
     IEnumerable<CatalogBrand>? catalogBrands;
     IEnumerable<CatalogItemType>? catalogItemTypes;
+    
+    // Parameters are set by the framework from query string
     [Parameter] public int? BrandId { get; set; }
     [Parameter] public int? ItemTypeId { get; set; }
 
+    // Fetch catalog data once on component initialization
     protected override async Task OnInitializedAsync()
     {
         var brandsTask = CatalogService.GetBrands();
@@ -61,15 +64,35 @@
         catalogItemTypes = itemTypesTask.Result;
     }
 
+    // Validate parameters after they have been set from the query string
+    protected override Task OnParametersSetAsync()
+    {
+        // Check for invalid BrandId value and reset to null (All)
+        if (BrandId.HasValue && BrandId.Value < 0)
+        {
+            BrandId = null;
+        }
+
+        // Check for invalid ItemTypeId value and reset to null (All)
+        if (ItemTypeId.HasValue && ItemTypeId.Value < 0)
+        {
+            ItemTypeId = null;
+        }
+
+        return base.OnParametersSetAsync();
+    }
+
     private string BrandUri(int? brandId) => Nav.GetUriWithQueryParameters(new Dictionary<string, object?>()
     {
         { "page", null },
         { "brand", brandId },
+        { "type", ItemTypeId } // Preserve the current ItemTypeId when changing the brand
     });
 
     private string TypeUri(int? typeId) => Nav.GetUriWithQueryParameters(new Dictionary<string, object?>()
     {
         { "page", null },
         { "type", typeId },
+        { "brand", BrandId } // Preserve the current BrandId when changing the type
     });
 }
