@@ -132,7 +132,12 @@ public class BasketState(
             var catalogItems = (await catalogService.GetCatalogItems(productIds)).ToDictionary(k => k.Id, v => v);
             foreach (var item in quantities)
             {
-                var catalogItem = catalogItems[item.ProductId];
+                // Skip items that no longer exist in the catalog (may have been deleted)
+                if (!catalogItems.TryGetValue(item.ProductId, out var catalogItem))
+                {
+                    continue;
+                }
+                
                 var orderItem = new BasketItem
                 {
                     Id = Guid.NewGuid().ToString(), // TODO: this value is meaningless, use ProductId instead.
