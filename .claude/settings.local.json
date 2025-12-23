@@ -23,7 +23,9 @@
       "Bash(dotnet clean:*)",
       "Bash(timeout /t 30 /nobreak)",
       "Bash(tasklist:*)",
-      "Bash(npx playwright test:*)"
+      "Bash(npx playwright test:*)",
+      "Bash(git:*)",
+      "Bash(gh pr:*)"
     ]
   }
 }

@@ -17,6 +17,8 @@ A reference .NET application implementing an e-commerce website using a services
 src/
 ├── eShop.AppHost/          # Aspire orchestrator (startup project)
 ├── eShop.ServiceDefaults/  # Shared Aspire configurations
+├── Shared/                 # Shared utilities and common code
+├── Admin.UI/               # React admin dashboard (Vite + shadcn/ui + TanStack)
 ├── Basket.API/             # Shopping basket microservice
 ├── Catalog.API/            # Product catalog microservice
 ├── Identity.API/           # Authentication/authorization service
@@ -25,6 +27,9 @@ src/
 ├── Ordering.Infrastructure/# Data access for ordering
 ├── OrderProcessor/         # Background order processing
 ├── PaymentProcessor/       # Payment handling service
+├── Warehouse.API/          # Warehouse management API
+├── Warehouse.Domain/       # Domain models for warehouse
+├── Warehouse.Infrastructure/# Data access for warehouse
 ├── WebApp/                 # Main Blazor web application
 ├── WebAppComponents/       # Shared Blazor components
 ├── Webhooks.API/           # Webhook management service
@@ -59,6 +64,7 @@ Or use the provided `runLocal.ps1` script.
 - `catalogdb` - Product catalog (PostgreSQL with pgvector)
 - `identitydb` - User authentication data
 - `orderingdb` - Orders and related data
+- `warehousedb` - Warehouse inventory data
 - `webhooksdb` - Webhook subscriptions
 
 ## Configuration
@@ -95,9 +101,21 @@ Creates Clean Architecture projects:
 Creates a DB Migrator for existing services.
 
 ## Available Commands
+- `/implement [branch-name] [task]` - Full workflow: plan, branch, implement, test, PR
 - `/new-react-ui [Name]` - Create React UI with shadcn + TanStack
 - `/new-backend-service [Name]` - Create Clean Architecture backend
 - `/new-db-migrator [Name]` - Create DB Migrator project
+
+### Implementation Workflow (`/implement`)
+```
+/implement feature/add-inventory Add inventory tracking to warehouse
+```
+This orchestrates the complete development workflow:
+1. **Plan** - Enter plan mode, analyze codebase, create todo list
+2. **Branch** - Checkout main, pull latest, create feature branch
+3. **Implement** - Execute tasks from todo list
+4. **Test** - Run Playwright e2e tests
+5. **PR** - Commit changes and create pull request
 
 ## Scripts
 - `runLocal.ps1` - Run Aspire host locally
