@@ -16,6 +16,7 @@ var catalogDb = postgres.AddDatabase("catalogdb");
 var identityDb = postgres.AddDatabase("identitydb");
 var orderDb = postgres.AddDatabase("orderingdb");
 var webhooksDb = postgres.AddDatabase("webhooksdb");
+var warehouseDb = postgres.AddDatabase("warehousedb");
 
 var launchProfileName = ShouldUseHttpForEndpoints() ? "http" : "https";
 
@@ -55,6 +56,12 @@ var webHooksApi = builder.AddProject<Projects.Webhooks_API>("webhooks-api")
     .WithReference(webhooksDb)
     .WithEnvironment("Identity__Url", identityEndpoint);
 
+var warehouseApi = builder.AddProject<Projects.Warehouse_API>("warehouse-api")
+    .WithReference(warehouseDb).WaitFor(warehouseDb)
+    .WithReference(catalogApi).WaitFor(catalogApi)
+    .WithHttpHealthCheck("/health")
+    .WithEnvironment("Identity__Url", identityEndpoint);
+
 // Reverse proxies
 builder.AddYarp("mobile-bff")
     .WithExternalHttpEndpoints()
@@ -73,6 +80,14 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
     .WithReference(orderingApi)
     .WithReference(rabbitMq).WaitFor(rabbitMq)
     .WithEnvironment("IdentityUrl", identityEndpoint);
+
+var adminUi = builder.AddViteApp("admin-ui", "../Admin.UI")
+    .WithReference(warehouseApi)
+    .WithReference(catalogApi)
+    .WithExternalHttpEndpoints()
+    .WithEnvironment("VITE_IDENTITY_URL", identityEndpoint)
+    .WithEnvironment("VITE_WAREHOUSE_API_URL", warehouseApi.GetEndpoint("http"))
+    .WithEnvironment("VITE_CATALOG_API_URL", catalogApi.GetEndpoint("http"));
 
 // set to true if you want to use OpenAI
 bool useOpenAI = false;
@@ -95,6 +110,8 @@ webhooksClient.WithEnvironment("CallBackUrl", webhooksClient.GetEndpoint(launchP
 identityApi.WithEnvironment("BasketApiClient", basketApi.GetEndpoint("http"))
            .WithEnvironment("OrderingApiClient", orderingApi.GetEndpoint("http"))
            .WithEnvironment("WebhooksApiClient", webHooksApi.GetEndpoint("http"))
+           .WithEnvironment("WarehouseApiClient", warehouseApi.GetEndpoint("http"))
+           .WithEnvironment("AdminUiClient", adminUi.GetEndpoint("http"))
            .WithEnvironment("WebhooksWebClient", webhooksClient.GetEndpoint(launchProfileName))
            .WithEnvironment("WebAppClient", webApp.GetEndpoint(launchProfileName));
 

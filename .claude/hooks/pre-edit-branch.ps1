@@ -41,15 +41,21 @@ try {
 
     # Check if we're on main/master branch
     if ($currentBranch -eq "main" -or $currentBranch -eq "master") {
-        # Check if there are any uncommitted changes already
-        $hasChanges = git status --porcelain 2>&1
+        # Check if there are any new commits ahead of origin/main or origin/master
+        $remoteBranch = "origin/$currentBranch"
 
-        if (-not $hasChanges) {
-            # No changes yet, create a new feature branch
+        # Fetch latest from remote (silent)
+        git fetch origin $currentBranch 2>&1 | Out-Null
+
+        # Count commits ahead of remote
+        $commitsAhead = git rev-list --count "$remoteBranch..HEAD" 2>&1
+
+        # If no new commits from main, create a new feature branch
+        if ($LASTEXITCODE -eq 0 -and [int]$commitsAhead -eq 0) {
             $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
             $branchName = "feature/claude-$timestamp"
 
-            # Create and checkout new branch
+            # Create and checkout new branch (uncommitted changes will follow)
             git checkout -b $branchName 2>&1 | Out-Null
 
             if ($LASTEXITCODE -eq 0) {

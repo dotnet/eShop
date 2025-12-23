@@ -40,6 +40,20 @@ builder.Services.AddTransient<IProfileService, ProfileService>();
 builder.Services.AddTransient<ILoginService<ApplicationUser>, EFLoginService>();
 builder.Services.AddTransient<IRedirectService, RedirectService>();
 
+// Add CORS for Admin UI and other SPAs
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        var adminUiClient = builder.Configuration["AdminUiClient"] ?? "http://localhost:5173";
+        var origins = new List<string> { adminUiClient, "http://localhost:5173" };
+        policy.WithOrigins(origins.Distinct().ToArray())
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
@@ -49,6 +63,7 @@ app.UseStaticFiles();
 // This cookie policy fixes login issues with Chrome 80+ using HTTP
 app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax });
 app.UseRouting();
+app.UseCors();
 app.UseIdentityServer();
 app.UseAuthorization();
 

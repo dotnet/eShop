@@ -10,6 +10,7 @@
                 new ApiResource("orders", "Orders Service"),
                 new ApiResource("basket", "Basket Service"),
                 new ApiResource("webhooks", "Webhooks registration Service"),
+                new ApiResource("warehouse", "Warehouse Service"),
             };
         }
 
@@ -22,6 +23,7 @@
                 new ApiScope("orders", "Orders Service"),
                 new ApiScope("basket", "Basket Service"),
                 new ApiScope("webhooks", "Webhooks registration Service"),
+                new ApiScope("warehouse", "Warehouse Service"),
             };
         }
 
@@ -32,7 +34,8 @@
             return new List<IdentityResource>
             {
                 new IdentityResources.OpenId(),
-                new IdentityResources.Profile()
+                new IdentityResources.Profile(),
+                new IdentityResource("roles", "User roles", new[] { "role" })
             };
         }
 
@@ -185,6 +188,64 @@
                     {
                         "webhooks"
                     }
+                },
+                new Client
+                {
+                    ClientId = "warehouseswaggerui",
+                    ClientName = "Warehouse Service Swagger UI",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+
+                    RedirectUris = { $"{configuration["WarehouseApiClient"] ?? "http://localhost:5000"}/swagger/oauth2-redirect.html" },
+                    PostLogoutRedirectUris = { $"{configuration["WarehouseApiClient"] ?? "http://localhost:5000"}/swagger/" },
+
+                    AllowedScopes =
+                    {
+                        "warehouse"
+                    }
+                },
+                new Client
+                {
+                    ClientId = "admin-ui",
+                    ClientName = "Admin UI",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = true,
+                    RequireClientSecret = false,
+                    AllowAccessTokensViaBrowser = true,
+                    RequireConsent = false,
+                    AllowOfflineAccess = true,
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    RedirectUris = new List<string>
+                    {
+                        $"{configuration["AdminUiClient"] ?? "http://localhost:5173"}/callback",
+                        $"{configuration["AdminUiClient"] ?? "http://localhost:5173"}/silent-renew.html",
+                        // Always allow localhost:5173 for local development with npm run dev
+                        "http://localhost:5173/callback",
+                        "http://localhost:5173/silent-renew.html"
+                    },
+                    PostLogoutRedirectUris = new List<string>
+                    {
+                        $"{configuration["AdminUiClient"] ?? "http://localhost:5173"}/",
+                        $"{configuration["AdminUiClient"] ?? "http://localhost:5173"}/login",
+                        "http://localhost:5173/",
+                        "http://localhost:5173/login"
+                    },
+                    AllowedCorsOrigins = new List<string>
+                    {
+                        configuration["AdminUiClient"] ?? "http://localhost:5173",
+                        "http://localhost:5173"
+                    },
+                    AllowedScopes = new List<string>
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OfflineAccess,
+                        "roles",
+                        "warehouse",
+                        "orders"
+                    },
+                    AccessTokenLifetime = 60*60*2,
+                    IdentityTokenLifetime = 60*60*2
                 }
             };
         }

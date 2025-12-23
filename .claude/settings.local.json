@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(new-backend-service)",
+      "Skill(new-backend-service:*)",
+      "Skill(new-react-ui)",
+      "Skill(new-react-ui:*)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet ef migrations add:*)",
+      "Bash(npm install:*)",
+      "Bash(npx playwright install:*)",
+      "Bash(npm run test:*)",
+      "Bash(timeout 10 npm run dev:*)",
+      "Bash(dotnet test:*)",
+      "Bash(curl:*)",
+      "Bash(taskkill:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(npm run build:*)",
+      "Bash(timeout 5 dotnet run:*)",
+      "Bash(exit 0)",
+      "Bash(dotnet run:*)",
+      "Bash(cat:*)",
+      "Bash(dotnet clean:*)",
+      "Bash(timeout /t 30 /nobreak)",
+      "Bash(tasklist:*)",
+      "Bash(npx playwright test:*)"
+    ]
+  }
+}

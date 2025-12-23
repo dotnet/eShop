@@ -1,10 +1,67 @@
-﻿
+﻿using Microsoft.AspNetCore.Identity;
+
 namespace eShop.Identity.API;
 
-public class UsersSeed(ILogger<UsersSeed> logger, UserManager<ApplicationUser> userManager) : IDbSeeder<ApplicationDbContext>
+public class UsersSeed(
+    ILogger<UsersSeed> logger,
+    UserManager<ApplicationUser> userManager,
+    RoleManager<IdentityRole> roleManager) : IDbSeeder<ApplicationDbContext>
 {
     public async Task SeedAsync(ApplicationDbContext context)
     {
+        // Seed Admin role
+        if (!await roleManager.RoleExistsAsync("Admin"))
+        {
+            await roleManager.CreateAsync(new IdentityRole("Admin"));
+            logger.LogDebug("Admin role created");
+        }
+
+        // Seed admin user
+        var admin = await userManager.FindByNameAsync("admin");
+        if (admin == null)
+        {
+            admin = new ApplicationUser
+            {
+                UserName = "admin",
+                Email = "admin@eshop.com",
+                EmailConfirmed = true,
+                CardHolderName = "Admin User",
+                CardNumber = "XXXXXXXXXXXX0000",
+                CardType = 1,
+                City = "Seattle",
+                Country = "U.S.",
+                Expiration = "12/25",
+                Id = Guid.NewGuid().ToString(),
+                LastName = "Admin",
+                Name = "System",
+                PhoneNumber = "0000000000",
+                ZipCode = "98101",
+                State = "WA",
+                Street = "1 Admin Way",
+                SecurityNumber = "000"
+            };
+
+            var result = await userManager.CreateAsync(admin, "Admin123$");
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(admin, "Admin");
+                logger.LogDebug("admin user created and assigned to Admin role");
+            }
+            else
+            {
+                throw new Exception(result.Errors.First().Description);
+            }
+        }
+        else
+        {
+            // Ensure existing admin has Admin role
+            if (!await userManager.IsInRoleAsync(admin, "Admin"))
+            {
+                await userManager.AddToRoleAsync(admin, "Admin");
+                logger.LogDebug("Admin role assigned to existing admin user");
+            }
+        }
+
         var alice = await userManager.FindByNameAsync("alice");
 
         if (alice == null)

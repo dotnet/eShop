@@ -1,0 +1,14 @@
+global using Asp.Versioning;
+global using Asp.Versioning.Builder;
+global using Asp.Versioning.Conventions;
+global using Microsoft.AspNetCore.Http.HttpResults;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;
+global using eShop.Warehouse.Domain.AggregatesModel.WarehouseAggregate;
+global using eShop.Warehouse.Domain.SeedWork;
+global using eShop.Warehouse.Infrastructure;
+global using eShop.Warehouse.Infrastructure.Repositories;
+global using eShop.Warehouse.API.Apis;
+global using eShop.Warehouse.API.Extensions;
+global using eShop.Warehouse.API.Infrastructure;
+global using eShop.ServiceDefaults;
