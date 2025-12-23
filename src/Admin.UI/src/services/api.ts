@@ -1,6 +1,12 @@
 import { getAccessToken } from '@/lib/auth';
 
 const WAREHOUSE_API_URL = import.meta.env.VITE_WAREHOUSE_API_URL || '';
+const API_VERSION = '1.0';
+
+function withVersion(url: string): string {
+  const separator = url.includes('?') ? '&' : '?';
+  return `${url}${separator}api-version=${API_VERSION}`;
+}
 
 async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
   const token = await getAccessToken();
@@ -27,17 +33,17 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
 export const warehouseApi = {
   // Warehouses
   getAll: async () => {
-    const response = await fetchWithAuth(`${WAREHOUSE_API_URL}/api/warehouse`);
+    const response = await fetchWithAuth(withVersion(`${WAREHOUSE_API_URL}/api/warehouse`));
     return response.json();
   },
 
   getById: async (id: number) => {
-    const response = await fetchWithAuth(`${WAREHOUSE_API_URL}/api/warehouse/${id}`);
+    const response = await fetchWithAuth(withVersion(`${WAREHOUSE_API_URL}/api/warehouse/${id}`));
     return response.json();
   },
 
   create: async (data: { name: string; address: string; city: string; country: string; latitude: number; longitude: number }) => {
-    const response = await fetchWithAuth(`${WAREHOUSE_API_URL}/api/warehouse`, {
+    const response = await fetchWithAuth(withVersion(`${WAREHOUSE_API_URL}/api/warehouse`), {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -45,7 +51,7 @@ export const warehouseApi = {
   },
 
   update: async (id: number, data: { name: string; address: string; city: string; country: string; latitude: number; longitude: number }) => {
-    const response = await fetchWithAuth(`${WAREHOUSE_API_URL}/api/warehouse/${id}`, {
+    const response = await fetchWithAuth(withVersion(`${WAREHOUSE_API_URL}/api/warehouse/${id}`), {
       method: 'PUT',
       body: JSON.stringify(data),
     });
@@ -53,36 +59,36 @@ export const warehouseApi = {
   },
 
   delete: async (id: number) => {
-    await fetchWithAuth(`${WAREHOUSE_API_URL}/api/warehouse/${id}`, {
+    await fetchWithAuth(withVersion(`${WAREHOUSE_API_URL}/api/warehouse/${id}`), {
       method: 'DELETE',
     });
   },
 
   activate: async (id: number) => {
-    await fetchWithAuth(`${WAREHOUSE_API_URL}/api/warehouse/${id}/activate`, {
+    await fetchWithAuth(withVersion(`${WAREHOUSE_API_URL}/api/warehouse/${id}/activate`), {
       method: 'PUT',
     });
   },
 
   deactivate: async (id: number) => {
-    await fetchWithAuth(`${WAREHOUSE_API_URL}/api/warehouse/${id}/deactivate`, {
+    await fetchWithAuth(withVersion(`${WAREHOUSE_API_URL}/api/warehouse/${id}/deactivate`), {
       method: 'PUT',
     });
   },
 
   // Inventory
   getInventory: async (warehouseId: number) => {
-    const response = await fetchWithAuth(`${WAREHOUSE_API_URL}/api/warehouse/${warehouseId}/inventory`);
+    const response = await fetchWithAuth(withVersion(`${WAREHOUSE_API_URL}/api/warehouse/${warehouseId}/inventory`));
     return response.json();
   },
 
   getProductInventory: async (catalogItemId: number) => {
-    const response = await fetchWithAuth(`${WAREHOUSE_API_URL}/api/warehouse/inventory/product/${catalogItemId}`);
+    const response = await fetchWithAuth(withVersion(`${WAREHOUSE_API_URL}/api/warehouse/inventory/product/${catalogItemId}`));
     return response.json();
   },
 
   setInventory: async (warehouseId: number, catalogItemId: number, quantity: number) => {
-    const response = await fetchWithAuth(`${WAREHOUSE_API_URL}/api/warehouse/${warehouseId}/inventory/${catalogItemId}`, {
+    const response = await fetchWithAuth(withVersion(`${WAREHOUSE_API_URL}/api/warehouse/${warehouseId}/inventory/${catalogItemId}`), {
       method: 'PUT',
       body: JSON.stringify({ quantity }),
     });
@@ -90,7 +96,7 @@ export const warehouseApi = {
   },
 
   addStock: async (warehouseId: number, catalogItemId: number, amount: number) => {
-    const response = await fetchWithAuth(`${WAREHOUSE_API_URL}/api/warehouse/${warehouseId}/inventory/${catalogItemId}/add`, {
+    const response = await fetchWithAuth(withVersion(`${WAREHOUSE_API_URL}/api/warehouse/${warehouseId}/inventory/${catalogItemId}/add`), {
       method: 'POST',
       body: JSON.stringify({ amount }),
     });
@@ -98,7 +104,7 @@ export const warehouseApi = {
   },
 
   removeStock: async (warehouseId: number, catalogItemId: number, amount: number) => {
-    const response = await fetchWithAuth(`${WAREHOUSE_API_URL}/api/warehouse/${warehouseId}/inventory/${catalogItemId}/remove`, {
+    const response = await fetchWithAuth(withVersion(`${WAREHOUSE_API_URL}/api/warehouse/${warehouseId}/inventory/${catalogItemId}/remove`), {
       method: 'POST',
       body: JSON.stringify({ amount }),
     });
