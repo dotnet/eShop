@@ -2,45 +2,53 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { LogIn, Loader2, AlertCircle } from 'lucide-react';
-import { login, getStoredUser } from '@/lib/auth';
-import { useAuth } from 'react-oidc-context';
+import { loginWithCredentials, getStoredUser, isAdmin } from '@/lib/auth';
+import { useDirectAuth } from '@/App';
 
 export function Login() {
   const navigate = useNavigate();
-  const auth = useAuth();
+  const { setUser } = useDirectAuth();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check if already logged in via direct storage
+    // Check if already logged in
     const storedUser = getStoredUser();
     if (storedUser && !storedUser.expired) {
       navigate({ to: '/' });
-      return;
     }
+  }, [navigate]);
 
-    // Check if logged in via OIDC
-    if (auth.isAuthenticated && auth.user) {
-      navigate({ to: '/' });
-    }
-  }, [navigate, auth.isAuthenticated, auth.user]);
-
-  // Handle OIDC errors
-  useEffect(() => {
-    if (auth.error) {
-      setError(auth.error.message || 'Authentication failed');
-      setIsLoading(false);
-    }
-  }, [auth.error]);
-
-  const handleLogin = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setError(null);
     setIsLoading(true);
 
     try {
-      // Use OIDC redirect flow
-      await login();
+      const result = await loginWithCredentials(username, password);
+
+      if (!result.success) {
+        setError(result.error || 'Login failed');
+        setIsLoading(false);
+        return;
+      }
+
+      if (result.user) {
+        // Check if user has Admin role
+        if (!isAdmin(result.user)) {
+          setError('Access denied. Admin role required.');
+          setIsLoading(false);
+          return;
+        }
+
+        setUser(result.user);
+        navigate({ to: '/' });
+      }
     } catch (err) {
       console.error('Login error:', err);
       setError(err instanceof Error ? err.message : 'An unexpected error occurred');
@@ -57,36 +65,55 @@ export function Login() {
             Sign in to access the admin dashboard
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {error && (
-            <div className="flex items-center gap-2 p-3 text-sm text-destructive bg-destructive/10 rounded-md">
-              <AlertCircle className="h-4 w-4" />
-              {error}
-            </div>
-          )}
-
-          <Button
-            onClick={handleLogin}
-            className="w-full"
-            size="lg"
-            disabled={isLoading || auth.isLoading}
-          >
-            {isLoading || auth.isLoading ? (
-              <>
-                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                Redirecting to login...
-              </>
-            ) : (
-              <>
-                <LogIn className="h-5 w-5 mr-2" />
-                Sign in with Identity Server
-              </>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="flex items-center gap-2 p-3 text-sm text-destructive bg-destructive/10 rounded-md">
+                <AlertCircle className="h-4 w-4" />
+                {error}
+              </div>
             )}
-          </Button>
 
-          <p className="text-xs text-center text-muted-foreground mt-4">
-            You will be redirected to the secure login page
-          </p>
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter your username"
+                required
+                disabled={isLoading}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required
+                disabled={isLoading}
+              />
+            </div>
+
+            <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                <>
+                  <LogIn className="h-5 w-5 mr-2" />
+                  Sign In
+                </>
+              )}
+            </Button>
+          </form>
         </CardContent>
       </Card>
     </div>

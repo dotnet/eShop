@@ -1,17 +1,19 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Login Page', () => {
-  test('should display login page with sign in button', async ({ page }) => {
+  test('should display login form with username and password fields', async ({ page }) => {
     await page.goto('/login');
 
     // Check page title
     await expect(page).toHaveTitle(/eShop Admin/);
 
-    // Check for eShop Admin text
-    await expect(page.getByText('eShop Admin')).toBeVisible();
-
-    // Check for sign in button (OIDC flow uses a button to redirect)
+    // Check form fields exist
+    const usernameInput = page.getByLabel('Username');
+    const passwordInput = page.getByLabel('Password');
     const loginButton = page.getByRole('button', { name: /sign in/i });
+
+    await expect(usernameInput).toBeVisible();
+    await expect(passwordInput).toBeVisible();
     await expect(loginButton).toBeVisible();
   });
 
@@ -25,56 +27,176 @@ test.describe('Login Page', () => {
     await expect(page.getByText(/Sign in to access/i)).toBeVisible();
   });
 
-  test('should have sign in button with proper text', async ({ page }) => {
+  test('should allow typing in form fields', async ({ page }) => {
     await page.goto('/login');
 
-    // Button should indicate OIDC flow
-    const loginButton = page.getByRole('button', { name: /sign in with identity server/i });
-    await expect(loginButton).toBeVisible();
+    const usernameInput = page.getByLabel('Username');
+    const passwordInput = page.getByLabel('Password');
+
+    await usernameInput.fill('testuser');
+    await passwordInput.fill('testpassword');
+
+    await expect(usernameInput).toHaveValue('testuser');
+    await expect(passwordInput).toHaveValue('testpassword');
   });
 
-  test('should show redirect message', async ({ page }) => {
+  test('should show error message on failed login', async ({ page }) => {
+    // Mock the token endpoint to return an error
+    await page.route('**/connect/token', async (route) => {
+      await route.fulfill({
+        status: 400,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          error: 'invalid_grant',
+          error_description: 'Invalid username or password',
+        }),
+      });
+    });
+
     await page.goto('/login');
 
-    // Should show message about redirection
-    await expect(page.getByText(/redirect.*secure.*login/i)).toBeVisible();
-  });
-
-  test('should initiate OIDC redirect on button click', async ({ page }) => {
-    await page.goto('/login');
-
+    const usernameInput = page.getByLabel('Username');
+    const passwordInput = page.getByLabel('Password');
     const loginButton = page.getByRole('button', { name: /sign in/i });
 
-    // Button should be visible and clickable
-    await expect(loginButton).toBeVisible();
-    await expect(loginButton).toBeEnabled();
+    await usernameInput.fill('wronguser');
+    await passwordInput.fill('wrongpassword');
+    await loginButton.click();
 
-    // Clicking should not throw an error (in real scenario it would redirect)
-    // We just verify the button is functional
-    await expect(loginButton).toHaveText(/sign in/i);
+    // Wait for error message
+    const errorMessage = page.getByText(/Invalid username or password/i);
+    await expect(errorMessage).toBeVisible();
+  });
+
+  test('should show loading state during login', async ({ page }) => {
+    // Mock slow response
+    await page.route('**/connect/token', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await route.fulfill({
+        status: 400,
+        contentType: 'application/json',
+        body: JSON.stringify({ error: 'invalid_grant' }),
+      });
+    });
+
+    await page.goto('/login');
+
+    const usernameInput = page.getByLabel('Username');
+    const passwordInput = page.getByLabel('Password');
+    const loginButton = page.getByRole('button', { name: /sign in/i });
+
+    await usernameInput.fill('user');
+    await passwordInput.fill('pass');
+    await loginButton.click();
+
+    // Check for loading state
+    await expect(page.getByText(/Signing in/i)).toBeVisible();
+  });
+
+  test('should redirect to dashboard on successful login', async ({ page }) => {
+    // Mock successful token response
+    await page.route('**/connect/token', async (route) => {
+      const mockToken = btoa(JSON.stringify({ alg: 'HS256' })) + '.' +
+        btoa(JSON.stringify({
+          sub: '1',
+          name: 'Admin User',
+          email: 'admin@test.com',
+          role: 'Admin',
+          iss: 'test',
+          aud: 'admin-ui',
+          exp: Math.floor(Date.now() / 1000) + 3600,
+          iat: Math.floor(Date.now() / 1000),
+        })) + '.signature';
+
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          access_token: mockToken,
+          token_type: 'Bearer',
+          expires_in: 3600,
+          scope: 'openid profile roles warehouse orders offline_access',
+        }),
+      });
+    });
+
+    await page.goto('/login');
+
+    const usernameInput = page.getByLabel('Username');
+    const passwordInput = page.getByLabel('Password');
+    const loginButton = page.getByRole('button', { name: /sign in/i });
+
+    await usernameInput.fill('admin');
+    await passwordInput.fill('Admin123$');
+    await loginButton.click();
+
+    // Should redirect to dashboard
+    await expect(page).toHaveURL('/');
+  });
+
+  test('should deny access for non-admin users', async ({ page }) => {
+    // Mock token response without Admin role
+    await page.route('**/connect/token', async (route) => {
+      const mockToken = btoa(JSON.stringify({ alg: 'HS256' })) + '.' +
+        btoa(JSON.stringify({
+          sub: '2',
+          name: 'Regular User',
+          email: 'user@test.com',
+          role: 'User',
+          iss: 'test',
+          aud: 'admin-ui',
+          exp: Math.floor(Date.now() / 1000) + 3600,
+          iat: Math.floor(Date.now() / 1000),
+        })) + '.signature';
+
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          access_token: mockToken,
+          token_type: 'Bearer',
+          expires_in: 3600,
+          scope: 'openid profile roles',
+        }),
+      });
+    });
+
+    await page.goto('/login');
+
+    const usernameInput = page.getByLabel('Username');
+    const passwordInput = page.getByLabel('Password');
+    const loginButton = page.getByRole('button', { name: /sign in/i });
+
+    await usernameInput.fill('alice');
+    await passwordInput.fill('Pass123$');
+    await loginButton.click();
+
+    // Should show access denied error
+    const errorMessage = page.getByText(/Access denied/i);
+    await expect(errorMessage).toBeVisible();
   });
 
   test('protected routes redirect to login when not authenticated', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
-    // Should show login page with sign in button
-    await expect(page.getByRole('button', { name: /sign in/i })).toBeVisible();
+    // Should show login form
+    await expect(page.getByLabel('Username')).toBeVisible();
   });
 
-  test('warehouses route shows login when not authenticated', async ({ page }) => {
+  test('warehouses route redirects to login when not authenticated', async ({ page }) => {
     await page.goto('/warehouses');
     await page.waitForLoadState('networkidle');
 
-    // Should show login page with sign in button
-    await expect(page.getByRole('button', { name: /sign in/i })).toBeVisible();
+    // Should show login form
+    await expect(page.getByLabel('Username')).toBeVisible();
   });
 
-  test('inventory route shows login when not authenticated', async ({ page }) => {
+  test('inventory route redirects to login when not authenticated', async ({ page }) => {
     await page.goto('/inventory');
     await page.waitForLoadState('networkidle');
 
-    // Should show login page with sign in button
-    await expect(page.getByRole('button', { name: /sign in/i })).toBeVisible();
+    // Should show login form
+    await expect(page.getByLabel('Username')).toBeVisible();
   });
 });

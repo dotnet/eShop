@@ -208,28 +208,11 @@
                 {
                     ClientId = "admin-ui",
                     ClientName = "Admin UI",
-                    AllowedGrantTypes = GrantTypes.Code,
-                    RequirePkce = true,
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     RequireClientSecret = false,
                     AllowAccessTokensViaBrowser = true,
-                    RequireConsent = false,
                     AllowOfflineAccess = true,
                     AlwaysIncludeUserClaimsInIdToken = true,
-                    RedirectUris = new List<string>
-                    {
-                        $"{configuration["AdminUiClient"] ?? "http://localhost:5173"}/callback",
-                        $"{configuration["AdminUiClient"] ?? "http://localhost:5173"}/silent-renew.html",
-                        // Always allow localhost:5173 for local development with npm run dev
-                        "http://localhost:5173/callback",
-                        "http://localhost:5173/silent-renew.html"
-                    },
-                    PostLogoutRedirectUris = new List<string>
-                    {
-                        $"{configuration["AdminUiClient"] ?? "http://localhost:5173"}/",
-                        $"{configuration["AdminUiClient"] ?? "http://localhost:5173"}/login",
-                        "http://localhost:5173/",
-                        "http://localhost:5173/login"
-                    },
                     AllowedCorsOrigins = new List<string>
                     {
                         configuration["AdminUiClient"] ?? "http://localhost:5173",
