@@ -1,0 +1,11 @@
+global using System.Data;
+global using MediatR;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Design;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using Microsoft.EntityFrameworkCore.Storage;
+global using eShop.Shipping.Domain.AggregatesModel.ShipmentAggregate;
+global using eShop.Shipping.Domain.AggregatesModel.ShipperAggregate;
+global using eShop.Shipping.Domain.Exceptions;
+global using eShop.Shipping.Domain.SeedWork;
+global using eShop.Shipping.Infrastructure.EntityConfigurations;

@@ -17,6 +17,7 @@ var identityDb = postgres.AddDatabase("identitydb");
 var orderDb = postgres.AddDatabase("orderingdb");
 var webhooksDb = postgres.AddDatabase("webhooksdb");
 var warehouseDb = postgres.AddDatabase("warehousedb");
+var shippingDb = postgres.AddDatabase("shippingdb");
 
 var launchProfileName = ShouldUseHttpForEndpoints() ? "http" : "https";
 
@@ -59,6 +60,13 @@ var webHooksApi = builder.AddProject<Projects.Webhooks_API>("webhooks-api")
 var warehouseApi = builder.AddProject<Projects.Warehouse_API>("warehouse-api")
     .WithReference(warehouseDb).WaitFor(warehouseDb)
     .WithReference(catalogApi).WaitFor(catalogApi)
+    .WithReference(rabbitMq).WaitFor(rabbitMq)
+    .WithHttpHealthCheck("/health")
+    .WithEnvironment("Identity__Url", identityEndpoint);
+
+var shippingApi = builder.AddProject<Projects.Shipping_API>("shipping-api")
+    .WithReference(shippingDb).WaitFor(shippingDb)
+    .WithReference(rabbitMq).WaitFor(rabbitMq)
     .WithHttpHealthCheck("/health")
     .WithEnvironment("Identity__Url", identityEndpoint);
 
@@ -78,16 +86,25 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
     .WithReference(basketApi)
     .WithReference(catalogApi)
     .WithReference(orderingApi)
+    .WithReference(shippingApi)
     .WithReference(rabbitMq).WaitFor(rabbitMq)
     .WithEnvironment("IdentityUrl", identityEndpoint);
 
 var adminUi = builder.AddViteApp("admin-ui", "../Admin.UI")
     .WithReference(warehouseApi)
     .WithReference(catalogApi)
+    .WithReference(shippingApi)
     .WithExternalHttpEndpoints()
     .WithEnvironment("VITE_IDENTITY_URL", identityEndpoint)
     .WithEnvironment("VITE_WAREHOUSE_API_URL", warehouseApi.GetEndpoint("http"))
-    .WithEnvironment("VITE_CATALOG_API_URL", catalogApi.GetEndpoint("http"));
+    .WithEnvironment("VITE_CATALOG_API_URL", catalogApi.GetEndpoint("http"))
+    .WithEnvironment("VITE_SHIPPING_API_URL", shippingApi.GetEndpoint("http"));
+
+var shipperUi = builder.AddViteApp("shipper-ui", "../Shipper.UI")
+    .WithReference(shippingApi)
+    .WithExternalHttpEndpoints()
+    .WithEnvironment("VITE_IDENTITY_URL", identityEndpoint)
+    .WithEnvironment("VITE_SHIPPING_API_URL", shippingApi.GetEndpoint("http"));
 
 // set to true if you want to use OpenAI
 bool useOpenAI = false;
@@ -111,7 +128,9 @@ identityApi.WithEnvironment("BasketApiClient", basketApi.GetEndpoint("http"))
            .WithEnvironment("OrderingApiClient", orderingApi.GetEndpoint("http"))
            .WithEnvironment("WebhooksApiClient", webHooksApi.GetEndpoint("http"))
            .WithEnvironment("WarehouseApiClient", warehouseApi.GetEndpoint("http"))
+           .WithEnvironment("ShippingApiClient", shippingApi.GetEndpoint("http"))
            .WithEnvironment("AdminUiClient", adminUi.GetEndpoint("http"))
+           .WithEnvironment("ShipperUiClient", shipperUi.GetEndpoint("http"))
            .WithEnvironment("WebhooksWebClient", webhooksClient.GetEndpoint(launchProfileName))
            .WithEnvironment("WebAppClient", webApp.GetEndpoint(launchProfileName));
 

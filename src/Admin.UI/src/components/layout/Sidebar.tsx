@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from '@tanstack/react-router';
-import { Warehouse, Package, LayoutDashboard, LogOut } from 'lucide-react';
+import { Warehouse, Package, LayoutDashboard, LogOut, Truck, Users } from 'lucide-react';
 import { useAuth } from 'react-oidc-context';
 import { cn } from '@/lib/utils';
 import { useDirectAuth } from '@/App';
@@ -9,6 +9,8 @@ const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
   { name: 'Warehouses', href: '/warehouses', icon: Warehouse },
   { name: 'Inventory', href: '/inventory', icon: Package },
+  { name: 'Shipments', href: '/shipments', icon: Truck },
+  { name: 'Shippers', href: '/shippers', icon: Users },
 ];
 
 export function Sidebar() {

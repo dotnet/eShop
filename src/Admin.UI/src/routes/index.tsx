@@ -6,6 +6,9 @@ import { WarehouseNew } from '@/pages/WarehouseNew';
 import { WarehouseView } from '@/pages/WarehouseView';
 import { WarehouseEdit } from '@/pages/WarehouseEdit';
 import { Inventory } from '@/pages/Inventory';
+import { Shipments } from '@/pages/Shipments';
+import { ShipmentDetail } from '@/pages/ShipmentDetail';
+import { Shippers } from '@/pages/Shippers';
 import { Login } from '@/pages/Login';
 import { Callback } from '@/pages/Callback';
 
@@ -75,6 +78,24 @@ const inventoryRoute = createRoute({
   component: Inventory,
 });
 
+const shipmentsRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: '/shipments',
+  component: Shipments,
+});
+
+const shipmentDetailRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: '/shipments/$shipmentId',
+  component: ShipmentDetail,
+});
+
+const shippersRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: '/shippers',
+  component: Shippers,
+});
+
 // Route tree
 const routeTree = rootRoute.addChildren([
   loginRoute,
@@ -86,6 +107,9 @@ const routeTree = rootRoute.addChildren([
     warehouseViewRoute,
     warehouseEditRoute,
     inventoryRoute,
+    shipmentsRoute,
+    shipmentDetailRoute,
+    shippersRoute,
   ]),
 ]);
 

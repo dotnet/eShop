@@ -16,6 +16,13 @@ public class UsersSeed(
             logger.LogDebug("Admin role created");
         }
 
+        // Seed Shipper role
+        if (!await roleManager.RoleExistsAsync("Shipper"))
+        {
+            await roleManager.CreateAsync(new IdentityRole("Shipper"));
+            logger.LogDebug("Shipper role created");
+        }
+
         // Seed admin user
         var admin = await userManager.FindByNameAsync("admin");
         if (admin == null)
@@ -59,6 +66,52 @@ public class UsersSeed(
             {
                 await userManager.AddToRoleAsync(admin, "Admin");
                 logger.LogDebug("Admin role assigned to existing admin user");
+            }
+        }
+
+        // Seed shipper user
+        var shipper = await userManager.FindByNameAsync("shipper");
+        if (shipper == null)
+        {
+            shipper = new ApplicationUser
+            {
+                UserName = "shipper",
+                Email = "shipper@eshop.com",
+                EmailConfirmed = true,
+                CardHolderName = "Default Shipper",
+                CardNumber = "XXXXXXXXXXXX0000",
+                CardType = 1,
+                City = "Seattle",
+                Country = "U.S.",
+                Expiration = "12/25",
+                Id = Guid.NewGuid().ToString(),
+                LastName = "Shipper",
+                Name = "Default",
+                PhoneNumber = "1234567890",
+                ZipCode = "98101",
+                State = "WA",
+                Street = "1 Shipper Way",
+                SecurityNumber = "000"
+            };
+
+            var result = await userManager.CreateAsync(shipper, "Shipper123$");
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(shipper, "Shipper");
+                logger.LogDebug("shipper user created and assigned to Shipper role");
+            }
+            else
+            {
+                throw new Exception(result.Errors.First().Description);
+            }
+        }
+        else
+        {
+            // Ensure existing shipper has Shipper role
+            if (!await userManager.IsInRoleAsync(shipper, "Shipper"))
+            {
+                await userManager.AddToRoleAsync(shipper, "Shipper");
+                logger.LogDebug("Shipper role assigned to existing shipper user");
             }
         }
 

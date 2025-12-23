@@ -38,6 +38,10 @@ public static class Extensions
         builder.Services.AddHttpClient<OrderingService>(o => o.BaseAddress = new("https+http://ordering-api"))
             .AddApiVersion(1.0)
             .AddAuthToken();
+
+        builder.Services.AddHttpClient<ShippingService>(o => o.BaseAddress = new("https+http://shipping-api"))
+            .AddApiVersion(1.0)
+            .AddAuthToken();
     }
 
     public static void AddEventBusSubscriptions(this IEventBusBuilder eventBus)
@@ -84,6 +88,7 @@ public static class Extensions
             options.Scope.Add("profile");
             options.Scope.Add("orders");
             options.Scope.Add("basket");
+            options.Scope.Add("shipping");
         });
 
         // Blazor auth services

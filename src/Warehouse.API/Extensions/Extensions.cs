@@ -20,5 +20,14 @@ internal static class Extensions
 
         // Add HttpContextAccessor for identity
         services.AddHttpContextAccessor();
+
+        // Add RabbitMQ event bus
+        builder.AddRabbitMqEventBus("eventbus")
+               .AddEventBusSubscriptions();
+    }
+
+    private static void AddEventBusSubscriptions(this IEventBusBuilder eventBus)
+    {
+        eventBus.AddSubscription<ShipmentCancelledIntegrationEvent, ShipmentCancelledIntegrationEventHandler>();
     }
 }
