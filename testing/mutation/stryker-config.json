@@ -1,0 +1,61 @@
+{
+  "stryker-config": {
+    "project": "src/Catalog.API/Catalog.API.csproj",
+    "test-projects": [
+      "testing/unit/eShop.UnitTests.csproj",
+      "testing/integration/eShop.IntegrationTests.csproj",
+      "testing/bdd/eShop.BddTests.csproj"
+    ],
+    "reporters": [
+      "html",
+      "json",
+      "cleartext",
+      "progress",
+      "dashboard"
+    ],
+    "thresholds": {
+      "high": 80,
+      "low": 60,
+      "break": 60
+    },
+    "mutate": [
+      "src/Catalog.API/**/*.cs",
+      "src/Basket.API/**/*.cs",
+      "src/Ordering.API/**/*.cs",
+      "src/Ordering.Domain/**/*.cs",
+      "src/Identity.API/**/*.cs",
+      "src/Webhooks.API/**/*.cs",
+      "!src/**/Program.cs",
+      "!src/**/Startup.cs",
+      "!src/**/*Extensions.cs",
+      "!src/**/Migrations/**/*.cs"
+    ],
+    "ignore-methods": [
+      "*ToString*",
+      "*GetHashCode*",
+      "*Equals*",
+      "*CompareTo*",
+      "*.ConfigureServices",
+      "*.Configure"
+    ],
+    "coverage-analysis": "perTest",
+    "disable-mix-mutants": false,
+    "max-concurrent-test-runners": 4,
+    "timeout-ms": 60000,
+    "additional-timeout-ms": 30000,
+    "log-level": "info",
+    "dev-mode": false,
+    "baseline": {
+      "enabled": true,
+      "provider": "git"
+    },
+    "since": {
+      "enabled": true,
+      "ignore-changes-in": [
+        "**/*.md",
+        "**/*.json",
+        "**/appsettings*.json"
+      ]
+    }
+  }
+}

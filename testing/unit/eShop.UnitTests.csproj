@@ -1,0 +1,50 @@
+<Project Sdk="MSTest.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <GenerateErrorForMissingTargetingPacks>false</GenerateErrorForMissingTargetingPacks>
+    <IsPublishable>false</IsPublishable>
+    <IsPackable>false</IsPackable>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>eShop.UnitTests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Testing Framework -->
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="NSubstitute.Analyzers.CSharp">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Shouldly" />
+    
+    <!-- Property-Based Testing -->
+    <PackageReference Include="FsCheck" />
+    <PackageReference Include="FsCheck.Xunit" />
+    
+    <!-- Coverage -->
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Service References -->
+    <ProjectReference Include="..\..\src\Basket.API\Basket.API.csproj" />
+    <ProjectReference Include="..\..\src\Catalog.API\Catalog.API.csproj" />
+    <ProjectReference Include="..\..\src\Identity.API\Identity.API.csproj" />
+    <ProjectReference Include="..\..\src\Ordering.API\Ordering.API.csproj" />
+    <ProjectReference Include="..\..\src\Ordering.Domain\Ordering.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Ordering.Infrastructure\Ordering.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Webhooks.API\Webhooks.API.csproj" />
+    <ProjectReference Include="..\..\src\OrderProcessor\OrderProcessor.csproj" />
+    <ProjectReference Include="..\..\src\PaymentProcessor\PaymentProcessor.csproj" />
+    <ProjectReference Include="..\..\src\WebApp\WebApp.csproj" />
+    <ProjectReference Include="..\..\src\eShop.ServiceDefaults\eShop.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\src\EventBus\EventBus.csproj" />
+    <ProjectReference Include="..\..\src\EventBusRabbitMQ\EventBusRabbitMQ.csproj" />
+  </ItemGroup>
+
+</Project>

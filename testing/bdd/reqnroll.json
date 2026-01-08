@@ -1,0 +1,22 @@
+{
+  "reqnroll": {
+    "language": {
+      "feature": "en-US"
+    },
+    "bindingCulture": {
+      "name": "en-US"
+    },
+    "runtime": {
+      "dependencies": [
+        {
+          "type": "context-injection"
+        }
+      ]
+    },
+    "trace": {
+      "traceSuccessfulSteps": true,
+      "traceTimings": true,
+      "minTracedDuration": "0:0:0.1"
+    }
+  }
+}

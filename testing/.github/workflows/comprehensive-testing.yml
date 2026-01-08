@@ -1,0 +1,484 @@
+name: Comprehensive Testing Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  NODE_VERSION: '20'
+  ASPNETCORE_ENVIRONMENT: Testing
+
+jobs:
+  # Build and validate solution
+  build:
+    name: Build Solution
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/Directory.Packages.props') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Restore dependencies
+      run: dotnet restore eShop.slnx
+
+    - name: Build solution
+      run: dotnet build eShop.slnx --configuration Release --no-restore
+
+    - name: Generate version
+      id: version
+      run: |
+        VERSION=$(date +'%Y.%m.%d')-${{ github.run_number }}
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Generated version: $VERSION"
+
+  # Unit Tests with Property-Based Testing
+  unit-tests:
+    name: Unit & Property Tests
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/Directory.Packages.props') }}
+
+    - name: Restore dependencies
+      run: dotnet restore testing/unit/eShop.UnitTests.csproj
+
+    - name: Run Unit Tests
+      run: |
+        dotnet test testing/unit/eShop.UnitTests.csproj \
+          --configuration Release \
+          --logger trx \
+          --logger html \
+          --logger "console;verbosity=detailed" \
+          --collect:"XPlat Code Coverage" \
+          --results-directory TestResults/Unit \
+          --settings testing/config/coverage-config.json \
+          -- RunConfiguration.CollectSourceInformation=true
+
+    - name: Run Property-Based Tests
+      run: |
+        dotnet test testing/unit/eShop.UnitTests.csproj \
+          --configuration Release \
+          --filter "Category=Property" \
+          --logger trx \
+          --logger html \
+          --results-directory TestResults/Property \
+          -- RunConfiguration.CollectSourceInformation=true
+
+    - name: Generate Coverage Report
+      run: |
+        dotnet tool install -g dotnet-reportgenerator-globaltool
+        reportgenerator \
+          -reports:"TestResults/**/coverage.cobertura.xml" \
+          -targetdir:"TestResults/Coverage" \
+          -reporttypes:"Html;JsonSummary;Badges;TextSummary"
+
+    - name: Upload Unit Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: unit-test-results
+        path: TestResults/
+
+    - name: Publish Test Results
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Unit Test Results
+        path: TestResults/**/*.trx
+        reporter: dotnet-trx
+
+  # BDD Tests with Reqnroll
+  bdd-tests:
+    name: BDD Tests (Reqnroll)
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/Directory.Packages.props') }}
+
+    - name: Restore dependencies
+      run: dotnet restore testing/bdd/eShop.BddTests.csproj
+
+    - name: Run BDD Tests
+      env:
+        ALLURE_RESULTS_DIRECTORY: TestResults/BDD/allure-results
+      run: |
+        dotnet test testing/bdd/eShop.BddTests.csproj \
+          --configuration Release \
+          --logger trx \
+          --logger html \
+          --logger "console;verbosity=detailed" \
+          --results-directory TestResults/BDD
+
+    - name: Generate Allure Report
+      if: always()
+      run: |
+        npm install -g allure-commandline
+        allure generate TestResults/BDD/allure-results -o TestResults/BDD/allure-report --clean
+
+    - name: Upload BDD Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: bdd-test-results
+        path: TestResults/BDD/
+
+  # Integration Tests with Aspire
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: build
+    
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: eShopTest
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+      rabbitmq:
+        image: rabbitmq:3-management
+        env:
+          RABBITMQ_DEFAULT_USER: guest
+          RABBITMQ_DEFAULT_PASS: guest
+        options: >-
+          --health-cmd "rabbitmq-diagnostics -q ping"
+          --health-interval 30s
+          --health-timeout 30s
+          --health-retries 3
+        ports:
+          - 5672:5672
+          - 15672:15672
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/Directory.Packages.props') }}
+
+    - name: Restore dependencies
+      run: dotnet restore testing/integration/eShop.IntegrationTests.csproj
+
+    - name: Run Integration Tests
+      env:
+        ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=eShopTest;Username=postgres;Password=postgres"
+        ConnectionStrings__Redis: "localhost:6379"
+        ConnectionStrings__RabbitMQ: "amqp://guest:guest@localhost:5672"
+        USE_TEST_CONTAINERS: "false"
+      run: |
+        dotnet test testing/integration/eShop.IntegrationTests.csproj \
+          --configuration Release \
+          --logger trx \
+          --logger html \
+          --logger "console;verbosity=detailed" \
+          --results-directory TestResults/Integration
+
+    - name: Upload Integration Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: integration-test-results
+        path: TestResults/Integration/
+
+  # End-to-End Tests with Playwright
+  e2e-tests:
+    name: E2E Tests (Playwright)
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: testing/e2e/package-lock.json
+
+    - name: Install Playwright dependencies
+      working-directory: testing/e2e
+      run: |
+        npm ci
+        npx playwright install --with-deps
+
+    - name: Build and start application
+      run: |
+        dotnet build eShop.slnx --configuration Release
+        nohup dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj &
+        sleep 30  # Wait for application to start
+
+    - name: Wait for application to be ready
+      run: |
+        timeout 60 bash -c 'until curl -f https://localhost:5001/health; do sleep 2; done'
+
+    - name: Run E2E Tests
+      working-directory: testing/e2e
+      env:
+        BASE_URL: https://localhost:5001
+        CI: true
+      run: npx playwright test
+
+    - name: Upload E2E Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: e2e-test-results
+        path: |
+          testing/e2e/test-results/
+          testing/e2e/playwright-report/
+
+  # Performance Tests
+  performance-tests:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'schedule' || contains(github.event.head_commit.message, '[perf]')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: Install k6
+      run: |
+        sudo gpg -k
+        sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+        echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+        sudo apt-get update
+        sudo apt-get install k6
+
+    - name: Build and start application
+      run: |
+        dotnet build eShop.slnx --configuration Release
+        nohup dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj &
+        sleep 30
+
+    - name: Wait for application to be ready
+      run: |
+        timeout 60 bash -c 'until curl -f https://localhost:5001/health; do sleep 2; done'
+
+    - name: Run Load Tests
+      working-directory: testing/performance/load
+      env:
+        BASE_URL: https://localhost:5001
+      run: k6 run --out json=results.json load-test-scenarios.js
+
+    - name: Run .NET Benchmarks
+      run: |
+        dotnet run --project testing/performance/eShop.PerformanceTests.csproj \
+          --configuration Release \
+          -- --filter "*" --exporters json
+
+    - name: Upload Performance Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: performance-test-results
+        path: |
+          testing/performance/load/results.json
+          BenchmarkDotNet.Artifacts/
+
+  # Mutation Tests (only on schedule or explicit trigger)
+  mutation-tests:
+    name: Mutation Tests (Stryker.NET)
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests]
+    if: github.event_name == 'schedule' || contains(github.event.head_commit.message, '[mutation]')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Needed for baseline comparison
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Install Stryker.NET
+      run: dotnet tool install -g dotnet-stryker
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/Directory.Packages.props') }}
+
+    - name: Run Mutation Tests
+      run: |
+        dotnet stryker \
+          --config-file testing/mutation/stryker-config.json \
+          --reporter html \
+          --reporter json \
+          --reporter cleartext \
+          --output TestResults/Mutation \
+          --baseline:main
+
+    - name: Upload Mutation Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: mutation-test-results
+        path: TestResults/Mutation/
+
+  # Consolidate and report results
+  test-summary:
+    name: Test Summary & Reporting
+    runs-on: ubuntu-latest
+    needs: [unit-tests, bdd-tests, integration-tests, e2e-tests]
+    if: always()
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download all test results
+      uses: actions/download-artifact@v4
+      with:
+        path: AllTestResults/
+
+    - name: Generate Test Summary
+      run: |
+        echo "# eShop Test Execution Summary" > test-summary.md
+        echo "" >> test-summary.md
+        echo "**Build:** ${{ github.run_number }}" >> test-summary.md
+        echo "**Commit:** ${{ github.sha }}" >> test-summary.md
+        echo "**Branch:** ${{ github.ref_name }}" >> test-summary.md
+        echo "**Timestamp:** $(date -u)" >> test-summary.md
+        echo "" >> test-summary.md
+        
+        echo "## Test Results" >> test-summary.md
+        echo "- Unit Tests: ${{ needs.unit-tests.result }}" >> test-summary.md
+        echo "- BDD Tests: ${{ needs.bdd-tests.result }}" >> test-summary.md
+        echo "- Integration Tests: ${{ needs.integration-tests.result }}" >> test-summary.md
+        echo "- E2E Tests: ${{ needs.e2e-tests.result }}" >> test-summary.md
+        
+        if [[ "${{ needs.performance-tests.result }}" != "skipped" ]]; then
+          echo "- Performance Tests: ${{ needs.performance-tests.result }}" >> test-summary.md
+        fi
+        
+        if [[ "${{ needs.mutation-tests.result }}" != "skipped" ]]; then
+          echo "- Mutation Tests: ${{ needs.mutation-tests.result }}" >> test-summary.md
+        fi
+
+    - name: Upload Test Summary
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-summary
+        path: test-summary.md
+
+    - name: Comment PR with Results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const summary = fs.readFileSync('test-summary.md', 'utf8');
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: summary
+          });
+
+    - name: Fail if any tests failed
+      if: |
+        needs.unit-tests.result == 'failure' ||
+        needs.bdd-tests.result == 'failure' ||
+        needs.integration-tests.result == 'failure' ||
+        needs.e2e-tests.result == 'failure'
+      run: |
+        echo "One or more test suites failed"
+        exit 1

@@ -1,0 +1,48 @@
+<Project Sdk="MSTest.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <GenerateErrorForMissingTargetingPacks>false</GenerateErrorForMissingTargetingPacks>
+    <IsPublishable>false</IsPublishable>
+    <IsPackable>false</IsPackable>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>eShop.IntegrationTests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Testing Framework -->
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="Testcontainers" />
+    <PackageReference Include="Testcontainers.PostgreSql" />
+    <PackageReference Include="Testcontainers.Redis" />
+    <PackageReference Include="Testcontainers.RabbitMq" />
+    
+    <!-- Aspire Testing -->
+    <PackageReference Include="Aspire.Hosting.Testing" />
+    
+    <!-- Entity Framework -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    
+    <!-- HTTP Client -->
+    <PackageReference Include="Microsoft.Extensions.Http" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Service References -->
+    <ProjectReference Include="..\..\src\eShop.AppHost\eShop.AppHost.csproj" />
+    <ProjectReference Include="..\..\src\Basket.API\Basket.API.csproj" />
+    <ProjectReference Include="..\..\src\Catalog.API\Catalog.API.csproj" />
+    <ProjectReference Include="..\..\src\Identity.API\Identity.API.csproj" />
+    <ProjectReference Include="..\..\src\Ordering.API\Ordering.API.csproj" />
+    <ProjectReference Include="..\..\src\Ordering.Domain\Ordering.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Ordering.Infrastructure\Ordering.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Webhooks.API\Webhooks.API.csproj" />
+    <ProjectReference Include="..\..\src\WebApp\WebApp.csproj" />
+    <ProjectReference Include="..\..\src\eShop.ServiceDefaults\eShop.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\src\EventBus\EventBus.csproj" />
+    <ProjectReference Include="..\..\src\EventBusRabbitMQ\EventBusRabbitMQ.csproj" />
+  </ItemGroup>
+
+</Project>

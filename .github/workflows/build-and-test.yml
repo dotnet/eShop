@@ -43,7 +43,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Necesario para comentar en el PR
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
+<<<<<<< HEAD
           dotnet sonarscanner begin /k:"epam-ai_eShop" /o:"epam-ai" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vstest.reportsPaths="**/*.trx" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
+=======
+          dotnet sonarscanner begin /k:"epam-ai_eShop" /o:"epam-ai" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vstest.reportsPaths="**/*.trx" /d:sonar.cs.vscoveragexml.reportsPaths="**/coverage.cobertura.xml"
+>>>>>>> 7382db1a6b7dbba65e6eda36453d01e76d6a5387
 
       # 4. Install dependencies (Restore)
       - name: Restore dependencies
@@ -51,12 +55,20 @@ jobs:
 
       # 5. Build the application
       - name: Build
+<<<<<<< HEAD
         run: dotnet build eShop.slnx --no-restore
+=======
+        run: dotnet build eShop.slnx --no-restore --configuration Debug
+>>>>>>> 7382db1a6b7dbba65e6eda36453d01e76d6a5387
 
       # 6. Run automated tests
       # Fails pipeline if tests fail. Generates coverage for SonarQube.
       - name: Test
+<<<<<<< HEAD
         run: dotnet test eShop.slnx --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx
+=======
+        run: dotnet test eShop.slnx --configuration Debug -- --report-trx --results-directory ./TestResults --coverage --coverage-output-format cobertura
+>>>>>>> 7382db1a6b7dbba65e6eda36453d01e76d6a5387
 
       # 7. Execute SonarCloud Analysis (End)
       # This pushes the analysis to the server and performs the quality gate check

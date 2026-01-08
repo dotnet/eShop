@@ -1,0 +1,36 @@
+<Project Sdk="MSTest.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <GenerateErrorForMissingTargetingPacks>false</GenerateErrorForMissingTargetingPacks>
+    <IsPublishable>false</IsPublishable>
+    <IsPackable>false</IsPackable>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>eShop.PerformanceTests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Performance Testing -->
+    <PackageReference Include="BenchmarkDotNet" />
+    <PackageReference Include="NBomber" />
+    
+    <!-- Testing Framework -->
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Shouldly" />
+    
+    <!-- HTTP Client -->
+    <PackageReference Include="Microsoft.Extensions.Http" />
+    
+    <!-- Aspire Testing -->
+    <PackageReference Include="Aspire.Hosting.Testing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Service References -->
+    <ProjectReference Include="..\..\src\eShop.AppHost\eShop.AppHost.csproj" />
+    <ProjectReference Include="..\..\src\Basket.API\Basket.API.csproj" />
+    <ProjectReference Include="..\..\src\Catalog.API\Catalog.API.csproj" />
+    <ProjectReference Include="..\..\src\WebApp\WebApp.csproj" />
+  </ItemGroup>
+
+</Project>
