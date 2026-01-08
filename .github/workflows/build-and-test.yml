@@ -1,0 +1,66 @@
+name: Basic Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build, Test and Analyze
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. Checkout source code
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevance of analysis
+
+      # 2. Install required dependencies (Setup environment)
+      # Uses global.json to pick the correct .NET SDK version
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      # JDK 17 is required for SonarScanner
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'zulu'
+
+      # Install the SonarScanner tool globally
+      - name: Install SonarCloud scanner
+        run: |
+          dotnet tool install --global dotnet-sonarscanner
+
+      # 3. SonarCloud Begin (Quality Check Setup)
+      - name: Begin Sonar scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Necesario para comentar en el PR
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          dotnet sonarscanner begin /k:"epam-ai_eShop" /o:"epam-ai" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vstest.reportsPaths="**/*.trx" /d:sonar.cs.vscoveragexml.reportsPaths="**/coverage.cobertura.xml"
+
+      # 4. Install dependencies (Restore)
+      - name: Restore dependencies
+        run: dotnet restore eShop.slnx
+
+      # 5. Build the application
+      - name: Build
+        run: dotnet build eShop.slnx --no-restore --configuration Debug
+
+      # 6. Run automated tests
+      # Fails pipeline if tests fail. Generates coverage for SonarQube.
+      - name: Test
+        run: dotnet test --solution eShop.Web.slnf --no-build --no-progress --output detailed
+
+      # 7. Execute SonarCloud Analysis (End)
+      # This pushes the analysis to the server and performs the quality gate check
+      - name: End Sonar scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
