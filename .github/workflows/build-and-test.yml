@@ -10,6 +10,8 @@ jobs:
   build-and-test:
     name: Build, Test and Analyze
     runs-on: ubuntu-latest
+    env:
+      ASSISTANT_ID: ${{ secrets.ASSISTANT_ID }}
     
     steps:
       # 1. Checkout source code
@@ -64,3 +66,43 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
+      - name: Get Access Token
+        id: auth
+        env:
+          CODEMIE_CLIENT_ID: ${{ secrets.CODEMIE_CLIENT_ID }}
+          CODEMIE_CLIENT_SECRET: ${{ secrets.CODEMIE_CLIENT_SECRET }}
+        run: |
+          set -euo pipefail
+          
+          ACCESS_TOKEN=$(curl -s -X POST 'https://keycloak.eks-core.aws.main.edp.projects.epam.com/auth/realms/codemie-prod/protocol/openid-connect/token' \
+                       -H 'Content-Type: application/x-www-form-urlencoded' \
+                       -d 'grant_type=password' \
+                       -d 'client_id=codemie-sdk' \
+                       -d "username=${CODEMIE_CLIENT_ID}" \
+                       -d "password=${CODEMIE_CLIENT_SECRET}" | jq -r '.access_token')
+          
+          if [[ -z "${ACCESS_TOKEN}" || "${ACCESS_TOKEN}" == "null" ]]; then
+          echo "Failed to obtain access token" >&2
+          exit 1
+          fi
+          
+          echo "access_token=${ACCESS_TOKEN}" >> $GITHUB_OUTPUT
+          echo "Access token obtained successfully"
+
+      - name: Call CodeMie Agent
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+        run: |
+          set -euo pipefail
+          
+          RESPONSE=$(curl -s -X POST "https://codemie.lab.epam.com/code-assistant-api/v1/assistants/${ASSISTANT_ID}/model" \
+            -H "Content-Type: application/json" \
+            -H "Accept: application/json" \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -d "{\"text\": \"Hi\"}")
+          echo "$RESPONSE"
+          GENERATED=$(echo "$RESPONSE" | jq -r '.generated')
+          
+          echo "CodeMie Agent Response:"
+          echo "$GENERATED"

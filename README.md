@@ -11,9 +11,6 @@ A reference .NET application implementing an e-commerce website using a services
 This version of eShop is based on [.NET 10](https://dotnet.microsoft.com/en-us/download/dotnet/10.0). 
 You need to have this version of the SDK installed in your laptop to run the app.
 
-Previous eShop versions:
-* [.NET 8](https://github.com/dotnet/eShop/tree/release/8.0)
-
 ### Prerequisites
 
 - Clone the eShop repository: https://github.com/dotnet/eshop
