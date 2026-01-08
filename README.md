@@ -8,7 +8,8 @@ A reference .NET application implementing an e-commerce website using a services
 
 ## Getting Started
 
-This version of eShop is based on .NET 9. 
+This version of eShop is based on [.NET 10](https://dotnet.microsoft.com/en-us/download/dotnet/10.0). 
+You need to have this version of the SDK installed in your laptop to run the app.
 
 Previous eShop versions:
 * [.NET 8](https://github.com/dotnet/eShop/tree/release/8.0)
@@ -79,8 +80,10 @@ then look for lines like this in the console output in order to find the URL to 
 Login to the dashboard at: http://localhost:19888/login?t=uniquelogincodeforyou
 ```
 
-> You may need to install ASP.NET Core HTTPS development certificates first, and then close all browser tabs. Learn more at https://aka.ms/aspnet/https-trust-dev-cert
-
+> You may need to install ASP.NET Core HTTPS development certificates first, and then close all browser tabs running the below command. Learn more at https://aka.ms/aspnet/https-trust-dev-cert
+```sh
+dotnet dev-certs https --trust
+```
 ### Azure Open AI
 
 When using Azure OpenAI, inside *eShop.AppHost/appsettings.json*, add the following section:
