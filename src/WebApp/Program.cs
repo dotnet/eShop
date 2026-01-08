@@ -7,6 +7,8 @@ builder.AddServiceDefaults();
 
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
+builder.Services.AddValidation();
+
 builder.AddApplicationServices();
 
 var app = builder.Build();
@@ -21,11 +23,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
+
 app.UseAntiforgery();
 
 app.UseHttpsRedirection();
 
-app.UseStaticFiles();
+app.MapStaticAssets();
 
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
