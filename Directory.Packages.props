@@ -6,7 +6,7 @@
     <MicrosoftExtensionsVersion>10.1.0</MicrosoftExtensionsVersion>
     <AspireVersion>13.1.0</AspireVersion>
     <AspireUnstablePackagesVersion>13.1.0-preview.1.25616.3</AspireUnstablePackagesVersion>
-    <GrpcVersion>2.71.0</GrpcVersion>
+    <GrpcVersion>2.76.0</GrpcVersion>
     <DuendeVersion>7.3.1</DuendeVersion>
     <ApiVersioningVersion>8.1.0</ApiVersioningVersion>
   </PropertyGroup>
@@ -80,7 +80,7 @@
     <!-- Grpc -->
     <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcVersion)" />
     <PackageVersion Include="Grpc.Net.ClientFactory" Version="$(GrpcVersion)" />
-    <PackageVersion Include="Grpc.Tools" Version="2.72.0" PrivateAssets="All" />
+    <PackageVersion Include="Grpc.Tools" Version="2.76.0" PrivateAssets="All" />
     <!-- Miscellaneous -->
     <PackageVersion Include="Dapper" Version="2.1.35" />
     <PackageVersion Include="FluentValidation" Version="12.0.0" />
