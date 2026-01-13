@@ -91,18 +91,66 @@ jobs:
           echo "Access token obtained successfully"
 
       - name: Call CodeMie Agent
-        env:
-          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
-        run: |
-          set -euo pipefail
-          
-          RESPONSE=$(curl -s -X POST "https://codemie.lab.epam.com/code-assistant-api/v1/assistants/${ASSISTANT_ID}/model" \
-            -H "Content-Type: application/json" \
-            -H "Accept: application/json" \
-            -H "Authorization: Bearer $ACCESS_TOKEN" \
-            -d "{\"text\": \"Hi\"}")
-          echo "$RESPONSE"
-          GENERATED=$(echo "$RESPONSE" | jq -r '.generated')
-          
-          echo "CodeMie Agent Response:"
-          echo "$GENERATED"
+          env:
+            ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Required for gh cli
+            PR_NUMBER: ${{ github.event.pull_request.number }}
+          run: |
+            set -euo pipefail
+            
+            # 1. Extract PR Metadata (Title & Body) using GitHub CLI
+            echo "Fetching PR Metadata..."
+            PR_DATA=$(gh pr view $PR_NUMBER --json title,body)
+            PR_TITLE=$(echo "$PR_DATA" | jq -r .title)
+            PR_BODY=$(echo "$PR_DATA" | jq -r .body)
+            
+            # 2. Extract Code Diff
+            # We compare the target branch (base) vs current commit (head)
+            echo "Fetching Code Diff..."
+            DIFF_CONTENT=$(git diff origin/${{ github.base_ref }}...HEAD)
+            
+            # Check if Diff is empty or too large (Optional safety)
+            if [[ -z "$DIFF_CONTENT" ]]; then
+              echo "No code changes detected."
+              exit 0
+            fi
+            
+            # 3. Construct the User Prompt
+            # We format it exactly as the System Prompt expects it
+            USER_PROMPT="
+            PR Context:
+            Title: $PR_TITLE
+            Description: $PR_BODY
+            
+            Code Diff:
+            $DIFF_CONTENT
+            "
+            
+            # 4. Create Safe JSON Payload using jq
+            # This handles all escaping of quotes/newlines automatically
+            JSON_PAYLOAD=$(jq -n \
+              --arg text "$USER_PROMPT" \
+              '{text: $text}')
+            
+            # 5. Send Request
+            echo "Sending to CodeMie Agent..."
+            RESPONSE=$(curl -s -X POST "https://codemie.lab.epam.com/code-assistant-api/v1/assistants/${ASSISTANT_ID}/model" \
+              -H "Content-Type: application/json" \
+              -H "Accept: application/json" \
+              -H "Authorization: Bearer $ACCESS_TOKEN" \
+              -d "$JSON_PAYLOAD")
+            
+            # 6. Process Response
+            echo "$RESPONSE"
+            GENERATED=$(echo "$RESPONSE" | jq -r '.generated')
+            RESULT=$(echo "$GENERATED" | grep -oP 'result: \K\w+' | head -1)
+            DETAIL=$(echo "$GENERATED" | sed -n '/detail:/,$p' | sed '1d')
+            
+            echo "CodeMie Agent Response:"
+            echo "$DETAIL"
+            
+            if [[ "$RESULT" != "true" ]]; then
+              echo "::error::Agent Validation Failed"
+              echo "$DETAIL"
+              exit 1
+            fi
