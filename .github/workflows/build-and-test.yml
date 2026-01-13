@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   build-and-test:
     name: Build, Test and Analyze
@@ -61,7 +65,6 @@ jobs:
         run: dotnet test --solution eShop.Web.slnf --no-build --no-progress --output detailed
 
       # 7. Execute SonarCloud Analysis (End)
-      # This pushes the analysis to the server and performs the quality gate check
       - name: End Sonar scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -93,16 +96,117 @@ jobs:
       - name: Call CodeMie Agent
         env:
           ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -euo pipefail
+
+          # 1. Extract PR Metadata (Title & Body) using GitHub CLI
+          echo "Fetching PR Metadata..."
+          PR_DATA=$(gh pr view $PR_NUMBER --json title,body)
+          PR_TITLE=$(echo "$PR_DATA" | jq -r .title)
+          PR_BODY=$(echo "$PR_DATA" | jq -r .body)
+
+          # 2. Extract Code Diff
+          # We compare the target branch (base) vs current commit (head)
+          echo "Fetching Code Diff..."
+          DIFF_CONTENT=$(git diff origin/${{ github.base_ref }}...HEAD)
+
+          # Check if Diff is empty (Optional safety)
+          if [[ -z "$DIFF_CONTENT" ]]; then
+            echo "No code changes detected."
+            exit 0
+          fi
           
+          # 3. Construct the User Prompt
+          # Added explicit instruction for FINAL_STATUS to handle self-corrections
+          USER_PROMPT="
+          PR Context:
+          Title: $PR_TITLE
+          Description: $PR_BODY
+          
+          Code Diff:
+          $DIFF_CONTENT
+
+          IMPORTANT:
+          At the very end of your response, you must output a single line with exactly:
+          FINAL_STATUS: true
+          or
+          FINAL_STATUS: false
+          (This line determines the pipeline outcome, so ensure it reflects your final decision)
+          "
+
+          # 4. Create Safe JSON Payload using jq
+          JSON_PAYLOAD=$(jq -n \
+            --arg text "$USER_PROMPT" \
+            '{text: $text}')
+
+          # 5. Send Request (Capture response, do NOT echo yet)
+          echo "Sending to CodeMie Agent..."
           RESPONSE=$(curl -s -X POST "https://codemie.lab.epam.com/code-assistant-api/v1/assistants/${ASSISTANT_ID}/model" \
             -H "Content-Type: application/json" \
             -H "Accept: application/json" \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
-            -d "{\"text\": \"Hi\"}")
-          echo "$RESPONSE"
-          GENERATED=$(echo "$RESPONSE" | jq -r '.generated')
+            -d "$JSON_PAYLOAD")
+
+          # 6. Process Response
+          # Extract only the 'generated' field to avoid logging the massive 'thoughts' array
+          GENERATED=$(echo "$RESPONSE" | jq -r '.generated // empty')
           
-          echo "CodeMie Agent Response:"
-          echo "$GENERATED"
+          if [[ -z "$GENERATED" ]]; then
+             echo "::error::API returned empty response."
+             echo "Raw Response (Debug): $RESPONSE"
+             exit 1
+          fi
+
+          # Logic updated: 
+          # 1. Look for 'FINAL_STATUS'.
+          # 2. Use 'tail -1' to ensure we take the LAST verdict (ignoring initial doubts).
+          RESULT=$(echo "$GENERATED" | grep -oP 'FINAL_STATUS: \K(true|false)' | tail -1)
+          
+          # Fallback: If agent forgot the footer, try parsing the standard 'result:' but take the LAST one
+          if [[ -z "$RESULT" ]]; then
+             RESULT=$(echo "$GENERATED" | grep -oP 'result\W+\K(true|false)' | tail -1)
+          fi
+
+          # Extract details (removing the status line to keep comment clean)
+          DETAIL=$(echo "$GENERATED" | sed -n '/detail:/,$p' | sed '1d' | sed '/FINAL_STATUS:/d')
+
+          echo "----------------------------------------"
+          echo "🤖 Agent Analysis Report"
+          echo "----------------------------------------"
+          echo "$DETAIL"
+          echo "----------------------------------------"
+          echo "Parsed Result: $RESULT"
+
+          # 7. Validation Check and PR Commenting
+          if [[ "$RESULT" != "true" ]]; then
+            echo "::error::Agent Validation Failed"
+          
+            # Post failure comment to PR
+            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              echo "Posting failure details to PR #$PR_NUMBER..."
+              gh pr comment $PR_NUMBER --body "### ❌ Compliance Validation Failed
+          
+              The AI Compliance Agent detected issues in your Pull Request:
+          
+              $DETAIL
+          
+              ---
+              *Please fix these issues and push again.*"
+            fi
+          
+            exit 1
+          else
+            echo "::notice::Agent Validation Passed"
+
+            # Post success comment to PR
+            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              echo "Posting success message to PR #$PR_NUMBER..."
+              gh pr comment $PR_NUMBER --body "### ✅ Compliance Validation Passed
+          
+              The AI Compliance Agent confirmed that your changes comply with company defined standards.
+          
+              $DETAIL"
+            fi
+          fi
