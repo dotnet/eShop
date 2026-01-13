@@ -12,6 +12,7 @@ public class BasketService(
     [AllowAnonymous]
     public override async Task<CustomerBasketResponse> GetBasket(GetBasketRequest request, ServerCallContext context)
     {
+        Console.WriteLine("Testing compliance agent");
         var userId = context.GetUserIdentity();
         if (string.IsNullOrEmpty(userId))
         {
