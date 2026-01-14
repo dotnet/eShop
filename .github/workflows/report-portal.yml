@@ -1,0 +1,54 @@
+name: Report Portal
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  build-and-test:
+    name: Build, Test and Analyze
+    runs-on: ubuntu-latest
+    env:
+      ASSISTANT_ID: ${{ secrets.ASSISTANT_ID }}
+    
+    steps:
+      # 1. Checkout source code
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevance of analysis
+
+      # 2. Install required dependencies (Setup environment)
+      # Uses global.json to pick the correct .NET SDK version
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x.x'
+          
+      # 4. Install dependencies (Restore)
+      - name: Restore dependencies
+        run: dotnet restore eShop.slnx
+
+      # 5. Build the application
+      - name: Build
+        run: dotnet build eShop.slnx --no-restore --configuration Debug
+
+      - name: Run Unit Tests with ReportPortal
+        run: dotnet test --logger:"console;verbosity=normal" --logger:"ReportPortal"
+        env:
+          RP_UUID: ${{ secrets.REPORTPORTAL_API_KEY }}
+          RP_ENDPOINT: ${{ secrets.REPORTPORTAL_ENDPOINT }}
+          RP_PROJECT: ${{ secrets.REPORTPORTAL_PROJECT }}
+          RP_LAUNCH: >
+            GitHubActions |
+            ${{ github.repository }} |
+            UnitTests |
+            ${{ github.ref_name }} |
+            #${{ github.run_number }}
