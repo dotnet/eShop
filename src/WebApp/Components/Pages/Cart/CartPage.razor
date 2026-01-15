@@ -1,4 +1,45 @@
-﻿@page "/cart"
+﻿@* 
+    =============================================================================
+    CART PAGE COMPONENT
+    =============================================================================
+    
+    Purpose:
+    Displays the user's shopping cart (shopping bag) with functionality to view,
+    update quantities, and proceed to checkout in the AdventureWorks e-commerce application.
+    
+    Features:
+    1. Displays all items in the shopping cart with product images, names, and prices
+    2. Allows users to update item quantities using a numeric input field
+    3. Shows real-time calculations of item totals and cart summary
+    4. Provides navigation to checkout and continue shopping
+    5. Supports progressive enhancement with enhanced forms
+    
+    Route: /cart
+    Authentication: Required (Authorize attribute)
+    Stream Rendering: Enabled for improved performance
+    
+    Dependencies:
+    - NavigationManager: Handles page navigation within the application
+    - BasketState: Manages cart state and basket operations
+    - IProductImageUrlProvider: Provides product image URLs for display
+    
+    UI Components:
+    - Responsive cart layout with header, items list, and summary panel
+    - Form-based quantity updates with anti-forgery protection
+    - Real-time price calculations as quantities change
+    
+    Form Handlers:
+    - "update-cart": Handles quantity updates via form submission
+    - Uses enhanced forms (data-enhance) for progressive enhancement
+    
+    Example URL: https://localhost:5001/cart
+    
+    Related Pages:
+    - Catalog pages for continuing shopping
+    - Checkout page for completing purchases
+*@
+
+@page "/cart"
 @inject NavigationManager Nav
 @inject BasketState Basket
 @inject IProductImageUrlProvider ProductImages
@@ -85,27 +126,107 @@
 @code {
     private IReadOnlyCollection<BasketItem>? basketItems;
 
+    /// <summary>
+    /// Gets or sets the product ID for quantity updates from form submission.
+    /// </summary>
+    /// <remarks>
+    /// This property is automatically bound from form data when the "update-cart"
+    /// form is submitted. It identifies which product's quantity is being updated.
+    /// The value corresponds to the ProductId of the BasketItem.
+    /// </remarks>
     [SupplyParameterFromForm]
     public int? UpdateQuantityId { get; set; }
 
+    /// <summary>
+    /// Gets or sets the new quantity value from form submission.
+    /// </summary>
+    /// <remarks>
+    /// This property is automatically bound from form data when the "update-cart"
+    /// form is submitted. It contains the new quantity value entered by the user.
+    /// A value of 0 will remove the item from the cart.
+    /// </remarks>
     [SupplyParameterFromForm]
     public int? UpdateQuantityValue { get; set; }
 
+    /// <summary>
+    /// Initializes the component by loading the user's basket items.
+    /// </summary>
+    /// <remarks>
+    /// This lifecycle method is called when the component is first initialized.
+    /// It asynchronously retrieves the current user's basket items from the
+    /// BasketState service and updates the component's state.
+    /// 
+    /// The StreamRendering attribute enables streaming rendering for this component,
+    /// allowing the UI to show loading state before all data is loaded.
+    /// </remarks>
     protected override async Task OnInitializedAsync()
     {
         basketItems = await Basket.GetBasketItemsAsync();
     }
 
+    /// <summary>
+    /// Calculates the total price of all items in the cart.
+    /// </summary>
+    /// <value>
+    /// The sum of (UnitPrice * Quantity) for all basket items, or null if the basket is empty or not loaded.
+    /// </value>
+    /// <remarks>
+    /// This computed property automatically recalculates whenever basketItems changes.
+    /// The result is formatted for display with two decimal places.
+    /// </remarks>
     private decimal? TotalPrice => basketItems?.Sum(i => i.Quantity * i.UnitPrice);
+
+    /// <summary>
+    /// Calculates the total quantity of all items in the cart.
+    /// </summary>
+    /// <value>
+    /// The sum of quantities for all basket items, or null if the basket is empty or not loaded.
+    /// </value>
+    /// <remarks>
+    /// This computed property is used to display the item count badge in the cart summary header.
+    /// It automatically updates when basketItems changes.
+    /// </remarks>
     private decimal? TotalQuantity => basketItems?.Sum(i => i.Quantity);
 
-    // While an update post is in process, we want to show the pending quantity, not the one
-    // that is committed to the cart (otherwise the UI briefly shows the old data)
+    /// <summary>
+    /// Determines which quantity to display for a product during form submission.
+    /// </summary>
+    /// <param name="productId">The ID of the product to check.</param>
+    /// <param name="cartQuantity">The current quantity stored in the cart.</param>
+    /// <returns>
+    /// The pending quantity from the form if this product is being updated,
+    /// otherwise the current cart quantity.
+    /// </returns>
+    /// <remarks>
+    /// This method provides a better user experience by showing the pending
+    /// quantity value during form submission, preventing the UI from briefly
+    /// displaying old data while the update is processing.
+    /// 
+    /// Example: If user changes quantity from 2 to 3 and clicks Update,
+    /// this method returns 3 immediately instead of showing 2 during processing.
+    /// </remarks>
     private int CurrentOrPendingQuantity(int productId, int cartQuantity)
         => UpdateQuantityId.GetValueOrDefault(-1) == productId
         ? UpdateQuantityValue!.Value
         : cartQuantity;
 
+    /// <summary>
+    /// Handles the form submission for updating item quantities in the cart.
+    /// </summary>
+    /// <returns>Task representing the asynchronous operation.</returns>
+    /// <remarks>
+    /// This method is triggered when the "update-cart" form is submitted.
+    /// It performs the following operations:
+    /// 1. Updates the quantity for the specified product in the BasketState
+    /// 2. Refreshes the basket items from the service
+    /// 3. Updates the UI with the new quantities and totals
+    /// 
+    /// The form uses progressive enhancement (data-enhance) for better
+    /// performance and user experience.
+    /// 
+    /// Error handling: If the update fails, the BasketState service is
+    /// responsible for error handling and user notification.
+    /// </remarks>
     private async Task UpdateQuantityAsync()
     {
         var id = UpdateQuantityId!.Value;
