@@ -1,36 +1,33 @@
 ﻿<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Packages.props" />
+    <File Path="NuGet.config" />
+    <File Path="README.md" />
+  </Folder>
   <Folder Name="/src/">
-    <Project Path="src/eShop.AppHost/eShop.AppHost.csproj" />
     <Project Path="src/Basket.API/Basket.API.csproj" />
     <Project Path="src/Catalog.API/Catalog.API.csproj" />
+    <Project Path="src/eShop.AppHost/eShop.AppHost.csproj" />
     <Project Path="src/eShop.ServiceDefaults/eShop.ServiceDefaults.csproj" />
     <Project Path="src/EventBus/EventBus.csproj" />
     <Project Path="src/EventBusRabbitMQ/EventBusRabbitMQ.csproj" />
     <Project Path="src/Identity.API/Identity.API.csproj" />
     <Project Path="src/IntegrationEventLogEF/IntegrationEventLogEF.csproj" />
     <Project Path="src/Ordering.API/Ordering.API.csproj" />
-    <Project Path="src/OrderProcessor/OrderProcessor.csproj" />
     <Project Path="src/Ordering.Domain/Ordering.Domain.csproj" />
     <Project Path="src/Ordering.Infrastructure/Ordering.Infrastructure.csproj" />
+    <Project Path="src/OrderProcessor/OrderProcessor.csproj" />
     <Project Path="src/PaymentProcessor/PaymentProcessor.csproj" />
     <Project Path="src/WebApp/WebApp.csproj" />
+    <Project Path="src/WebAppComponents/WebAppComponents.csproj" />
     <Project Path="src/WebhookClient/WebhookClient.csproj" />
     <Project Path="src/Webhooks.API/Webhooks.API.csproj" />
-    <Project Path="src/WebAppComponents/WebAppComponents.csproj" />
-    <Project Path="src/HybridApp/HybridApp.csproj" />
-    <Project Path="src/ClientApp/ClientApp.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Basket.UnitTests/Basket.UnitTests.csproj" />
     <Project Path="tests/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj" />
     <Project Path="tests/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj" />
     <Project Path="tests/Ordering.UnitTests/Ordering.UnitTests.csproj" />
-    <Project Path="tests/ClientApp.UnitTests/ClientApp.UnitTests.csproj" />
-  </Folder>
-  <Folder Name="/Solution Items/">
-    <File Path=".editorconfig" />
-    <File Path="Directory.Packages.props" />
-    <File Path="NuGet.config" />
-    <File Path="README.md" />
   </Folder>
 </Solution>
