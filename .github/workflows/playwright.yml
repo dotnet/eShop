@@ -29,12 +29,7 @@ jobs:
       with:
         node-version: lts/*
     - name: Install dependencies
-      run: npm ci
-    - name: Install .NET HTTPS Development Certificate
-      # if: matrix.os == 'ubuntu-latest'
-      run: |
-        dotnet dev-certs https --clean
-        dotnet dev-certs https --trust
+      run: npm install
     - name: Install Playwright Browsers
       run: npx playwright install chromium
     - name: Run Playwright tests
@@ -43,6 +38,10 @@ jobs:
         ESHOP_USE_HTTP_ENDPOINTS: 1
         USERNAME1: bob
         PASSWORD: Pass123$
+        RP_API_KEY: ${{ secrets.REPORTPORTAL_API_KEY }}
+        RP_ENDPOINT: "https://reportportal.epam.com/api/v1"
+        RP_PROJECT: ${{ secrets.REPORTPORTAL_PROJECT }}
+        RP_LAUNCH: "Playwright E2E | ${{ github.repository }} | ${{ github.ref_name }} | #${{ github.run_number }}"
     - uses: actions/upload-artifact@v4
       if: always()
       with:

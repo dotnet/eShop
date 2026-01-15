@@ -17,8 +17,33 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  /* Reporter to use. See https://playwright.dev/docs/test-reporters  */
+  reporter: process.env.CI 
+    ? (process.env.RP_API_KEY && process.env.RP_ENDPOINT && process.env.RP_PROJECT 
+        ? [
+            ['html'],
+            ['@reportportal/agent-js-playwright', {
+              apiKey: process.env.RP_API_KEY,
+              endpoint: process.env.RP_ENDPOINT,
+              project: process.env.RP_PROJECT,
+              launch: process.env.RP_LAUNCH || 'Playwright E2E Tests',
+              description: 'eShop Playwright E2E Tests',
+              mode: 'DEFAULT',
+              debug: false,
+              attributes: [
+                {
+                  key: 'environment',
+                  value: 'CI'
+                }
+              ],
+              restClientConfig: {
+                timeout: 30000
+              }
+            }]
+          ]
+        : [['html']]
+      )
+    : 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
