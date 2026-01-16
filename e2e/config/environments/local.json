@@ -1,0 +1,25 @@
+{
+  "environment": "local",
+  "baseUrl": "http://localhost:5045",
+  "auth": {
+    "username": "alice",
+    "password": "Pass123$"
+  },
+  "timeouts": {
+    "default": 30000,
+    "extended": 60000,
+    "navigation": 10000
+  },
+  "retry": {
+    "attempts": 1,
+    "delay": 1000
+  },
+  "browser": {
+    "headless": false,
+    "slowMo": 0,
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    }
+  }
+}

@@ -1,0 +1,220 @@
+name: E2E Tests
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 2 * * *'  # Nightly at 2 AM UTC
+  workflow_dispatch:
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        test-suite: [smoke, critical, full]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps chromium
+    
+    - name: Start Docker services
+      run: |
+        docker --version
+        docker compose version
+    
+    - name: Build .NET solution
+      run: dotnet build --configuration Release
+    
+    - name: Start eShop application
+      run: |
+        dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj &
+        echo "Waiting for application to start..."
+        timeout 300 bash -c 'until curl -f http://localhost:5045/health 2>/dev/null; do sleep 5; done' || true
+        sleep 30
+      env:
+        ASPNETCORE_ENVIRONMENT: Development
+        ESHOP_USE_HTTP_ENDPOINTS: 1
+    
+    - name: Run E2E Tests - Smoke
+      if: matrix.test-suite == 'smoke'
+      run: npm run test:e2e:smoke
+      env:
+        BASE_URL: http://localhost:5045
+        USERNAME1: alice
+        PASSWORD: Pass123$
+        TEST_ENV: ci
+        HEADLESS: true
+    
+    - name: Run E2E Tests - Critical
+      if: matrix.test-suite == 'critical'
+      run: npm run test:e2e:critical
+      env:
+        BASE_URL: http://localhost:5045
+        USERNAME1: alice
+        PASSWORD: Pass123$
+        TEST_ENV: ci
+        HEADLESS: true
+    
+    - name: Run E2E Tests - Full Suite
+      if: matrix.test-suite == 'full'
+      run: npm run test:e2e:ci
+      env:
+        BASE_URL: http://localhost:5045
+        USERNAME1: alice
+        PASSWORD: Pass123$
+        TEST_ENV: ci
+        HEADLESS: true
+    
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: e2e-test-results-${{ matrix.test-suite }}
+        path: |
+          e2e/reports/
+          playwright-report/
+        retention-days: 30
+    
+    - name: Upload screenshots on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: e2e-screenshots-${{ matrix.test-suite }}
+        path: e2e/reports/screenshots/
+        retention-days: 7
+    
+    - name: Publish test report
+      if: always()
+      uses: dorny/test-reporter@v1
+      with:
+        name: E2E Test Results - ${{ matrix.test-suite }}
+        path: e2e/reports/junit/*.xml
+        reporter: java-junit
+        fail-on-error: false
+    
+    - name: Comment PR with test results
+      if: github.event_name == 'pull_request' && always()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const reportPath = 'e2e/reports/json/cucumber-report.json';
+          
+          if (fs.existsSync(reportPath)) {
+            const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+            
+            let passed = 0;
+            let failed = 0;
+            let skipped = 0;
+            
+            report.forEach(feature => {
+              feature.elements.forEach(scenario => {
+                const status = scenario.steps.every(step => step.result.status === 'passed');
+                if (status) passed++;
+                else if (scenario.steps.some(step => step.result.status === 'failed')) failed++;
+                else skipped++;
+              });
+            });
+            
+            const body = `## E2E Test Results - ${{ matrix.test-suite }}
+            
+            | Status | Count |
+            |--------|-------|
+            | ✅ Passed | ${passed} |
+            | ❌ Failed | ${failed} |
+            | ⏭️ Skipped | ${skipped} |
+            
+            [View detailed report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+          }
+    
+    - name: Stop application
+      if: always()
+      run: |
+        pkill -f "dotnet run" || true
+        docker compose down || true
+
+  playwright-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps chromium
+    
+    - name: Build .NET solution
+      run: dotnet build --configuration Release
+    
+    - name: Start eShop application
+      run: |
+        dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj &
+        echo "Waiting for application to start..."
+        timeout 300 bash -c 'until curl -f http://localhost:5045/health 2>/dev/null; do sleep 5; done' || true
+        sleep 30
+      env:
+        ASPNETCORE_ENVIRONMENT: Development
+        ESHOP_USE_HTTP_ENDPOINTS: 1
+    
+    - name: Run Playwright tests
+      run: npm run test:playwright
+      env:
+        USERNAME1: alice
+        PASSWORD: Pass123$
+    
+    - name: Upload Playwright report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
+    
+    - name: Stop application
+      if: always()
+      run: pkill -f "dotnet run" || true

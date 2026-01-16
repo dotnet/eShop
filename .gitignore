@@ -491,3 +491,9 @@ $RECYCLE.BIN/
 /playwright/.auth/
 /user.json
 .azure
+
+# E2E Test Reports
+e2e/reports/
+e2e/.auth/
+*.mp4
+*.webm

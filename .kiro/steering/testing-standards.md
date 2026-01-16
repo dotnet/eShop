@@ -74,19 +74,21 @@ tests/
 │   ├── Messaging/
 │   ├── Shared/
 │   └── {Service}.Api.IntegrationTests.csproj
-├── bdd/                            # BDD tests (Reqnroll)
-│   ├── Features/                    # Gherkin feature files
-│   ├── StepDefinitions/
-│   ├── Drivers/                     # Driver pattern
-│   ├── Support/
-│   ├── Hooks/
-│   ├── ReportPortal.json
-│   └── {Service}.Api.BddTests.csproj
 ├── e2e/                            # End-to-end tests
-│   ├── collections/                 # Postman collections
-│   ├── environments/
-│   ├── scripts/
-│   └── data/
+│   ├── features/                   # Gherkin feature files
+│   │   ├── invoice-management/
+│   │   ├── order-processing/
+│   │   └── payment-workflows/
+│   ├── step-definitions/           # Step implementations
+│   ├── support/                    # Test support utilities
+│   │   ├── hooks.js
+│   │   ├── world.js
+│   │   └── helpers.js
+│   ├── data/                       # Test data
+│   ├── config/                     # Configuration
+│   │   ├── environments/
+│   │   └── cucumber.js
+│   └── reports/                    # Test reports
 ├── performance/                     # Performance tests
 │   ├── load/
 │   └── benchmarks/
@@ -153,8 +155,9 @@ public void Workflow_Scenario_ExpectedOutcome()
 <PackageReference Include="Moq" Version="4.20.69" />
 <PackageReference Include="NUnit" Version="4.2.2" />
 <PackageReference Include="Shouldly" Version="4.2.1" />
-<PackageReference Include="ReportPortal.NUnit" Version="4.8.0" />
-<PackageReference Include="ReportPortal.VSTest.TestLogger" Version="4.0.0" />
+<PackageReference Include="ReportPortal.NUnit" Version="4.5.0" />
+<PackageReference Include="ReportPortal.VSTest.TestLogger" Version="3.8.0" />
+<PackageReference Include="coverlet.collector" Version="3.1.2" />
 ```
 
 ### Configuration Standards
@@ -352,14 +355,14 @@ public class ApiResponsePropertyTests
                         apiResponse.Success.ShouldBeTrue();
                         apiResponse.CorrelationId.ShouldNotBeNullOrEmpty();
                         
-                        Context.Current?.Log.Info($"âœ" Valid response for order: {orderNumber}");
+                        Context.Current?.Log.Info($"✓ Valid response for order: {orderNumber}");
                     }
                     
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    Context.Current?.Log.Error($"âŒ Failed for order number: {orderNumber}");
+                    Context.Current?.Log.Error($"✗ Failed for order number: {orderNumber}");
                     Context.Current?.Log.Error($"Error: {ex.Message}");
                     throw;
                 }
@@ -396,7 +399,7 @@ public class ApiResponsePropertyTests
                 apiResponse.Success.ShouldBeFalse();
                 apiResponse.Message.ShouldContain("Invalid order number format");
                 
-                Context.Current?.Log.Info($"âœ" Correctly rejected: {invalidOrderNumber}");
+                Context.Current?.Log.Info($"✓ Correctly rejected: {invalidOrderNumber}");
                 
                 return true;
             })
@@ -431,452 +434,719 @@ public static class PropertyTestConfig
 }
 ```
 
-## BDD Testing (Reqnroll)
 
-### Required Packages
-```xml
-<PackageReference Include="Reqnroll" Version="3.3.0" />
-<PackageReference Include="Reqnroll.NUnit" Version="3.3.0" />
-<PackageReference Include="Reqnroll.Tools.MsBuild.Generation" Version="3.3.0" />
-<PackageReference Include="ReportPortal.Reqnroll" Version="1.5.0" />
-<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
-<PackageReference Include="Moq" Version="4.20.69" />
-<PackageReference Include="Shouldly" Version="4.2.1" />
-```
+## E2E Testing with BDD and Gherkin
 
-### ReportPortal Configuration for BDD Tests
+### Overview
 
-**Configuration File: ReportPortal.json** (place in BDD test project root)
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/reportportal/agent-dotnet-reqnroll/master/src/ReportPortal.ReqnrollPlugin/ReportPortal.config.schema",
-  "enabled": true,
-  "server": {
-    "url": "https://your-reportportal-instance.com",
-    "project": "your_project_name",
-    "authentication": {
-      "uuid": "your_api_key"
-    }
-  },
-  "launch": {
-    "name": "BDD Tests - {Service}.Api",
-    "description": "Automated BDD acceptance tests",
-    "debugMode": false,
-    "attributes": [
-      "bdd",
-      "acceptance",
-      "automated",
-      "reqnroll"
-    ],
-    "tags": []
-  },
-  "stepReporting": {
-    "enabled": true,
-    "stepStartedEvent": "TestStepStarted"
-  },
-  "logging": {
-    "attachments": {
-      "enabled": true,
-      "mimeTypes": [
-        "text/plain",
-        "application/json",
-        "image/png"
-      ]
-    }
-  }
-}
-```
+End-to-end (E2E) tests validate complete user journeys and critical business workflows across the entire system. These tests use BDD principles with Gherkin syntax to ensure business requirements are met from a user's perspective.
 
-**Reqnroll Configuration: reqnroll.json**
-```json
-{
-  "$schema": "https://schemas.reqnroll.net/reqnroll-config-latest.json",
-  "language": {
-    "feature": "en-US"
-  },
-  "bindingCulture": {
-    "name": "en-US"
-  },
-  "runtime": {
-    "missingOrPendingStepsOutcome": "Inconclusive"
-  },
-  "trace": {
-    "traceSuccessfulSteps": true,
-    "traceTimings": true,
-    "minTracedDuration": "0:0:0.1",
-    "listener": "ReportPortal.ReqnrollPlugin.ReportPortalListener, ReportPortal.ReqnrollPlugin"
-  },
-  "plugins": [
-    {
-      "type": "GeneratorPlugin",
-      "path": "ReportPortal.ReqnrollPlugin"
-    }
-  ]
-}
-```
+### Purpose and Scope
 
-### Valid Order Number Formats
+E2E tests focus on:
+- Complete user workflows from start to finish
+- Integration of all system components
+- Real or near-real production scenarios
+- Business-critical paths
+- Cross-service interactions
 
-Use these specific formats in feature files:
+**Key Principle**: E2E tests should be **few but comprehensive** - testing critical paths that provide the highest business value.
 
-| Order Type | Format | Example |
-|------------|--------|---------|
-| EcomOrder | 0 + 9 digits | 0123456789 |
-| ManualOrder | GS + 8 digits | GS12345678 |
-| MaoOrder | 21 digits | 123456789012345678901 |
-| ReplacementOrder | 18 + 8 digits | 1812345678 |
-| RegearOrder | 8 alphanumeric | ABC12345 |
+### Technology Stack
 
-### Feature File Example
+#### Recommended Tools
+
+| Tool | Purpose | Installation |
+|------|---------|--------------|
+| **Cucumber.js** | BDD test runner | `npm install --save-dev @cucumber/cucumber` |
+| **Playwright** | Browser automation | `npm install --save-dev @playwright/test` |
+| **Axios** | API requests | `npm install --save-dev axios` |
+| **Chai** | Assertions | `npm install --save-dev chai` |
+| **dotenv** | Environment config | `npm install --save-dev dotenv` |
+
+#### Alternative Stack (API-focused)
+
+For API-only E2E tests:
+- **Postman/Newman** - Collection-based API testing
+- **REST Assured** - Java-based REST API testing
+- **SuperTest** - Node.js HTTP assertions
+
+### Gherkin Feature Files
+
+#### Feature File Structure
 
 ```gherkin
-@invoice-management
-Feature: Invoice Retrieval by Order Number
+@tag-category
+Feature: Feature Name
+  As a [role]
+  I want to [action]
+  So that [business value]
+
+  Background:
+    Given [common precondition]
+    And [another precondition]
+
+  @happy-path @critical
+  Scenario: Successful scenario name
+    Given [initial context]
+    When [action occurs]
+    Then [expected outcome]
+    And [additional verification]
+
+  @error-handling
+  Scenario Outline: Scenario with multiple examples
+    Given [initial context with "<parameter>"]
+    When [action with "<parameter>"]
+    Then [expected outcome]
+
+    Examples:
+      | parameter | expected_result |
+      | value1    | result1        |
+      | value2    | result2        |
+```
+
+#### Writing Effective Scenarios
+
+**Best Practices:**
+1. **Use business language** - Avoid technical implementation details
+2. **One scenario per business rule** - Keep scenarios focused
+3. **Follow Given-When-Then structure** - Maintain clarity
+4. **Make scenarios independent** - Each scenario should stand alone
+5. **Use descriptive scenario names** - Clearly state what is being tested
+
+**Example - Good vs Bad:**
+
+```gherkin
+# ❌ BAD: Too technical, implementation-focused
+Scenario: POST request to /api/invoices returns 200
+  Given I send a POST request to "/api/invoices"
+  When the response status is 200
+  Then the JSON response contains "invoiceNumber"
+
+# ✅ GOOD: Business-focused, clear intent
+Scenario: Create invoice for completed order
+  Given an order "0123456789" has been completed
+  When I request invoice generation for the order
+  Then a new invoice should be created with order details
+  And the customer should receive an invoice confirmation
+```
+
+### Feature Examples
+
+#### Example 1: Invoice Management
+
+**File:** `tests/e2e/features/invoice-management/retrieve-invoice.feature`
+
+```gherkin
+@invoice-management @critical
+Feature: Invoice Retrieval
+  As a customer service representative
+  I want to retrieve customer invoices by order number
+  So that I can provide invoice information to customers
 
   Background:
     Given the invoice service is available
-    And test data is seeded in the system
+    And the following invoices exist in the system:
+      | orderNumber           | invoiceNumber | orderType   | totalAmount | currency |
+      | 0123456789           | INV-2024-001  | EcomOrder   | 150.00      | USD      |
+      | GS12345678           | INV-2024-002  | ManualOrder | 250.00      | USD      |
+      | 123456789012345678901| INV-2024-003  | MaoOrder    | 350.00      | USD      |
 
   @happy-path
-  Scenario Outline: Retrieve existing invoice
-    Given an invoice exists with order number "<orderNumber>"
+  Scenario Outline: Successfully retrieve invoice by valid order number
+    Given I am an authenticated customer service representative
     When I request the invoice for order number "<orderNumber>"
-    Then I should receive the invoice details
-    And the response should indicate success
-    And the correlation ID should be present
+    Then I should receive a successful response
+    And the invoice number should be "<invoiceNumber>"
+    And the order type should be "<orderType>"
+    And the total amount should be "<totalAmount>" in "<currency>"
+    And a correlation ID should be present in the response
 
     Examples:
-      | orderNumber           | orderType        |
-      | 0123456789           | EcomOrder        |
-      | GS12345678           | ManualOrder      |
-      | 123456789012345678901| MaoOrder         |
+      | orderNumber           | invoiceNumber | orderType   | totalAmount | currency |
+      | 0123456789           | INV-2024-001  | EcomOrder   | 150.00      | USD      |
+      | GS12345678           | INV-2024-002  | ManualOrder | 250.00      | USD      |
+      | 123456789012345678901| INV-2024-003  | MaoOrder    | 350.00      | USD      |
+
+  @error-handling
+  Scenario: Attempt to retrieve invoice with non-existent order number
+    Given I am an authenticated customer service representative
+    When I request the invoice for order number "0999999999"
+    Then I should receive a not found response
+    And the error message should indicate "Invoice not found for order number"
+    And a correlation ID should be present in the response
+
+  @error-handling
+  Scenario Outline: Attempt to retrieve invoice with invalid order number format
+    Given I am an authenticated customer service representative
+    When I request the invoice for order number "<invalidOrderNumber>"
+    Then I should receive a bad request response
+    And the error message should indicate "Invalid order number format"
+
+    Examples:
+      | invalidOrderNumber |
+      |                   |
+      | INVALID@123       |
+      | 123               |
+      | GS123             |
+
+  @performance
+  Scenario: Invoice retrieval responds within acceptable time
+    Given I am an authenticated customer service representative
+    When I request the invoice for order number "0123456789"
+    Then the response should be received within 2 seconds
+    And the response should be successful
 ```
 
-### In-Memory Repository Pattern
+#### Example 2: Order Processing Workflow
 
-**Problem**: BDD tests should not depend on physical databases.
+**File:** `tests/e2e/features/order-processing/complete-order-workflow.feature`
 
-**Solution**: Implement in-memory repositories.
+```gherkin
+@order-processing @critical @workflow
+Feature: Complete Order to Invoice Workflow
+  As a business
+  I want orders to be processed through to invoice generation
+  So that customers receive proper billing documentation
 
-```csharp
-public class InMemoryInvoiceRepository : IInvoiceRepository
-{
-    private readonly Dictionary<string, Invoice> _invoices = new();
-    private readonly List<string> _seededIds = new();
+  Background:
+    Given the order service is available
+    And the invoice service is available
+    And the payment service is available
 
-    public async Task<Invoice> GetByOrderNumberAsync(string orderNumber) =>
-        await Task.FromResult(_invoices.Values.FirstOrDefault(i => i.OrderNumber == orderNumber));
+  @happy-path @end-to-end
+  Scenario: Complete order lifecycle from creation to invoice
+    Given a new customer order is created with:
+      | productSku | quantity | unitPrice |
+      | SKU-001    | 2        | 75.00     |
+      | SKU-002    | 1        | 50.00     |
+    When the order is submitted for processing
+    Then the order should be validated successfully
+    And payment should be authorized for 200.00 USD
+    When payment is captured successfully
+    Then the order status should be "Completed"
+    And an invoice should be automatically generated
+    And the invoice should contain all order line items
+    And the invoice total should match the order total
+    And the customer should receive an invoice email notification
 
-    public async Task SaveAsync(Invoice invoice)
-    {
-        _invoices[invoice.Id] = invoice;
-        await Task.CompletedTask;
-    }
+  @error-handling
+  Scenario: Order processing fails when payment is declined
+    Given a new customer order is created with total amount 500.00 USD
+    When the order is submitted for processing
+    And payment authorization is declined
+    Then the order status should be "Payment Failed"
+    And no invoice should be generated
+    And the customer should receive a payment failure notification
 
-    public async Task ClearSeededDataAsync()
-    {
-        foreach (var id in _seededIds.ToList())
-        {
-            if (_invoices.ContainsKey(id))
-            {
-                _invoices.Remove(id);
-                _seededIds.Remove(id);
-            }
+  @compensation
+  Scenario: Rollback invoice when order is cancelled after generation
+    Given an order "0123456789" is completed with invoice "INV-2024-100"
+    When the order is cancelled by customer service
+    Then the invoice "INV-2024-100" should be marked as void
+    And the order status should be "Cancelled"
+    And a credit note should be generated
+    And the customer should receive a cancellation confirmation
+```
+
+#### Example 3: Multi-Service Integration
+
+**File:** `tests/e2e/features/integration/cross-service-communication.feature`
+
+```gherkin
+@integration @cross-service
+Feature: Cross-Service Data Consistency
+  As a system
+  I want data to remain consistent across all microservices
+  So that business operations are reliable
+
+  @data-consistency @critical
+  Scenario: Order data propagates correctly to invoice service
+    Given a new order is created in the order service with:
+      | orderNumber  | customerEmail       | totalAmount |
+      | 0987654321  | test@example.com    | 300.00      |
+    And the order is completed successfully
+    When the invoice is generated
+    Then the invoice service should have the correct order details:
+      | field         | expectedValue      |
+      | orderNumber   | 0987654321        |
+      | customerEmail | test@example.com  |
+      | totalAmount   | 300.00            |
+    And the invoice service should maintain data consistency
+    And both services should return the same correlation ID
+
+  @idempotency
+  Scenario: Duplicate invoice generation requests are handled correctly
+    Given an order "0123456789" has an existing invoice "INV-2024-001"
+    When I request invoice generation for order "0123456789" again
+    Then the system should return the existing invoice "INV-2024-001"
+    And no duplicate invoice should be created
+    And the response should indicate idempotent operation
+```
+
+### Step Definitions
+
+#### JavaScript/Cucumber Example
+
+**File:** `tests/e2e/step-definitions/invoice-steps.js`
+
+```javascript
+const { Given, When, Then } = require('@cucumber/cucumber');
+const { expect } = require('chai');
+const axios = require('axios');
+
+// Configuration
+const BASE_URL = process.env.API_BASE_URL || 'https://service.k8s-preprod03.arcteryx.io';
+const API_VERSION = 'v1';
+
+Given('the invoice service is available', async function() {
+  try {
+    const response = await axios.get(`${BASE_URL}/health`);
+    expect(response.status).to.equal(200);
+    this.log('✓ Invoice service is healthy');
+  } catch (error) {
+    throw new Error(`Invoice service is not available: ${error.message}`);
+  }
+});
+
+Given('the following invoices exist in the system:', async function(dataTable) {
+  const invoices = dataTable.hashes();
+  
+  for (const invoice of invoices) {
+    // Seed test data via API or database
+    await this.testDataHelper.seedInvoice(invoice);
+    this.log(`Seeded invoice: ${invoice.invoiceNumber} for order: ${invoice.orderNumber}`);
+  }
+  
+  // Store for later verification
+  this.seededInvoices = invoices;
+});
+
+Given('I am an authenticated customer service representative', async function() {
+  // Obtain authentication token
+  this.authToken = await this.authHelper.getServiceToken('customer-service-rep');
+  this.log('✓ Authenticated as customer service representative');
+});
+
+When('I request the invoice for order number {string}', async function(orderNumber) {
+  this.correlationId = this.generateCorrelationId();
+  
+  try {
+    this.response = await axios.get(
+      `${BASE_URL}/api/${API_VERSION}/orders/${orderNumber}/invoices`,
+      {
+        headers: {
+          'Authorization': `Bearer ${this.authToken}`,
+          'X-Correlation-ID': this.correlationId,
+          'Content-Type': 'application/json'
         }
-        await Task.CompletedTask;
-    }
+      }
+    );
+    
+    this.log(`Request sent for order: ${orderNumber}`);
+    this.log(`Response status: ${this.response.status}`);
+    
+  } catch (error) {
+    // Store error response for validation
+    this.response = error.response;
+    this.log(`Request failed with status: ${error.response?.status}`);
+  }
+});
 
-    public void TrackSeededId(string id)
-    {
-        if (!_seededIds.Contains(id)) _seededIds.Add(id);
-    }
-}
+Then('I should receive a successful response', function() {
+  expect(this.response.status).to.equal(200);
+  expect(this.response.data.success).to.be.true;
+  this.log('✓ Received successful response');
+});
+
+Then('the invoice number should be {string}', function(expectedInvoiceNumber) {
+  const actualInvoiceNumber = this.response.data.data.invoiceNumber;
+  expect(actualInvoiceNumber).to.equal(expectedInvoiceNumber);
+  this.log(`✓ Invoice number verified: ${actualInvoiceNumber}`);
+});
+
+Then('the order type should be {string}', function(expectedOrderType) {
+  const actualOrderType = this.response.data.data.orderType;
+  expect(actualOrderType).to.equal(expectedOrderType);
+  this.log(`✓ Order type verified: ${actualOrderType}`);
+});
+
+Then('the total amount should be {string} in {string}', function(expectedAmount, expectedCurrency) {
+  const invoice = this.response.data.data;
+  expect(invoice.totalAmount.toString()).to.equal(expectedAmount);
+  expect(invoice.currency).to.equal(expectedCurrency);
+  this.log(`✓ Amount verified: ${expectedAmount} ${expectedCurrency}`);
+});
+
+Then('a correlation ID should be present in the response', function() {
+  const responseCorrelationId = this.response.data.correlationId;
+  expect(responseCorrelationId).to.exist;
+  expect(responseCorrelationId).to.equal(this.correlationId);
+  this.log(`✓ Correlation ID verified: ${responseCorrelationId}`);
+});
+
+Then('I should receive a not found response', function() {
+  expect(this.response.status).to.equal(404);
+  expect(this.response.data.success).to.be.false;
+  this.log('✓ Received 404 Not Found response');
+});
+
+Then('I should receive a bad request response', function() {
+  expect(this.response.status).to.equal(400);
+  expect(this.response.data.success).to.be.false;
+  this.log('✓ Received 400 Bad Request response');
+});
+
+Then('the error message should indicate {string}', function(expectedMessageContent) {
+  const actualMessage = this.response.data.message;
+  expect(actualMessage).to.include(expectedMessageContent);
+  this.log(`✓ Error message verified: ${actualMessage}`);
+});
+
+Then('the response should be received within {int} seconds', function(maxSeconds) {
+  const responseTime = this.response.headers['x-response-time'] || this.responseTime;
+  const responseTimeSeconds = parseInt(responseTime) / 1000;
+  
+  expect(responseTimeSeconds).to.be.lessThan(maxSeconds);
+  this.log(`✓ Response time: ${responseTimeSeconds}s (limit: ${maxSeconds}s)`);
+});
 ```
 
-### Test Data Seeding
+#### Support Files
 
-```csharp
-public class InMemoryDatabaseSeeder
-{
-    private readonly IInMemoryInvoiceRepository _invoiceRepository;
+**File:** `tests/e2e/support/world.js`
 
-    public async Task SeedTestDataAsync()
-    {
-        var invoices = new[]
-        {
-            CreateInvoice("0123456789", "1234567890", "EcomOrder"),
-            CreateInvoice("GS12345678", "9876543210", "ManualOrder"),
-            CreateInvoice("123456789012345678901", "1111111111", "MaoOrder")
-        };
+```javascript
+const { setWorldConstructor, Before, After } = require('@cucumber/cucumber');
+const { v4: uuidv4 } = require('uuid');
 
-        foreach (var invoice in invoices)
-        {
-            await _invoiceRepository.SaveAsync(invoice);
-            _invoiceRepository.TrackSeededId(invoice.Id);
-        }
+class CustomWorld {
+  constructor() {
+    this.response = null;
+    this.authToken = null;
+    this.correlationId = null;
+    this.seededInvoices = [];
+    this.testStartTime = Date.now();
+  }
+
+  generateCorrelationId() {
+    return uuidv4();
+  }
+
+  log(message) {
+    console.log(`[${new Date().toISOString()}] ${message}`);
+  }
+
+  async cleanup() {
+    // Cleanup test data
+    if (this.seededInvoices.length > 0) {
+      this.log('Cleaning up seeded test data...');
+      for (const invoice of this.seededInvoices) {
+        await this.testDataHelper.deleteInvoice(invoice.invoiceNumber);
+      }
     }
-
-    private Invoice CreateInvoice(string orderNumber, string invoiceNumber, string orderType) =>
-        new Invoice
-        {
-            Id = Guid.NewGuid().ToString(),
-            OrderNumber = orderNumber,
-            InvoiceNumber = invoiceNumber,
-            OrderType = orderType,
-            InvoiceDate = DateTime.UtcNow,
-            Currency = "USD",
-            TotalAmount = 100.00m
-        };
-}
-```
-
-### Test Hooks (Lifecycle Management)
-
-```csharp
-[Binding]
-public class TestHooks
-{
-    private static IServiceProvider _serviceProvider;
-    private static InMemoryDatabaseSeeder _seeder;
-
-    [BeforeTestRun]
-    public static async Task BeforeTestRun()
-    {
-        var services = new ServiceCollection();
-        ConfigureTestServices(services);
-        _serviceProvider = services.BuildServiceProvider();
-
-        _seeder = _serviceProvider.GetRequiredService<InMemoryDatabaseSeeder>();
-        await _seeder.SeedTestDataAsync();
-    }
-
-    [BeforeScenario]
-    public async Task BeforeScenario(ScenarioContext scenarioContext)
-    {
-        scenarioContext["StartTime"] = DateTime.UtcNow;
-        scenarioContext["CorrelationId"] = Guid.NewGuid().ToString();
-    }
-
-    [AfterScenario]
-    public async Task AfterScenario()
-    {
-        // Clean up only scenario-specific data
-        var driver = _serviceProvider.GetService<InvoiceTestDriver>();
-        if (driver != null)
-            await driver.CleanupScenarioDataAsync();
-    }
-
-    [AfterTestRun]
-    public static async Task AfterTestRun()
-    {
-        if (_seeder != null)
-            await _seeder.ClearAllSeededDataAsync();
-
-        if (_serviceProvider is IDisposable disposable)
-            disposable.Dispose();
-    }
-}
-```
-
-### Driver Pattern
-
-```csharp
-public class InvoiceTestDriver
-{
-    private readonly HttpClient _httpClient;
-    private readonly IInMemoryInvoiceRepository _repository;
-
-    public InvoiceTestDriver(HttpClient httpClient, IInMemoryInvoiceRepository repository)
-    {
-        _httpClient = httpClient;
-        _repository = repository;
-    }
-
-    public async Task<Invoice> GetSeededInvoiceAsync(string orderNumber) =>
-        await _repository.GetByOrderNumberAsync(orderNumber);
-
-    public async Task<ApiResponse<InvoiceRestModel>> GetInvoiceByOrderNumberAsync(string orderNumber)
-    {
-        var response = await _httpClient.GetAsync($"/api/v1/orders/{orderNumber}/invoices");
-        var content = await response.Content.ReadAsStringAsync();
-        
-        if (response.IsSuccessStatusCode)
-        {
-            return JsonSerializer.Deserialize<ApiResponse<InvoiceRestModel>>(content, 
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        }
-        
-        return new ApiResponse<InvoiceRestModel>
-        {
-            Success = false,
-            Message = content,
-            StatusCode = (int)response.StatusCode
-        };
-    }
-
-    public async Task CleanupScenarioDataAsync() =>
-        await _repository.ClearScenarioDataAsync();
-}
-```
-
-### Step Definitions (Avoid Ambiguity)
-
-```csharp
-using NUnit.Framework;
-using Reqnroll;
-using Shouldly;
-using ReportPortal.Shared;
-
-[Binding]
-public class InvoiceRetrievalSteps
-{
-    private readonly InvoiceTestDriver _driver;
-    private readonly ScenarioContext _scenarioContext;
-
-    public InvoiceRetrievalSteps(InvoiceTestDriver driver, ScenarioContext scenarioContext)
-    {
-        _driver = driver;
-        _scenarioContext = scenarioContext;
-    }
-
-    [Given(@"an invoice exists with order number ""(.*)""")]
-    public async Task GivenAnInvoiceExistsWithOrderNumber(string orderNumber)
-    {
-        Context.Current?.Log.Debug($"Verifying invoice exists for order number: {orderNumber}");
-        
-        var invoice = await _driver.GetSeededInvoiceAsync(orderNumber);
-        invoice.ShouldNotBeNull($"Seeded invoice with order number {orderNumber} should exist");
-        
-        _scenarioContext["ExpectedInvoice"] = invoice;
-        
-        Context.Current?.Log.Info($"Invoice found: {invoice.InvoiceNumber}");
-    }
-
-    [When(@"I request the invoice for order number ""(.*)""")]
-    public async Task WhenIRequestTheInvoiceForOrderNumber(string orderNumber)
-    {
-        Context.Current?.Log.Debug($"Requesting invoice for order number: {orderNumber}");
-        
-        var correlationId = _scenarioContext["CorrelationId"].ToString();
-        var response = await _driver.GetInvoiceByOrderNumberAsync(orderNumber, correlationId);
-        
-        _scenarioContext["ApiResponse"] = response;
-        
-        Context.Current?.Log.Info($"Response received with status: {response.StatusCode}");
-    }
-
-    [Then(@"I should receive the invoice details")]
-    public void ThenIShouldReceiveTheInvoiceDetails()
-    {
-        var response = _scenarioContext.Get<ApiResponse<InvoiceRestModel>>("ApiResponse");
-        var expectedInvoice = _scenarioContext.Get<Invoice>("ExpectedInvoice");
-        
-        Context.Current?.Log.Debug("Validating invoice details in response");
-        
-        response.Success.ShouldBeTrue();
-        response.Data.ShouldNotBeNull();
-        response.Data.OrderNumber.ShouldBe(expectedInvoice.OrderNumber);
-        
-        Context.Current?.Log.Info($"âœ" Invoice validation successful for order: {expectedInvoice.OrderNumber}");
-        Context.Current?.Log.Debug($"Invoice Number: {response.Data.InvoiceNumber}");
-        Context.Current?.Log.Debug($"Total Amount: {response.Data.TotalAmount}");
-    }
-
-    [Then(@"I should receive a not found response")]
-    public void ThenIShouldReceiveANotFoundResponse()
-    {
-        var response = _scenarioContext.Get<ApiResponse<InvoiceRestModel>>("ApiResponse");
-        
-        Context.Current?.Log.Debug("Validating not found response");
-        
-        response.Success.ShouldBeFalse();
-        response.StatusCode.ShouldBe(404);
-        response.Message.ShouldNotBeNullOrEmpty();
-        
-        Context.Current?.Log.Info("âœ" Not found response validated successfully");
-    }
-
-    [Then(@"the error message should be descriptive")]
-    public void ThenTheErrorMessageShouldBeDescriptive()
-    {
-        var response = _scenarioContext.Get<ApiResponse<InvoiceRestModel>>("ApiResponse");
-        
-        response.Message.ShouldNotBeNullOrEmpty();
-        response.Message.Length.ShouldBeGreaterThan(10);
-        
-        Context.Current?.Log.Info($"Error message: {response.Message}");
-    }
-}
-
-// Generic steps in CommonSteps.cs to avoid ambiguity
-[Binding]
-public class CommonSteps
-{
-    private readonly ScenarioContext _scenarioContext;
-
-    public CommonSteps(ScenarioContext scenarioContext) =>
-        _scenarioContext = scenarioContext;
-
-    [Given(@"the invoice service is available")]
-    public void GivenTheInvoiceServiceIsAvailable()
-    {
-        Context.Current?.Log.Debug("Verifying service availability");
-        // Service availability check
-        Context.Current?.Log.Info("âœ" Service is available");
-    }
-
-    [Given(@"test data is seeded in the system")]
-    public void GivenTestDataIsSeededInTheSystem()
-    {
-        Context.Current?.Log.Debug("Verifying test data is seeded");
-        // Data seeding verification
-        Context.Current?.Log.Info("âœ" Test data is seeded");
-    }
-
-    [Then(@"the correlation ID should be present")]
-    public void ThenTheCorrelationIdShouldBePresent()
-    {
-        var response = _scenarioContext.Get<object>("ApiResponse");
-        var correlationId = response.GetType().GetProperty("CorrelationId")?.GetValue(response);
-        
-        correlationId.ShouldNotBeNull();
-        Context.Current?.Log.Info($"Correlation ID present: {correlationId}");
-    }
-
-    [Then(@"the response should indicate success")]
-    public void ThenTheResponseShouldIndicateSuccess()
-    {
-        var response = _scenarioContext.Get<object>("ApiResponse");
-        var successProperty = response.GetType().GetProperty("Success");
-        successProperty.ShouldNotBeNull();
-        
-        var success = (bool)successProperty.GetValue(response);
-        success.ShouldBeTrue();
-        
-        Context.Current?.Log.Info("âœ" Response indicates success");
-    }
-}
-```
-
-### ReportPortal Configuration
-
-**File: ReportPortal.json**
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/reportportal/agent-dotnet-reqnroll/master/src/ReportPortal.ReqnrollPlugin/ReportPortal.config.schema",
-  "enabled": true,
-  "server": {
-    "url": "https://reportportal.epam.com/",
-    "project": "YOUR_PROJECT",
-    "apiKey": "YOUR_API_KEY"
-  },
-  "launch": {
-    "name": "BDD Test Execution",
-    "description": "Automated BDD tests",
-    "debugMode": true,
-    "attributes": ["bdd", "automated"]
   }
 }
+
+setWorldConstructor(CustomWorld);
+
+Before(async function() {
+  this.log('=== Starting scenario ===');
+  this.testStartTime = Date.now();
+});
+
+After(async function() {
+  const duration = Date.now() - this.testStartTime;
+  this.log(`=== Scenario completed in ${duration}ms ===`);
+  await this.cleanup();
+});
+```
+
+**File:** `tests/e2e/support/hooks.js`
+
+```javascript
+const { BeforeAll, AfterAll, Before, After, Status } = require('@cucumber/cucumber');
+const { TestDataHelper } = require('./helpers/test-data-helper');
+const { AuthHelper } = require('./helpers/auth-helper');
+
+BeforeAll(async function() {
+  console.log('=== E2E Test Suite Starting ===');
+  console.log(`Environment: ${process.env.TEST_ENV || 'preprod'}`);
+  console.log(`Base URL: ${process.env.API_BASE_URL}`);
+});
+
+Before(async function() {
+  // Initialize helpers for each scenario
+  this.testDataHelper = new TestDataHelper();
+  this.authHelper = new AuthHelper();
+  this.responseTime = null;
+});
+
+After(async function(scenario) {
+  if (scenario.result.status === Status.FAILED) {
+    // Capture failure information
+    this.log(`FAILED: ${scenario.pickle.name}`);
+    this.log(`Error: ${scenario.result.message}`);
+    
+    // Attach response data if available
+    if (this.response) {
+      this.attach(JSON.stringify(this.response.data, null, 2), 'application/json');
+    }
+  }
+});
+
+AfterAll(async function() {
+  console.log('=== E2E Test Suite Completed ===');
+});
+```
+
+### Configuration
+
+#### Cucumber Configuration
+
+**File:** `tests/e2e/config/cucumber.js`
+
+```javascript
+module.exports = {
+  default: {
+    require: [
+      'tests/e2e/step-definitions/**/*.js',
+      'tests/e2e/support/**/*.js'
+    ],
+    format: [
+      'progress-bar',
+      'html:tests/e2e/reports/html/cucumber-report.html',
+      'json:tests/e2e/reports/json/cucumber-report.json',
+      'junit:tests/e2e/reports/junit/cucumber-report.xml'
+    ],
+    formatOptions: {
+      snippetInterface: 'async-await'
+    },
+    publishQuiet: true,
+    parallel: 2,
+    retry: 1,
+    retryTagFilter: '@flaky'
+  },
+  
+  ci: {
+    format: [
+      'json:tests/e2e/reports/json/cucumber-report.json',
+      'junit:tests/e2e/reports/junit/cucumber-report.xml'
+    ],
+    parallel: 4,
+    retry: 2
+  }
+};
+```
+
+#### Environment Configuration
+
+**File:** `tests/e2e/config/environments/preprod.json`
+
+```json
+{
+  "environment": "preprod",
+  "baseUrl": "https://service.k8s-preprod03.arcteryx.io",
+  "apiVersion": "v1",
+  "auth": {
+    "tokenEndpoint": "https://auth.k8s-preprod03.arcteryx.io/token",
+    "clientId": "${AUTH_CLIENT_ID}",
+    "clientSecret": "${AUTH_CLIENT_SECRET}"
+  },
+  "timeouts": {
+    "default": 30000,
+    "extended": 60000
+  },
+  "retry": {
+    "attempts": 2,
+    "delay": 1000
+  }
+}
+```
+
+### Running E2E Tests
+
+#### Local Execution
+
+```bash
+# Run all E2E tests
+npm run test:e2e
+
+# Run specific feature
+npm run test:e2e -- tests/e2e/features/invoice-management/retrieve-invoice.feature
+
+# Run tests with specific tags
+npm run test:e2e -- --tags "@critical"
+npm run test:e2e -- --tags "@happy-path and not @flaky"
+
+# Run in specific environment
+TEST_ENV=preprod npm run test:e2e
+
+# Run with detailed output
+npm run test:e2e -- --format progress
+```
+
+#### Package.json Scripts
+
+```json
+{
+  "scripts": {
+    "test:e2e": "cucumber-js --config tests/e2e/config/cucumber.js",
+    "test:e2e:ci": "cucumber-js --profile ci --config tests/e2e/config/cucumber.js",
+    "test:e2e:critical": "npm run test:e2e -- --tags '@critical'",
+    "test:e2e:smoke": "npm run test:e2e -- --tags '@smoke'",
+    "test:e2e:report": "open tests/e2e/reports/html/cucumber-report.html"
+  }
+}
+```
+
+### E2E CI/CD Integration
+
+#### GitHub Actions Example
+
+```yaml
+name: E2E Tests
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 2 * * *'  # Nightly at 2 AM
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        environment: [preprod]
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run E2E Tests
+      env:
+        TEST_ENV: ${{ matrix.environment }}
+        API_BASE_URL: ${{ secrets.PREPROD_API_URL }}
+        AUTH_CLIENT_ID: ${{ secrets.AUTH_CLIENT_ID }}
+        AUTH_CLIENT_SECRET: ${{ secrets.AUTH_CLIENT_SECRET }}
+      run: npm run test:e2e:ci
+    
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: e2e-test-results
+        path: tests/e2e/reports/
+    
+    - name: Publish Test Report
+      if: always()
+      uses: dorny/test-reporter@v1
+      with:
+        name: E2E Test Results
+        path: tests/e2e/reports/junit/*.xml
+        reporter: java-junit
+```
+
+### E2E Best Practices
+
+#### Feature Writing
+
+1. **Focus on business value** - Write from user perspective
+2. **Keep scenarios independent** - No dependencies between scenarios
+3. **Use meaningful tags** - Organize and filter effectively
+4. **Avoid UI details** - Focus on behavior, not implementation
+5. **Keep scenarios concise** - One behavior per scenario
+
+#### Step Definitions
+
+1. **Reuse common steps** - Create shared step library
+2. **Use page/service objects** - Abstract API/UI interactions
+3. **Handle errors gracefully** - Provide clear failure messages
+4. **Log appropriately** - Aid debugging without noise
+5. **Clean up test data** - Ensure idempotent tests
+
+#### Performance
+
+1. **Run E2E tests in parallel** - Reduce execution time
+2. **Tag slow tests** - Separate from smoke tests
+3. **Use appropriate waits** - Avoid brittle sleep statements
+4. **Monitor test duration** - Identify and optimize slow tests
+5. **Implement retry logic** - Handle transient failures
+
+### E2E Tag Strategy
+
+| Tag | Purpose | When to Use |
+|-----|---------|-------------|
+| `@critical` | Business-critical paths | Must pass before deployment |
+| `@smoke` | Quick validation | Post-deployment verification |
+| `@regression` | Full test coverage | Scheduled test runs |
+| `@happy-path` | Successful scenarios | Primary user flows |
+| `@error-handling` | Error scenarios | Edge cases and failures |
+| `@performance` | Performance tests | SLA validation |
+| `@flaky` | Unstable tests | Tests needing investigation |
+| `@wip` | Work in progress | Tests under development |
+
+### E2E Reporting
+
+#### HTML Report Example
+
+```javascript
+// Generate custom HTML report
+const reporter = require('cucumber-html-reporter');
+
+const options = {
+  theme: 'bootstrap',
+  jsonFile: 'tests/e2e/reports/json/cucumber-report.json',
+  output: 'tests/e2e/reports/html/cucumber-report.html',
+  reportSuiteAsScenarios: true,
+  scenarioTimestamp: true,
+  launchReport: true,
+  metadata: {
+    'Test Environment': process.env.TEST_ENV,
+    'Browser': 'N/A (API Tests)',
+    'Platform': process.platform,
+    'Executed': new Date().toISOString()
+  }
+};
+
+reporter.generate(options);
+```
+
+### E2E Troubleshooting
+
+#### Common Issues
+
+**Issue: Step definition not found**
+```
+Solution: Ensure step definitions are in the correct directory and match feature file steps exactly
+```
+
+**Issue: Authentication failures**
+```
+Solution: Verify environment variables are set correctly and tokens are valid
+```
+
+**Issue: Flaky tests**
+```
+Solution: 
+- Add appropriate waits instead of fixed sleeps
+- Ensure proper test data cleanup
+- Tag as @flaky and investigate root cause
+```
+
+**Issue: Timeout errors**
+```
+Solution: Increase timeout in cucumber configuration or optimize slow operations
 ```
 
 ## Mutation Testing (Stryker.NET)
@@ -988,7 +1258,7 @@ public class InvoiceControllerTests
         apiResponse.Success.ShouldBeTrue();
         apiResponse.Data.ShouldNotBeNull();
         
-        Context.Current?.Log.Info($"âœ" Test passed for invoice: {invoiceId}");
+        Context.Current?.Log.Info($"✓ Test passed for invoice: {invoiceId}");
         
         // Verify mock interactions
         _mockService.Verify(s => s.GetInvoiceAsync(invoiceId), Times.Once);
@@ -1014,7 +1284,7 @@ public class InvoiceControllerTests
         apiResponse.Success.ShouldBeFalse();
         apiResponse.Message.ShouldContain("Invalid");
         
-        Context.Current?.Log.Info("âœ" Invalid ID properly rejected");
+        Context.Current?.Log.Info("✓ Invalid ID properly rejected");
     }
 
     [Test]
@@ -1046,7 +1316,7 @@ public class InvoiceControllerTests
         var apiResponse = okResult.Value.ShouldBeOfType<ApiResponse<InvoiceModel>>();
         apiResponse.CorrelationId.ShouldBe(correlationId);
         
-        Context.Current?.Log.Info($"âœ" Correlation ID propagated: {correlationId}");
+        Context.Current?.Log.Info($"✓ Correlation ID propagated: {correlationId}");
     }
 
     [TearDown]
@@ -1127,6 +1397,7 @@ public class DatabaseHelper
 ### Type Conflict Resolution
 ```csharp
 // Handle namespace conflicts
+using DataObjectsInvoice = Ibs.Api.DataObjects.
 using DataObjectsInvoice = Ibs.Api.DataObjects.Invoice;
 using PlatformInvoice = Ibs.Api.DataObjects.Platform.Invoice;
 
@@ -1460,8 +1731,8 @@ public class DiagnosticSteps
 ## References
 
 - [FsCheck Documentation](https://fscheck.github.io/FsCheck/)
-- [Reqnroll Documentation](https://docs.reqnroll.net/latest/)
-- [ReportPortal Reqnroll](https://github.com/reportportal/agent-dotnet-reqnroll)
+- [ReportPortal Playwright](https://reportportal.io/docs/log-data-in-reportportal/test-framework-integration/JavaScript/Playwright/)
+- [ReportPortal Playwright Example](https://github.com/reportportal/agent-js-playwright#readme)
 - [ReportPortal NUnit](https://github.com/reportportal/agent-net-nunit)
 - [ReportPortal VSTest](https://github.com/reportportal/agent-net-vstest)
 - [ReportPortal Serilog](https://github.com/reportportal/logger-net-serilog#readme)
@@ -1473,4 +1744,4 @@ public class DiagnosticSteps
 
 **Last Updated**: January 2025  
 **Maintained By**: OCP Team  
-**Review Cycle**: Quarterly
+**Review Cycle**: Quarterly 

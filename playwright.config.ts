@@ -1,8 +1,44 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices, PlaywrightTestConfig  } from '@playwright/test';
 require("dotenv").config({ path: "./.env" });
 import path from 'path';
 
 export const STORAGE_STATE = path.join(__dirname, 'playwright/.auth/user.json');
+
+/**
+ * ReportPortal Configuration
+ * Uses environment variables from .env file
+ */
+const rpConfig = {
+  // API Key Authentication
+  apiKey: process.env.RP_API_KEY || process.env.RP_TOKEN,
+  
+  // ReportPortal Server Configuration
+  endpoint: process.env.RP_ENDPOINT || 'https://reportportal.epam.com/api/v1',
+  project: process.env.RP_PROJECT || 'roberto_meza_personal',
+  
+  // Launch Configuration
+  launch: process.env.RP_LAUNCH || `eShop Playwright E2E - ${process.env.TEST_ENV || 'local'} - ${new Date().toISOString()}`,
+  description: process.env.RP_LAUNCH_DESCRIPTION || 'End-to-end Playwright tests for eShop microservices application',
+  
+  // Launch Attributes (tags for filtering)
+  attributes: [
+    { key: 'test-type', value: 'e2e' },
+    { key: 'framework', value: 'playwright' },
+    { key: 'browser', value: 'chromium' },
+    { key: 'environment', value: process.env.TEST_ENV || 'local' },
+    { key: 'application', value: 'eShop' }
+  ],
+  
+  // Execution Mode
+  mode: process.env.RP_MODE || (process.env.TEST_ENV === 'local' ? 'DEBUG' : 'DEFAULT'),
+  
+  // Additional Options
+  debug: process.env.RP_DEBUG === 'true',
+  includeTestSteps: true,
+  uploadVideo: true,
+  uploadTrace: true,
+};
+
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -18,7 +54,10 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [
+    ['html'],
+    ['@reportportal/agent-js-playwright', rpConfig]
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -91,5 +130,6 @@ export default defineConfig({
     stderr: 'pipe',
     stdout: 'pipe',
     timeout: process.env.CI ? (5 * 60_000) : 60_000,
+    ignoreHTTPSErrors: true,
   },
 });

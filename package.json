@@ -5,13 +5,37 @@
   "directories": {
     "test": "tests"
   },
-  "scripts": {},
+  "scripts": {
+    "test:e2e": "cucumber-js --config e2e/config/cucumber.js && npm run report:generate",
+    "test:e2e:smoke": "cucumber-js --config e2e/config/cucumber.js --profile smoke && npm run report:generate",
+    "test:e2e:rp": "cucumber-js -f ./e2e/config/reportPortalFormatter.cjs --config e2e/config/cucumber.js && npm run report:generate",
+    "test:e2e:critical": "cucumber-js --config e2e/config/cucumber.js --profile critical && npm run report:generate",
+    "test:e2e:ci": "cucumber-js --config e2e/config/cucumber.js --profile ci",
+    "test:e2e:report": "open e2e/reports/html/cucumber-report.html",
+    "report:generate": "node e2e/scripts/generate-report.js",
+    "test:playwright": "playwright test",
+    "test:playwright:ui": "playwright test --ui",
+    "test:playwright:rp": "npx playwright test --config=playwright.config.ts",
+    "test:playwright-config": "node e2e/scripts/test-playwright-config.js",
+    "test:all": "npm run test:playwright && npm run test:e2e"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@cucumber/cucumber": "^12.5.0",
+    "@cucumber/pretty-formatter": "^2.4.1",
     "@playwright/test": "^1.42.1",
+    "@reportportal/agent-js-cucumber": "^5.6.1",
+    "@reportportal/agent-js-playwright": "^5.3.2",
+    "@reportportal/client-javascript": "^5.5.8",
+    "@types/chai": "^5.2.3",
     "@types/node": "^20.11.25",
-    "dotenv": "^16.4.5"
+    "axios": "^1.13.2",
+    "chai": "^6.2.2",
+    "cucumber-html-reporter": "^7.2.0",
+    "dotenv": "^16.6.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }

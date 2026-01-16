@@ -1,0 +1,29 @@
+{
+  "environment": "ci",
+  "baseUrl": "http://localhost:5045",
+  "auth": {
+    "username": "alice",
+    "password": "Pass123$"
+  },
+  "timeouts": {
+    "default": 60000,
+    "extended": 120000,
+    "navigation": 30000
+  },
+  "retry": {
+    "attempts": 2,
+    "delay": 2000
+  },
+  "browser": {
+    "headless": true,
+    "slowMo": 0,
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    }
+  },
+  "video": {
+    "enabled": true,
+    "dir": "e2e/reports/videos/"
+  }
+}
