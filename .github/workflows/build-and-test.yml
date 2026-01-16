@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   build-and-test:
     name: Build, Test and Analyze
@@ -42,7 +46,7 @@ jobs:
       # 3. SonarCloud Begin (Quality Check Setup)
       - name: Begin Sonar scan
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Necesario para comentar en el PR
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           dotnet sonarscanner begin /k:"epam-ai_eShop" /o:"epam-ai" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vstest.reportsPaths="**/*.trx" /d:sonar.cs.vscoveragexml.reportsPaths="**/coverage.cobertura.xml"
@@ -61,7 +65,6 @@ jobs:
         run: dotnet test --solution eShop.Web.slnf --no-build --no-progress --output detailed
 
       # 7. Execute SonarCloud Analysis (End)
-      # This pushes the analysis to the server and performs the quality gate check
       - name: End Sonar scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -93,16 +96,112 @@ jobs:
       - name: Call CodeMie Agent
         env:
           ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -euo pipefail
+
+          # 1. Extract PR Metadata (Title & Body) using GitHub CLI
+          echo "Fetching PR Metadata..."
+          PR_DATA=$(gh pr view $PR_NUMBER --json title,body)
+          PR_TITLE=$(echo "$PR_DATA" | jq -r .title)
+          PR_BODY=$(echo "$PR_DATA" | jq -r .body)
+
+          # 2. Extract Code Diff
+          # We compare the target branch (base) vs current commit (head)
+          echo "Fetching Code Diff..."
+          DIFF_CONTENT=$(git diff origin/${{ github.base_ref }}...HEAD)
+
+          if [[ -z "$DIFF_CONTENT" ]]; then
+            echo "No code changes detected."
+            exit 0
+          fi
           
+          # 3. Construct the User Prompt as a Clean JSON Object
+          # Matches the agent requirement: { title, description, diff }
+          USER_PROMPT_JSON=$(jq -n \
+            --arg title "$PR_TITLE" \
+            --arg desc "$PR_BODY" \
+            --arg diff "$DIFF_CONTENT" \
+            '{title: $title, description: $desc, diff: $diff}')
+
+          # 4. Create the Payload for the API (The prompt goes inside 'text')
+          JSON_PAYLOAD=$(jq -n \
+            --arg text "$USER_PROMPT_JSON" \
+            '{text: $text}')
+
+          # DEBUG: Print JSON Payload
+          echo "----------------------------------------"
+          echo "🔍 JSON PAYLOAD (DEBUG)"
+          echo "----------------------------------------"
+          echo "$JSON_PAYLOAD"
+          echo "----------------------------------------"
+
+          # 5. Send Request
+          echo "Sending to CodeMie Agent..."
           RESPONSE=$(curl -s -X POST "https://codemie.lab.epam.com/code-assistant-api/v1/assistants/${ASSISTANT_ID}/model" \
             -H "Content-Type: application/json" \
             -H "Accept: application/json" \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
-            -d "{\"text\": \"Hi\"}")
-          echo "$RESPONSE"
-          GENERATED=$(echo "$RESPONSE" | jq -r '.generated')
+            -d "$JSON_PAYLOAD")
+
+          # 6. Process Response
+          GENERATED=$(echo "$RESPONSE" | jq -r '.generated // empty')
           
-          echo "CodeMie Agent Response:"
+          if [[ -z "$GENERATED" ]]; then
+             echo "::error::API returned empty response."
+             echo "Raw Response (Debug): $RESPONSE"
+             exit 1
+          fi
+
+          # DEBUG: Print RAW Agent Response
+          echo "----------------------------------------"
+          echo "🔍 RAW AGENT RESPONSE (DEBUG)"
+          echo "----------------------------------------"
           echo "$GENERATED"
+          echo "----------------------------------------"
+
+          # --- FIX: CLEANING THE OUTPUT ---
+          # Extract only the content between the first '{' and the last '}'
+          # This ignores any markdown fences (```json) or introductory text.
+          CLEAN_JSON=$(echo "$GENERATED" | sed -n '/^{/,/^}/p')
+          
+          # Fallback: If sed failed (e.g., if response is a single line or formatting differs), 
+          # try stripping markdown code blocks specifically.
+          if [[ -z "$CLEAN_JSON" ]]; then
+             CLEAN_JSON=$(echo "$GENERATED" | sed 's/```json//g' | sed 's/```//g')
+          fi
+
+          echo "----------------------------------------"
+          echo "🤖 Agent Analysis Report (Cleaned)"
+          echo "----------------------------------------"
+          echo "$CLEAN_JSON"
+          echo "----------------------------------------"
+
+          # 7. Parse the Agent's JSON Output
+          # We use CLEAN_JSON now instead of GENERATED
+          
+          VALIDATION_RESULT=$(echo "$CLEAN_JSON" | jq -r '.ValidationResult')
+          MESSAGE=$(echo "$CLEAN_JSON" | jq -r '.Message')
+
+          echo "Parsed Result: $VALIDATION_RESULT"
+
+          # 8. Act on Result
+          if [[ "$VALIDATION_RESULT" == "true" ]]; then
+            echo "::notice::Agent Validation Passed"
+          
+            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              echo "Posting success message to PR #$PR_NUMBER..."
+              gh pr comment $PR_NUMBER --body "$MESSAGE"
+            fi
+          
+          else
+            echo "::error::Agent Validation Failed"
+          
+            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              echo "Posting failure details to PR #$PR_NUMBER..."
+              gh pr comment $PR_NUMBER --body "$MESSAGE"
+            fi
+          
+            exit 1
+          fi

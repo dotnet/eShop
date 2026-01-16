@@ -155,9 +155,9 @@ public void Workflow_Scenario_ExpectedOutcome()
 <PackageReference Include="Moq" Version="4.20.69" />
 <PackageReference Include="NUnit" Version="4.2.2" />
 <PackageReference Include="Shouldly" Version="4.2.1" />
-<PackageReference Include="ReportPortal.NUnit" Version="4.5.0" />
-<PackageReference Include="ReportPortal.VSTest.TestLogger" Version="3.8.0" />
 <PackageReference Include="coverlet.collector" Version="3.1.2" />
+<PackageReference Include="ReportPortal.NUnit" Version="4.8.0" />
+<PackageReference Include="ReportPortal.VSTest.TestLogger" Version="4.0.0" />
 ```
 
 ### Configuration Standards
@@ -354,7 +354,6 @@ public class ApiResponsePropertyTests
                         apiResponse.ShouldNotBeNull();
                         apiResponse.Success.ShouldBeTrue();
                         apiResponse.CorrelationId.ShouldNotBeNullOrEmpty();
-                        
                         Context.Current?.Log.Info($"✓ Valid response for order: {orderNumber}");
                     }
                     
@@ -400,7 +399,7 @@ public class ApiResponsePropertyTests
                 apiResponse.Message.ShouldContain("Invalid order number format");
                 
                 Context.Current?.Log.Info($"✓ Correctly rejected: {invalidOrderNumber}");
-                
+               
                 return true;
             })
             .QuickCheckThrowOnFailure();
@@ -433,7 +432,6 @@ public static class PropertyTestConfig
         .WithQuietOnSuccess(true);
 }
 ```
-
 
 ## E2E Testing with BDD and Gherkin
 
@@ -960,6 +958,7 @@ module.exports = {
   "retry": {
     "attempts": 2,
     "delay": 1000
+
   }
 }
 ```
@@ -1259,6 +1258,7 @@ public class InvoiceControllerTests
         apiResponse.Data.ShouldNotBeNull();
         
         Context.Current?.Log.Info($"✓ Test passed for invoice: {invoiceId}");
+
         
         // Verify mock interactions
         _mockService.Verify(s => s.GetInvoiceAsync(invoiceId), Times.Once);
@@ -1283,7 +1283,7 @@ public class InvoiceControllerTests
         var apiResponse = badRequestResult.Value.ShouldBeOfType<ApiResponse<InvoiceModel>>();
         apiResponse.Success.ShouldBeFalse();
         apiResponse.Message.ShouldContain("Invalid");
-        
+    
         Context.Current?.Log.Info("✓ Invalid ID properly rejected");
     }
 
@@ -1316,6 +1316,7 @@ public class InvoiceControllerTests
         var apiResponse = okResult.Value.ShouldBeOfType<ApiResponse<InvoiceModel>>();
         apiResponse.CorrelationId.ShouldBe(correlationId);
         
+
         Context.Current?.Log.Info($"✓ Correlation ID propagated: {correlationId}");
     }
 
@@ -1721,11 +1722,11 @@ public class DiagnosticSteps
 |---------|------|-----------|
 | Unit Testing | NUnit | Yes |
 | Property Testing | FsCheck | Yes |
-| BDD Testing | Reqnroll | Yes |
+| BDD Testing | Playwright + Cucumber | Yes |
 | Mutation Testing | Stryker.NET | Yes |
 | Mocking | Moq | Yes |
 | Assertions | Shouldly | Yes |
-| BDD Reporting | ReportPortal.Reqnroll | Yes |
+| BDD Reporting | ReportPortal.CucumberJS | Yes |
 | Unit Reporting | ReportPortal.NUnit | Yes |
 
 ## References
@@ -1744,4 +1745,4 @@ public class DiagnosticSteps
 
 **Last Updated**: January 2025  
 **Maintained By**: OCP Team  
-**Review Cycle**: Quarterly 
+**Review Cycle**: Quarterly
