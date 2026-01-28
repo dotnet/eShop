@@ -1,6 +1,7 @@
 ﻿namespace eShop.Ordering.UnitTests.Domain;
 
 using eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
+using eShop.Ordering.Domain.AggregatesModel.PromotionAggregate;
 using eShop.Ordering.UnitTests.Domain;
 
 [TestClass]
@@ -174,5 +175,28 @@ public class OrderAggregateTest
         fakeOrder.RemoveDomainEvent(@fakeEvent);
         //Assert
         Assert.HasCount(expectedResult, fakeOrder.DomainEvents);
+    }
+
+    [TestMethod]
+    public void Apply_discount_result_to_order_success()
+    {
+        // Arrange
+        var address = new AddressBuilder().Build();
+        var order = new Order("1", "fakeName", address, 5, "12", "123", "FakeName", DateTime.UtcNow.AddYears(1));
+        
+        var originalAmount = 100m;
+        var appliedDiscounts = new List<AppliedDiscount>
+        {
+            new AppliedDiscount(Guid.NewGuid().ToString(), "Promo 1", 10m, DateTime.UtcNow, 1)
+        };
+        var result = new DiscountCalculationResult(originalAmount, appliedDiscounts, new List<string>());
+
+        // Act
+        order.ApplyDiscounts(result);
+
+        // Assert
+        Assert.AreEqual(10m, order.TotalDiscount);
+        Assert.AreEqual(1, order.AppliedDiscounts.Count);
+        Assert.AreEqual("Promo 1", order.AppliedDiscounts.First().PromotionName);
     }
 }

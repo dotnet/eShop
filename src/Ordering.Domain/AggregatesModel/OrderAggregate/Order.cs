@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using eShop.Ordering.Domain.AggregatesModel.PromotionAggregate;
 
 namespace eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
 
@@ -18,6 +19,11 @@ public class Order
     public OrderStatus OrderStatus { get; private set; }
     
     public string Description { get; private set; }
+
+    // Promotional Discount System
+    public decimal TotalDiscount { get; private set; }
+    private readonly List<AppliedDiscount> _appliedDiscounts;
+    public IReadOnlyCollection<AppliedDiscount> AppliedDiscounts => _appliedDiscounts.AsReadOnly();
 
     // Draft orders have this set to true. Currently we don't check anywhere the draft status of an Order, but we could do it if needed
 #pragma warning disable CS0414 // The field 'Order._isDraft' is assigned but its value is never used
@@ -46,6 +52,7 @@ public class Order
     protected Order()
     {
         _orderItems = new List<OrderItem>();
+        _appliedDiscounts = new List<AppliedDiscount>();
         _isDraft = false;
     }
 
@@ -88,6 +95,21 @@ public class Order
             var orderItem = new OrderItem(productId, productName, unitPrice, discount, pictureUrl, units);
             _orderItems.Add(orderItem);
         }
+    }
+
+    /// <summary>
+    /// Apply discount calculation results to the order.
+    /// </summary>
+    public void ApplyDiscounts(DiscountCalculationResult result)
+    {
+        if (result == null)
+        {
+            throw new ArgumentNullException(nameof(result));
+        }
+
+        TotalDiscount = result.TotalDiscount;
+        _appliedDiscounts.Clear();
+        _appliedDiscounts.AddRange(result.AppliedDiscounts);
     }
 
     public void SetPaymentMethodVerified(int buyerId, int paymentId)

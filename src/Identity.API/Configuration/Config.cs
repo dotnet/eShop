@@ -163,8 +163,8 @@
                     AllowedGrantTypes = GrantTypes.Implicit,
                     AllowAccessTokensViaBrowser = true,
 
-                    RedirectUris = { $"{configuration["OrderingApiClient"]}/swagger/oauth2-redirect.html" },
-                    PostLogoutRedirectUris = { $"{configuration["OrderingApiClient"]}/swagger/" },
+                    RedirectUris = { $"{configuration["OrderingApiClient"]}/scalar/v1" },
+                    PostLogoutRedirectUris = { $"{configuration["OrderingApiClient"]}/scalar/v1" },
 
                     AllowedScopes =
                     {

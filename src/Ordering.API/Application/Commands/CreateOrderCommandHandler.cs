@@ -1,12 +1,16 @@
 ﻿namespace eShop.Ordering.API.Application.Commands;
 
 using eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
+using eShop.Ordering.Domain.AggregatesModel.PromotionAggregate;
+using eShop.Ordering.Domain.Services;
 
 // Regular CommandHandler
 public class CreateOrderCommandHandler
     : IRequestHandler<CreateOrderCommand, bool>
 {
     private readonly IOrderRepository _orderRepository;
+    private readonly IPromotionRepository _promotionRepository;
+    private readonly IDiscountCalculationService _discountCalculationService;
     private readonly IIdentityService _identityService;
     private readonly IMediator _mediator;
     private readonly IOrderingIntegrationEventService _orderingIntegrationEventService;
@@ -16,10 +20,14 @@ public class CreateOrderCommandHandler
     public CreateOrderCommandHandler(IMediator mediator,
         IOrderingIntegrationEventService orderingIntegrationEventService,
         IOrderRepository orderRepository,
+        IPromotionRepository promotionRepository,
+        IDiscountCalculationService discountCalculationService,
         IIdentityService identityService,
         ILogger<CreateOrderCommandHandler> logger)
     {
         _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
+        _promotionRepository = promotionRepository ?? throw new ArgumentNullException(nameof(promotionRepository));
+        _discountCalculationService = discountCalculationService ?? throw new ArgumentNullException(nameof(discountCalculationService));
         _identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         _orderingIntegrationEventService = orderingIntegrationEventService ?? throw new ArgumentNullException(nameof(orderingIntegrationEventService));
@@ -45,6 +53,16 @@ public class CreateOrderCommandHandler
         }
 
         _logger.LogInformation("Creating Order - Order: {@Order}", order);
+
+        // Apply promotional discounts
+        var activePromotions = await _promotionRepository.GetActivePromotionsAsync();
+        var discountContext = new DiscountContext(
+            order.OrderItems,
+            isFirstPurchase: false, // TODO: Implement first purchase detection
+            productCategories: new Dictionary<int, string>() // TODO: Enrich with catalog data
+        );
+        var discountResult = _discountCalculationService.Calculate(order, activePromotions, discountContext);
+        order.ApplyDiscounts(discountResult);
 
         _orderRepository.Add(order);
 

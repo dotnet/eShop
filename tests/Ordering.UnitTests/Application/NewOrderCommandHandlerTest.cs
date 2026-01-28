@@ -1,5 +1,7 @@
 ﻿using eShop.Ordering.API.Application.IntegrationEvents;
 using eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
+using eShop.Ordering.Domain.AggregatesModel.PromotionAggregate;
+using eShop.Ordering.Domain.Services;
 
 namespace eShop.Ordering.UnitTests.Application;
 
@@ -37,8 +39,18 @@ public class NewOrderRequestHandlerTest
         _identityServiceMock.GetUserIdentity().Returns(buyerId);
 
         var LoggerMock = Substitute.For<ILogger<CreateOrderCommandHandler>>();
+        var promotionRepositoryMock = Substitute.For<IPromotionRepository>();
+        var discountCalculationServiceMock = Substitute.For<IDiscountCalculationService>();
+
+        // Setup promotion repository and discount calculation service mocks
+        promotionRepositoryMock.GetActivePromotionsAsync()
+            .Returns(Task.FromResult(Enumerable.Empty<Promotion>()));
+        
+        discountCalculationServiceMock.Calculate(Arg.Any<Order>(), Arg.Any<IEnumerable<Promotion>>(), Arg.Any<DiscountContext>())
+            .Returns(new DiscountCalculationResult(0, new List<AppliedDiscount>(), new List<string>()));
+
         //Act
-        var handler = new CreateOrderCommandHandler(_mediator, _orderingIntegrationEventService, _orderRepositoryMock, _identityServiceMock, LoggerMock);
+        var handler = new CreateOrderCommandHandler(_mediator, _orderingIntegrationEventService, _orderRepositoryMock, promotionRepositoryMock, discountCalculationServiceMock, _identityServiceMock, LoggerMock);
         var cltToken = new CancellationToken();
         var result = await handler.Handle(fakeOrderCmd, cltToken);
 

@@ -47,6 +47,9 @@ internal static class Extensions
         services.AddScoped<IOrderQueries, OrderQueries>();
         services.AddScoped<IBuyerRepository, BuyerRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IPromotionRepository, PromotionRepository>();
+        services.AddScoped<IDiscountStrategyFactory, DiscountStrategyFactory>();
+        services.AddScoped<IDiscountCalculationService, DiscountCalculationService>();
         services.AddScoped<IRequestManager, RequestManager>();
     }
 

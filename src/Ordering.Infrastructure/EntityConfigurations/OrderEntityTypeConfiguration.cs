@@ -32,5 +32,12 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
         orderConfiguration.HasOne(o => o.Buyer)
             .WithMany()
             .HasForeignKey(o => o.BuyerId);
+
+        orderConfiguration.OwnsMany(o => o.AppliedDiscounts, a =>
+        {
+            a.WithOwner().HasForeignKey("OrderId");
+            a.Property<int>("Id");
+            a.HasKey("Id");
+        });
     }
 }

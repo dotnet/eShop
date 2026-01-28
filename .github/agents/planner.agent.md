@@ -50,54 +50,33 @@ These agents are managed by the Orchestrator and typically do not interact direc
 
 ## Internal File Organization Instructions
 To ensure structured and isolated context for each feature:
-1. For each feature, use a dedicated folder: .github/features/{feature-name}/.
-2. Store all agent-specific files in this folder, using the format: {type}.{agent}.md (e.g., memory.planner.md, findings.planner.md).
-3. Always write and read context, findings, plans, and results only from the feature’s folder.
-4. Do not mix files between features; keep each feature’s files isolated.
-5. Use consistent naming for easy automation and retrieval.
-6. When reporting to the Orchestrator, reference the exact file path used for memory or results.
+1. For each feature, use a dedicated folder: `.github/features/{feature-name}/` (feature name must be in kebab-case).
+2. Store all files in this folder using the strict naming convention:
+   - `{feature-name}.findings.md` (DomainSpecialist output)
+   - `{feature-name}.plan.md` (Planner output)
+   - `{feature-name}.memory.md` (Consolidated memory for all agents)
+   - `README.md` (Optional status summary)
+3. Always write and read context, findings, plans, and results only from the feature's folder.
+4. Do not mix files between features; keep each feature's files isolated.
+5. When reporting to the Orchestrator, reference the exact file path used for memory or results.
 
 # Agent Memory Instructions
 
-To ensure continuity between invocations and to prevent context loss, agents should use memory files.
+To ensure continuity between invocations and to prevent context loss, agents use a consolidated memory file per feature.
 
 ## Naming Convention
-Memory files should be named using the following pattern:
-`{feature}.{agent_name}.memory.md`
+All agents share a single memory file per feature:
+`{feature}.memory.md`
 
 Examples:
-*   `login-page.domain_specialist.memory.md`
-*   `login-page.test_writer.memory.md`
+*   `login-page.memory.md`
+*   `promotional-discounts.memory.md`
 
 ## Usage Rules
-1.  **Read First**: At the start of a task, check if your memory file exists. If it does, read it to restore context.
-2.  **Write Last**: Before finishing your turn, update your memory file with the current state, decisions made, and any information needed for the next invocation.
-3.  **Clarifications**: If you need to stop and ask the user for clarification, save your current thought process and specific questions in the memory file so you can resume exactly where you left off.
+1.  **Read First**: At the start of a task, check if the feature memory file exists. If it does, read the Planner section to restore context.
+2.  **Update Your Section**: Update only the Planner section with current state, decisions, and information needed for next invocation.
+3.  **Preserve Other Sections**: Never modify sections belonging to other agents.
+4.  **Clarifications**: If you need to stop and ask the user for clarification, save your current thought process in your section.
 
 ## Structure
-Recommended structure for a memory file:
-
-```markdown
-# Memory: {Agent Name} - {Feature Name}
-
-## Current State
-Status: [In Progress | Waiting for Feedback | Complete]
-Last Updated: {Date/Time}
-
-## Context & Knowledge
-*   Key facts learned so far.
-*   Constraints identified.
-*   File paths relevant to the task.
-
-## Decisions Log
-*   [Decision 1]: Reasoning...
-*   [Decision 2]: Reasoning...
-
-## Work in Progress
-*   Current step in the plan.
-*   Code snippets or logic being developed.
-*   Unresolved questions.
-
-## Next Steps
-*   What needs to be done in the next invocation.
-```
+The consolidated memory file has sections for each agent. Update only the Planner section.

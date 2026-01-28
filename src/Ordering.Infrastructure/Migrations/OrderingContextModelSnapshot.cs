@@ -18,7 +18,7 @@ namespace Ordering.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("ordering")
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "10.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -33,6 +33,9 @@ namespace Ordering.Infrastructure.Migrations
                 .IncrementsBy(10);
 
             modelBuilder.HasSequence("paymentseq")
+                .IncrementsBy(10);
+
+            modelBuilder.HasSequence("promotionseq")
                 .IncrementsBy(10);
 
             modelBuilder.Entity("eShop.IntegrationEventLogEF.IntegrationEventLogEntry", b =>
@@ -160,31 +163,32 @@ namespace Ordering.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseHiLo(b.Property<int>("Id"), "orderseq");
 
+                    b.Property<int?>("BuyerId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("OrderStatus")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
-                    b.Property<int?>("_buyerId")
-                        .HasColumnType("integer")
-                        .HasColumnName("BuyerId");
-
-                    b.Property<DateTime>("_orderDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("OrderDate");
-
-                    b.Property<int?>("_paymentMethodId")
+                    b.Property<int?>("PaymentId")
                         .HasColumnType("integer")
                         .HasColumnName("PaymentMethodId");
 
+                    b.Property<decimal>("TotalDiscount")
+                        .HasColumnType("numeric");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("_buyerId");
+                    b.HasIndex("BuyerId");
 
-                    b.HasIndex("_paymentMethodId");
+                    b.HasIndex("PaymentId");
 
                     b.ToTable("orders", "ordering");
                 });
@@ -197,38 +201,80 @@ namespace Ordering.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseHiLo(b.Property<int>("Id"), "orderitemseq");
 
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("numeric");
+
                     b.Property<int>("OrderId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("PictureUrl")
+                        .HasColumnType("text");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("_discount")
-                        .HasColumnType("numeric")
-                        .HasColumnName("Discount");
-
-                    b.Property<string>("_pictureUrl")
-                        .HasColumnType("text")
-                        .HasColumnName("PictureUrl");
-
-                    b.Property<string>("_productName")
+                    b.Property<string>("ProductName")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("ProductName");
+                        .HasColumnType("text");
 
-                    b.Property<decimal>("_unitPrice")
-                        .HasColumnType("numeric")
-                        .HasColumnName("UnitPrice");
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("numeric");
 
-                    b.Property<int>("_units")
-                        .HasColumnType("integer")
-                        .HasColumnName("Units");
+                    b.Property<int>("Units")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
 
                     b.ToTable("orderItems", "ordering");
+                });
+
+            modelBuilder.Entity("eShop.Ordering.Domain.AggregatesModel.PromotionAggregate.Promotion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseHiLo(b.Property<int>("Id"), "promotionseq");
+
+                    b.Property<string>("DiscountType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<decimal>("DiscountValue")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<decimal?>("MaximumDiscount")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("MinimumOrderAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<int?>("MinimumQuantity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("promotions", "ordering");
                 });
 
             modelBuilder.Entity("eShop.Ordering.Infrastructure.Idempotency.ClientRequest", b =>
@@ -268,13 +314,13 @@ namespace Ordering.Infrastructure.Migrations
 
             modelBuilder.Entity("eShop.Ordering.Domain.AggregatesModel.OrderAggregate.Order", b =>
                 {
-                    b.HasOne("eShop.Ordering.Domain.AggregatesModel.BuyerAggregate.Buyer", null)
+                    b.HasOne("eShop.Ordering.Domain.AggregatesModel.BuyerAggregate.Buyer", "Buyer")
                         .WithMany()
-                        .HasForeignKey("_buyerId");
+                        .HasForeignKey("BuyerId");
 
                     b.HasOne("eShop.Ordering.Domain.AggregatesModel.BuyerAggregate.PaymentMethod", null)
                         .WithMany()
-                        .HasForeignKey("_paymentMethodId")
+                        .HasForeignKey("PaymentId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.OwnsOne("eShop.Ordering.Domain.AggregatesModel.OrderAggregate.Address", "Address", b1 =>
@@ -305,8 +351,48 @@ namespace Ordering.Infrastructure.Migrations
                                 .HasForeignKey("OrderId");
                         });
 
+                    b.OwnsMany("eShop.Ordering.Domain.AggregatesModel.PromotionAggregate.AppliedDiscount", "AppliedDiscounts", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<DateTime>("AppliedAt")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<decimal>("DiscountAmount")
+                                .HasColumnType("numeric");
+
+                            b1.Property<int>("ItemCount")
+                                .HasColumnType("integer");
+
+                            b1.Property<int>("OrderId")
+                                .HasColumnType("integer");
+
+                            b1.Property<string>("PromotionId")
+                                .HasColumnType("text");
+
+                            b1.Property<string>("PromotionName")
+                                .HasColumnType("text");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("OrderId");
+
+                            b1.ToTable("AppliedDiscount", "ordering");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderId");
+                        });
+
                     b.Navigation("Address")
                         .IsRequired();
+
+                    b.Navigation("AppliedDiscounts");
+
+                    b.Navigation("Buyer");
                 });
 
             modelBuilder.Entity("eShop.Ordering.Domain.AggregatesModel.OrderAggregate.OrderItem", b =>
