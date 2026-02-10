@@ -129,6 +129,14 @@ Notes:
   - Report any issues to [azure-dev](https://github.com/Azure/azure-dev/issues) repo.
   - [FAQ and troubleshoot](https://learn.microsoft.com/azure/developer/azure-developer-cli/troubleshoot?tabs=Browser) for azd.
 
+## Third-party
+
+### Duende IdentityServer
+
+The eShop application uses [Duende IdentityServer](https://duendesoftware.com/products/identityserver/), which is software that may require a license when deploying to a production environment. Depending on revenue, a free [community edition](https://duendesoftware.com/products/communityedition/) is available for production use.
+
+For development, testing, and general exploration, no license is needed.
+
 ## Contributing
 
 For more information on contributing to this repo, read [the contribution documentation](./CONTRIBUTING.md) and [the Code of Conduct](CODE-OF-CONDUCT.md).
