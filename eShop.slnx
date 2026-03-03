@@ -1,4 +1,4 @@
-﻿<Solution>
+<Solution>
   <Folder Name="/src/">
     <Project Path="src/eShop.AppHost/eShop.AppHost.csproj" />
     <Project Path="src/Basket.API/Basket.API.csproj" />
@@ -23,6 +23,7 @@
   <Folder Name="/tests/">
     <Project Path="tests/Basket.UnitTests/Basket.UnitTests.csproj" />
     <Project Path="tests/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj" />
+    <Project Path="tests/Identity.UnitTests/Identity.UnitTests.csproj" />
     <Project Path="tests/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj" />
     <Project Path="tests/Ordering.UnitTests/Ordering.UnitTests.csproj" />
     <Project Path="tests/ClientApp.UnitTests/ClientApp.UnitTests.csproj" />

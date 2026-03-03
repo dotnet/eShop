@@ -27,30 +27,35 @@
         {
             var subject = context.Subject ?? throw new ArgumentNullException(nameof(context.Subject));
 
-            var subjectId = subject.Claims.Where(x => x.Type == "sub").FirstOrDefault()?.Value;
+            var subjectId = subject.Claims.FirstOrDefault(x => x.Type == "sub")?.Value;
             var user = await _userManager.FindByIdAsync(subjectId);
 
-            context.IsActive = false;
-
-            if (user != null)
-            {
-                if (_userManager.SupportsUserSecurityStamp)
-                {
-                    var security_stamp = subject.Claims.Where(c => c.Type == "security_stamp").Select(c => c.Value).SingleOrDefault();
-                    if (security_stamp != null)
-                    {
-                        var db_security_stamp = await _userManager.GetSecurityStampAsync(user);
-                        if (db_security_stamp != security_stamp)
-                            return;
-                    }
-                }
-
-                context.IsActive =
-                    !user.LockoutEnabled ||
-                    !user.LockoutEnd.HasValue ||
-                    user.LockoutEnd <= DateTime.UtcNow;
-            }
+            context.IsActive = user != null
+                && await IsSecurityStampValidAsync(user, subject)
+                && IsNotLockedOut(user);
         }
+
+        private async Task<bool> IsSecurityStampValidAsync(ApplicationUser user, ClaimsPrincipal subject)
+        {
+            if (!_userManager.SupportsUserSecurityStamp)
+                return true;
+
+            var tokenStamp = subject.Claims
+                .Where(c => c.Type == "security_stamp")
+                .Select(c => c.Value)
+                .SingleOrDefault();
+
+            if (tokenStamp == null)
+                return true;
+
+            var dbStamp = await _userManager.GetSecurityStampAsync(user);
+            return dbStamp == tokenStamp;
+        }
+
+        private static bool IsNotLockedOut(ApplicationUser user) =>
+            !user.LockoutEnabled ||
+            !user.LockoutEnd.HasValue ||
+            user.LockoutEnd <= DateTime.UtcNow;
 
         private IEnumerable<Claim> GetClaimsFromUser(ApplicationUser user)
         {
