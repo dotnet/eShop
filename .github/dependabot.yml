@@ -4,6 +4,10 @@ registries:
     type: nuget-feed
     url: https://api.nuget.org/v3/index.json
 updates:
+  - package-ecosystem: "devcontainers"
+    directory: "/"
+    schedule:
+      interval: weekly
   - package-ecosystem: nuget
     directory: "/"
     registries:
