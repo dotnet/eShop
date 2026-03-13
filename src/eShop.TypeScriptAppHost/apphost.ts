@@ -2,7 +2,7 @@
 // Translated from eShop.AppHost/Program.cs
 // For more information, see: https://aspire.dev
 
-import { createBuilder, ContainerLifetime } from './.modules/aspire.js';
+import { createBuilder, ContainerLifetime, QueryParameterMatchMode } from './.modules/aspire.js';
 
 const builder = await createBuilder();
 
@@ -75,29 +75,68 @@ const webHooksApi = await builder.addCSharpApp("webhooks-api", "../Webhooks.API/
     .withEnvironment("ASPNETCORE_FORWARDEDHEADERS_ENABLED", "true");
 
 // Reverse proxies
-const mobileBff = await builder.addYarp("mobile-bff")
+await builder.addYarp("mobile-bff")
     .withExternalHttpEndpoints()
-    // Configure YARP routes for mobile BFF
     .withConfiguration(async (yarp) => {
-        const catalogEndpoint = await catalogApi.getEndpoint("http");
-        const orderingEndpoint = await orderingApi.getEndpoint("http");
-        const identityHttpEndpoint = await identityApi.getEndpoint("http");
+        const catalogCluster = await yarp.addClusterFromResource(catalogApi);
 
-        const catalogCluster = await yarp.addClusterFromEndpoint(catalogEndpoint);
-        const orderingCluster = await yarp.addClusterFromEndpoint(orderingEndpoint);
-        const identityCluster = await yarp.addClusterFromEndpoint(identityHttpEndpoint);
+        await yarp.addRoute("/catalog-api/api/catalog/items", catalogCluster)
+            .withMatchRouteQueryParameter([{ name: "api-version", values: ["1.0", "1", "2.0"], mode: QueryParameterMatchMode.Exact }])
+            .withTransformPathRemovePrefix("/catalog-api");
 
-        // Catalog routes
-        // NOTE: The C# version uses WithMatchRouteQueryParameter and WithTransformPathRemovePrefix
-        // which are not yet available in the TypeScript SDK. These routes are simplified versions.
-        await yarp.addRoute("/catalog-api/api/catalog/{*any}", catalogCluster);
-        await yarp.addRoute("/api/catalog/{*any}", catalogCluster);
+        await yarp.addRoute("/catalog-api/api/catalog/items/by", catalogCluster)
+            .withMatchRouteQueryParameter([{ name: "api-version", values: ["1.0", "1", "2.0"], mode: QueryParameterMatchMode.Exact }])
+            .withTransformPathRemovePrefix("/catalog-api");
+
+        await yarp.addRoute("/catalog-api/api/catalog/items/{id}", catalogCluster)
+            .withMatchRouteQueryParameter([{ name: "api-version", values: ["1.0", "1", "2.0"], mode: QueryParameterMatchMode.Exact }])
+            .withTransformPathRemovePrefix("/catalog-api");
+
+        await yarp.addRoute("/catalog-api/api/catalog/items/by/{name}", catalogCluster)
+            .withMatchRouteQueryParameter([{ name: "api-version", values: ["1.0", "1"], mode: QueryParameterMatchMode.Exact }])
+            .withTransformPathRemovePrefix("/catalog-api");
+
+        await yarp.addRoute("/catalog-api/api/catalog/items/withsemanticrelevance/{text}", catalogCluster)
+            .withMatchRouteQueryParameter([{ name: "api-version", values: ["1.0", "1"], mode: QueryParameterMatchMode.Exact }])
+            .withTransformPathRemovePrefix("/catalog-api");
+
+        await yarp.addRoute("/catalog-api/api/catalog/items/withsemanticrelevance", catalogCluster)
+            .withMatchRouteQueryParameter([{ name: "api-version", values: ["2.0"], mode: QueryParameterMatchMode.Exact }])
+            .withTransformPathRemovePrefix("/catalog-api");
+
+        await yarp.addRoute("/catalog-api/api/catalog/items/type/{typeId}/brand/{brandId?}", catalogCluster)
+            .withMatchRouteQueryParameter([{ name: "api-version", values: ["1.0", "1"], mode: QueryParameterMatchMode.Exact }])
+            .withTransformPathRemovePrefix("/catalog-api");
+
+        await yarp.addRoute("/catalog-api/api/catalog/items/type/all/brand/{brandId?}", catalogCluster)
+            .withMatchRouteQueryParameter([{ name: "api-version", values: ["1.0", "1"], mode: QueryParameterMatchMode.Exact }])
+            .withTransformPathRemovePrefix("/catalog-api");
+
+        await yarp.addRoute("/catalog-api/api/catalog/catalogTypes", catalogCluster)
+            .withMatchRouteQueryParameter([{ name: "api-version", values: ["1.0", "1", "2.0"], mode: QueryParameterMatchMode.Exact }])
+            .withTransformPathRemovePrefix("/catalog-api");
+
+        await yarp.addRoute("/catalog-api/api/catalog/catalogBrands", catalogCluster)
+            .withMatchRouteQueryParameter([{ name: "api-version", values: ["1.0", "1", "2.0"], mode: QueryParameterMatchMode.Exact }])
+            .withTransformPathRemovePrefix("/catalog-api");
+
+        await yarp.addRoute("/catalog-api/api/catalog/items/{id}/pic", catalogCluster)
+            .withMatchRouteQueryParameter([{ name: "api-version", values: ["1.0", "1", "2.0"], mode: QueryParameterMatchMode.Exact }])
+            .withTransformPathRemovePrefix("/catalog-api");
+
+        // Generic catalog catch-all route
+        await yarp.addRoute("/api/catalog/{*any}", catalogCluster)
+            .withMatchRouteQueryParameter([{ name: "api-version", values: ["1.0", "1", "2.0"], mode: QueryParameterMatchMode.Exact }]);
 
         // Ordering routes
-        await yarp.addRoute("/api/orders/{*any}", orderingCluster);
+        const orderingEndpoint = await orderingApi.getEndpoint("http");
+        await yarp.addRouteFromEndpoint("/api/orders/{*any}", orderingEndpoint)
+            .withMatchRouteQueryParameter([{ name: "api-version", values: ["1.0", "1"], mode: QueryParameterMatchMode.Exact }]);
 
         // Identity routes
-        await yarp.addRoute("/identity/{*any}", identityCluster);
+        const identityHttpEndpoint = await identityApi.getEndpoint("http");
+        await yarp.addRouteFromEndpoint("/identity/{*any}", identityHttpEndpoint)
+            .withTransformPathRemovePrefix("/identity");
     });
 
 // Apps
@@ -108,7 +147,8 @@ const webhooksClient = await builder.addProject("webhooksclient", "../WebhookCli
 
 const webApp = await builder.addProject("webapp", "../WebApp/WebApp.csproj", launchProfileName)
     .withExternalHttpEndpoints()
-    // TODO: .withUrls() callback is not available in the TypeScript SDK
+    .withUrlForEndpoint("http", async (url) => { url.displayText = "Online Store (http)"; })
+    .withUrlForEndpoint("https", async (url) => { url.displayText = "Online Store (https)"; })
     .withServiceReference(basketApi)
     .withServiceReference(catalogApi)
     .withServiceReference(orderingApi)
@@ -116,7 +156,6 @@ const webApp = await builder.addProject("webapp", "../WebApp/WebApp.csproj", lau
     .withEnvironmentEndpoint("IdentityUrl", identityEndpoint)
     .withEnvironment("ASPNETCORE_FORWARDEDHEADERS_ENABLED", "true");
 
-// OpenAI configuration (disabled by default)
 // Set to true if you want to use OpenAI
 const useOpenAI = true;
 if (useOpenAI) {
