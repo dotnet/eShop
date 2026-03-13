@@ -1,0 +1,14 @@
+{
+  "name": "tscheck",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "vscode-jsonrpc": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "nodemon": "^3.1.14",
+    "tsx": "^4.21.0",
+    "typescript": "^5.8.0"
+  }
+}

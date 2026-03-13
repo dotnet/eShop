@@ -1,3 +1,4 @@
 {
-  "appHostPath": "../src/eShop.AppHost/eShop.AppHost.csproj"
+  "appHostPath": "../src/eShop.TypeScriptAppHost/apphost.ts",
+  "language": "typescript/nodejs"
 }

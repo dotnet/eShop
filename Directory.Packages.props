@@ -12,11 +12,11 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Version together with Aspire -->
-    <PackageVersion Include="Aspire.Hosting.Azure.CognitiveServices" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Hosting.Redis" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Hosting.Yarp" Version="$(AspireVersion)" />
+    <PackageVersion Include="Aspire.Hosting.Azure.CognitiveServices" Version="13.1.2" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.1.2" />
+    <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="13.1.2" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="13.1.2" />
+    <PackageVersion Include="Aspire.Hosting.Yarp" Version="13.1.2" />
     <PackageVersion Include="Aspire.Npgsql" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.RabbitMQ.Client" Version="$(AspireVersion)" />
@@ -60,7 +60,7 @@
     <!-- Xabaril packages -->
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="9.0.0" />
     <!-- AI -->
-    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="9.8.0-beta.395" />
+    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="13.2.1-beta.528" />
     <PackageVersion Include="CommunityToolkit.Aspire.OllamaSharp" Version="9.8.0-beta.395" />
     <!-- Open Telemetry -->
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.14.0" />
