@@ -77,7 +77,8 @@ export function isAtsError(value: unknown): value is { $error: AtsError } {
         value !== null &&
         typeof value === 'object' &&
         '$error' in value &&
-        typeof (value as { $error: unknown }).$error === 'object'
+        typeof (value as { $error: unknown }).$error === 'object' &&
+        (value as { $error: unknown }).$error !== null
     );
 }
 
@@ -90,6 +91,47 @@ export function isMarshalledHandle(value: unknown): value is MarshalledHandle {
         typeof value === 'object' &&
         '$handle' in value &&
         '$type' in value
+    );
+}
+
+function isAbortSignal(value: unknown): value is AbortSignal {
+    return (
+        value !== null &&
+        typeof value === 'object' &&
+        'aborted' in value &&
+        'addEventListener' in value &&
+        'removeEventListener' in value
+    );
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+    if (value === null || typeof value !== 'object') {
+        return false;
+    }
+
+    const prototype = Object.getPrototypeOf(value);
+    return prototype === Object.prototype || prototype === null;
+}
+
+function hasTransportValue(value: unknown): value is { toTransportValue(): unknown | Promise<unknown> } {
+    return (
+        value !== null &&
+        typeof value === 'object' &&
+        'toTransportValue' in value &&
+        typeof (value as { toTransportValue?: unknown }).toTransportValue === 'function'
+    );
+}
+
+function createAbortError(message: string): Error {
+    const error = new Error(message);
+    error.name = 'AbortError';
+    return error;
+}
+
+function createCircularReferenceError(capabilityId: string, path: string): AppHostUsageError {
+    return new AppHostUsageError(
+        `Argument '${path}' passed to capability '${capabilityId}' contains a circular reference. ` +
+        'Circular references are not supported by the AppHost transport.'
     );
 }
 
@@ -137,6 +179,92 @@ export class Handle<T extends string = string> {
 }
 
 // ============================================================================
+// CancellationToken
+// ============================================================================
+
+/**
+ * Represents a transport-safe cancellation token value for the generated SDK.
+ *
+ * Use a plain {@link AbortSignal} when you create cancellation in user code.
+ * Generated APIs accept either an {@link AbortSignal} or a {@link CancellationToken}.
+ *
+ * Values returned from generated callbacks and context/property getters are
+ * {@link CancellationToken} instances because they may reference remote
+ * cancellation token handles received from the AppHost.
+ *
+ * @example
+ * ```typescript
+ * const controller = new AbortController();
+ * await connectionStringExpression.getValue(controller.signal);
+ * ```
+ *
+ * @example
+ * ```typescript
+ * const cancellationToken = await context.cancellationToken.get();
+ * const connectionStringExpression = await db.uriExpression.get();
+ * const connectionString = await connectionStringExpression.getValue(cancellationToken);
+ * ```
+ */
+export class CancellationToken {
+    private readonly _signal?: AbortSignal;
+    private readonly _remoteTokenId?: string;
+
+    constructor(signal?: AbortSignal);
+    constructor(tokenId?: string);
+    constructor(value?: AbortSignal | string | null) {
+        if (typeof value === 'string') {
+            this._remoteTokenId = value;
+        } else if (isAbortSignal(value)) {
+            this._signal = value;
+        }
+    }
+
+    /**
+     * Creates a cancellation token from a local {@link AbortSignal}.
+     */
+    static from(signal?: AbortSignal): CancellationToken {
+        return new CancellationToken(signal);
+    }
+
+    /**
+     * Creates a cancellation token from a transport value.
+     * Generated code uses this to materialize values that come from the AppHost.
+     */
+    static fromValue(value: unknown): CancellationToken {
+        if (value instanceof CancellationToken) {
+            return value;
+        }
+
+        if (typeof value === 'string') {
+            return new CancellationToken(value);
+        }
+
+        if (isAbortSignal(value)) {
+            return new CancellationToken(value);
+        }
+
+        return new CancellationToken();
+    }
+
+    /**
+     * Serializes the token for JSON-RPC transport.
+     */
+    toJSON(): string | undefined {
+        return this._remoteTokenId;
+    }
+
+    register(client?: AspireClient): string | undefined {
+        if (this._remoteTokenId !== undefined) {
+            return this._remoteTokenId;
+        }
+
+        return client
+            ? registerCancellation(client, this._signal)
+            : registerCancellation(this._signal);
+    }
+}
+
+// ============================================================================
 // Handle Wrapper Registry
 // ============================================================================
 
@@ -167,22 +295,35 @@ export function registerHandleWrapper(typeId: string, factory: HandleWrapperFact
  * @param client - Optional client for creating typed wrapper instances
  */
 export function wrapIfHandle(value: unknown, client?: AspireClient): unknown {
-    if (value && typeof value === 'object') {
-        if (isMarshalledHandle(value)) {
-            const handle = new Handle(value);
-            const typeId = value.$type;
+    if (isMarshalledHandle(value)) {
+        const handle = new Handle(value);
+        const typeId = value.$type;
 
-            // Try to find a registered wrapper factory for this type
-            if (typeId && client) {
-                const factory = handleWrapperRegistry.get(typeId);
-                if (factory) {
-                    return factory(handle, client);
-                }
+        // Try to find a registered wrapper factory for this type
+        if (typeId && client) {
+            const factory = handleWrapperRegistry.get(typeId);
+            if (factory) {
+                return factory(handle, client);
             }
+        }
 
-            return handle;
+        return handle;
+    }
+
+    if (Array.isArray(value)) {
+        for (let i = 0; i < value.length; i++) {
+            value[i] = wrapIfHandle(value[i], client);
+        }
+
+        return value;
+    }
+
+    if (isPlainObject(value)) {
+        for (const [key, nestedValue] of Object.entries(value)) {
+            value[key] = wrapIfHandle(nestedValue, client);
         }
     }
+
     return value;
 }
 
@@ -240,9 +381,7 @@ function validateCapabilityArgs(
         return;
     }
 
-    const seen = new Set<object>();
-
-    const validateValue = (value: unknown, path: string): void => {
+    const validateValue = (value: unknown, path: string, ancestors: Set<object>): void => {
         if (value === null || value === undefined) {
             return;
         }
@@ -259,26 +398,29 @@ function validateCapabilityArgs(
             return;
         }
 
-        if (seen.has(value)) {
-            return;
+        if (ancestors.has(value)) {
+            throw createCircularReferenceError(capabilityId, path);
         }
 
-        seen.add(value);
-
-        if (Array.isArray(value)) {
-            for (let i = 0; i < value.length; i++) {
-                validateValue(value[i], `${path}[${i}]`);
+        ancestors.add(value);
+        try {
+            if (Array.isArray(value)) {
+                for (let i = 0; i < value.length; i++) {
+                    validateValue(value[i], `${path}[${i}]`, ancestors);
+                }
+                return;
             }
-            return;
-        }
 
-        for (const [key, nestedValue] of Object.entries(value)) {
-            validateValue(nestedValue, `${path}.${key}`);
+            for (const [key, nestedValue] of Object.entries(value)) {
+                validateValue(nestedValue, `${path}.${key}`, ancestors);
+            }
+        } finally {
+            ancestors.delete(value);
         }
     };
 
     for (const [key, value] of Object.entries(args)) {
-        validateValue(value, key);
+        validateValue(value, key, new Set<object>());
     }
 }
 
@@ -393,21 +535,50 @@ export function getCallbackCount(): number {
  */
 const cancellationRegistry = new Map<string, () => void>();
 let cancellationIdCounter = 0;
+const connectedClients = new Set<AspireClient>();
+
+function resolveCancellationClient(client?: AspireClient): AspireClient {
+    if (client) {
+        return client;
+    }
+
+    if (connectedClients.size === 1) {
+        return connectedClients.values().next().value as AspireClient;
+    }
+
+    if (connectedClients.size === 0) {
+        throw new Error(
+            'registerCancellation(signal) requires a connected AspireClient. ' +
+            'Pass the client explicitly or connect the client first.'
+        );
+    }
+
+    throw new Error(
+        'registerCancellation(signal) is ambiguous when multiple AspireClient instances are connected. ' +
+        'Pass the client explicitly.'
+    );
+}
 
 /**
- * A reference to the current AspireClient for sending cancel requests.
- * Set by AspireClient.connect().
- */
-let currentClient: AspireClient | null = null;
-
-/**
- * Register an AbortSignal for cancellation support.
- * Returns a cancellation ID that should be passed to methods accepting CancellationToken.
+ * Registers cancellation support for a local signal or SDK cancellation token.
+ * Returns a cancellation ID that should be passed to methods accepting cancellation input.
  *
  * When the AbortSignal is aborted, sends a cancelToken request to the host.
  *
- * @param signal - The AbortSignal to register (optional)
- * @returns The cancellation ID, or undefined if no signal provided
+ * @param client - The AspireClient that should route the cancellation request
+ * @param signalOrToken - The signal or token to register (optional)
+ * @returns The cancellation ID, or undefined if no value was provided or the token maps to CancellationToken.None
+ */
+export function registerCancellation(client: AspireClient, signalOrToken?: AbortSignal | CancellationToken): string | undefined;
+/**
+ * Registers cancellation support using the single connected AspireClient.
+ *
+ * @param signalOrToken - The signal or token to register (optional)
+ * @returns The cancellation ID, or undefined if no value was provided or the token maps to CancellationToken.None
+ *
+ * @example
+ * const controller = new AbortController();
+ * await expression.getValue(controller.signal);
  *
  * @example
  * const controller = new AbortController();
@@ -415,14 +586,29 @@ let currentClient: AspireClient | null = null;
  * // Pass id to capability invocation
  * // Later: controller.abort() will cancel the operation
  */
-export function registerCancellation(signal?: AbortSignal): string | undefined {
-    if (!signal) {
+export function registerCancellation(signalOrToken?: AbortSignal | CancellationToken): string | undefined;
+export function registerCancellation(
+    clientOrSignalOrToken?: AspireClient | AbortSignal | CancellationToken,
+    maybeSignalOrToken?: AbortSignal | CancellationToken
+): string | undefined {
+    const client = clientOrSignalOrToken instanceof AspireClient ? clientOrSignalOrToken : undefined;
+    const signalOrToken = client
+        ? maybeSignalOrToken
+        : clientOrSignalOrToken as AbortSignal | CancellationToken | undefined;
+
+    if (!signalOrToken) {
         return undefined;
     }
 
-    // Already aborted? Don't register
+    if (signalOrToken instanceof CancellationToken) {
+        return signalOrToken.register(client);
+    }
+
+    const signal = signalOrToken;
+    const cancellationClient = resolveCancellationClient(client);
+
     if (signal.aborted) {
-        return undefined;
+        throw createAbortError('The operation was aborted before it was sent to the AppHost.');
     }
 
     const cancellationId = `ct_${++cancellationIdCounter}_${Date.now()}`;
@@ -430,8 +616,8 @@ export function registerCancellation(signal?: AbortSignal): string | undefined {
     // Set up the abort listener
     const onAbort = () => {
         // Send cancel request to host
-        if (currentClient?.connected) {
-            currentClient.cancelToken(cancellationId).catch(() => {
+        if (cancellationClient.connected) {
+            cancellationClient.cancelToken(cancellationId).catch(() => {
                 // Ignore errors - the operation may have already completed
             });
         }
@@ -448,6 +634,56 @@ export function registerCancellation(signal?: AbortSignal): string | undefined {
     });
 
     return cancellationId;
+}
+
+async function marshalTransportValue(
+    value: unknown,
+    client: AspireClient,
+    cancellationIds: string[],
+    capabilityId: string,
+    path: string = 'args',
+    ancestors: Set<object> = new Set<object>()
+): Promise<unknown> {
+    if (value === null || value === undefined || typeof value !== 'object') {
+        return value;
+    }
+
+    if (value instanceof CancellationToken) {
+        const cancellationId = value.register(client);
+        if (cancellationId !== undefined) {
+            cancellationIds.push(cancellationId);
+        }
+
+        return cancellationId;
+    }
+
+    if (ancestors.has(value)) {
+        throw createCircularReferenceError(capabilityId, path);
+    }
+
+    const nextAncestors = new Set(ancestors);
+    nextAncestors.add(value);
+
+    if (hasTransportValue(value)) {
+        return await marshalTransportValue(await value.toTransportValue(), client, cancellationIds, capabilityId, path, nextAncestors);
+    }
+
+    if (Array.isArray(value)) {
+        return await Promise.all(
+            value.map((item, index) => marshalTransportValue(item, client, cancellationIds, capabilityId, `${path}[${index}]`, nextAncestors))
+        );
+    }
+
+    if (isPlainObject(value)) {
+        const entries = await Promise.all(
+            Object.entries(value).map(async ([key, nestedValue]) =>
+                [key, await marshalTransportValue(nestedValue, client, cancellationIds, capabilityId, `${path}.${key}`, nextAncestors)] as const)
+        );
+
+        return Object.fromEntries(entries);
+    }
+
+    return value;
 }
 
 /**
@@ -480,6 +716,8 @@ export class AspireClient {
     private socket: net.Socket | null = null;
     private disconnectCallbacks: (() => void)[] = [];
     private _pendingCalls = 0;
+    private _connectPromise: Promise<void> | null = null;
+    private _disconnectNotified = false;
 
     constructor(private socketPath: string) { }
 
@@ -491,6 +729,12 @@ export class AspireClient {
     }
 
     private notifyDisconnect(): void {
+        if (this._disconnectNotified) {
+            return;
+        }
+
+        this._disconnectNotified = true;
+
         for (const callback of this.disconnectCallbacks) {
             try {
                 callback();
@@ -501,30 +745,106 @@ export class AspireClient {
     }
 
     connect(timeoutMs: number = 5000): Promise<void> {
-        return new Promise((resolve, reject) => {
-            const timeout = setTimeout(() => reject(new Error('Connection timeout')), timeoutMs);
+        if (this.connected) {
+            return Promise.resolve();
+        }
 
-            // On Windows, use named pipes; on Unix, use Unix domain sockets
-            const isWindows = process.platform === 'win32';
-            const pipePath = isWindows ? `\\\\.\\pipe\\${this.socketPath}` : this.socketPath;
+        if (this._connectPromise) {
+            return this._connectPromise;
+        }
 
-            this.socket = net.createConnection(pipePath);
+        this._disconnectNotified = false;
 
-            this.socket.once('error', (error: Error) => {
+        // On Windows, use named pipes; on Unix, use Unix domain sockets
+        const isWindows = process.platform === 'win32';
+        const pipePath = isWindows ? `\\\\.\\pipe\\${this.socketPath}` : this.socketPath;
+
+        this._connectPromise = new Promise((resolve, reject) => {
+            const socket = net.createConnection(pipePath);
+            this.socket = socket;
+
+            let settled = false;
+
+            const cleanupPendingListeners = () => {
+                socket.removeListener('connect', onConnect);
+                socket.removeListener('error', onPendingError);
+                socket.removeListener('close', onPendingClose);
+            };
+
+            const failConnect = (error: Error) => {
+                if (settled) {
+                    return;
+                }
+
+                settled = true;
                 clearTimeout(timeout);
+                cleanupPendingListeners();
+                this._connectPromise = null;
+
+                if (this.socket === socket) {
+                    this.socket = null;
+                }
+
+                if (!socket.destroyed) {
+                    socket.destroy();
+                }
+
                 reject(error);
-            });
+            };
 
-            this.socket.once('connect', () => {
-                clearTimeout(timeout);
+            const onConnectedSocketError = (error: Error) => {
+                console.error('Socket error:', error);
+            };
+
+            const onConnectedSocketClose = () => {
+                socket.removeListener('error', onConnectedSocketError);
+
+                if (this.socket && this.socket !== socket) {
+                    return;
+                }
+
+                const connection = this.connection;
+                this.connection = null;
+                this._connectPromise = null;
+
+                if (this.socket === socket) {
+                    this.socket = null;
+                }
+
+                connectedClients.delete(this);
+
                 try {
-                    const reader = new rpc.SocketMessageReader(this.socket!);
-                    const writer = new rpc.SocketMessageWriter(this.socket!);
+                    connection?.dispose();
+                } catch {
+                    // Ignore connection disposal errors during shutdown.
+                }
+
+                this.notifyDisconnect();
+            };
+
+            const onPendingError = (error: Error) => {
+                failConnect(error);
+            };
+
+            const onPendingClose = () => {
+                failConnect(new Error('Connection closed before JSON-RPC was established'));
+            };
+
+            const onConnect = async () => {
+                if (settled) {
+                    return;
+                }
+
+                clearTimeout(timeout);
+                cleanupPendingListeners();
+
+                try {
+                    const reader = new rpc.SocketMessageReader(socket);
+                    const writer = new rpc.SocketMessageWriter(socket);
                     this.connection = rpc.createMessageConnection(reader, writer);
 
                     this.connection.onClose(() => {
                         this.connection = null;
-                        this.notifyDisconnect();
                     });
                     this.connection.onError((err: any) => console.error('JsonRpc connection error:', err));
 
@@ -544,26 +864,39 @@ export class AspireClient {
                         }
                     });
 
-                    this.connection.listen();
+                    socket.on('error', onConnectedSocketError);
+                    socket.on('close', onConnectedSocketClose);
 
-                    // Set the current client for cancellation registry
-                    currentClient = this;
+                    const authToken = process.env.ASPIRE_REMOTE_APPHOST_TOKEN;
+                    if (!authToken) {
+                        throw new Error('ASPIRE_REMOTE_APPHOST_TOKEN environment variable is not set.');
+                    }
+                    this.connection.listen();
+                    const authenticated = await this.connection.sendRequest<boolean>('authenticate', authToken);
+                    if (!authenticated) {
+                        throw new Error('Failed to authenticate to the AppHost server.');
+                    }
+
+                    connectedClients.add(this);
+                    this._connectPromise = null;
+                    settled = true;
 
                     resolve();
-                } catch (e) {
-                    reject(e);
+                } catch (error) {
+                    failConnect(error instanceof Error ? error : new Error(String(error)));
                 }
-            });
+            };
 
-            this.socket.on('close', () => {
-                this.connection?.dispose();
-                this.connection = null;
-                if (currentClient === this) {
-                    currentClient = null;
-                }
-                this.notifyDisconnect();
-            });
+            const timeout = setTimeout(() => {
+                failConnect(new Error('Connection timeout'));
+            }, timeoutMs);
+
+            socket.once('error', onPendingError);
+            socket.once('close', onPendingClose);
+            socket.once('connect', onConnect);
         });
+
+        return this._connectPromise;
     }
 
     ping(): Promise<string> {
@@ -603,40 +936,65 @@ export class AspireClient {
         }
 
         validateCapabilityArgs(capabilityId, args);
-
-        // Ref counting: The vscode-jsonrpc socket keeps Node's event loop alive.
-        // We ref() during RPC calls so the process doesn't exit mid-call, and
-        // unref() when idle so the process can exit naturally after all work completes.
-        if (this._pendingCalls === 0) {
-            this.socket?.ref();
-        }
-        this._pendingCalls++;
+        const cancellationIds: string[] = [];
 
         try {
-            const result = await this.connection.sendRequest(
-                'invokeCapability',
-                capabilityId,
-                args ?? null
-            );
+            const rpcArgs = await marshalTransportValue(args ?? null, this, cancellationIds, capabilityId);
 
-            // Check for structured error response
-            if (isAtsError(result)) {
-                throw new CapabilityError(result.$error);
-            }
-
-            // Wrap handles automatically
-            return wrapIfHandle(result, this) as T;
-        } finally {
-            this._pendingCalls--;
+            // Ref counting: The vscode-jsonrpc socket keeps Node's event loop alive.
+            // We ref() during RPC calls so the process doesn't exit mid-call, and
+            // unref() when idle so the process can exit naturally after all work completes.
             if (this._pendingCalls === 0) {
-                this.socket?.unref();
+                this.socket?.ref();
+            }
+            this._pendingCalls++;
+
+            try {
+                const result = await this.connection.sendRequest(
+                    'invokeCapability',
+                    capabilityId,
+                    rpcArgs
+                );
+
+                // Check for structured error response
+                if (isAtsError(result)) {
+                    throw new CapabilityError(result.$error);
+                }
+
+                // Wrap handles automatically
+                return wrapIfHandle(result, this) as T;
+            } finally {
+                this._pendingCalls--;
+                if (this._pendingCalls === 0) {
+                    this.socket?.unref();
+                }
+            }
+        } finally {
+            for (const cancellationId of cancellationIds) {
+                unregisterCancellation(cancellationId);
             }
         }
     }
 
     disconnect(): void {
-        try { this.connection?.dispose(); } finally { this.connection = null; }
-        try { this.socket?.end(); } finally { this.socket = null; }
+        const connection = this.connection;
+        const socket = this.socket;
+
+        this.connection = null;
+        this.socket = null;
+        this._connectPromise = null;
+        connectedClients.delete(this);
+
+        try {
+            connection?.dispose();
+        } catch {
+            // Ignore connection disposal errors during shutdown.
+        }
+
+        if (socket && !socket.destroyed) {
+            socket.end();
+            socket.destroy();
+        }
     }
 
     get connected(): boolean {

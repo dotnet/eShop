@@ -1,0 +1,18 @@
+{
+  "appHost": {
+    "path": "apphost.ts",
+    "language": "typescript/nodejs"
+  },
+  "sdk": {
+    "version": "13.2.0"
+  },
+  "channel": "staging",
+  "packages": {
+    "Aspire.Hosting.Azure.AppContainers": "13.2.0",
+    "Aspire.Hosting.Redis": "13.2.0",
+    "Aspire.Hosting.RabbitMQ": "13.2.0",
+    "Aspire.Hosting.PostgreSQL": "13.2.0",
+    "Aspire.Hosting.Yarp": "13.2.0",
+    "Aspire.Hosting.Azure.CognitiveServices": "13.2.0"
+  }
+}

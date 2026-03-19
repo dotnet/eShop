@@ -141,7 +141,7 @@ await builder.addYarp("mobile-bff")
 
 // Apps
 const webhooksClient = await builder.addProject("webhooksclient", "../WebhookClient/WebhookClient.csproj", launchProfileName)
-    .withServiceReference(webHooksApi)
+    .withReference(webHooksApi)
     .withEnvironmentEndpoint("IdentityUrl", identityEndpoint)
     .withEnvironment("ASPNETCORE_FORWARDEDHEADERS_ENABLED", "true");
 
@@ -149,9 +149,9 @@ const webApp = await builder.addProject("webapp", "../WebApp/WebApp.csproj", lau
     .withExternalHttpEndpoints()
     .withUrlForEndpoint("http", async (url) => { url.displayText = "Online Store (http)"; })
     .withUrlForEndpoint("https", async (url) => { url.displayText = "Online Store (https)"; })
-    .withServiceReference(basketApi)
-    .withServiceReference(catalogApi)
-    .withServiceReference(orderingApi)
+    .withReference(basketApi)
+    .withReference(catalogApi)
+    .withReference(orderingApi)
     .withReference(rabbitMq).waitFor(rabbitMq)
     .withEnvironmentEndpoint("IdentityUrl", identityEndpoint)
     .withEnvironment("ASPNETCORE_FORWARDEDHEADERS_ENABLED", "true");
