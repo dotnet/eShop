@@ -72,6 +72,7 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
     .WithReference(catalogApi)
     .WithReference(orderingApi)
     .WithReference(rabbitMq).WaitFor(rabbitMq)
+    .WaitFor(identityApi)
     .WithEnvironment("IdentityUrl", identityEndpoint);
 
 // set to true if you want to use OpenAI
