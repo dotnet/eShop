@@ -22,7 +22,8 @@ var launchProfileName = ShouldUseHttpForEndpoints() ? "http" : "https";
 // Services
 var identityApi = builder.AddProject<Projects.Identity_API>("identity-api", launchProfileName)
     .WithExternalHttpEndpoints()
-    .WithReference(identityDb);
+    .WithReference(identityDb)
+    .WithHttpHealthCheck("/health");
 
 var identityEndpoint = identityApi.GetEndpoint(launchProfileName);
 
