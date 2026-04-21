@@ -16,3 +16,13 @@
         right: 0.75rem;
         top: 0.5rem;
     }
+
+.layout-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.layout-container.sticky-footer-page ::deep .eshop-footer {
+    margin-top: auto;
+}
