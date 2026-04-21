@@ -1,7 +1,6 @@
 ﻿@HostAddress = http://localhost:5222
 @ApiVersion = 1.0
 
-# Scalar: http://localhost:5222/scalar/v1
 GET {{HostAddress}}/openapi/v1.json
 
 ###
@@ -10,11 +9,13 @@ GET {{HostAddress}}/openapi/v2.json
 
 ###
 
-GET {{HostAddress}}/api/catalog/items
+# Scalar: http://localhost:5222/scalar/v1
 
 ###
 
-GET {{HostAddress}}/api/catalog/items?api-version=1
+# api-version is required, so this request will fail
+
+GET {{HostAddress}}/api/catalog/items
 
 ###
 

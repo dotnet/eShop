@@ -139,7 +139,7 @@ internal static class OpenApiOptionsExtensions
     {
         options.AddOperationTransformer((operation, context, cancellationToken) =>
         {
-            operation.Deprecated |= context.Description.ActionDescriptor.EndpointMetadata
+            operation.Deprecated = operation.Deprecated || context.Description.ActionDescriptor.EndpointMetadata
                 .OfType<ObsoleteAttribute>()
                 .Any();
 
@@ -152,18 +152,12 @@ internal static class OpenApiOptionsExtensions
     {
         options.AddOperationTransformer((operation, context, cancellationToken) =>
         {
-            // Find parameter named "api-version" and add a description to it
+            // Add an example for the API version parameter and remove the default value
             var apiVersionParameter = operation.Parameters?.FirstOrDefault(p => p.Name == "api-version");
-            if (apiVersionParameter is not null)
+            if (apiVersionParameter?.Schema is OpenApiSchema targetSchema)
             {
-                // Fix up the API version parameter description and example
-                // apiVersionParameter.Description = "The API version, in the format 'major.minor'.";
-                if (apiVersionParameter.Schema is OpenApiSchema targetSchema)
-                {
-                    // Set the example to the default value and then clear the default
-                    targetSchema.Example = targetSchema.Default;
-                    targetSchema.Default = null;
-                }
+                targetSchema.Example = targetSchema.Default;
+                targetSchema.Default = null;
             }
             return Task.CompletedTask;
         });
