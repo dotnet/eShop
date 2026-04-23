@@ -1,7 +1,6 @@
-﻿namespace eShop.Identity.API.Models.ManageViewModels
+﻿namespace eShop.Identity.API.Models.ManageViewModels;
+
+public record FactorViewModel
 {
-    public record FactorViewModel
-    {
-        public string Purpose { get; init; }
-    }
+    public string Purpose { get; init; }
 }

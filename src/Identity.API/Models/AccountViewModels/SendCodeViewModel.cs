@@ -1,13 +1,12 @@
-﻿namespace eShop.Identity.API.Models.AccountViewModels
+﻿namespace eShop.Identity.API.Models.AccountViewModels;
+
+public record SendCodeViewModel
 {
-    public record SendCodeViewModel
-    {
-        public string SelectedProvider { get; init; }
+    public string SelectedProvider { get; init; }
 
-        public ICollection<SelectListItem> Providers { get; init; }
+    public ICollection<SelectListItem> Providers { get; init; }
 
-        public string ReturnUrl { get; init; }
+    public string ReturnUrl { get; init; }
 
-        public bool RememberMe { get; init; }
-    }
+    public bool RememberMe { get; init; }
 }
