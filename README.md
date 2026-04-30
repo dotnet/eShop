@@ -18,26 +18,18 @@ Previous eShop versions:
 - Clone the eShop repository: https://github.com/dotnet/eshop
 - [Install & start Docker Desktop](https://docs.docker.com/engine/install/)
 
+
 #### Windows with Visual Studio
 - Install [Visual Studio 2022 version 17.10 or newer](https://visualstudio.microsoft.com/vs/).
+
   - Select the following workloads:
     - `ASP.NET and web development` workload.
     - `.NET Aspire SDK` component in `Individual components`.
     - Optional: `.NET Multi-platform App UI development` to run client apps
 
-Or
-
-- Run the following commands in a Powershell & Terminal running as `Administrator` to automatically configure your environment with the required tools to build and run this application. (Note: A restart is required and included in the script below.)
-
-```powershell
-install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense -Force
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-get-WinGetConfiguration -file .\.configurations\vside.dsc.yaml | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
-```
-
-Or
 
 - From Dev Home go to `Machine Configuration -> Clone repositories`. Enter the URL for this repository. In the confirmation screen look for the section `Configuration File Detected` and click `Run File`.
+
 
 #### Mac, Linux, & Windows without Visual Studio
 - Install the latest [.NET 9 SDK](https://dot.net/download?cid=eshop)
