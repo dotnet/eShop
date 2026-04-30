@@ -38,8 +38,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "2.0"
+              "enum": [
+                "2.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -96,8 +98,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "2.0"
+              "enum": [
+                "2.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -152,8 +156,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "2.0"
+              "enum": [
+                "2.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -191,8 +197,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "2.0"
+              "enum": [
+                "2.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -259,8 +267,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "2.0"
+              "enum": [
+                "2.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -351,8 +361,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "2.0"
+              "enum": [
+                "2.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -398,8 +410,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "2.0"
+              "enum": [
+                "2.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -445,8 +459,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "2.0"
+              "enum": [
+                "2.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -552,8 +568,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "2.0"
+              "enum": [
+                "2.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -634,8 +652,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "2.0"
+              "enum": [
+                "2.0"
+              ],
+              "type": "string"
             }
           }
         ],

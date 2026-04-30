@@ -2,13 +2,13 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    <DotnetPackagesVersion>10.0.5</DotnetPackagesVersion>
-    <MicrosoftExtensionsVersion>10.4.0</MicrosoftExtensionsVersion>
-    <AspireVersion>13.2.0</AspireVersion>
-    <AspireUnstablePackagesVersion>13.2.0-preview.1.26170.3</AspireUnstablePackagesVersion>
+    <DotnetPackagesVersion>10.0.7</DotnetPackagesVersion>
+    <MicrosoftExtensionsVersion>10.5.0</MicrosoftExtensionsVersion>
+    <AspireVersion>13.3.0</AspireVersion>
+    <AspireUnstablePackagesVersion>13.3.0-preview.1.26229.6</AspireUnstablePackagesVersion>
     <GrpcVersion>2.76.0</GrpcVersion>
     <DuendeVersion>7.3.1</DuendeVersion>
-    <ApiVersioningVersion>10.0.0-preview.2</ApiVersioningVersion>
+    <ApiVersioningVersion>10.0.0</ApiVersioningVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Version together with Aspire -->
@@ -26,7 +26,7 @@
     <PackageVersion Include="Asp.Versioning.Http" Version="$(ApiVersioningVersion)" />
     <PackageVersion Include="Asp.Versioning.Http.Client" Version="$(ApiVersioningVersion)" />
     <PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="$(ApiVersioningVersion)" />
-    <PackageVersion Include="Asp.Versioning.OpenApi" Version="$(ApiVersioningVersion)" />
+    <PackageVersion Include="Asp.Versioning.OpenApi" Version="10.0.0-rc.1" />
     <!-- Version together with ASP.NET -->
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(DotnetPackagesVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(DotnetPackagesVersion)" />
@@ -60,15 +60,15 @@
     <!-- Xabaril packages -->
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="9.0.0" />
     <!-- AI -->
-    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="13.1.1" />
-    <PackageVersion Include="CommunityToolkit.Aspire.OllamaSharp" Version="13.1.1" />
+    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="13.2.1-beta.532" />
+    <PackageVersion Include="CommunityToolkit.Aspire.OllamaSharp" Version="13.2.1-beta.532" />
     <!-- Open Telemetry -->
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.15.0-beta.1" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.3" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.2" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.15.1-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.1" />
     <!-- IdentityServer -->
     <PackageVersion Include="Duende.IdentityServer" Version="7.3.2" />
     <PackageVersion Include="Duende.IdentityServer.AspNetIdentity" Version="7.3.2" />
