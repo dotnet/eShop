@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__azure-devops__core_list_projects",
+      "mcp__azure-devops__wit_create_work_item"
+    ]
+  }
+}
