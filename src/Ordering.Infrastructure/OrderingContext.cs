@@ -56,8 +56,9 @@ public class OrderingContext : DbContext, IUnitOfWork
         //    Requires client-side ID generation (e.g. HiLo) if handlers depend on DB-generated IDs.
         //
         // B) Dispatch AFTER SaveChanges:
-        //    The explicit transaction uses ReadCommitted isolation (see BeginTransactionAsync), so handlers
-        //    can observe the already-flushed state via SQL queries within the same transaction.
+        //    Handlers run after the original changes have been flushed, and because they execute within the
+        //    same explicit transaction they can observe that already-flushed state via SQL queries.
+        //    The transaction is created with ReadCommitted isolation (see BeginTransactionAsync).
         //    DB-generated IDs are available. Handler side-effects are flushed in their own SaveChanges calls,
         //    still within the same explicit transaction opened by TransactionBehavior.
         await _mediator.DispatchDomainEventsAsync(this);
