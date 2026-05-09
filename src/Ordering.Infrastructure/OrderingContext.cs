@@ -46,12 +46,20 @@ public class OrderingContext : DbContext, IUnitOfWork
 
     public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)
     {
-        // Dispatch Domain Events collection. 
-        // Choices:
-        // A) Right BEFORE committing data (EF SaveChanges) into the DB will make a single transaction including  
-        // side effects from the domain event handlers which are using the same DbContext with "InstancePerLifetimeScope" or "scoped" lifetime
-        // B) Right AFTER committing data (EF SaveChanges) into the DB will make multiple transactions. 
-        // You will need to handle eventual consistency and compensatory actions in case of failures in any of the Handlers. 
+        // Dispatch Domain Events collection.
+        // Note: commands are wrapped in an explicit transaction by TransactionBehavior, so both orderings
+        // below result in a single database transaction. The real trade-off is:
+        //
+        // A) Dispatch BEFORE SaveChanges (current approach):
+        //    Domain event handlers run while changes are still pending in the ChangeTracker.
+        //    All handler side-effects and the original command changes are flushed together in one SaveChanges call.
+        //    Requires client-side ID generation (e.g. HiLo) if handlers depend on DB-generated IDs.
+        //
+        // B) Dispatch AFTER SaveChanges:
+        //    The explicit transaction uses ReadCommitted isolation (see BeginTransactionAsync), so handlers
+        //    can observe the already-flushed state via SQL queries within the same transaction.
+        //    DB-generated IDs are available. Handler side-effects are flushed in their own SaveChanges calls,
+        //    still within the same explicit transaction opened by TransactionBehavior.
         await _mediator.DispatchDomainEventsAsync(this);
 
         // After executing this line all the changes (from the Command Handler and Domain Event Handlers) 
