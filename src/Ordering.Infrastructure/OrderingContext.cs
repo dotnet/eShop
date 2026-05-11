@@ -54,7 +54,8 @@ public class OrderingContext : DbContext, IUnitOfWork
         //    Domain event handlers run while changes are still pending in the ChangeTracker.
         //    Handlers may call SaveEntitiesAsync themselves, producing multiple intermediate flushes,
         //    all within the same explicit transaction. The final SaveChanges below flushes any remaining changes.
-        //    Requires client-side ID generation (e.g. HiLo) if handlers depend on DB-generated IDs.
+        //    If handlers depend on DB-generated IDs, they must either use client-side ID generation
+        //    (for example, HiLo) or perform an intermediate SaveChanges/SaveEntitiesAsync flush first.
         //
         // B) Dispatch AFTER SaveChanges:
         //    Handlers run after the original changes have been flushed, and because they execute within the
