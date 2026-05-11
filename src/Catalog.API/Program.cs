@@ -1,13 +1,14 @@
-﻿using Asp.Versioning.Builder;
-using System.Reflection;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddApplicationServices();
 builder.Services.AddProblemDetails();
 
-var withApiVersioning = builder.Services.AddApiVersioning();
+var withApiVersioning = builder.Services.AddApiVersioning(options =>
+{
+    // Include "api-supported-versions" and "api-deprecated-versions" headers in all responses
+    options.ReportApiVersions = true;
+});
 
 builder.AddDefaultOpenApi(withApiVersioning);
 

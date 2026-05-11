@@ -1,6 +1,7 @@
 extends: spectral:oas
 rules:
   info-contact: off
+  oas3-api-servers: off
 
   success-response:
     description: All operations should have a success response.

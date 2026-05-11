@@ -21,16 +21,24 @@ public static partial class Extensions
             return app;
         }
 
-        app.MapOpenApi();
+        app.MapOpenApi().WithDocumentPerVersion();
 
         if (app.Environment.IsDevelopment())
         {
+            var descriptions = app.DescribeApiVersions();
+            var defaultDocument = descriptions.Count > 0 ? descriptions[^1].GroupName : "v1";
+
             app.MapScalarApiReference(options =>
             {
                 // Disable default fonts to avoid download unnecessary fonts
                 options.DefaultFonts = false;
+
+                foreach (var description in descriptions)
+                {
+                    options.AddDocument(description.GroupName, description.GroupName, isDefault: description.GroupName == defaultDocument);
+                }
             });
-            app.MapGet("/", () => Results.Redirect("/scalar/v1")).ExcludeFromDescription();
+            app.MapGet("/", () => Results.Redirect($"/scalar/{defaultDocument}")).ExcludeFromDescription();
         }
 
         return app;
@@ -57,19 +65,21 @@ public static partial class Extensions
         {
             // the default format will just be ApiVersion.ToString(); for example, 1.0.
             // this will format the version as "'v'major[.minor][-status]"
-            var versioned = apiVersioning.AddApiExplorer(options => options.GroupNameFormat = "'v'VVV");
-            string[] versions = ["v1", "v2"];
-            foreach (var description in versions)
-            {
-                builder.Services.AddOpenApi(description, options =>
+            apiVersioning.AddApiExplorer(options =>
                 {
-                    options.ApplyApiVersionInfo(openApi.GetRequiredValue("Document:Title"), openApi.GetRequiredValue("Document:Description"));
-                    options.ApplyAuthorizationChecks([.. scopes.Keys]);
-                    options.ApplySecuritySchemeDefinitions();
-                    options.ApplyOperationDeprecatedStatus();
-                    options.ApplyApiVersionDescription();
+                    options.GroupNameFormat = "'v'VVV";
+                    options.DefaultApiVersionParameterDescription = "The API version, in the format 'major.minor'.";
+                })
+                .AddOpenApi(options =>
+                {
+                    var document = options.Document;
+
+                    document.ApplyApiVersionInfo(openApi.GetRequiredValue("Document:Title"), openApi.GetRequiredValue("Document:Description"));
+                    document.ApplyAuthorizationChecks([.. scopes.Keys]);
+                    document.ApplySecuritySchemeDefinitions();
+                    document.ApplyOperationDeprecatedStatus();
+                    document.ApplyApiVersionDescription();
                 });
-            }
         }
 
         return builder;
