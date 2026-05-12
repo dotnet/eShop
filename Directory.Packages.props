@@ -8,7 +8,7 @@
     <AspireUnstablePackagesVersion>13.3.0-preview.1.26229.6</AspireUnstablePackagesVersion>
     <GrpcVersion>2.76.0</GrpcVersion>
     <DuendeVersion>7.3.1</DuendeVersion>
-    <ApiVersioningVersion>10.0.0</ApiVersioningVersion>
+    <ApiVersioningVersion>10.0.0-preview.2</ApiVersioningVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Version together with Aspire -->
@@ -26,7 +26,7 @@
     <PackageVersion Include="Asp.Versioning.Http" Version="$(ApiVersioningVersion)" />
     <PackageVersion Include="Asp.Versioning.Http.Client" Version="$(ApiVersioningVersion)" />
     <PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="$(ApiVersioningVersion)" />
-    <PackageVersion Include="Asp.Versioning.OpenApi" Version="10.0.0-rc.1" />
+    <PackageVersion Include="Asp.Versioning.OpenApi" Version="$(ApiVersioningVersion)" />
     <!-- Version together with ASP.NET -->
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(DotnetPackagesVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(DotnetPackagesVersion)" />
