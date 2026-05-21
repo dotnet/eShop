@@ -25,6 +25,7 @@
     <Project Path="tests/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj" />
     <Project Path="tests/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj" />
     <Project Path="tests/Ordering.UnitTests/Ordering.UnitTests.csproj" />
+    <Project Path="tests/Catalog.IntegrationTests/Catalog.IntegrationTests.csproj" />
     <Project Path="tests/ClientApp.UnitTests/ClientApp.UnitTests.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">

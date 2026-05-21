@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+
+    <ItemGroup>
+      <PackageReference Include="Asp.Versioning.Http.Client" />
+      <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+      <PackageReference Include="Aspire.Hosting.Testing" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+      <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+      <PackageReference Include="xunit.v3.mtp-v2" />
+      <PackageReference Include="Pgvector" />
+      <PackageReference Include="Pgvector.EntityFrameworkCore" />
+    </ItemGroup>
+
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\eShop.AppHost\eShop.AppHost.csproj" />
+    <ProjectReference Include="..\..\src\Catalog.API\Catalog.API.csproj" />
+  </ItemGroup>
+
+</Project>
