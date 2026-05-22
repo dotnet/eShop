@@ -62,7 +62,7 @@ public class CatalogContextAspireTests : IAsyncLifetime
     {
         // --- ARRANGE ---
         await using var arrangeContext = CreateContext();
-        // 1. En lugar de crear marcas nuevas, tomamos la primera que el Seeder 
+        // 1. En lugar de crear marcas nuevas, tomamos la primera que el Seeder
         // de eShop ya insertó en nuestra base de datos.
         var existingBrand = await arrangeContext.CatalogBrands.FirstAsync(CancellationToken.None);
         var existingType = await arrangeContext.CatalogTypes.FirstAsync(CancellationToken.None);
@@ -97,6 +97,56 @@ public class CatalogContextAspireTests : IAsyncLifetime
         Assert.NotNull(savedItem);
         Assert.Equal(uniqueProductName, savedItem.Name);
         Assert.Equal(25.50m, savedItem.Price);
+    }
+
+    [Fact]
+    public async Task Can_Update_CatalogItem_Price_And_Description_Using_Aspire_Db()
+    {
+        // --- ARRANGE ---
+        // 1. Creamos un item nuevo para tener un registro conocido que modificar
+        await using var arrangeContext = CreateContext();
+
+        var existingBrand = await arrangeContext.CatalogBrands.FirstAsync(CancellationToken.None);
+        var existingType = await arrangeContext.CatalogTypes.FirstAsync(CancellationToken.None);
+
+        var biggerId = await arrangeContext.CatalogItems.MaxAsync(i => (int?)i.Id, CancellationToken.None) ?? 0;
+        string uniqueProductName = $"UpdateTest {Guid.NewGuid()}";
+
+        var itemToCreate = new CatalogItem(uniqueProductName)
+        {
+            Id = biggerId + 1,
+            Description = "Descripción original",
+            Price = 10.00m,
+            CatalogBrandId = existingBrand.Id,
+            CatalogTypeId = existingType.Id,
+            AvailableStock = 20
+        };
+
+        arrangeContext.CatalogItems.Add(itemToCreate);
+        await arrangeContext.SaveChangesAsync(CancellationToken.None);
+
+        // --- ACT ---
+        // 2. En un contexto separado, cargamos el item y lo modificamos
+        await using var actContext = CreateContext();
+
+        var itemToUpdate = await actContext.CatalogItems
+            .FirstAsync(i => i.Name == uniqueProductName, CancellationToken.None);
+
+        itemToUpdate.Price = 99.99m;
+        itemToUpdate.Description = "Descripción actualizada";
+
+        await actContext.SaveChangesAsync(CancellationToken.None);
+
+        // --- ASSERT ---
+        // 3. Un tercer contexto confirma que los cambios fueron persistidos en la BD real
+        await using var assertContext = CreateContext();
+
+        var updatedItem = await assertContext.CatalogItems
+            .FirstOrDefaultAsync(i => i.Name == uniqueProductName, CancellationToken.None);
+
+        Assert.NotNull(updatedItem);
+        Assert.Equal(99.99m, updatedItem.Price);
+        Assert.Equal("Descripción actualizada", updatedItem.Description);
     }
 
 
