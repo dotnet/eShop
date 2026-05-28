@@ -8,7 +8,6 @@ using Xunit;
 
 namespace eShop.Catalog.FunctionalTests;
 
-// 1. TRUCO MAESTRO: Heredamos del contexto original para apagar el campo problemático
 public class TestCatalogContext : CatalogContext
 {
     [System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
@@ -17,7 +16,6 @@ public class TestCatalogContext : CatalogContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        // ¡Ignoramos la propiedad Vector para que la DB en memoria no colapse!
         builder.Entity<CatalogItem>().Ignore(c => c.Embedding); 
     }
 }

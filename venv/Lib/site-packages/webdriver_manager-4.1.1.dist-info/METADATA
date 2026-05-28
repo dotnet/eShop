@@ -1,0 +1,588 @@
+Metadata-Version: 2.4
+Name: webdriver-manager
+Version: 4.1.1
+Summary: Library provides the way to automatically manage drivers for different browsers
+Author-email: Sergey Pirogov <automationremarks@gmail.com>
+License-Expression: Apache-2.0
+Project-URL: Homepage, https://github.com/SergeyPirogov/webdriver_manager
+Project-URL: Repository, https://github.com/SergeyPirogov/webdriver_manager
+Keywords: testing,selenium,driver,test automation
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: Unix
+Classifier: Operating System :: MacOS
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests
+Requires-Dist: python-dotenv
+Requires-Dist: packaging
+Dynamic: license-file
+
+# Webdriver Manager for Python
+
+[![Tests](https://github.com/SergeyPirogov/webdriver_manager/actions/workflows/test.yml/badge.svg)](https://github.com/SergeyPirogov/webdriver_manager/actions/workflows/test.yml)
+[![PyPI](https://img.shields.io/pypi/v/webdriver-manager.svg)](https://pypi.org/project/webdriver-manager/)
+[![Supported Python Versions](https://img.shields.io/pypi/pyversions/webdriver-manager.svg)](https://pypi.org/project/webdriver-manager/)
+[![codecov](https://codecov.io/gh/SergeyPirogov/webdriver_manager/branch/master/graph/badge.svg)](https://codecov.io/gh/SergeyPirogov/webdriver_manager)
+
+`webdriver-manager` is a Python library for explicit browser driver management.
+
+It helps download, resolve, cache, and reuse driver binaries for browser automation with Selenium. Instead of downloading a driver manually, unpacking it, and hardcoding a path, you can install the required driver directly from Python code.
+
+> **Note**
+>
+> For most modern Selenium 4.6+ projects, Selenium Manager is the recommended default. It is built into Selenium and can manage drivers automatically for standard Chrome, Firefox, and Edge setups.
+>
+> Use `webdriver-manager` when you need explicit control over driver versions, driver paths, cache behavior, download sources, or compatibility with older Selenium versions.
+
+## When should I use webdriver-manager?
+
+Use `webdriver-manager` when Selenium Manager is not enough or when you want to manage drivers explicitly from Python code.
+
+Typical use cases include:
+
+- supporting Selenium 3 or older Selenium 4 projects;
+- getting the driver binary path directly;
+- pinning or resolving a specific driver version;
+- pre-downloading drivers in CI or Docker images;
+- customizing cache location or cache invalidation;
+- using custom download URLs or mirrors;
+- working around corporate proxy, SSL, or restricted network environments;
+- using alternative Chromium-based browsers such as Chromium or Brave;
+- customizing OS or architecture detection;
+- debugging driver resolution and download behavior explicitly.
+
+If your code works with plain Selenium:
+
+```python
+from selenium import webdriver
+
+driver = webdriver.Chrome()
+```
+
+you probably do not need `webdriver-manager`.
+
+If you need more control over how drivers are resolved, downloaded, cached, or reused, `webdriver-manager` can still be useful.
+
+### Selenium Manager vs webdriver-manager
+
+Selenium Manager is automatic and integrated into Selenium. It is usually the best choice for new Selenium 4.6+ projects with standard browser setups.
+
+`webdriver-manager` is explicit and configurable. It is useful when you want to manage driver resolution yourself, integrate driver installation into your own Python code, or support environments where Selenium Manager is not enough or not desired.
+
+In short:
+
+- use Selenium Manager by default;
+- use `webdriver-manager` when you need explicit control.
+
+## Supported drivers
+
+`webdriver-manager` currently supports:
+
+- [ChromeDriver](#use-with-chrome)
+- [EdgeChromiumDriver](#use-with-edge)
+- [GeckoDriver](#use-with-firefox)
+- [IEDriver](#use-with-internet-explorer)
+- [OperaDriver](#use-with-opera)
+
+The library is compatible with Selenium 4.x and older Selenium versions.
+
+## Installation
+
+```bash
+pip install webdriver-manager
+```
+
+Package name:
+
+```text
+webdriver-manager
+```
+
+Import name:
+
+```python
+import webdriver_manager
+```
+
+## Environment scope
+
+`webdriver-manager` manages desktop browser drivers for Windows, macOS, and Linux desktop runtimes.
+
+It is not intended for Android or PyDroid local browser automation. For Android automation, use Appium with UiAutomator2 and Chrome/WebView on a device or emulator.
+
+## Usage
+
+### Use with Chrome
+
+#### Selenium 4
+
+```python
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
+
+service = ChromeService(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+```
+
+#### Selenium 3
+
+```python
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+
+driver = webdriver.Chrome(ChromeDriverManager().install())
+```
+
+### Use with Chromium
+
+#### Selenium 4
+
+```python
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromiumService
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.os_manager import ChromeType
+
+options = webdriver.ChromeOptions()
+options.binary_location = "/usr/bin/chromium"
+
+service = ChromiumService(
+    ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+)
+
+driver = webdriver.Chrome(service=service, options=options)
+```
+
+#### Selenium 3
+
+```python
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.os_manager import ChromeType
+
+options = webdriver.ChromeOptions()
+options.binary_location = "/usr/bin/chromium"
+
+driver = webdriver.Chrome(
+    ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install(),
+    options=options,
+)
+```
+
+On macOS, the Chromium binary path may look like this:
+
+```text
+/Applications/Chromium.app/Contents/MacOS/Chromium
+```
+
+### Use with Brave
+
+#### Selenium 4
+
+```python
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as BraveService
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.os_manager import ChromeType
+
+service = BraveService(
+    ChromeDriverManager(chrome_type=ChromeType.BRAVE).install()
+)
+
+driver = webdriver.Chrome(service=service)
+```
+
+#### Selenium 3
+
+```python
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.os_manager import ChromeType
+
+driver = webdriver.Chrome(
+    ChromeDriverManager(chrome_type=ChromeType.BRAVE).install()
+)
+```
+
+### Use with Edge
+
+#### Selenium 4
+
+```python
+from selenium import webdriver
+from selenium.webdriver.edge.service import Service as EdgeService
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
+
+service = EdgeService(EdgeChromiumDriverManager().install())
+driver = webdriver.Edge(service=service)
+```
+
+#### Selenium 3
+
+```python
+from selenium import webdriver
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
+
+driver = webdriver.Edge(EdgeChromiumDriverManager().install())
+```
+
+### Use with Firefox
+
+#### Selenium 4
+
+```python
+from selenium import webdriver
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from webdriver_manager.firefox import GeckoDriverManager
+
+service = FirefoxService(GeckoDriverManager().install())
+driver = webdriver.Firefox(service=service)
+```
+
+#### Selenium 3
+
+```python
+from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+```
+
+### Use with Internet Explorer
+
+> **Note**
+>
+> Internet Explorer support is provided for legacy environments.
+
+#### Selenium 4
+
+```python
+from selenium import webdriver
+from selenium.webdriver.ie.service import Service as IEService
+from webdriver_manager.microsoft import IEDriverManager
+
+service = IEService(IEDriverManager().install())
+driver = webdriver.Ie(service=service)
+```
+
+#### Selenium 3
+
+```python
+from selenium import webdriver
+from webdriver_manager.microsoft import IEDriverManager
+
+driver = webdriver.Ie(IEDriverManager().install())
+```
+
+### Use with Opera
+
+> **Note**
+>
+> OperaDriver support is provided for compatibility with existing setups.
+
+#### Selenium 4
+
+```python
+from selenium import webdriver
+from selenium.webdriver.chrome import service
+from webdriver_manager.opera import OperaDriverManager
+
+webdriver_service = service.Service(OperaDriverManager().install())
+webdriver_service.start()
+
+options = webdriver.ChromeOptions()
+options.add_experimental_option("w3c", True)
+
+driver = webdriver.Remote(webdriver_service.service_url, options=options)
+```
+
+#### Selenium 3
+
+```python
+from selenium import webdriver
+from selenium.webdriver.chrome import service
+from webdriver_manager.opera import OperaDriverManager
+
+webdriver_service = service.Service(OperaDriverManager().install())
+webdriver_service.start()
+
+driver = webdriver.Remote(
+    webdriver_service.service_url,
+    webdriver.DesiredCapabilities.OPERA,
+)
+```
+
+If Opera is installed in a non-standard location, specify the browser binary path:
+
+```python
+options = webdriver.ChromeOptions()
+options.binary_location = "path/to/opera"
+
+driver = webdriver.Remote(webdriver_service.service_url, options=options)
+```
+
+## Configuration
+
+`webdriver-manager` can be configured with environment variables, constructor arguments, or custom manager classes.
+
+### `GH_TOKEN`
+
+Some drivers are downloaded from official GitHub repositories. GitHub limits unauthenticated API requests, so you may need a GitHub token to avoid rate-limit errors.
+
+Set the token as an environment variable:
+
+```bash
+export GH_TOKEN="your_token"
+```
+
+Or set it from Python:
+
+```python
+import os
+
+os.environ["GH_TOKEN"] = "your_token"
+```
+
+### `WDM_LOG`
+
+Disable `webdriver-manager` logs:
+
+```python
+import logging
+import os
+
+os.environ["WDM_LOG"] = str(logging.NOTSET)
+```
+
+### `WDM_LOCAL`
+
+By default, driver binaries are saved to the user-level `.wdm` cache directory.
+
+You can store binaries in the project root instead:
+
+```python
+import os
+
+os.environ["WDM_LOCAL"] = "1"
+```
+
+This is often useful in Docker and CI environments where home-directory permissions are restricted.
+
+You can also pass a custom writable cache location through `DriverCacheManager(root_dir=...)`.
+
+### `WDM_SSL_VERIFY`
+
+SSL verification can be disabled when downloading driver binaries:
+
+```python
+import os
+
+os.environ["WDM_SSL_VERIFY"] = "0"
+```
+
+Use this only when required by your environment, for example with corporate SSL inspection or custom certificate chains.
+
+### Driver version
+
+You can request a specific driver version:
+
+```python
+from webdriver_manager.chrome import ChromeDriverManager
+
+ChromeDriverManager(driver_version="2.26").install()
+```
+
+### Cache validity
+
+By default, the driver cache is valid for 1 day.
+
+You can change the cache validity range:
+
+```python
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.driver_cache import DriverCacheManager
+
+cache_manager = DriverCacheManager(valid_range=7)
+
+ChromeDriverManager(cache_manager=cache_manager).install()
+```
+
+### Custom OS or architecture
+
+You can override OS or architecture detection:
+
+```python
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.os_manager import OperationSystemManager
+
+os_manager = OperationSystemManager(os_type="linux-mips64")
+
+ChromeDriverManager(os_system_manager=os_manager).install()
+```
+
+### Custom download URL
+
+You can use a custom driver repository or mirror:
+
+```python
+from webdriver_manager.chrome import ChromeDriverManager
+
+ChromeDriverManager(
+    url="https://custom-repo.example.com",
+    latest_release_url="https://custom-repo.example.com/LATEST",
+).install()
+```
+
+### Get browser version from path
+
+You can detect a browser version from its executable and use that version to resolve a driver:
+
+```python
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.os_manager import PATTERN
+from webdriver_manager.core.utils import read_version_from_cmd
+
+browser_version = read_version_from_cmd(
+    "/usr/bin/google-chrome --version",
+    PATTERN["chrome"],
+)
+
+driver_path = ChromeDriverManager(driver_version=browser_version).install()
+```
+
+### Custom cache, file manager, and OS manager
+
+You can customize cache, file, and OS behavior:
+
+```python
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.driver_cache import DriverCacheManager
+from webdriver_manager.core.file_manager import FileManager
+from webdriver_manager.core.os_manager import OperationSystemManager
+
+os_manager = OperationSystemManager(os_type="win64")
+file_manager = FileManager(os_system_manager=os_manager)
+cache_manager = DriverCacheManager(file_manager=file_manager)
+
+manager = ChromeDriverManager(cache_manager=cache_manager)
+driver_path = manager.install()
+```
+
+### Custom logger
+
+You can configure a custom logger with `set_logger()`:
+
+```python
+import logging
+
+from webdriver_manager.core.logger import set_logger
+
+logger = logging.getLogger("webdriver_manager")
+logger.setLevel(logging.DEBUG)
+
+logger.addHandler(logging.StreamHandler())
+logger.addHandler(logging.FileHandler("webdriver_manager.log"))
+
+set_logger(logger)
+```
+
+### Custom HTTP client
+
+You can provide a custom HTTP client for advanced network behavior such as custom sessions, proxies, authentication, or retries.
+
+```python
+import os
+
+import requests
+from requests import Response
+
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.download_manager import WDMDownloadManager
+from webdriver_manager.core.http import HttpClient
+from webdriver_manager.core.logger import log
+
+
+class CustomHttpClient(HttpClient):
+    def get(self, url, params=None, **kwargs) -> Response:
+        log("Downloading driver with a custom HTTP client")
+        return requests.get(url, params=params, **kwargs)
+
+
+http_client = CustomHttpClient()
+download_manager = WDMDownloadManager(http_client)
+
+driver_path = ChromeDriverManager(download_manager=download_manager).install()
+
+assert os.path.exists(driver_path)
+```
+
+## CI and Docker recommendations
+
+For CI and Docker environments:
+
+- prefer a writable cache directory;
+- use `WDM_LOCAL=1` when project-local caching is easier than user-level caching;
+- set `GH_TOKEN` if your workflow may hit GitHub API rate limits;
+- consider pre-downloading drivers during the image build or CI setup phase;
+- pin driver or browser versions when reproducibility is more important than automatic updates.
+
+Example:
+
+```bash
+export WDM_LOCAL=1
+export GH_TOKEN="your_token"
+```
+
+## Reporting issues
+
+When reporting a bug, include:
+
+- operating system and architecture;
+- Python version;
+- Selenium version;
+- `webdriver-manager` version;
+- browser name and version;
+- full traceback;
+- minimal reproducible example;
+- whether the issue happens locally, in CI, or in Docker.
+
+Clear reproduction steps make driver-resolution and cache-related issues much easier to investigate.
+
+## Contributing
+
+Bug fixes, compatibility fixes, CI improvements, documentation updates, and regression tests are welcome.
+
+For larger changes, please open an issue first to discuss the proposed approach.
+
+Maintainers: see [RELEASING.md](RELEASING.md) for the release runbook.
+
+## Maintenance status
+
+The project accepts maintenance contributions focused on:
+
+- browser and driver compatibility;
+- cache and download reliability;
+- CI stability;
+- documentation quality;
+- regression tests;
+- compatibility with supported Selenium versions.
+
+Large feature changes should be discussed before implementation.
+
+## License
+
+See the repository license for details.
