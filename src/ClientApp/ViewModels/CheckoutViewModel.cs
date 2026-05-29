@@ -61,7 +61,9 @@ public partial class CheckoutViewModel : ViewModelBase
                     CardNumber = userInfo?.CardNumber,
                     CardHolderName = userInfo?.CardHolder,
                     CardType = new CardType {Id = 3, Name = "MasterCard"},
-                    SecurityNumber = userInfo?.CardSecurityNumber
+                    // CVV is never sourced from identity. This sample has no real payment
+                    // capture, so a placeholder is sent (mirrors WebApp BasketState).
+                    SecurityNumber = "111"
                 };
 
                 var orderItems = CreateOrderItems(basketItems);

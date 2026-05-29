@@ -84,8 +84,6 @@ public class IdentityService : IIdentityService
                 LastName = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "last_name")?.Value,
                 CardNumber = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "card_number")?.Value,
                 CardHolder = userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "card_holder")?.Value,
-                CardSecurityNumber =
-                    userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "card_security_number")?.Value,
                 PhoneNumberVerified =
                     bool.Parse(userInfoWithClaims.Claims.FirstOrDefault(c => c.Type == "phone_number_verified")
                         ?.Value ?? "false"),

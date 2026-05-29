@@ -17,8 +17,8 @@ public class UserInfo
 
     [JsonPropertyName("card_holder")] public string CardHolder { get; set; }
 
-    [JsonPropertyName("card_security_number")]
-    public string CardSecurityNumber { get; set; }
+    // CVV (card security number) is deliberately absent: it must never be carried
+    // by identity claims. It is collected at payment time, not sourced from the token.
 
     [JsonPropertyName("address_city")] public string Address { get; set; }
 

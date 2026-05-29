@@ -73,8 +73,9 @@
             if (!string.IsNullOrWhiteSpace(user.CardHolderName))
                 claims.Add(new Claim("card_holder", user.CardHolderName));
 
-            if (!string.IsNullOrWhiteSpace(user.SecurityNumber))
-                claims.Add(new Claim("card_security_number", user.SecurityNumber));
+            // CVV (card security number) is intentionally NOT issued as a JWT claim.
+            // PCI-DSS prohibits storing/transmitting the security code; it must be
+            // collected from the user at payment time, never sourced from the token.
 
             if (!string.IsNullOrWhiteSpace(user.Expiration))
                 claims.Add(new Claim("card_expiration", user.Expiration));

@@ -33,7 +33,6 @@ public class IdentityMockService : IIdentityService
             LastName = "User",
             CardNumber = "XXXXXXXXXXXX3456",
             CardHolder = "Sample User",
-            CardSecurityNumber = "123",
             Address = "123 Sample Street",
             Country = "USA",
             State = "Washington",
