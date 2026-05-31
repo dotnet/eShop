@@ -8,13 +8,13 @@
         }
         <h1>
             @Model.ClientName
-            <small class="text-muted">is requesting your permission</small>
+            <small class="text-muted">Está solicitando tu permiso</small>
         </h1>
         @if (Model.ConfirmUserCode)
         {
-            <p>Please confirm that the authorization request quotes the code: <strong>@Model.UserCode</strong>.</p>
+            <p>Por favor, confirma que la solicitud de autorización cita el código: <strong>@Model.UserCode</strong>.</p>
         }
-        <p>Uncheck the permissions you do not wish to grant.</p>
+        <p>Desmarca las permisos que no deseas otorgar.</p>
     </div>
 
     <div class="row">
@@ -33,7 +33,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <span class="glyphicon glyphicon-user"></span>
-                                Personal Information
+                                Información Personal
                             </div>
                             <ul class="list-group list-group-flush">
                                 @foreach (var scope in Model.IdentityScopes)
@@ -51,7 +51,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <span class="glyphicon glyphicon-tasks"></span>
-                                Application Access
+                                Acceso a la Aplicación
                             </div>
                             <ul class="list-group list-group-flush">
                                 @foreach (var scope in Model.ApiScopes)
@@ -67,7 +67,7 @@
                     <div class="card">
                         <div class="card-header">
                             <span class="glyphicon glyphicon-tasks"></span>
-                            Description
+                            Descripción
                         </div>
                         <div class="card-body">
                             <input class="form-control" placeholder="Description or name of device" asp-for="Description" autofocus>
@@ -81,7 +81,7 @@
                         <div class="form-check">
                             <input class="form-check-input" asp-for="RememberConsent">
                             <label class="form-check-label" asp-for="RememberConsent">
-                                <strong>Remember My Decision</strong>
+                                <strong>Recordar Mi Decisión</strong>
                             </label>
                         </div>
                     </div>

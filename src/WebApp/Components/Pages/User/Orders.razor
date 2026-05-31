@@ -3,27 +3,27 @@
 @attribute [StreamRendering]
 @inject OrderingService OrderingService
 
-<PageTitle>Orders | AdventureWorks</PageTitle>
-<SectionContent SectionName="page-header-title">Orders</SectionContent>
+<PageTitle>Ordenes | AdventureWorks</PageTitle>
+<SectionContent SectionName="page-header-title">Ordenes</SectionContent>
 <OrdersRefreshOnStatusChange />
 
 <div class="orders">
 @if (orders is null)
 {
-    <p>Loading...</p>
+    <p>Cargando...</p>
 }
 else if (orders.Length == 0)
 {
-    <p>You haven't yet placed any orders.</p>
+    <p>No has colocado aún ningún pedido.</p>
 }
 else
 {
     <ul class="orders-list">
         <li class="orders-header orders-item">
-            <div>Number</div>
-            <div>Date</div>
+            <div>Número</div>
+            <div>Fecha</div>
             <div class="total-header">Total</div>
-            <div>Status</div>
+            <div>Estado</div>
         </li>
         @foreach (var order in orders)
         {

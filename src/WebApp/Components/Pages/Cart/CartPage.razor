@@ -5,26 +5,26 @@
 @attribute [StreamRendering]
 @attribute [Authorize]
 
-<PageTitle>Shopping Bag | AdventureWorks</PageTitle>
-<SectionContent SectionName="page-header-title">Shopping bag</SectionContent>
+<PageTitle>Carrito de compras | AdventureWorks</PageTitle>
+<SectionContent SectionName="page-header-title">Carrito de compras</SectionContent>
 
 <div class='cart'>
     @if (basketItems is null)
     {
-        <p>Loading...</p>
+        <p>Cargando...</p>
     }
     else if (basketItems.Count == 0)
     {
         <p>
-            Your shopping bag is empty. <a href="">Continue shopping.</a>
+            Tu carrito de compras está vacío. <a href="">Continuar comprando.</a>
         </p>
     }
     else
     {
         <div class='cart-items'>
             <div class='cart-item-header'>
-                <div class='catalog-item-info'>Products</div>
-                <div class='catalog-item-quantity'>Quantity</div>
+                <div class='catalog-item-info'>Producto</div>
+                <div class='catalog-item-quantity'>Cantidad</div>
                 <div class='catalog-item-total'>Total</div>
             </div>
             @foreach (var item in basketItems)
@@ -47,7 +47,7 @@
                                     class="button button-secondary"
                                     name="UpdateQuantityId" 
                                     value="@item.ProductId">
-                                Update
+                                Actualizar
                             </button>
                         </form>
                     </div>
@@ -63,17 +63,17 @@
             <div class="cart-summary-container">
                 <div class="cart-summary-header">
                     <img role="presentation" src="icons/cart.svg" />
-                    Your shopping bag
+                        Mi carrito
                     <span class="filter-badge">@TotalQuantity</span>
                 </div>
                 <div class="cart-summary-total">
                     <div>Total</div>
                     <div>$@TotalPrice?.ToString("0.00")</div>
                 </div>
-                <a href="checkout" class="button button-primary">Check out</a>
+                <a href="checkout" class="button button-primary">Pagar</a>
                 <a href="" class="cart-summary-link">
                     <img role="presentation" src="icons/arrow-left.svg" />
-                    <p>Continue shopping</p>
+                    <p>Continuar comprando</p>
                 </a>
             </div>
         </div>

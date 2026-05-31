@@ -16,7 +16,7 @@
         <div class="description">
             <p>@item.Description</p>
             <p>
-                Brand: <strong>@item.CatalogBrand?.Brand</strong>
+                Marca: <strong>@item.CatalogBrand?.Brand</strong>
             </p>
             <form class="add-to-cart" method="post" @formname="add-to-cart" @onsubmit="@AddToCartAsync" data-enhance="@isLoggedIn">
                 <AntiforgeryToken />
@@ -30,7 +30,7 @@
                             <path id="Vector_2" d="M3 6H21" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                             <path id="Vector_3" d="M16 10C16 11.0609 15.5786 12.0783 14.8284 12.8284C14.0783 13.5786 13.0609 14 12 14C10.9391 14 9.92172 13.5786 9.17157 12.8284C8.42143 12.0783 8 11.0609 8 10" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-                        Add to shopping bag
+                        Agregar al carrito
                     </button>
                 }
                 else
@@ -40,23 +40,23 @@
                             <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                             <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-                        Log in to purchase
+                        Iniciar sesión para comprar
                     </button>
                 }
             </form>
 
             @if (numInCart > 0)
             {
-                <p><strong>@numInCart</strong> in <a href="cart">shopping bag</a></p>
+                <p><strong>@numInCart</strong> en <a href="cart">Carrito de compras</a></p>
             }
         </div>
     </div>
 }
 else if (notFound)
 {
-    <SectionContent SectionName="page-header-title">Not found</SectionContent>
+    <SectionContent SectionName="page-header-title">No encontrado</SectionContent>
     <div class="item-details">
-        <p>Sorry, we couldn't find any such product.</p>
+        <p>Lo siento, no pudimos encontrar ese producto.</p>
     </div>
 }
 

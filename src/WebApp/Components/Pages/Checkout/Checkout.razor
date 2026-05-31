@@ -5,38 +5,38 @@
 @inject NavigationManager Nav
 @attribute [Authorize]
 
-<PageTitle>Checkout | AdventureWorks</PageTitle>
-<SectionContent SectionName="page-header-title">Checkout</SectionContent>
+<PageTitle>Revisar compra | AdventureWorks</PageTitle>
+<SectionContent SectionName="page-header-title">Revisar compra</SectionContent>
 
 <div class='checkout'>
     <EditForm EditContext="@editContext" FormName="checkout" OnSubmit="@HandleSubmitAsync" Enhance>
         <DataAnnotationsValidator />
         <div class="form">
             <div class="form-section">
-                <h2>Shipping address</h2>
+                <h2>Dirección de envío</h2>
                 <label>
-                    Address
+                    Dirección
                     <InputText @bind-Value="@Info.Street" />
                     <ValidationMessage For="@(() => Info.Street)" />
                 </label>
                 <div class="form-group">
                     <div class="form-group-item">
                         <label>
-                            City
+                            Ciudad
                             <InputText @bind-Value="@Info.City" />
                             <ValidationMessage For="@(() => Info.City)" />
                         </label>
                     </div>
                     <div class="form-group-item">
                         <label>
-                            State
+                            Estado
                             <InputText @bind-Value="@Info.State" />
                             <ValidationMessage For="@(() => Info.State)" />
                         </label>
                     </div>
                     <div class="form-group-item">
                         <label>
-                            Zip code
+                            Código postal
                             <InputText @bind-Value="@Info.ZipCode" />
                             <ValidationMessage For="@(() => Info.ZipCode)" />
                         </label>
@@ -44,7 +44,7 @@
                 </div>
                 <div>
                     <label>
-                        Country
+                        Pais
                         <InputText @bind-Value="@Info.Country" />
                         <ValidationMessage For="@(() => Info.Country)" />
                     </label>
@@ -52,8 +52,8 @@
             </div>
             <div class="form-section">
                 <div class="form-buttons">
-                    <a href="cart" class="button button-secondary"><img role="presentation" src="icons/arrow-left.svg" />Back to the shopping bag</a>
-                    <button class="button button-primary" type="submit">Place order</button>
+                    <a href="cart" class="button button-secondary"><img role="presentation" src="icons/arrow-left.svg" />Volver al carrito</a>
+                    <button class="button button-primary" type="submit">Realizar pedido</button>
                 </div>
             </div>
         </div>

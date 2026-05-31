@@ -314,6 +314,7 @@ body {
     gap: 8px;
     align-self: stretch;
     background: #000;
+    color: #FFF;
 }
 
 .icon {

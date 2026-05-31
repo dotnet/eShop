@@ -6,15 +6,15 @@
     <div class="catalog-search">
         <div class="catalog-search-header">
             <img role="presentation" src="icons/filters.svg" />
-            Filters
+            Filtros
         </div>
         <div class="catalog-search-types">
             <div class="catalog-search-group">
-                <h3>Brand</h3>
+                <h3>Marca</h3>
                 <div class="catalog-search-group-tags">
                     <a href="@BrandUri(null)"
                     class="catalog-search-tag @(BrandId == null ? "active " : "")">
-                        All
+                        Todo
                     </a>
                     @foreach (var brand in catalogBrands)
                     {
@@ -26,12 +26,12 @@
                 </div>
             </div>
             <div class="catalog-search-group">
-                <h3>Type</h3>
+                <h3>Tipo</h3>
 
                 <div class="catalog-search-group-tags">
                     <a href="@TypeUri(null)"
                     class="catalog-search-tag @(ItemTypeId == null ? "active " : "")">
-                    All
+                    Todo
                     </a>
                     @foreach (var itemType in catalogItemTypes)
                     {
