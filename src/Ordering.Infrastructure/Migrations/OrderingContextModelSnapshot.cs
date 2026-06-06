@@ -122,32 +122,15 @@ namespace Ordering.Infrastructure.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("Alias");
 
-                    b.Property<string>("_cardHolderName")
+                    b.Property<string>("_paymentMethodId")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
-                        .HasColumnName("CardHolderName");
-
-                    b.Property<string>("_cardNumber")
-                        .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("character varying(25)")
-                        .HasColumnName("CardNumber");
-
-                    b.Property<int>("_cardTypeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("CardTypeId");
-
-                    b.Property<DateTime>("_expiration")
-                        .HasMaxLength(25)
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("Expiration");
+                        .HasColumnName("PaymentMethodId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BuyerId");
-
-                    b.HasIndex("_cardTypeId");
 
                     b.ToTable("paymentmethods", "ordering");
                 });
@@ -257,13 +240,6 @@ namespace Ordering.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("eShop.Ordering.Domain.AggregatesModel.BuyerAggregate.CardType", "CardType")
-                        .WithMany()
-                        .HasForeignKey("_cardTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CardType");
                 });
 
             modelBuilder.Entity("eShop.Ordering.Domain.AggregatesModel.OrderAggregate.Order", b =>

@@ -121,36 +121,34 @@ public static class OrdersApi
         [AsParameters] OrderServices services)
     {
         
-        //mask the credit card number
-        
         services.Logger.LogInformation(
             "Sending command: {CommandName} - {IdProperty}: {CommandId}",
             request.GetGenericTypeName(),
             nameof(request.UserId),
-            request.UserId); //don't log the request as it has CC number
+            request.UserId);
 
         if (requestId == Guid.Empty)
         {
-            services.Logger.LogWarning("Invalid IntegrationEvent - RequestId is missing - {@IntegrationEvent}", request);
+            services.Logger.LogWarning(
+                "Invalid IntegrationEvent - RequestId is missing - UserId: {UserId}",
+                request.UserId);
             return TypedResults.BadRequest("RequestId is missing.");
         }
 
         using (services.Logger.BeginScope(new List<KeyValuePair<string, object>> { new("IdentifiedCommandId", requestId) }))
         {
-            var maskedCCNumber = request.CardNumber.Substring(request.CardNumber.Length - 4).PadLeft(request.CardNumber.Length, 'X');
             var createOrderCommand = new CreateOrderCommand(request.Items, request.UserId, request.UserName, request.City, request.Street,
                 request.State, request.Country, request.ZipCode,
-                maskedCCNumber, request.CardHolderName, request.CardExpiration,
-                request.CardSecurityNumber, request.CardTypeId);
+                request.PaymentMethodId);
 
             var requestCreateOrder = new IdentifiedCommand<CreateOrderCommand, bool>(createOrderCommand, requestId);
 
             services.Logger.LogInformation(
-                "Sending command: {CommandName} - {IdProperty}: {CommandId} ({@Command})",
+                "Sending command: {CommandName} - {IdProperty}: {CommandId} - RequestId: {RequestId}",
                 requestCreateOrder.GetGenericTypeName(),
-                nameof(requestCreateOrder.Id),
-                requestCreateOrder.Id,
-                requestCreateOrder);
+                nameof(requestCreateOrder.Command.UserId),
+                requestCreateOrder.Command.UserId,
+                requestCreateOrder.Id);
 
             var result = await services.Mediator.Send(requestCreateOrder);
 
@@ -176,10 +174,6 @@ public record CreateOrderRequest(
     string State,
     string Country,
     string ZipCode,
-    string CardNumber,
-    string CardHolderName,
-    DateTime CardExpiration,
-    string CardSecurityNumber,
-    int CardTypeId,
+    string PaymentMethodId,
     string Buyer,
     List<BasketItem> Items);

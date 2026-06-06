@@ -26,12 +26,10 @@ public class Buyer
         Name = !string.IsNullOrWhiteSpace(name) ? name : throw new ArgumentNullException(nameof(name));
     }
 
-    public PaymentMethod VerifyOrAddPaymentMethod(
-        int cardTypeId, string alias, string cardNumber,
-        string securityNumber, string cardHolderName, DateTime expiration, int orderId)
+    public PaymentMethod VerifyOrAddPaymentMethod(string alias, string paymentMethodId, int orderId)
     {
         var existingPayment = _paymentMethods
-            .SingleOrDefault(p => p.IsEqualTo(cardTypeId, cardNumber, expiration));
+            .SingleOrDefault(p => p.IsEqualTo(paymentMethodId));
 
         if (existingPayment != null)
         {
@@ -40,7 +38,7 @@ public class Buyer
             return existingPayment;
         }
 
-        var payment = new PaymentMethod(cardTypeId, alias, cardNumber, securityNumber, cardHolderName, expiration);
+        var payment = new PaymentMethod(alias, paymentMethodId);
 
         _paymentMethods.Add(payment);
 
