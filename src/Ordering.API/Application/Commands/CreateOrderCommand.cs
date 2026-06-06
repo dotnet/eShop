@@ -41,19 +41,7 @@ public class CreateOrderCommand
     public string ZipCode { get; private set; }
 
     [DataMember]
-    public string CardNumber { get; private set; }
-
-    [DataMember]
-    public string CardHolderName { get; private set; }
-
-    [DataMember]
-    public DateTime CardExpiration { get; private set; }
-
-    [DataMember]
-    public string CardSecurityNumber { get; private set; }
-
-    [DataMember]
-    public int CardTypeId { get; private set; }
+    public string PaymentMethodId { get; private set; }
 
     [DataMember]
     public IEnumerable<OrderItemDTO> OrderItems => _orderItems;
@@ -64,8 +52,7 @@ public class CreateOrderCommand
     }
 
     public CreateOrderCommand(List<BasketItem> basketItems, string userId, string userName, string city, string street, string state, string country, string zipcode,
-        string cardNumber, string cardHolderName, DateTime cardExpiration,
-        string cardSecurityNumber, int cardTypeId)
+        string paymentMethodId)
     {
         _orderItems = basketItems.ToOrderItemsDTO().ToList();
         UserId = userId;
@@ -75,11 +62,7 @@ public class CreateOrderCommand
         State = state;
         Country = country;
         ZipCode = zipcode;
-        CardNumber = cardNumber;
-        CardHolderName = cardHolderName;
-        CardExpiration = cardExpiration;
-        CardSecurityNumber = cardSecurityNumber;
-        CardTypeId = cardTypeId;
+        PaymentMethodId = paymentMethodId;
     }
 }
 
