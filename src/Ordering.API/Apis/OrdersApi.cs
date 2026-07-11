@@ -157,13 +157,11 @@ public static class OrdersApi
             if (result)
             {
                 services.Logger.LogInformation("CreateOrderCommand succeeded - RequestId: {RequestId}", requestId);
-            }
-            else
-            {
-                services.Logger.LogWarning("CreateOrderCommand failed - RequestId: {RequestId}", requestId);
+                return TypedResults.Ok();
             }
 
-            return TypedResults.Ok();
+            services.Logger.LogWarning("CreateOrderCommand failed - RequestId: {RequestId}", requestId);
+            return TypedResults.BadRequest("Create order failed to process.");
         }
     }
 }
