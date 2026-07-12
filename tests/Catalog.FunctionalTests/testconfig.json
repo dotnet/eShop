@@ -1,0 +1,4 @@
+{
+  "$schema": "https://xunit.net/schema/v3/testconfig.schema.json",
+  "showLiveOutput": true
+}

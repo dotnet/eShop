@@ -4,7 +4,7 @@ using eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
 namespace eShop.Ordering.UnitTests.Application;
 
 [TestClass]
-public class NewOrderRequestHandlerTest
+public class NewOrderRequestHandlerTest : MSTestLoggingTestBase
 {
     private readonly IOrderRepository _orderRepositoryMock;
     private readonly IIdentityService _identityServiceMock;
@@ -36,14 +36,16 @@ public class NewOrderRequestHandlerTest
 
         _identityServiceMock.GetUserIdentity().Returns(buyerId);
 
-        var LoggerMock = Substitute.For<ILogger<CreateOrderCommandHandler>>();
+        var logger = TestLogging.CreateLogger<CreateOrderCommandHandler>();
+        TestLogging.LogTestBoundary(logger, nameof(Handle_return_false_if_order_is_not_persisted), "START");
         //Act
-        var handler = new CreateOrderCommandHandler(_mediator, _orderingIntegrationEventService, _orderRepositoryMock, _identityServiceMock, LoggerMock);
+        var handler = new CreateOrderCommandHandler(_mediator, _orderingIntegrationEventService, _orderRepositoryMock, _identityServiceMock, logger);
         var cltToken = new CancellationToken();
         var result = await handler.Handle(fakeOrderCmd, cltToken);
 
         //Assert
         Assert.IsFalse(result);
+        TestLogging.LogTestBoundary(logger, nameof(Handle_return_false_if_order_is_not_persisted), "END");
     }
 
     [TestMethod]

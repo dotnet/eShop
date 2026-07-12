@@ -42,6 +42,7 @@ public static partial class Extensions
         // Default health checks assume the event bus and self health checks
         builder.AddDefaultHealthChecks();
 
+        builder.AddSerilogLogging();
         builder.ConfigureOpenTelemetry();
 
         return builder;

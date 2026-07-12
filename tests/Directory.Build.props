@@ -10,4 +10,10 @@
     <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'Testing.Common'">
+    <ProjectReference Include="$(MSBuildThisFileDirectory)Testing.Common\Testing.Common.csproj">
+      <IsAspireProjectResource>false</IsAspireProjectResource>
+    </ProjectReference>
+  </ItemGroup>
+
 </Project>

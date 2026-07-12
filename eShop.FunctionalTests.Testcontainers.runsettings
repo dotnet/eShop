@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <RunConfiguration>
+    <EnvironmentVariables>
+      <ESHOP_CATALOG_FUNCTIONAL_TEST_MODE>Testcontainers</ESHOP_CATALOG_FUNCTIONAL_TEST_MODE>
+      <ESHOP_ORDERING_FUNCTIONAL_TEST_MODE>Testcontainers</ESHOP_ORDERING_FUNCTIONAL_TEST_MODE>
+    </EnvironmentVariables>
+  </RunConfiguration>
+</RunSettings>

@@ -10,9 +10,28 @@ public class IntegrationEventLogService<TContext> : IIntegrationEventLogService,
     public IntegrationEventLogService(TContext context)
     {
         _context = context;
-        _eventTypes = Assembly.Load(Assembly.GetEntryAssembly().FullName)
-            .GetTypes()
-            .Where(t => t.Name.EndsWith(nameof(IntegrationEvent)))
+        _eventTypes = GetIntegrationEventTypes();
+    }
+
+    private static Type[] GetIntegrationEventTypes()
+    {
+        return AppDomain.CurrentDomain.GetAssemblies()
+            .Where(static assembly => !assembly.IsDynamic)
+            .SelectMany(static assembly =>
+            {
+                try
+                {
+                    return assembly.GetTypes();
+                }
+                catch (ReflectionTypeLoadException ex)
+                {
+                    return ex.Types.Where(static type => type is not null)!;
+                }
+            })
+            .Where(static type => type is not null
+                && typeof(IntegrationEvent).IsAssignableFrom(type)
+                && !type.IsAbstract)
+            .Distinct()
             .ToArray();
     }
 

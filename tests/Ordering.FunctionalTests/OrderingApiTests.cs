@@ -1,33 +1,29 @@
 ﻿using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
-using Asp.Versioning;
-using Asp.Versioning.Http;
 using eShop.Ordering.API.Application.Commands;
 using eShop.Ordering.API.Application.Models;
 using eShop.Ordering.API.Application.Queries;
-using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace eShop.Ordering.FunctionalTests;
 
-public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
+[FlushTestLogs]
+[OrderingFunctionalTestMode(OrderingFunctionalTestMode.Aspire)]
+public sealed class OrderingApiTests(OrderingApiTestSession session)
 {
-    private readonly WebApplicationFactory<Program> _webApplicationFactory;
-    private readonly HttpClient _httpClient;
+    private readonly OrderingApiTestSession _session = session;
 
-    public OrderingApiTests(OrderingApiFixture fixture)
-    {
-        var handler = new ApiVersionHandler(new QueryStringApiVersionWriter(), new ApiVersion(1.0));
-
-        _webApplicationFactory = fixture;
-        _httpClient = _webApplicationFactory.CreateDefaultClient(handler);
-    }
+    private Task<OrderingApiTestHost> CreateHostAsync([CallerMemberName] string testMethod = "") =>
+        _session.CreateHostAsync(GetType(), testMethod);
 
     [Fact]
     public async Task GetAllStoredOrdersWorks()
     {
+        var host = await CreateHostAsync();
+
         // Act
-        var response = await _httpClient.GetAsync("api/orders", TestContext.Current.CancellationToken);
+        var response = await host.Client.GetAsync("api/orders", TestContext.Current.CancellationToken);
         var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
@@ -38,12 +34,14 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     [Fact]
     public async Task CancelWithEmptyGuidFails()
     {
+        var host = await CreateHostAsync();
+
         // Act
         var content = new StringContent(BuildOrder(), UTF8Encoding.UTF8, "application/json")
         {
             Headers = { { "x-requestid", Guid.Empty.ToString() } }
         };
-        var response = await _httpClient.PutAsync("/api/orders/cancel", content, TestContext.Current.CancellationToken);
+        var response = await host.Client.PutAsync("/api/orders/cancel", content, TestContext.Current.CancellationToken);
         var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -53,12 +51,14 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     [Fact]
     public async Task CancelNonExistentOrderFails()
     {
+        var host = await CreateHostAsync();
+
         // Act
         var content = new StringContent(BuildOrder(), UTF8Encoding.UTF8, "application/json")
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
-        var response = await _httpClient.PutAsync("api/orders/cancel", content, TestContext.Current.CancellationToken);
+        var response = await host.Client.PutAsync("api/orders/cancel", content, TestContext.Current.CancellationToken);
         var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -68,12 +68,14 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     [Fact]
     public async Task ShipWithEmptyGuidFails()
     {
+        var host = await CreateHostAsync();
+
         // Act
         var content = new StringContent(BuildOrder(), UTF8Encoding.UTF8, "application/json")
         {
             Headers = { { "x-requestid", Guid.Empty.ToString() } }
         };
-        var response = await _httpClient.PutAsync("api/orders/ship", content, TestContext.Current.CancellationToken);
+        var response = await host.Client.PutAsync("api/orders/ship", content, TestContext.Current.CancellationToken);
         var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -83,12 +85,14 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     [Fact]
     public async Task ShipNonExistentOrderFails()
     {
+        var host = await CreateHostAsync();
+
         // Act
         var content = new StringContent(BuildOrder(), UTF8Encoding.UTF8, "application/json")
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
-        var response = await _httpClient.PutAsync("api/orders/ship", content, TestContext.Current.CancellationToken);
+        var response = await host.Client.PutAsync("api/orders/ship", content, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
@@ -97,8 +101,10 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     [Fact]
     public async Task GetAllOrdersCardType()
     {
+        var host = await CreateHostAsync();
+
         // Act 1
-        var response = await _httpClient.GetAsync("api/orders/cardtypes", TestContext.Current.CancellationToken);
+        var response = await host.Client.GetAsync("api/orders/cardtypes", TestContext.Current.CancellationToken);
         var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
@@ -109,8 +115,10 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     [Fact]
     public async Task GetStoredOrdersWithOrderId()
     {
-        // Act
-        var response = await _httpClient.GetAsync("api/orders/1", TestContext.Current.CancellationToken);
+        var host = await CreateHostAsync();
+
+        // Act - use an id that no test creates
+        var response = await host.Client.GetAsync("api/orders/999999", TestContext.Current.CancellationToken);
         var responseStatus = response.StatusCode;
 
         // Assert
@@ -120,12 +128,14 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     [Fact]
     public async Task AddNewEmptyOrder()
     {
+        var host = await CreateHostAsync();
+
         // Act
         var content = new StringContent(JsonSerializer.Serialize(new Order()), UTF8Encoding.UTF8, "application/json")
         {
             Headers = { { "x-requestid", Guid.Empty.ToString() } }
         };
-        var response = await _httpClient.PostAsync("api/orders", content, TestContext.Current.CancellationToken);
+        var response = await host.Client.PostAsync("api/orders", content, TestContext.Current.CancellationToken);
         var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -135,6 +145,9 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     [Fact]
     public async Task AddNewOrder()
     {
+        var host = await CreateHostAsync();
+        var beforeCount = await host.Fixture.GetPersistedOrderCountAsync();
+
         // Act
         var item = new BasketItem
         {
@@ -146,22 +159,26 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
             Quantity = 1,
             PictureUrl = null
         };
-        var cardExpirationDate = Convert.ToDateTime("2023-12-22T12:34:24.334Z");
-        var OrderRequest = new CreateOrderRequest("1", "TestUser", null, null, null, null, null, "XXXXXXXXXXXX0005", "Test User", cardExpirationDate, "test buyer", 1, null, new List<BasketItem> { item });
+        var cardExpirationDate = DateTime.UtcNow.AddYears(1);
+        var OrderRequest = new CreateOrderRequest("1", "TestUser", "Redmond", "555 Cherry St", "WA", "USA", "98052", "XXXXXXXXXXXX0005", "Test User", cardExpirationDate, "123", 1, "test buyer", new List<BasketItem> { item });
         var content = new StringContent(JsonSerializer.Serialize(OrderRequest), UTF8Encoding.UTF8, "application/json")
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
-        var response = await _httpClient.PostAsync("api/orders", content, TestContext.Current.CancellationToken);
+        var response = await host.Client.PostAsync("api/orders", content, TestContext.Current.CancellationToken);
         var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        var afterCount = await host.Fixture.GetPersistedOrderCountAsync();
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(beforeCount + 1, afterCount);
     }
 
     [Fact]
     public async Task PostDraftOrder()
     {
+        var host = await CreateHostAsync();
+
         // Act
         var item = new BasketItem
         {
@@ -178,7 +195,7 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
-        var response = await _httpClient.PostAsync("api/orders/draft", content, TestContext.Current.CancellationToken);
+        var response = await host.Client.PostAsync("api/orders/draft", content, TestContext.Current.CancellationToken);
         var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -188,12 +205,13 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     [Fact]
     public async Task CreateOrderDraftSucceeds()
     {
+        var host = await CreateHostAsync();
         var payload = FakeOrderDraftCommand();
         var content = new StringContent(JsonSerializer.Serialize(FakeOrderDraftCommand()), UTF8Encoding.UTF8, "application/json")
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
-        var response = await _httpClient.PostAsync("api/orders/draft", content, TestContext.Current.CancellationToken);
+        var response = await host.Client.PostAsync("api/orders/draft", content, TestContext.Current.CancellationToken);
 
         var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var responseData = JsonSerializer.Deserialize<OrderDraftDTO>(s, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });

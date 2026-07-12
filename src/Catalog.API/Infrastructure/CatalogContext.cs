@@ -1,4 +1,6 @@
-﻿namespace eShop.Catalog.API.Infrastructure;
+using System.Diagnostics.CodeAnalysis;
+
+namespace eShop.Catalog.API.Infrastructure;
 
 /// <remarks>
 /// Add migrations using the following command inside the 'Catalog.API' project directory:
@@ -7,7 +9,8 @@
 /// </remarks>
 public class CatalogContext : DbContext
 {
-    public CatalogContext(DbContextOptions<CatalogContext> options, IConfiguration configuration) : base(options)
+    [SetsRequiredMembers]
+    public CatalogContext(DbContextOptions options, IConfiguration configuration) : base(options)
     {
     }
 

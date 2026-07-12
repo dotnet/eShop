@@ -5,6 +5,7 @@ global using System.Threading.Tasks;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
 global using NSubstitute;
+global using eShop.Testing.Common;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [assembly: Parallelize(Workers = 0, Scope = ExecutionScope.MethodLevel)]

@@ -16,6 +16,7 @@ global using eShop.Ordering.Infrastructure.Idempotency;
 global using Microsoft.Extensions.Logging;
 global using NSubstitute;
 global using eShop.Ordering.UnitTests;
+global using eShop.Testing.Common;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [assembly: Parallelize(Workers = 0, Scope = ExecutionScope.MethodLevel)]
