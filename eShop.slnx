@@ -3,6 +3,10 @@
     <Project Path="src/eShop.AppHost/eShop.AppHost.csproj" />
     <Project Path="src/Basket.API/Basket.API.csproj" />
     <Project Path="src/Catalog.API/Catalog.API.csproj" />
+    <Project Path="src/Coupon.API/Coupon.API.csproj" />
+    <Project Path="src/Coupon.Domain/Coupon.Domain.csproj" />
+    <Project Path="src/Coupon.Application/Coupon.Application.csproj" />
+    <Project Path="src/Coupon.Infrastructure/Coupon.Infrastructure.csproj" />
     <Project Path="src/eShop.ServiceDefaults/eShop.ServiceDefaults.csproj" />
     <Project Path="src/EventBus/EventBus.csproj" />
     <Project Path="src/EventBusRabbitMQ/EventBusRabbitMQ.csproj" />

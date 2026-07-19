@@ -1,0 +1,9 @@
+global using eShop.Coupon.API.Apis;
+global using eShop.Coupon.Application.Services;
+global using eShop.Coupon.Application.Dtos;
+global using eShop.Coupon.Domain.Entities;
+global using eShop.Coupon.Infrastructure.Persistence;
+global using eShop.ServiceDefaults;
+global using AutoMapper;
+global using Microsoft.EntityFrameworkCore;
+global using Asp.Versioning;

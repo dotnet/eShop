@@ -43,7 +43,7 @@ public class OrderItem
     
     public void SetNewDiscount(decimal discount)
     {
-        if (discount < 0)
+        if (discount < 0 || discount > Units * UnitPrice)
         {
             throw new OrderingDomainException("Discount is not valid");
         }
