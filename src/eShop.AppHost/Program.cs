@@ -3,6 +3,7 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 builder.AddForwardedHeaders();
+builder.AddAzureContainerAppEnvironment("aca");
 
 var redis = builder.AddRedis("redis");
 var rabbitMq = builder.AddRabbitMQ("eventbus")

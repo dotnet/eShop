@@ -64,6 +64,7 @@ BenchmarkDotNet.Artifacts/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+src/eShop.AppHost/aspire-output/
 
 # Tye
 .tye/

@@ -1,6 +1,6 @@
 # eShop Reference Application - "AdventureWorks"
 
-A reference .NET application implementing an e-commerce website using a services-based architecture using [.NET Aspire](https://learn.microsoft.com/dotnet/aspire/).
+A reference .NET application implementing an e-commerce website using a services-based architecture with [Aspire](https://learn.microsoft.com/dotnet/aspire/).
 
 ![eShop Reference Application architecture diagram](img/eshop_architecture.png)
 
@@ -8,7 +8,7 @@ A reference .NET application implementing an e-commerce website using a services
 
 ## Getting Started
 
-This version of eShop is based on .NET 9. 
+This version of eShop is based on .NET 10.
 
 Previous eShop versions:
 * [.NET 8](https://github.com/dotnet/eShop/tree/release/8.0)
@@ -22,7 +22,7 @@ Previous eShop versions:
 - Install [Visual Studio 2022 version 17.10 or newer](https://visualstudio.microsoft.com/vs/).
   - Select the following workloads:
     - `ASP.NET and web development` workload.
-    - `.NET Aspire SDK` component in `Individual components`.
+    - `Aspire SDK` component in `Individual components`.
     - Optional: `.NET Multi-platform App UI development` to run client apps
 
 Or
@@ -40,7 +40,7 @@ Or
 - From Dev Home go to `Machine Configuration -> Clone repositories`. Enter the URL for this repository. In the confirmation screen look for the section `Configuration File Detected` and click `Run File`.
 
 #### Mac, Linux, & Windows without Visual Studio
-- Install the latest [.NET 9 SDK](https://dot.net/download?cid=eshop)
+- Install the latest [.NET 10 SDK](https://dot.net/download?cid=eshop)
 
 Or
 
@@ -72,8 +72,9 @@ get-WinGetConfiguration -file .\.configurations\vscode.dsc.yaml | Invoke-WinGetC
 
 * Or run the application from your terminal:
 ```powershell
-dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj
+aspire run --non-interactive
 ```
+`aspire.config.json` points this command to `src/eShop.AppHost/eShop.AppHost.csproj`. This repo also includes test AppHosts, so use `--apphost <path>` when you want to target one explicitly.
 then look for lines like this in the console output in order to find the URL to open the Aspire dashboard:
 ```sh
 Login to the dashboard at: http://localhost:19888/login?t=uniquelogincodeforyou
@@ -97,37 +98,42 @@ Replace the values with your own. Then, in the eShop.AppHost *Program.cs*, set t
 bool useOpenAI = false;
 ```
 
-Here's additional guidance on the [.NET Aspire OpenAI component](https://learn.microsoft.com/dotnet/aspire/azureai/azureai-openai-component?tabs=dotnet-cli). 
+Here's additional guidance on the [Aspire OpenAI component](https://learn.microsoft.com/dotnet/aspire/azureai/azureai-openai-component?tabs=dotnet-cli). 
 
-### Use Azure Developer CLI
+### Deploy with Aspire CLI
 
-You can use the [Azure Developer CLI](https://aka.ms/azd) to run this project on Azure with only a few commands. Follow the next instructions:
+Use Aspire deployment from the AppHost model.
 
-- Install the latest or update to the latest [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install).
-- Log in `azd` (if you haven't done it before) to your Azure account:
+This sample intentionally deploys disposable PostgreSQL, Redis, and RabbitMQ containers to Azure Container Apps. It is suitable for evaluation and demonstrations, not production data.
+
+Prerequisites:
+- Docker Desktop must be running.
+- Azure CLI must be authenticated.
+- Azure deployment settings must be set (`Azure__SubscriptionId`, `Azure__Location`, `Azure__ResourceGroup`).
+
+1. Preview deployment steps:
 ```sh
-azd auth login
+aspire publish --list-steps --non-interactive
+aspire deploy --list-steps --non-interactive
 ```
-- Initialize `azd` from the root of the repo.
+2. Publish deployment artifacts for inspection or handoff:
 ```sh
-azd init
+aspire publish --non-interactive
 ```
-- During init:
-  - Select `Use code in the current directory`. Azd will automatically detect the .NET Aspire project.
-  - Confirm `.NET (Aspire)` and continue.
-  - Select which services to expose to the Internet (exposing `webapp` is enough to test the sample).
-  - Finalize the initialization by giving a name to your environment.
+3. Deploy directly from the AppHost model:
+```sh
+aspire deploy --non-interactive
+```
 
-- Create Azure resources and deploy the sample by running:
-```sh
-azd up
+Example (PowerShell):
+```powershell
+$env:Azure__SubscriptionId = "<subscription-id>"
+$env:Azure__Location = "eastus"
+$env:Azure__ResourceGroup = "rg-eshop-prod"
+aspire deploy --non-interactive
 ```
-Notes:
-  - The operation takes a few minutes the first time it is ever run for an environment.
-  - At the end of the process, `azd` will display the `url` for the webapp. Follow that link to test the sample.
-  - You can run `azd up` after saving changes to the sample to re-deploy and update the sample.
-  - Report any issues to [azure-dev](https://github.com/Azure/azure-dev/issues) repo.
-  - [FAQ and troubleshoot](https://learn.microsoft.com/azure/developer/azure-developer-cli/troubleshoot?tabs=Browser) for azd.
+
+`aspire deploy` evaluates the AppHost directly; it does not consume a previous `aspire publish` output directory. For interactive use, omit `--non-interactive` and Aspire can prompt for missing deployment settings. For automation, set the required values explicitly.
 
 ## Contributing
 

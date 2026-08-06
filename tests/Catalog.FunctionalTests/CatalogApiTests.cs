@@ -38,8 +38,9 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
 
-        // Assert 103 total items (101 seeded + 2 added by AddCatalogItem tests) with 5 retrieved from index 0
-        Assert.Equal(103, result.Count);
+        // The catalog is seeded independently for each test host, so this assertion should not
+        // depend on another test adding items first.
+        Assert.Equal(101, result.Count);
         Assert.Equal(0, result.PageIndex);
         Assert.Equal(5, result.PageSize);
     }
