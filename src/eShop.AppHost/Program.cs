@@ -78,7 +78,7 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
     .WithEnvironment("IdentityUrl", identityEndpoint);
 
 // Set UseFoundry=true to provision Microsoft Foundry for chat and embeddings.
-bool useFoundry = bool.TryParse(builder.Configuration["UseFoundry"], out var configuredUseFoundry) && configuredUseFoundry;
+bool useFoundry = Extensions.IsFoundryEnabled(builder.Configuration);
 if (useFoundry)
 {
     builder.AddFoundry(catalogApi, webApp);

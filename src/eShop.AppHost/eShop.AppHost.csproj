@@ -30,4 +30,8 @@
     <ProjectReference Include="..\WebhookClient\WebhookClient.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="eShop.AppHost.UnitTests" />
+  </ItemGroup>
+
 </Project>

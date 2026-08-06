@@ -15,6 +15,7 @@ public static class Extensions
         builder.Services.AddOptions<BackgroundTaskOptions>()
             .BindConfiguration(nameof(BackgroundTaskOptions));
 
+        builder.Services.AddSingleton<IGracePeriodOrdersRepository, GracePeriodOrdersRepository>();
         builder.Services.AddHostedService<GracePeriodManagerService>();
     }
 }

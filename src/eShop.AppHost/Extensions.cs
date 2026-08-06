@@ -3,12 +3,16 @@ using Aspire.Hosting.Foundry;
 using Aspire.Hosting.Lifecycle;
 using Aspire.Hosting.Yarp;
 using Aspire.Hosting.Yarp.Transforms;
+using Microsoft.Extensions.Configuration;
 using Yarp.ReverseProxy.Configuration;
 
 namespace eShop.AppHost;
 
 internal static class Extensions
 {
+    public static bool IsFoundryEnabled(IConfiguration configuration) =>
+        bool.TryParse(configuration["UseFoundry"], out var useFoundry) && useFoundry;
+
     /// <summary>
     /// Adds a hook to set the ASPNETCORE_FORWARDEDHEADERS_ENABLED environment variable to true for all projects in the application.
     /// </summary>

@@ -488,6 +488,7 @@ $RECYCLE.BIN/
 /test-results/
 /playwright-report/
 /blob-report/
+/.playwright-cli/
 /playwright/.cache/
 /playwright/.auth/
 /user.json

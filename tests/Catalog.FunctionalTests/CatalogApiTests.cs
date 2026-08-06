@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Net;
 using System.Text.Json;
 using Asp.Versioning;
 using Asp.Versioning.Http;
@@ -420,5 +421,51 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         // Assert - 1
         Assert.Equal("NoContent", response.StatusCode.ToString());
         Assert.Equal("NotFound", responseStatus.ToString());
+    }
+
+    [Theory]
+    [InlineData(1.0)]
+    [InlineData(2.0)]
+    public async Task GetCatalogItemRejectsInvalidId(double version)
+    {
+        var httpClient = CreateHttpClient(new ApiVersion(version));
+
+        var response = await httpClient.GetAsync("/api/catalog/items/0", TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Theory]
+    [InlineData(1.0)]
+    [InlineData(2.0)]
+    public async Task GetAndDeleteMissingCatalogItemReturnNotFound(double version)
+    {
+        var httpClient = CreateHttpClient(new ApiVersion(version));
+        const int missingId = int.MaxValue;
+
+        var getResponse = await httpClient.GetAsync($"/api/catalog/items/{missingId}", TestContext.Current.CancellationToken);
+        var deleteResponse = await httpClient.DeleteAsync($"/api/catalog/items/{missingId}", TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+    }
+
+    [Theory]
+    [InlineData(1.0)]
+    [InlineData(2.0)]
+    public async Task CatalogPaginationBeyondLastPageReturnsEmptyData(double version)
+    {
+        var httpClient = CreateHttpClient(new ApiVersion(version));
+
+        var response = await httpClient.GetAsync(
+            "/api/catalog/items?pageIndex=1000&pageSize=10",
+            TestContext.Current.CancellationToken);
+
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<PaginatedItems<CatalogItem>>(
+            _jsonSerializerOptions,
+            TestContext.Current.CancellationToken);
+        Assert.Empty(result!.Data);
+        Assert.Equal(1000, result.PageIndex);
     }
 }

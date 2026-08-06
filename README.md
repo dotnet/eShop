@@ -79,6 +79,22 @@ aspire run
 Login to the dashboard at: http://localhost:19888/login?t=uniquelogincodeforyou
 ```
 
+### Running tests
+
+Run the server tests:
+
+```powershell
+dotnet test --solution eShop.Web.slnf
+```
+
+Run the Playwright browser journeys. Playwright starts the AppHost automatically, so ensure your container runtime is running first.
+
+```powershell
+npm ci
+npx playwright install chromium
+npm run test:e2e
+```
+
 ### Optional: AI Chatbot with Microsoft Foundry
 
 To use Microsoft Foundry for chat and embeddings, set `UseFoundry=true` in the
