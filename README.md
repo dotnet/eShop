@@ -16,7 +16,7 @@ Previous eShop versions:
 ### Prerequisites
 
 - Clone the eShop repository: https://github.com/dotnet/eshop
-- [Install & start Docker Desktop](https://docs.docker.com/engine/install/) or a similar OCI-compatible container runtime
+- Install and start a supported OCI-compatible container runtime, such as [Docker Desktop](https://docs.docker.com/engine/install/) or [Podman](https://podman.io/)
 
 #### Windows with Visual Studio
 - Install [Visual Studio 2022 version 17.10 or newer](https://visualstudio.microsoft.com/vs/).
@@ -27,12 +27,12 @@ Previous eShop versions:
 
 Or
 
-- Run the following commands in a Powershell & Terminal running as `Administrator` to automatically configure your environment with the required tools to build and run this application. (Note: A restart is required and included in the script below.)
+- Run the following commands in an elevated PowerShell terminal to automatically configure your environment with the required tools to build and run this application. (A restart is required and included in the script below.)
 
 ```powershell
 install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense -Force
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-get-WinGetConfiguration -file .\.configurations\vside.dsc.yaml | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
+Get-WinGetConfiguration -File .\.config\configuration.vs.winget | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
 ```
 
 Or
@@ -44,13 +44,13 @@ Or
 
 Or
 
-- Run the following commands in a Powershell & Terminal running as `Administrator` to automatically configuration your environment with the required tools to build and run this application. (Note: A restart is required after running the script below.)
+- On Windows, run the following commands in an elevated PowerShell terminal to automatically configure your environment with the required tools to build and run this application. (A restart is required after running the script below.)
 
 ##### Install Visual Studio Code and related extensions
 ```powershell
 install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense  -Force
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-get-WinGetConfiguration -file .\.configurations\vscode.dsc.yaml | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
+Get-WinGetConfiguration -File .\.config\configuration.vsCode.winget | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
 ```
 
 > Note: These commands may require `sudo`
@@ -63,7 +63,7 @@ get-WinGetConfiguration -file .\.configurations\vscode.dsc.yaml | Invoke-WinGetC
 ### Running the solution
 
 > [!WARNING]
-> Remember to ensure that Docker is started
+> Remember to ensure that your container runtime is started
 
 - (Windows only) Run the application from Visual Studio:
 - Open the `eShop.Web.slnf` file in Visual Studio
@@ -74,8 +74,7 @@ get-WinGetConfiguration -file .\.configurations\vscode.dsc.yaml | Invoke-WinGetC
 ```powershell
 aspire run
 ```
-`aspire.config.json` points this command to `src/eShop.AppHost/eShop.AppHost.csproj`. This repo also includes test AppHosts, so use `--apphost <path>` when you want to target one explicitly.
-then look for lines like this in the console output in order to find the URL to open the Aspire dashboard:
+`aspire.config.json` points this command to `src/eShop.AppHost/eShop.AppHost.csproj`. This repo also includes test AppHosts, so use `--apphost <path>` when you want to target one explicitly. Then look for lines like this in the console output to find the URL to open the Aspire dashboard:
 ```sh
 Login to the dashboard at: http://localhost:19888/login?t=uniquelogincodeforyou
 ```
@@ -101,7 +100,7 @@ Use Aspire deployment from the AppHost model.
 This sample intentionally deploys disposable PostgreSQL, Redis, and RabbitMQ containers to Azure Container Apps. It is suitable for evaluation and demonstrations, not production data.
 
 Prerequisites:
-- Docker Desktop must be running.
+- A supported container runtime must be running.
 - Azure CLI must be authenticated.
 - Azure deployment settings must be set (`Azure__SubscriptionId`, `Azure__Location`, `Azure__ResourceGroup`).
 
@@ -127,7 +126,7 @@ $env:Azure__ResourceGroup = "rg-eshop-prod"
 aspire deploy --non-interactive
 ```
 
-`aspire deploy` evaluates the AppHost directly; it does not consume a previous `aspire publish` output directory. For agentic use, add `--non-interactive` and Aspire will not prompt for missing deployment settings. For automation, set the required values explicitly.
+`aspire deploy` evaluates the AppHost directly; it does not consume a previous `aspire publish` output directory. Omit `--non-interactive` for interactive use; add it for automation or agent-driven runs so Aspire does not prompt for missing deployment settings. Set the required values explicitly.
 
 ## Contributing
 
