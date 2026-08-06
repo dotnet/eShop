@@ -80,9 +80,7 @@ then look for lines like this in the console output in order to find the URL to 
 Login to the dashboard at: http://localhost:19888/login?t=uniquelogincodeforyou
 ```
 
-> You may need to install ASP.NET Core HTTPS development certificates first, and then close all browser tabs. Learn more at https://aka.ms/aspnet/https-trust-dev-cert
-
-### Microsoft Foundry
+### Optional: AI Chatbot with Microsoft Foundry
 
 To use Microsoft Foundry for chat and embeddings, set `UseFoundry=true` in the
 AppHost environment. Aspire provisions the Foundry resource and the
