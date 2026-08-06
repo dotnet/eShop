@@ -1,6 +1,6 @@
 # eShop Reference Application - "AdventureWorks"
 
-A reference .NET application implementing an e-commerce website using a services-based architecture with [Aspire](https://learn.microsoft.com/dotnet/aspire/).
+A reference .NET application implementing an e-commerce website using a services-based architecture with [Aspire](https://aspire.dev/).
 
 ![eShop Reference Application architecture diagram](img/eshop_architecture.png)
 
@@ -16,14 +16,14 @@ Previous eShop versions:
 ### Prerequisites
 
 - Clone the eShop repository: https://github.com/dotnet/eshop
-- [Install & start Docker Desktop](https://docs.docker.com/engine/install/)
+- [Install & start Docker Desktop](https://docs.docker.com/engine/install/) or a similar OCI-compatible container runtime
 
 #### Windows with Visual Studio
 - Install [Visual Studio 2022 version 17.10 or newer](https://visualstudio.microsoft.com/vs/).
-  - Select the following workloads:
-    - `ASP.NET and web development` workload.
-    - `Aspire SDK` component in `Individual components`.
-    - Optional: `.NET Multi-platform App UI development` to run client apps
+    - Select the following workloads:
+        - `ASP.NET and web development` workload.
+        - `Aspire SDK` component in `Individual components`.
+        - Optional: `.NET Multi-platform App UI development` to run client apps
 
 Or
 
@@ -65,14 +65,14 @@ get-WinGetConfiguration -file .\.configurations\vscode.dsc.yaml | Invoke-WinGetC
 > [!WARNING]
 > Remember to ensure that Docker is started
 
-* (Windows only) Run the application from Visual Studio:
- - Open the `eShop.Web.slnf` file in Visual Studio
- - Ensure that `eShop.AppHost.csproj` is your startup project
- - Hit Ctrl-F5 to launch Aspire
+- (Windows only) Run the application from Visual Studio:
+- Open the `eShop.Web.slnf` file in Visual Studio
+- Ensure that `eShop.AppHost.csproj` is your startup project
+- Hit Ctrl-F5 to launch Aspire
 
 * Or run the application from your terminal:
 ```powershell
-aspire run --non-interactive
+aspire run
 ```
 `aspire.config.json` points this command to `src/eShop.AppHost/eShop.AppHost.csproj`. This repo also includes test AppHosts, so use `--apphost <path>` when you want to target one explicitly.
 then look for lines like this in the console output in order to find the URL to open the Aspire dashboard:
@@ -82,23 +82,19 @@ Login to the dashboard at: http://localhost:19888/login?t=uniquelogincodeforyou
 
 > You may need to install ASP.NET Core HTTPS development certificates first, and then close all browser tabs. Learn more at https://aka.ms/aspnet/https-trust-dev-cert
 
-### Azure Open AI
+### Microsoft Foundry
 
-When using Azure OpenAI, inside *eShop.AppHost/appsettings.json*, add the following section:
+To use Microsoft Foundry for chat and embeddings, set `UseFoundry=true` in the
+AppHost environment. Aspire provisions the Foundry resource and the
+`gpt-4.1-mini` and `text-embedding-3-small` deployments, then injects their
+connection information into the consuming projects.
 
-```json
-  "ConnectionStrings": {
-    "OpenAi": "Endpoint=xxx;Key=xxx;"
-  }
+```powershell
+$env:UseFoundry = "true"
+aspire run
 ```
 
-Replace the values with your own. Then, in the eShop.AppHost *Program.cs*, set this value to **true**
-
-```csharp
-bool useOpenAI = false;
-```
-
-Here's additional guidance on the [Aspire OpenAI component](https://learn.microsoft.com/dotnet/aspire/azureai/azureai-openai-component?tabs=dotnet-cli). 
+See the [Microsoft Foundry Aspire hosting integration](https://aspire.dev/integrations/cloud/azure-ai-foundry/) for configuration and deployment details.
 
 ### Deploy with Aspire CLI
 
@@ -113,16 +109,16 @@ Prerequisites:
 
 1. Preview deployment steps:
 ```sh
-aspire publish --list-steps --non-interactive
-aspire deploy --list-steps --non-interactive
+aspire publish --list-steps
+aspire deploy --list-steps
 ```
 2. Publish deployment artifacts for inspection or handoff:
 ```sh
-aspire publish --non-interactive
+aspire publish
 ```
 3. Deploy directly from the AppHost model:
 ```sh
-aspire deploy --non-interactive
+aspire deploy
 ```
 
 Example (PowerShell):
@@ -133,7 +129,7 @@ $env:Azure__ResourceGroup = "rg-eshop-prod"
 aspire deploy --non-interactive
 ```
 
-`aspire deploy` evaluates the AppHost directly; it does not consume a previous `aspire publish` output directory. For interactive use, omit `--non-interactive` and Aspire can prompt for missing deployment settings. For automation, set the required values explicitly.
+`aspire deploy` evaluates the AppHost directly; it does not consume a previous `aspire publish` output directory. For agentic use, add `--non-interactive` and Aspire will not prompt for missing deployment settings. For automation, set the required values explicitly.
 
 ## Contributing
 

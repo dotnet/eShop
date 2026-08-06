@@ -77,11 +77,11 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
     .WaitFor(identityApi)
     .WithEnvironment("IdentityUrl", identityEndpoint);
 
-// set to true if you want to use OpenAI
-bool useOpenAI = false;
-if (useOpenAI)
+// Set UseFoundry=true to provision Microsoft Foundry for chat and embeddings.
+bool useFoundry = bool.TryParse(builder.Configuration["UseFoundry"], out var configuredUseFoundry) && configuredUseFoundry;
+if (useFoundry)
 {
-    builder.AddOpenAI(catalogApi, webApp, OpenAITarget.OpenAI); // set to AzureOpenAI if you want to use Azure OpenAI
+    builder.AddFoundry(catalogApi, webApp);
 }
 
 bool useOllama = false;

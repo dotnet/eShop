@@ -1,18 +1,11 @@
 ﻿using Aspire.Hosting.Eventing;
+using Aspire.Hosting.Foundry;
 using Aspire.Hosting.Lifecycle;
 using Aspire.Hosting.Yarp;
 using Aspire.Hosting.Yarp.Transforms;
 using Yarp.ReverseProxy.Configuration;
 
 namespace eShop.AppHost;
-
-internal enum OpenAITarget
-{
-    OpenAI,
-    AzureOpenAI,
-    AzureOpenAIExisting,
-    AzureOpenAIExistingWithKey
-}
 
 internal static class Extensions
 {
@@ -47,113 +40,18 @@ internal static class Extensions
     }
 
     /// <summary>
-    /// Configures eShop projects to use OpenAI for text embedding and chat.
+    /// Configures eShop projects to use Microsoft Foundry for text embedding and chat.
     /// </summary>
-    public static IDistributedApplicationBuilder AddOpenAI(this IDistributedApplicationBuilder builder,
+    public static IDistributedApplicationBuilder AddFoundry(this IDistributedApplicationBuilder builder,
         IResourceBuilder<ProjectResource> catalogApi,
-        IResourceBuilder<ProjectResource> webApp,
-        OpenAITarget openAITarget)
+        IResourceBuilder<ProjectResource> webApp)
     {
-        const string openAIName = "openai";
+        var foundry = builder.AddFoundry("foundry");
+        var chat = foundry.AddDeployment("chatModel", "gpt-4.1-mini", "2025-04-14", "OpenAI");
+        var textEmbedding = foundry.AddDeployment("textEmbeddingModel", "text-embedding-3-small", "1", "OpenAI");
 
-        const string textEmbeddingName = "textEmbeddingModel";
-        const string textEmbeddingModelName = "text-embedding-3-small";
-
-        const string chatName = "chatModel";
-        const string chatModelName = "gpt-4.1-mini";
-
-        if (openAITarget != OpenAITarget.AzureOpenAI)
-        {
-#pragma warning disable ASPIREINTERACTION001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-            IResourceBuilder<ParameterResource>? endpoint = null;
-            if (openAITarget != OpenAITarget.OpenAI)
-            {
-                endpoint = builder.AddParameter("OpenAIEndpointParameter")
-                    .WithDescription("The Azure OpenAI endpoint to use, e.g. https://<name>.openai.azure.com/")
-                    .WithCustomInput(p => new()
-                    {
-                        Name = "OpenAIEndpointParameter",
-                        Label = "Azure OpenAI Endpoint",
-                        InputType = InputType.Text,
-                        Value = "https://<name>.openai.azure.com/",
-                    });
-            }
-
-            IResourceBuilder<ParameterResource>? key = null;
-            if (openAITarget is OpenAITarget.OpenAI or OpenAITarget.AzureOpenAIExistingWithKey)
-            {
-                key = builder.AddParameter("OpenAIKeyParameter", secret: true)
-                    .WithDescription("The OpenAI API key to use.")
-                    .WithCustomInput(p => new()
-                    {
-                        Name = "OpenAIKeyParameter",
-                        Label = "API Key",
-                        InputType = InputType.SecretText
-                    });
-            }
-
-            var chatModel = builder.AddParameter("ChatModelParameter")
-                .WithDescription("The chat model to use.")
-                .WithCustomInput(p => new()
-                {
-                    Name = "ChatModelParameter",
-                    Label = "Chat Model",
-                    InputType = InputType.Text,
-                    Value = chatModelName,
-                });
-
-            var embeddingModel = builder.AddParameter("EmbeddingModelParameter")
-                .WithDescription("The embedding model to use.")
-                .WithCustomInput(p => new()
-                {
-                    Name = "EmbeddingModelParameter",
-                    Label = "Text Embedding Model",
-                    InputType = InputType.Text,
-                    Value = textEmbeddingModelName,
-                });
-#pragma warning restore ASPIREINTERACTION001
-
-            var openAIConnectionBuilder = new ReferenceExpressionBuilder();
-            if (endpoint is not null)
-            {
-                openAIConnectionBuilder.Append($"Endpoint={endpoint}");
-            }
-            if (key is not null)
-            {
-                openAIConnectionBuilder.Append($";Key={key}");
-            }
-            var openAIConnectionString = openAIConnectionBuilder.Build();
-
-            catalogApi.WithReference(builder.AddConnectionString(textEmbeddingName, cs =>
-            {
-                cs.Append($"{openAIConnectionString};Deployment={embeddingModel}");
-            }));
-            webApp.WithReference(builder.AddConnectionString(chatName, cs =>
-            {
-                cs.Append($"{openAIConnectionString};Deployment={chatModel}");
-            }));
-        }
-        else
-        {
-            var openAI = builder.AddAzureOpenAI(openAIName);
-
-            var chat = openAI.AddDeployment(chatName, chatModelName, "2025-04-14")
-                .WithProperties(d =>
-                {
-                    d.DeploymentName = chatModelName;
-                    d.SkuName = "GlobalStandard";
-                    d.SkuCapacity = 50;
-                });
-            var textEmbedding = openAI.AddDeployment(textEmbeddingName, textEmbeddingModelName, "1")
-                .WithProperties(d =>
-                {
-                    d.DeploymentName = textEmbeddingModelName;
-                    d.SkuCapacity = 20; // 20k tokens per minute are needed to seed the initial embeddings
-                });
-
-            catalogApi.WithReference(textEmbedding);
-            webApp.WithReference(chat);
-        }
+        catalogApi.WithReference(textEmbedding).WaitFor(textEmbedding);
+        webApp.WithReference(chat).WaitFor(chat);
 
         return builder;
     }
