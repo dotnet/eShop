@@ -128,11 +128,11 @@ Prerequisites:
 aspire publish --list-steps
 aspire deploy --list-steps
 ```
-2. Publish deployment artifacts for inspection or handoff:
+1. Publish deployment artifacts for inspection or handoff:
 ```sh
 aspire publish
 ```
-3. Deploy directly from the AppHost model:
+1. Deploy directly from the AppHost model:
 ```sh
 aspire deploy
 ```

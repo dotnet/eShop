@@ -28,11 +28,6 @@ jobs:
         node-version: lts/*
     - name: Install dependencies
       run: npm ci
-    - name: Install .NET HTTPS Development Certificate
-      # if: matrix.os == 'ubuntu-latest'
-      run: |
-        dotnet dev-certs https --clean
-        dotnet dev-certs https --trust
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps chromium
     - name: Run Playwright tests
