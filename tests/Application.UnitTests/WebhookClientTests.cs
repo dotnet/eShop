@@ -12,7 +12,7 @@ namespace eShop.Application.UnitTests;
 [TestClass]
 public class WebhookClientTests
 {
-    public TestContext TestContext { get; set; }
+    public TestContext TestContext { get; set; } = null!;
 
     [TestMethod]
     public async Task HooksRepositoryStoresHooksAndNotifiesActiveSubscribers()

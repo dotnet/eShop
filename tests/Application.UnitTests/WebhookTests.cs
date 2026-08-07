@@ -10,7 +10,7 @@ namespace eShop.Application.UnitTests;
 [TestClass]
 public class WebhookTests
 {
-    public TestContext TestContext { get; set; }
+    public TestContext TestContext { get; set; } = null!;
 
     [TestMethod]
     public void SubscriptionRequestRejectsInvalidUrlsAndEvent()

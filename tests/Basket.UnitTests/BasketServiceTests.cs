@@ -14,7 +14,7 @@ namespace eShop.Basket.UnitTests;
 [TestClass]
 public class BasketServiceTests
 {
-    public TestContext TestContext { get; set; }
+    public TestContext TestContext { get; set; } = null!;
 
     [TestMethod]
     public async Task GetBasketReturnsEmptyForNoUser()

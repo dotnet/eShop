@@ -102,6 +102,9 @@ AppHost environment. Aspire provisions the Foundry resource and the
 `gpt-4.1-mini` and `text-embedding-3-small` deployments, then injects their
 connection information into the consuming projects.
 
+The Foundry hosting integration currently uses a preview package. It replaces
+the sample's previous direct OpenAI and existing Azure OpenAI configuration paths.
+
 ```powershell
 $env:UseFoundry = "true"
 aspire run

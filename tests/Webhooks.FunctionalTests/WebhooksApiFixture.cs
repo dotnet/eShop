@@ -53,7 +53,7 @@ public sealed class WebhooksApiFixture : WebApplicationFactory<Program>, IAsyncL
         _rabbitMqConnectionString = (await _rabbitMq.Resource.ConnectionStringExpression.GetValueAsync(CancellationToken.None))!;
     }
 
-    public new async ValueTask DisposeAsync()
+    public override async ValueTask DisposeAsync()
     {
         await base.DisposeAsync();
         await _app.StopAsync();

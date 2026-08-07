@@ -10,7 +10,7 @@ namespace eShop.Application.UnitTests;
 [TestClass]
 public class OrderProcessorTests
 {
-    public TestContext TestContext { get; set; }
+    public TestContext TestContext { get; set; } = null!;
 
     [TestMethod]
     public async Task PublishesGracePeriodConfirmationForEveryEligibleOrder()

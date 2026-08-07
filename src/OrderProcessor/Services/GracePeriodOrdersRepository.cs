@@ -40,7 +40,7 @@ internal sealed class GracePeriodOrdersRepository(
         }
         catch (NpgsqlException exception)
         {
-            logger.LogError(exception, "Fatal error establishing database connection");
+            logger.LogError(exception, "Error querying confirmed grace period orders after grace period {GracePeriod}", gracePeriod);
             return [];
         }
     }
