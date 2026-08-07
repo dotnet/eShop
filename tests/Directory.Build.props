@@ -1,5 +1,12 @@
 <Project>
 
+  <!-- Repeated from the repo-root Directory.Build.props: MSBuild stops at the
+       first Directory.Build.props found walking up, so test projects do not
+       inherit it. See the rationale there. -->
+  <PropertyGroup>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+
   <!-- MSTest settings -->
   <PropertyGroup>
     <MSTestAnalysisMode>Recommended</MSTestAnalysisMode>

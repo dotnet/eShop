@@ -10,6 +10,11 @@
     <!-- Temporarily disable security warnings for transitive packages. -->
     <NoWarn>NU1901;NU1902;NU1903;NU1904</NoWarn>
     <UseArtifactsOutput>true</UseArtifactsOutput>
+    <!-- Emit packages.lock.json per project so the restored transitive graph is
+         committed. Central Package Management pins versions but records no
+         dependency relationships; SBOM/SCA tooling needs the lock file to see
+         which package pulls in which. -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 
   <!-- Enable OpenAI OpenTelemetry so OpenAI calls participate in tracing and metrics. -->
