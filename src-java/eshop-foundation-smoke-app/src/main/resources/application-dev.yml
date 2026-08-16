@@ -1,0 +1,8 @@
+logging:
+  level:
+    com.eshop: DEBUG
+
+management:
+  endpoint:
+    health:
+      show-details: always

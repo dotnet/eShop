@@ -1,0 +1,14 @@
+{
+  "BuyerId": "customer-42",
+  "Items": [
+    {
+      "Id": "basket-item-1",
+      "ProductId": 7,
+      "ProductName": "Sample Product",
+      "UnitPrice": 24.99,
+      "OldUnitPrice": 19.99,
+      "Quantity": 2,
+      "PictureUrl": "https://example.test/products/7.png"
+    }
+  ]
+}

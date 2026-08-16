@@ -27,6 +27,31 @@ var identityApi = builder.AddProject<Projects.Identity_API>("identity-api", laun
 
 var identityEndpoint = identityApi.GetEndpoint(launchProfileName);
 
+if (bool.TryParse(builder.Configuration["JavaServices:FoundationSmokeEnabled"], out var javaSmokeEnabled)
+    && javaSmokeEnabled)
+{
+    var javaWorkspace = Path.GetFullPath(
+        Path.Combine(builder.AppHostDirectory, "../../src-java"));
+    var javaSmoke = OperatingSystem.IsWindows()
+        ? builder.AddExecutable(
+            "java-foundation-smoke",
+            Path.Combine(javaWorkspace, "run-foundation-smoke.cmd"),
+            javaWorkspace)
+        : builder.AddExecutable(
+            "java-foundation-smoke",
+            "sh",
+            javaWorkspace,
+            Path.Combine(javaWorkspace, "run-foundation-smoke.sh"));
+
+    javaSmoke
+        .WithHttpEndpoint(name: "http", targetPort: 8080, env: "SERVER_PORT")
+        .WithHttpHealthCheck("/health")
+        .WithReference(redis)
+        .WithReference(rabbitMq).WaitFor(rabbitMq)
+        .WithEnvironment("Identity__Url", identityEndpoint)
+        .WithEnvironment("SPRING_PROFILES_ACTIVE", "development");
+}
+
 var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
     .WithReference(redis)
     .WithReference(rabbitMq).WaitFor(rabbitMq)

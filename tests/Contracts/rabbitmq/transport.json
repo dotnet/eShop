@@ -1,0 +1,15 @@
+{
+  "Exchange": "eshop_event_bus",
+  "ExchangeType": "direct",
+  "RoutingKey": "IntegrationEventTypeName",
+  "QueueDurable": true,
+  "QueueExclusive": false,
+  "QueueAutoDelete": false,
+  "DeliveryMode": 2,
+  "MandatoryPublish": true,
+  "AutomaticAcknowledgement": false,
+  "TraceHeaders": [
+    "traceparent",
+    "tracestate"
+  ]
+}

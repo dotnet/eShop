@@ -10,6 +10,14 @@ A reference .NET application implementing an e-commerce website using a services
 
 This version of eShop is based on .NET 9. 
 
+### Java microservice migration
+
+The incremental Java 21/Spring Boot migration workspace is under
+[`src-java`](src-java). The current .NET UI, Identity service, Aspire
+orchestration, and infrastructure remain in place while services are ported one
+at a time. See the [Java migration guide](docs/java-migration/README.md) for
+local commands, compatibility rules, and the cutover process.
+
 Previous eShop versions:
 * [.NET 8](https://github.com/dotnet/eShop/tree/release/8.0)
 

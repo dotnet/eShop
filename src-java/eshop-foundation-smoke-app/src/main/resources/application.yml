@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: eshop-foundation-smoke-app
+
+management:
+  health:
+    rabbit:
+      enabled: false

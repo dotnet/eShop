@@ -27,3 +27,12 @@ jobs:
         run: dotnet build eShop.Web.slnf
       - name: Test
         run: dotnet test --solution eShop.Web.slnf --no-build --no-progress --output detailed
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: 'src-java/**/pom.xml'
+      - name: Test Java foundation
+        run: bash src-java/mvnw -B -f src-java/pom.xml verify
