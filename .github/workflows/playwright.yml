@@ -12,7 +12,7 @@ on:
     paths-ignore:
       - '**.md'
       - 'src/ClientApp/**'
-      - 'test/ClientApp.UnitTests/**'
+      - 'tests/ClientApp.UnitTests/**'
       - '.github/workflows/pr-validation-maui.yml'
 jobs:
   test:
@@ -23,21 +23,15 @@ jobs:
     - uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.0.x'
-        dotnet-quality: 'preview'
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
     - name: Install dependencies
       run: npm ci
-    - name: Install .NET HTTPS Development Certificate
-      # if: matrix.os == 'ubuntu-latest'
-      run: |
-        dotnet dev-certs https --clean
-        dotnet dev-certs https --trust
     - name: Install Playwright Browsers
-      run: npx playwright install chromium
+      run: npx playwright install --with-deps chromium
     - name: Run Playwright tests
-      run: npx playwright test
+      run: npm run test:e2e
       env:
         ESHOP_USE_HTTP_ENDPOINTS: 1
         USERNAME1: bob

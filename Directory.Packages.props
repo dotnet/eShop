@@ -2,17 +2,18 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    <DotnetPackagesVersion>10.0.5</DotnetPackagesVersion>
+    <DotnetPackagesVersion>10.0.8</DotnetPackagesVersion>
     <MicrosoftExtensionsVersion>10.4.0</MicrosoftExtensionsVersion>
-    <AspireVersion>13.2.0</AspireVersion>
-    <AspireUnstablePackagesVersion>13.2.0-preview.1.26170.3</AspireUnstablePackagesVersion>
-    <GrpcVersion>2.76.0</GrpcVersion>
+    <AspireVersion>13.4.6</AspireVersion>
+    <AspireUnstablePackagesVersion>13.4.6-preview.1.26319.6</AspireUnstablePackagesVersion>
+    <GrpcVersion>2.80.0</GrpcVersion>
     <DuendeVersion>7.3.1</DuendeVersion>
     <ApiVersioningVersion>10.0.0-preview.2</ApiVersioningVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Version together with Aspire -->
-    <PackageVersion Include="Aspire.Hosting.Azure.CognitiveServices" Version="$(AspireVersion)" />
+    <PackageVersion Include="Aspire.Hosting.Azure.AppContainers" Version="$(AspireVersion)" />
+    <PackageVersion Include="Aspire.Hosting.Foundry" Version="$(AspireUnstablePackagesVersion)" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.Redis" Version="$(AspireVersion)" />
@@ -63,12 +64,12 @@
     <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="13.1.1" />
     <PackageVersion Include="CommunityToolkit.Aspire.OllamaSharp" Version="13.1.1" />
     <!-- Open Telemetry -->
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.3" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.3" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.16.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.15.0-beta.1" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.16.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.16.0" />
     <!-- IdentityServer -->
     <PackageVersion Include="Duende.IdentityServer" Version="7.3.2" />
     <PackageVersion Include="Duende.IdentityServer.AspNetIdentity" Version="7.3.2" />
@@ -80,12 +81,12 @@
     <!-- Grpc -->
     <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcVersion)" />
     <PackageVersion Include="Grpc.Net.ClientFactory" Version="$(GrpcVersion)" />
-    <PackageVersion Include="Grpc.Tools" Version="2.78.0" PrivateAssets="All" />
+    <PackageVersion Include="Grpc.Tools" Version="2.80.0" PrivateAssets="All" />
     <!-- Miscellaneous -->
     <PackageVersion Include="Dapper" Version="2.1.35" />
     <PackageVersion Include="FluentValidation" Version="12.0.0" />
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
-    <PackageVersion Include="Google.Protobuf" Version="3.33.5" />
+    <PackageVersion Include="Google.Protobuf" Version="3.34.1" />
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="3.0.71" />
     <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
     <PackageVersion Include="xunit.v3.mtp-v2" Version="3.2.1" />

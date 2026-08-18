@@ -1,6 +1,6 @@
 # eShop Reference Application - "AdventureWorks"
 
-A reference .NET application implementing an e-commerce website using a services-based architecture using [.NET Aspire](https://learn.microsoft.com/dotnet/aspire/).
+A reference .NET application implementing an e-commerce website using a services-based architecture with [Aspire](https://aspire.dev/).
 
 ![eShop Reference Application architecture diagram](img/eshop_architecture.png)
 
@@ -8,7 +8,7 @@ A reference .NET application implementing an e-commerce website using a services
 
 ## Getting Started
 
-This version of eShop is based on .NET 9. 
+This version of eShop is based on .NET 10.
 
 Previous eShop versions:
 * [.NET 8](https://github.com/dotnet/eShop/tree/release/8.0)
@@ -16,23 +16,23 @@ Previous eShop versions:
 ### Prerequisites
 
 - Clone the eShop repository: https://github.com/dotnet/eshop
-- [Install & start Docker Desktop](https://docs.docker.com/engine/install/)
+- Install and start a supported OCI-compatible container runtime, such as [Docker Desktop](https://docs.docker.com/engine/install/) or [Podman](https://podman.io/)
 
 #### Windows with Visual Studio
 - Install [Visual Studio 2022 version 17.10 or newer](https://visualstudio.microsoft.com/vs/).
-  - Select the following workloads:
-    - `ASP.NET and web development` workload.
-    - `.NET Aspire SDK` component in `Individual components`.
-    - Optional: `.NET Multi-platform App UI development` to run client apps
+    - Select the following workloads:
+        - `ASP.NET and web development` workload.
+        - `Aspire SDK` component in `Individual components`.
+        - Optional: `.NET Multi-platform App UI development` to run client apps
 
 Or
 
-- Run the following commands in a Powershell & Terminal running as `Administrator` to automatically configure your environment with the required tools to build and run this application. (Note: A restart is required and included in the script below.)
+- Run the following commands in an elevated PowerShell terminal to automatically configure your environment with the required tools to build and run this application. (A restart is required and included in the script below.)
 
 ```powershell
 install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense -Force
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-get-WinGetConfiguration -file .\.configurations\vside.dsc.yaml | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
+Get-WinGetConfiguration -File .\.config\configuration.vs.winget | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
 ```
 
 Or
@@ -40,17 +40,17 @@ Or
 - From Dev Home go to `Machine Configuration -> Clone repositories`. Enter the URL for this repository. In the confirmation screen look for the section `Configuration File Detected` and click `Run File`.
 
 #### Mac, Linux, & Windows without Visual Studio
-- Install the latest [.NET 9 SDK](https://dot.net/download?cid=eshop)
+- Install the latest [.NET 10 SDK](https://dot.net/download?cid=eshop)
 
 Or
 
-- Run the following commands in a Powershell & Terminal running as `Administrator` to automatically configuration your environment with the required tools to build and run this application. (Note: A restart is required after running the script below.)
+- On Windows, run the following commands in an elevated PowerShell terminal to automatically configure your environment with the required tools to build and run this application. (A restart is required after running the script below.)
 
 ##### Install Visual Studio Code and related extensions
 ```powershell
 install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense  -Force
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-get-WinGetConfiguration -file .\.configurations\vscode.dsc.yaml | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
+Get-WinGetConfiguration -File .\.config\configuration.vsCode.winget | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
 ```
 
 > Note: These commands may require `sudo`
@@ -63,71 +63,89 @@ get-WinGetConfiguration -file .\.configurations\vscode.dsc.yaml | Invoke-WinGetC
 ### Running the solution
 
 > [!WARNING]
-> Remember to ensure that Docker is started
+> Remember to ensure that your container runtime is started
 
-* (Windows only) Run the application from Visual Studio:
- - Open the `eShop.Web.slnf` file in Visual Studio
- - Ensure that `eShop.AppHost.csproj` is your startup project
- - Hit Ctrl-F5 to launch Aspire
+- (Windows only) Run the application from Visual Studio:
+- Open the `eShop.Web.slnf` file in Visual Studio
+- Ensure that `eShop.AppHost.csproj` is your startup project
+- Hit Ctrl-F5 to launch Aspire
 
 * Or run the application from your terminal:
 ```powershell
-dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj
+aspire run
 ```
-then look for lines like this in the console output in order to find the URL to open the Aspire dashboard:
+`aspire.config.json` points this command to `src/eShop.AppHost/eShop.AppHost.csproj`. This repo also includes test AppHosts, so use `--apphost <path>` when you want to target one explicitly. Then look for lines like this in the console output to find the URL to open the Aspire dashboard:
 ```sh
 Login to the dashboard at: http://localhost:19888/login?t=uniquelogincodeforyou
 ```
 
-> You may need to install ASP.NET Core HTTPS development certificates first, and then close all browser tabs. Learn more at https://aka.ms/aspnet/https-trust-dev-cert
+### Running tests
 
-### Azure Open AI
+Run the server tests:
 
-When using Azure OpenAI, inside *eShop.AppHost/appsettings.json*, add the following section:
-
-```json
-  "ConnectionStrings": {
-    "OpenAi": "Endpoint=xxx;Key=xxx;"
-  }
+```powershell
+dotnet test --solution eShop.Web.slnf
 ```
 
-Replace the values with your own. Then, in the eShop.AppHost *Program.cs*, set this value to **true**
+Run the Playwright browser journeys. Playwright starts the AppHost automatically, so ensure your container runtime is running first.
 
-```csharp
-bool useOpenAI = false;
+```powershell
+npm ci
+npx playwright install chromium
+npm run test:e2e
 ```
 
-Here's additional guidance on the [.NET Aspire OpenAI component](https://learn.microsoft.com/dotnet/aspire/azureai/azureai-openai-component?tabs=dotnet-cli). 
+### Optional: AI Chatbot with Microsoft Foundry
 
-### Use Azure Developer CLI
+To use Microsoft Foundry for chat and embeddings, set `UseFoundry=true` in the
+AppHost environment. Aspire provisions the Foundry resource and the
+`gpt-4.1-mini` and `text-embedding-3-small` deployments, then injects their
+connection information into the consuming projects.
 
-You can use the [Azure Developer CLI](https://aka.ms/azd) to run this project on Azure with only a few commands. Follow the next instructions:
+The Foundry hosting integration currently uses a preview package. It replaces
+the sample's previous direct OpenAI and existing Azure OpenAI configuration paths.
 
-- Install the latest or update to the latest [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install).
-- Log in `azd` (if you haven't done it before) to your Azure account:
+```powershell
+$env:UseFoundry = "true"
+aspire run
+```
+
+See the [Microsoft Foundry Aspire hosting integration](https://aspire.dev/integrations/cloud/azure-ai-foundry/) for configuration and deployment details.
+
+### Deploy with Aspire CLI
+
+Use Aspire deployment from the AppHost model.
+
+This sample intentionally deploys disposable PostgreSQL, Redis, and RabbitMQ containers to Azure Container Apps. It is suitable for evaluation and demonstrations, not production data.
+
+Prerequisites:
+- A supported container runtime must be running.
+- Azure CLI must be authenticated.
+- Azure deployment settings must be set (`Azure__SubscriptionId`, `Azure__Location`, `Azure__ResourceGroup`).
+
+1. Preview deployment steps:
 ```sh
-azd auth login
+aspire publish --list-steps
+aspire deploy --list-steps
 ```
-- Initialize `azd` from the root of the repo.
+1. Publish deployment artifacts for inspection or handoff:
 ```sh
-azd init
+aspire publish
 ```
-- During init:
-  - Select `Use code in the current directory`. Azd will automatically detect the .NET Aspire project.
-  - Confirm `.NET (Aspire)` and continue.
-  - Select which services to expose to the Internet (exposing `webapp` is enough to test the sample).
-  - Finalize the initialization by giving a name to your environment.
+1. Deploy directly from the AppHost model:
+```sh
+aspire deploy
+```
 
-- Create Azure resources and deploy the sample by running:
-```sh
-azd up
+Example (PowerShell):
+```powershell
+$env:Azure__SubscriptionId = "<subscription-id>"
+$env:Azure__Location = "eastus"
+$env:Azure__ResourceGroup = "rg-eshop-prod"
+aspire deploy --non-interactive
 ```
-Notes:
-  - The operation takes a few minutes the first time it is ever run for an environment.
-  - At the end of the process, `azd` will display the `url` for the webapp. Follow that link to test the sample.
-  - You can run `azd up` after saving changes to the sample to re-deploy and update the sample.
-  - Report any issues to [azure-dev](https://github.com/Azure/azure-dev/issues) repo.
-  - [FAQ and troubleshoot](https://learn.microsoft.com/azure/developer/azure-developer-cli/troubleshoot?tabs=Browser) for azd.
+
+`aspire deploy` evaluates the AppHost directly; it does not consume a previous `aspire publish` output directory. Omit `--non-interactive` for interactive use; add it for automation or agent-driven runs so Aspire does not prompt for missing deployment settings. Set the required values explicitly.
 
 ## Contributing
 
