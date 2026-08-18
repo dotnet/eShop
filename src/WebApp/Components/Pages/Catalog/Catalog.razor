@@ -16,7 +16,11 @@
     }
     else
     {
-        <div>
+        <div class="catalog-results">
+            <div class="catalog-toolbar">
+                <p class="catalog-count">@catalogResult.Count @(catalogResult.Count == 1 ? "product" : "products")</p>
+            </div>
+
             <div class="catalog-items">
                 @foreach (var item in catalogResult.Data)
                 {
@@ -24,12 +28,58 @@
                 }
             </div>
 
-            <div class="page-links">
-                @foreach (var pageIndex in GetVisiblePageIndexes(catalogResult))
-                {
-                    <NavLink ActiveClass="active-page" Match="@NavLinkMatch.All" href="@Nav.GetUriWithQueryParameter("page", pageIndex == 1 ? null : pageIndex)">@pageIndex</NavLink>
-                }
-            </div>
+            @{
+                var totalPages = (int)Math.Ceiling(1.0 * catalogResult.Count / PageSize);
+                var current = Page.GetValueOrDefault(1);
+            }
+            @if (totalPages > 1)
+            {
+                <nav class="catalog-pagination" aria-label="Catalog pages">
+                    @if (current > 1)
+                    {
+                        <a class="page-nav" href="@PageUri(current - 1)" rel="prev" aria-label="Previous page">
+                            <img role="presentation" src="icons/arrow-left.svg" /> Prev
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="page-nav is-disabled" aria-disabled="true">
+                            <img role="presentation" src="icons/arrow-left.svg" /> Prev
+                        </span>
+                    }
+
+                    <span class="page-numbers">
+                        @foreach (var token in GetPageTokens(totalPages, current))
+                        {
+                            @if (token == -1)
+                            {
+                                <span class="page-ellipsis" aria-hidden="true">&hellip;</span>
+                            }
+                            else if (token == current)
+                            {
+                                <span class="page-number active-page" aria-current="page">@token</span>
+                            }
+                            else
+                            {
+                                <a class="page-number" href="@PageUri(token)">@token</a>
+                            }
+                        }
+                    </span>
+
+                    @if (current < totalPages)
+                    {
+                        <a class="page-nav" href="@PageUri(current + 1)" rel="next" aria-label="Next page">
+                            Next <img class="flip" role="presentation" src="icons/arrow-left.svg" />
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="page-nav is-disabled" aria-disabled="true">
+                            Next <img class="flip" role="presentation" src="icons/arrow-left.svg" />
+                        </span>
+                    }
+                </nav>
+            }
         </div>
     }
 </div>
@@ -48,8 +98,30 @@
 
     CatalogResult? catalogResult;
 
-    static IEnumerable<int> GetVisiblePageIndexes(CatalogResult result)
-        => Enumerable.Range(1, (int)Math.Ceiling(1.0 * result.Count / PageSize));
+    static IEnumerable<int> GetPageTokens(int totalPages, int current)
+    {
+        var pages = new SortedSet<int> { 1, totalPages };
+        for (var p = current - 1; p <= current + 1; p++)
+        {
+            if (p >= 1 && p <= totalPages)
+            {
+                pages.Add(p);
+            }
+        }
+
+        var prev = 0;
+        foreach (var p in pages)
+        {
+            if (prev != 0 && p - prev > 1)
+            {
+                yield return -1; // ellipsis marker
+            }
+            yield return p;
+            prev = p;
+        }
+    }
+
+    private string PageUri(int page) => Nav.GetUriWithQueryParameter("page", page <= 1 ? (int?)null : page);
 
     protected override async Task OnInitializedAsync()
     {

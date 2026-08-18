@@ -1,37 +1,69 @@
-﻿.dropdown-menu {
+.user-menu {
     position: relative;
-    display: inline-block;
+    display: inline-flex;
 }
 
-.dropdown-content {
-    display: none;
+.user-menu-panel {
     position: absolute;
-    background-color: #FFF;
-    min-width: 8rem;
-    box-shadow: 0 0.25rem 0.5rem 0 rgba(0, 0, 0, 0.2);
-    z-index: 1;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    min-width: 12rem;
+    padding: 0.4rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity var(--dur-2) var(--ease),
+                transform var(--dur-2) var(--ease),
+                visibility var(--dur-2);
+    z-index: 200;
 }
 
-.dropdown-item {
-    padding: 0.75rem 1rem;
+/* Revealed on hover and on keyboard focus (focus-within keeps it accessible without JS). */
+.user-menu:hover .user-menu-panel,
+.user-menu:focus-within .user-menu-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-menu-name {
+    margin: 0 0 0.35rem;
+    padding: 0.5rem 0.65rem;
+    max-width: 14rem;
+    border-bottom: 1px solid var(--color-line);
+    color: var(--color-ink);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-menu-item {
+    display: block;
+    padding: 0.55rem 0.65rem;
+    border-radius: var(--radius-sm);
+    color: var(--color-ink);
+    font-size: var(--text-sm);
     text-decoration: none;
-    display: block;
-    color: #000;
+    transition: background-color var(--dur-1) var(--ease);
 }
 
-.dropdown-item:hover {
-    background-color: #ddd;
+.user-menu-item:hover {
+    background: var(--color-surface-2);
 }
 
-.dropdown-menu:hover .dropdown-content {
-    display: block;
-}
-
-.dropdown-item button {
-    border: 0;
-    background: transparent;
-    cursor: pointer;
+.user-menu-item button {
     width: 100%;
     padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
     text-align: left;
+    cursor: pointer;
 }

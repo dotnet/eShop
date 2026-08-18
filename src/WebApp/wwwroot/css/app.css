@@ -232,36 +232,184 @@
     src: url('../fonts/open-sans-v36-latin-800italic.woff2') format('woff2');
 }
 
+/* ==========================================================================
+   Design tokens
+   Monochrome storefront + one restrained accent (interactive states only).
+   Shape lock: cards/inputs/buttons = --radius-md; chips/badges/icon = --radius-pill.
+   ========================================================================== */
+:root {
+    /* Surfaces & ink (off-black, not pure #000, for depth) */
+    --color-surface: #ffffff;
+    --color-surface-2: #f6f6f4;
+    --color-surface-3: #ededea;
+    --color-ink: #141414;
+    --color-ink-2: #3d3d3d;
+    --color-muted: #6b6b6b;
+    --color-line: #e6e5e1;
+    --color-line-strong: #c9c8c3;
+
+    /* Accent: interactive states only (focus, active filter, key hover). ~5.8:1 on white. */
+    --accent: #2f6b4f;
+    --accent-hover: #275c43;
+    --accent-contrast: #ffffff;
+    --accent-tint: #eef4f0;
+    --focus: var(--accent);
+
+    /* Radius (shape lock) */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-pill: 999px;
+
+    /* Spacing scale */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2rem;
+    --space-7: 3rem;
+    --space-8: 4rem;
+    --space-9: 6rem;
+
+    /* Layout */
+    --content-max: 120rem;
+    --page-pad: clamp(1rem, 5vw, 10rem);
+    --topbar-h: 4.25rem;
+
+    /* Elevation (tinted to the ink hue, never pure black) */
+    --shadow-sm: 0 1px 2px rgba(20, 20, 20, 0.06), 0 1px 3px rgba(20, 20, 20, 0.05);
+    --shadow-md: 0 6px 16px rgba(20, 20, 20, 0.08), 0 2px 6px rgba(20, 20, 20, 0.05);
+    --shadow-lg: 0 18px 40px rgba(20, 20, 20, 0.13);
+
+    /* Motion */
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur-1: 140ms;
+    --dur-2: 220ms;
+    --dur-3: 360ms;
+
+    /* Type scale */
+    --text-xs: 0.8125rem;
+    --text-sm: 0.9375rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.5rem;
+    --text-2xl: 2rem;
+    --text-hero: clamp(2.25rem, 5vw, 3.5rem);
+}
+
 body {
-    font-family: 'Plus Jakarta Sans';
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    color: var(--color-ink);
+    background: var(--color-surface);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+/* Visible keyboard focus everywhere (specificity 0 so components can refine). */
+:where(a, button, input, select, textarea, summary):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 .container {
     position: relative;
-    max-width: 120rem;
+    max-width: var(--content-max);
     margin: auto;
 }
 
+/* ==========================================================================
+   Button system  (primary / secondary / ghost)
+   ========================================================================== */
 .button {
     display: flex;
-    padding: 1rem 0.75rem;
+    padding: 0.85rem 1.25rem;
     justify-content: center;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.5rem;
     align-self: stretch;
-    border: none;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: var(--text-base);
+    font-weight: 600;
+    line-height: 1.2;
     text-decoration: none;
+    cursor: pointer;
+    transition: background-color var(--dur-2) var(--ease),
+                border-color var(--dur-2) var(--ease),
+                color var(--dur-2) var(--ease),
+                box-shadow var(--dur-2) var(--ease),
+                transform var(--dur-1) var(--ease);
+}
+
+.button:active {
+    transform: translateY(1px);
 }
 
 .button.button-primary {
-    background: #000;
-    color: #FFF;
+    background: var(--color-ink);
+    color: #fff;
+    border-color: var(--color-ink);
 }
 
+.button.button-primary:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.button.button-secondary,
 .button.button.button-secondary {
-    border: 1px solid #444;
-    background: #FFF;
-    color: #000;
+    border: 1px solid var(--color-line-strong);
+    background: var(--color-surface);
+    color: var(--color-ink);
+}
+
+.button.button-secondary:hover {
+    border-color: var(--color-ink);
+    background: var(--color-surface-2);
+}
+
+.button.button-ghost {
+    background: transparent;
+    color: var(--color-ink);
+    border-color: transparent;
+}
+
+.button.button-ghost:hover {
+    background: var(--color-surface-2);
+}
+
+/* Circular icon action (nav cart / account, etc.) */
+.icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--color-ink);
+    cursor: pointer;
+    position: relative;
+    text-decoration: none;
+    transition: background-color var(--dur-2) var(--ease),
+                border-color var(--dur-2) var(--ease),
+                transform var(--dur-1) var(--ease);
+}
+
+.icon-button:hover {
+    background: var(--color-surface-2);
+}
+
+.icon-button:active {
+    transform: translateY(1px);
+}
+
+.icon-button img {
+    display: block;
+    width: 1.4rem;
+    height: 1.4rem;
 }
 
 h1:focus {
@@ -289,3 +437,47 @@ h1:focus {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+/* ==========================================================================
+   Motion utilities  (CSS-only, progressive, reduced-motion safe)
+   - .enter        : one-shot fade/rise on insert (enhanced-nav re-render replays it)
+   - .reveal       : scroll-linked fade/rise via scroll-driven animations where supported
+   - --reveal-delay: optional per-item stagger
+   ========================================================================== */
+@keyframes eshop-fade-up {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes eshop-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .enter {
+        animation: eshop-fade-up var(--dur-3) var(--ease) both;
+        animation-delay: var(--reveal-delay, 0ms);
+    }
+
+    /* Scroll-driven reveal: enhancement only. Unsupported browsers show content normally. */
+    @supports (animation-timeline: view()) {
+        .reveal {
+            animation: eshop-fade-up linear both;
+            animation-timeline: view();
+            animation-range: entry 5% cover 22%;
+        }
+    }
+}
+
+/* Global reduced-motion guard: collapse all animation/transition to instant. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+}

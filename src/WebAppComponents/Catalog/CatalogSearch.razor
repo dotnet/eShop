@@ -3,47 +3,72 @@
 
 @if (catalogBrands is not null && catalogItemTypes is not null)
 {
-    <div class="catalog-search">
-        <div class="catalog-search-header">
-            <img role="presentation" src="icons/filters.svg" />
-            Filters
-        </div>
-        <div class="catalog-search-types">
-            <div class="catalog-search-group">
-                <h3>Brand</h3>
-                <div class="catalog-search-group-tags">
-                    <a href="@BrandUri(null)"
-                    class="catalog-search-tag @(BrandId == null ? "active " : "")">
-                        All
-                    </a>
-                    @foreach (var brand in catalogBrands)
-                    {
-                        <a href="@BrandUri(brand.Id)"
-                        class="catalog-search-tag @(BrandId == brand.Id ? "active " : "")">
-                            @brand.Brand
-                        </a>
-                    }
-                </div>
-            </div>
-            <div class="catalog-search-group">
-                <h3>Type</h3>
+    <aside class="catalog-search">
+        <details class="catalog-search-details" open>
+            <summary class="catalog-search-summary">
+                <span class="catalog-search-title">
+                    <img role="presentation" src="icons/filters.svg" />
+                    Filters
+                </span>
+            </summary>
 
-                <div class="catalog-search-group-tags">
-                    <a href="@TypeUri(null)"
-                    class="catalog-search-tag @(ItemTypeId == null ? "active " : "")">
-                    All
-                    </a>
-                    @foreach (var itemType in catalogItemTypes)
-                    {
-                        <a href="@TypeUri(itemType.Id)"
-                        class="catalog-search-tag @(ItemTypeId == itemType.Id ? "active " : "")">
-                            @itemType.Type
+            <div class="catalog-search-body">
+                @if (HasActiveFilter)
+                {
+                    <div class="catalog-search-active">
+                        @if (ActiveBrandName is not null)
+                        {
+                            <a class="catalog-active-chip" href="@BrandUri(null)" aria-label="Remove brand filter @ActiveBrandName">
+                                <span>@ActiveBrandName</span>
+                                <span class="catalog-active-chip-x" aria-hidden="true">&times;</span>
+                            </a>
+                        }
+                        @if (ActiveTypeName is not null)
+                        {
+                            <a class="catalog-active-chip" href="@TypeUri(null)" aria-label="Remove type filter @ActiveTypeName">
+                                <span>@ActiveTypeName</span>
+                                <span class="catalog-active-chip-x" aria-hidden="true">&times;</span>
+                            </a>
+                        }
+                        <a class="catalog-search-reset" href="@ResetUri()">Reset all</a>
+                    </div>
+                }
+
+                <div class="catalog-search-group">
+                    <h3>Brand</h3>
+                    <div class="catalog-search-group-tags">
+                        <a href="@BrandUri(null)"
+                           class="catalog-search-tag @(BrandId == null ? "active" : "")">
+                            All
                         </a>
-                    }
+                        @foreach (var brand in catalogBrands)
+                        {
+                            <a href="@BrandUri(brand.Id)"
+                               class="catalog-search-tag @(BrandId == brand.Id ? "active" : "")">
+                                @brand.Brand
+                            </a>
+                        }
+                    </div>
+                </div>
+                <div class="catalog-search-group">
+                    <h3>Type</h3>
+                    <div class="catalog-search-group-tags">
+                        <a href="@TypeUri(null)"
+                           class="catalog-search-tag @(ItemTypeId == null ? "active" : "")">
+                            All
+                        </a>
+                        @foreach (var itemType in catalogItemTypes)
+                        {
+                            <a href="@TypeUri(itemType.Id)"
+                               class="catalog-search-tag @(ItemTypeId == itemType.Id ? "active" : "")">
+                                @itemType.Type
+                            </a>
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </details>
+    </aside>
 }
 
 @code {
@@ -51,6 +76,11 @@
     IEnumerable<CatalogItemType>? catalogItemTypes;
     [Parameter] public int? BrandId { get; set; }
     [Parameter] public int? ItemTypeId { get; set; }
+
+    bool HasActiveFilter => BrandId is not null || ItemTypeId is not null;
+
+    string? ActiveBrandName => catalogBrands?.FirstOrDefault(b => b.Id == BrandId)?.Brand;
+    string? ActiveTypeName => catalogItemTypes?.FirstOrDefault(t => t.Id == ItemTypeId)?.Type;
 
     protected override async Task OnInitializedAsync()
     {
@@ -71,5 +101,12 @@
     {
         { "page", null },
         { "type", typeId },
+    });
+
+    private string ResetUri() => Nav.GetUriWithQueryParameters(new Dictionary<string, object?>()
+    {
+        { "page", null },
+        { "brand", null },
+        { "type", null },
     });
 }

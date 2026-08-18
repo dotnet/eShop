@@ -1,19 +1,18 @@
-﻿.cart-badge {
-    display: flex;
-    padding: 0.25rem;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 0.25rem;
+.cart-badge {
     position: absolute;
-    right: -0.5rem;
-    top: 1rem;
-    border-radius: 20px;
-    border: 1px solid #000;
-    background: #000;
-    color: #FFF;
-    font-size: 0.75rem;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 0.25rem;
+    top: 0.3rem;
+    right: 0.3rem;
+    min-width: 1.15rem;
+    height: 1.15rem;
+    padding: 0 0.3rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-pill);
+    background: var(--color-ink);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 0 0 2px var(--color-surface);
 }

@@ -1,151 +1,177 @@
-﻿.eshop-header {
-    position: relative;
-    max-width: 120rem;
-    margin: auto;
-}
-
-.eshop-header.home .eshop-header-container {
-    height: 38rem;
-    margin-bottom: 0;
-}
-
-.eshop-header .eshop-header-container {
-    height: 15rem;
-    margin-bottom: 4rem;
-}
-
-.eshop-header-hero {
-    overflow: hidden;
-    position: absolute;
-    max-width: 100%;
-    left: 0;
+/* ==========================================================================
+   Sticky top bar
+   ========================================================================== */
+.eshop-topbar {
+    position: sticky;
     top: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.85);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--color-line);
 }
 
-.eshop-header-container {
-    position: relative;
-    margin: auto;
-    margin: 0 10rem;
-}
-
-.eshop-header-intro {
-    position: absolute;
-    max-width: 48rem;
-    bottom: 3rem;
-    white-space: nowrap;
-}
-
-.eshop-header-intro h1 {
-    color: #000;
-    font-size: 3.5rem;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 100%;
-    margin: 0;
-}
-
-.eshop-header-intro p {
-    color: #000;
-    font-size: 2rem;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 125%;
-    margin: 0;
-}
-
-.eshop-header .logo-header {
-    color: black;
-    margin-right: auto;
-    width: 20vw;
-    height: auto;
-    max-width: 250px;
-    min-width: 100px;
-}
-
-.eshop-header-navbar {
+.eshop-topbar-inner {
     display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
     align-items: center;
-    margin-top: 1.25rem;
-    gap: 1.5rem;
+    gap: 1.25rem;
+    max-width: var(--content-max);
+    margin: 0 auto;
+    height: 4.25rem;
+    padding: 0 var(--page-pad);
 }
 
-@media only screen and (max-width: 480px) { 
-    .eshop-header-hero {
-        height: 18rem;
-    }
+.eshop-brand {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
 
-    .eshop-header-hero img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-    }
+.eshop-brand img {
+    display: block;
+    height: 1.7rem;
+    width: auto;
+}
 
-    .eshop-header .eshop-header-container {
-        height: 15rem;
-        margin-bottom: 4rem;
-    }
+.eshop-topnav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
 
-    .eshop-header-container {
-        margin: 0 1rem;
-    }
+.eshop-topnav-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.85rem;
+    border-radius: var(--radius-pill);
+    color: var(--color-ink-2);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    text-decoration: none;
+    transition: background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+}
 
-    .eshop-header.home .eshop-header-container {
-        height: 18rem;
-        margin: 0 1rem;
-    }
+.eshop-topnav-link:hover {
+    background: var(--color-surface-2);
+    color: var(--color-ink);
+}
 
-    .eshop-header-intro {
-        white-space: wrap;
-        bottom: 0;
-    }
+.eshop-topnav-link.is-current {
+    color: var(--color-ink);
+}
 
-    .eshop-header-intro h1 {
-        font-size: 2rem;
-    }
-    
-    .eshop-header-intro p {
-        font-size: 1.5rem;
+.eshop-topbar-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Subtle elevation as the page scrolls under the bar (enhancement only). */
+@media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: scroll()) {
+        .eshop-topbar {
+            animation: eshop-topbar-elevate linear both;
+            animation-timeline: scroll();
+            animation-range: 0 6rem;
+        }
+
+        @keyframes eshop-topbar-elevate {
+            to {
+                background: rgba(255, 255, 255, 0.94);
+                box-shadow: var(--shadow-sm);
+            }
+        }
     }
 }
 
-@media only screen and (min-width: 481px) and (max-width: 1024px) { 
-    .eshop-header.home .eshop-header-hero {
-        height: 24rem;
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+.eshop-hero {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    max-width: var(--content-max);
+    margin: 0 auto 2.5rem;
+    min-height: clamp(13rem, 24vw, 17rem);
+}
+
+.eshop-hero.is-home {
+    min-height: clamp(24rem, 44vw, 34rem);
+}
+
+.eshop-hero-media {
+    position: absolute;
+    inset: 0;
+}
+
+.eshop-hero-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Scrim guarantees legible dark title text over any photograph. */
+.eshop-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg,
+            rgba(255, 255, 255, 0.92) 0%,
+            rgba(255, 255, 255, 0.4) 20%,
+            rgba(255, 255, 255, 0) 44%);
+    pointer-events: none;
+}
+
+.eshop-hero-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 0 var(--page-pad) clamp(1.5rem, 3vw, 3rem);
+}
+
+.eshop-hero-intro {
+    max-width: 48rem;
+}
+
+.eshop-hero-intro h1 {
+    margin: 0;
+    color: var(--color-ink);
+    font-size: var(--text-hero);
+    font-weight: 700;
+    line-height: 1.03;
+    letter-spacing: -0.02em;
+}
+
+.eshop-hero-intro p {
+    margin: 0.6rem 0 0;
+    color: var(--color-ink-2);
+    font-size: clamp(1.125rem, 2.2vw, 1.9rem);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.eshop-hero-intro p:empty {
+    display: none;
+}
+
+@media only screen and (max-width: 560px) {
+    .eshop-topbar-inner {
+        height: 3.75rem;
+        gap: 0.5rem;
     }
 
-    .eshop-header .eshop-header-hero {
-        height: 15rem;
+    .eshop-brand img {
+        height: 1.45rem;
     }
 
-    .eshop-header-hero img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-    }
-
-    .eshop-header-container {
-        margin: 0 1rem;
-        margin: 0 3rem;
-    }
-
-    .eshop-header.home .eshop-header-container {
-        height: 24rem;
-        margin: 0 3rem;
-    }
-
-    .eshop-header-intro {
-        white-space: wrap;
-    }
-
-    .eshop-header-intro h1 {
-        font-size: 2rem;
-    }
-    
-    .eshop-header-intro p {
-        font-size: 1.5rem;
+    .eshop-topnav {
+        display: none;
     }
 }

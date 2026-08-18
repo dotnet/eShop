@@ -1,63 +1,89 @@
-﻿.catalog-item {
-    flex-basis: calc(33.33% - 2.5rem);
-    flex-shrink: 0;
+.catalog-item {
     box-sizing: border-box;
-    padding: 2px;
-}
-
-.catalog-item:hover {
-    cursor: pointer;
-    padding: 0;
-    border: 2px solid #000;
 }
 
 .catalog-product {
-    background-color: transparent;
-    padding: 0;
-    margin: 0;
-    border: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    overflow: hidden;
+    text-decoration: none;
+    transition: transform var(--dur-2) var(--ease),
+                box-shadow var(--dur-2) var(--ease),
+                border-color var(--dur-2) var(--ease);
+}
+
+.catalog-product:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-line-strong);
+    box-shadow: var(--shadow-md);
+}
+
+/* Framed product shot on a subtle surface; contain avoids cropping detail. */
+.catalog-product-image {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 3;
+    padding: 1rem;
+    background: var(--color-surface-2);
 }
 
 .catalog-product-image img {
     max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform var(--dur-3) var(--ease);
 }
 
-.catalog-product .catalog-product-content {
+.catalog-product:hover .catalog-product-image img {
+    transform: scale(1.04);
+}
+
+.catalog-product-content {
     display: flex;
-    padding: 0 0.75rem;
-    align-items: center;
-    gap: 0.5rem;
-    align-self: stretch;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem 1.1rem;
 }
 
 .catalog-product-content .name {
-    color: #000;
-    font-size: 1rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 150%;
+    color: var(--color-ink);
+    font-size: var(--text-base);
+    font-weight: 700;
+    line-height: 1.35;
     text-align: left;
 }
 
 .catalog-product-content .price {
-    color: #444;
-    text-align: right;
-    font-size: 1rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 150%;
     margin-left: auto;
+    color: var(--color-ink);
+    font-size: var(--text-base);
+    font-weight: 700;
+    white-space: nowrap;
 }
 
+/* Scroll-reveal on the wrapper (kept off .catalog-product so hover-lift stays free).
+   Progressive enhancement: static when unsupported or reduced-motion is set. */
+@media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+        .catalog-item {
+            animation: eshop-card-reveal linear both;
+            animation-timeline: view();
+            animation-range: entry 0% entry 38%;
+        }
 
-@media only screen and (max-width: 480px) { 
-    .catalog-item {
-        flex-basis: calc(100% - 2rem);
-    }    
-}
-
-@media only screen and (min-width: 481px) and (max-width: 1024px) { 
-    .catalog-item {
-        flex-basis: calc(50% - 3rem);
-    }    
+        @keyframes eshop-card-reveal {
+            from {
+                opacity: 0;
+                transform: translateY(1.25rem);
+            }
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+    }
 }

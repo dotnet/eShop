@@ -11,11 +11,11 @@
 <div class='cart'>
     @if (basketItems is null)
     {
-        <p>Loading...</p>
+        <p class="cart-empty">Loading...</p>
     }
     else if (basketItems.Count == 0)
     {
-        <p>
+        <p class="cart-empty">
             Your shopping bag is empty. <a href="">Continue shopping.</a>
         </p>
     }

@@ -1,22 +1,29 @@
 ﻿@using Microsoft.AspNetCore.Components.Endpoints
 
-<div class="eshop-header @(IsCatalog? "home" : "")">
-    <div class="eshop-header-hero">
-        @{
-            var headerImage = IsCatalog ? "images/header-home.webp" : "images/header.webp";
-        }
-        <img role="presentation" src="@headerImage" />
-    </div>
-    <div class="eshop-header-container">
-        <nav class="eshop-header-navbar">
-            <a class="logo logo-header" href="">
-                <img alt="AdventureWorks" src="images/logo-header.svg" class="logo logo-header" />
-            </a>
-            
+<header class="eshop-topbar">
+    <div class="eshop-topbar-inner">
+        <a class="eshop-brand" href="" aria-label="AdventureWorks home">
+            <img alt="AdventureWorks" src="images/logo-header.svg" />
+        </a>
+        <nav class="eshop-topnav" aria-label="Primary">
+            <a class="eshop-topnav-link @(IsCatalog ? "is-current" : "")" href="">Shop all</a>
+        </nav>
+        <div class="eshop-topbar-actions">
             <UserMenu />
             <CartMenu />
-        </nav>
-        <div class="eshop-header-intro">
+        </div>
+    </div>
+</header>
+
+<div class="eshop-hero @(IsCatalog ? "is-home" : "")">
+    @{
+        var headerImage = IsCatalog ? "images/header-home.webp" : "images/header.webp";
+    }
+    <div class="eshop-hero-media">
+        <img role="presentation" src="@headerImage" />
+    </div>
+    <div class="eshop-hero-content">
+        <div class="eshop-hero-intro enter">
             <h1><SectionOutlet SectionName="page-header-title" /></h1>
             <p><SectionOutlet SectionName="page-header-subtitle" /></p>
         </div>
