@@ -57,14 +57,16 @@
 }
 
 .eshop-topnav-link.is-current {
+    background: var(--color-surface-2);
     color: var(--color-ink);
+    font-weight: 700;
 }
 
 .eshop-topbar-actions {
     margin-left: auto;
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.4rem;
 }
 
 /* Subtle elevation as the page scrolls under the bar (enhancement only). */
