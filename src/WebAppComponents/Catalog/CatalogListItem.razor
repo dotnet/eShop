@@ -5,6 +5,10 @@
     <a class="catalog-product" href="@ItemHelper.Url(Item)" data-enhance-nav="false">
         <span class='catalog-product-image'>
             <img alt="@Item.Name" src='@ProductImages.GetProductImageUrl(Item)' />
+            @if (Item.CatalogBrand is { Brand.Length: > 0 } brand)
+            {
+                <span class="catalog-product-brand">@brand.Brand</span>
+            }
         </span>
         <span class='catalog-product-content'>
             <span class='name'>@Item.Name</span>

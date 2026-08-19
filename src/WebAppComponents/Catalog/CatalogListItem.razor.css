@@ -46,11 +46,34 @@
 
 /* Framed product shot on a subtle surface; contain avoids cropping detail. */
 .catalog-product-image {
+    position: relative;
     display: grid;
     place-items: center;
     aspect-ratio: 4 / 3;
     padding: 1rem;
     background: var(--color-surface-2);
+}
+
+/* Tiny brand chip, top-left of the shot. Subtle monochrome pill so it labels the
+   maker without competing with the product. */
+.catalog-product-brand {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    z-index: 1;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill, 999px);
+    background: rgba(255, 255, 255, 0.82);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    color: var(--color-ink-2, #444);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-transform: uppercase;
+    pointer-events: none;
 }
 
 .catalog-product-image img {

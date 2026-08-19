@@ -8,7 +8,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    margin-bottom: 1.75rem;
+    margin-bottom: 1.25rem;
     color: var(--color-ink-2);
     font-size: var(--text-sm);
     font-weight: 600;
@@ -37,7 +37,7 @@
     position: relative;
     display: grid;
     place-items: center;
-    padding: clamp(1.5rem, 4vw, 3.5rem);
+    padding: clamp(1.25rem, 3vw, 2.5rem);
     border: 1px solid var(--color-line);
     border-radius: var(--radius-md);
     background: var(--color-surface-2);
@@ -59,6 +59,7 @@
 .item-media-img {
     width: 100%;
     max-width: 26rem;
+    max-height: 24rem;
     height: auto;
     object-fit: contain;
 }

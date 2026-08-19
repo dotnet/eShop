@@ -105,6 +105,13 @@
     min-height: clamp(24rem, 44vw, 34rem);
 }
 
+/* Product detail: a shorter banner so the shot and buy box sit near the top of the
+   viewport instead of below a tall hero. */
+.eshop-hero.is-compact {
+    min-height: clamp(9rem, 15vw, 12.5rem);
+    margin-bottom: 1.5rem;
+}
+
 .eshop-hero-media {
     position: absolute;
     inset: 0;

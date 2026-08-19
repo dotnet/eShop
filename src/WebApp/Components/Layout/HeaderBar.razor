@@ -15,7 +15,7 @@
     </div>
 </header>
 
-<div class="eshop-hero @(IsCatalog ? "is-home" : "")">
+<div class="eshop-hero @(IsCatalog ? "is-home" : "") @(IsItemPage ? "is-compact" : "")">
     @{
         var headerImage = IsCatalog ? "images/header-home.webp" : "images/header.webp";
     }
@@ -37,4 +37,5 @@
     // We can use Endpoint Metadata to determine the page currently being visited
     private Type? PageComponentType => HttpContext?.GetEndpoint()?.Metadata.OfType<ComponentTypeMetadata>().FirstOrDefault()?.Type;
     private bool IsCatalog => PageComponentType == typeof(Pages.Catalog.Catalog);
+    private bool IsItemPage => PageComponentType == typeof(Pages.Item.ItemPage);
 }

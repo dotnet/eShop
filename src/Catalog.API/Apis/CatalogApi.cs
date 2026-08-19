@@ -150,6 +150,7 @@ public static class CatalogApi
             .LongCountAsync();
 
         var itemsOnPage = await root
+            .Include(ci => ci.CatalogBrand)
             .OrderBy(c => c.Name)
             .Skip(pageSize * pageIndex)
             .Take(pageSize)

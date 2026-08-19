@@ -8,7 +8,7 @@
        footer it straddles at rest. */
     position: fixed;
     bottom: var(--fab-bottom, 1.5rem);
-    right: max(var(--page-pad, 1.5rem), calc((100vw - var(--content-max, 120rem)) / 2 + var(--page-pad, 1.5rem)));
+    right: var(--fab-right, max(var(--page-pad, 1.5rem), calc((100vw - var(--content-max, 120rem)) / 2 + var(--page-pad, 1.5rem))));
     z-index: 50;
     display: grid;
     place-items: center;
@@ -31,24 +31,36 @@
         box-shadow var(--dur-2, 220ms) var(--ease, ease);
 }
 
-/* Eyes: two white vertical slits. The outer .chatbot-eye tilts toward the cursor
-   (angle from chat-eyes.js via --eye-rot); the inner .chatbot-pupil is the slit
-   itself and owns the blink (a vertical collapse to a point), so tilt and blink
-   never fight over the transform. Fully static under reduced motion. */
+/* Eyes ride the FAB like it is a sphere: chat-eyes.js projects each eye onto the orb
+   surface and foreshortens it toward the limb (see that file). The plane below fills
+   the button so the JS translate is measured from the orb centre; each .chatbot-eye
+   is absolutely centred there and the inner .chatbot-pupil is the white slit that
+   owns the blink, so gaze and blink never fight over one transform. */
 .chatbot-eyes {
-    display: flex;
-    align-items: center;
-    gap: 0.32rem;
-    /* Sit the eyes a hair above the button's optical centre. */
-    transform: translateY(-0.06rem);
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
 }
 
 .chatbot-eye {
+    position: absolute;
+    left: 50%;
+    top: 50%;
     width: 0.62rem;
     height: 1rem;
-    transform: rotate(var(--eye-rot, 0deg));
+    margin: -0.5rem 0 0 -0.31rem;   /* centre the eye box on the orb centre */
     transform-origin: center;
-    transition: transform var(--dur-2, 220ms) var(--ease, ease);
+    will-change: transform;
+}
+
+/* No-JS / pre-hydration rest: hold the eyes apart. chat-eyes.js overrides this with
+   the exact, foreshortened surface transform each frame. */
+.chatbot-eye:first-child {
+    transform: translate(-0.49rem, -0.1rem);
+}
+
+.chatbot-eye:last-child {
+    transform: translate(0.49rem, -0.1rem);
 }
 
 /* The pupil is a bespoke curved slit (an intentional character mark, so the inline
@@ -81,11 +93,8 @@
     }
 }
 
-/* Excited on hover: the slits stand upright and blink a quick burst. */
-.show-chatbot:hover .chatbot-eye {
-    transform: rotate(0deg);
-}
-
+/* Excited on hover: a quick blink burst. The gaze eases to centre in chat-eyes.js as
+   the pointer settles on the button, so the eyes look straight ahead. */
 .show-chatbot:hover .chatbot-pupil {
     animation: chatbot-blink-excited 1.6s var(--ease, ease) infinite;
 }
@@ -120,22 +129,14 @@
     }
 }
 
-/* Calm, half-closed rest while the assistant panel is open. */
-.show-chatbot[aria-expanded="true"] .chatbot-eye {
-    transform: rotate(0deg);
-}
-
+/* Calm, half-closed rest while the assistant panel is open (chat-eyes.js rests the
+   gaze at centre when aria-expanded is true). */
 .show-chatbot[aria-expanded="true"] .chatbot-pupil {
     animation: none;
     transform: scaleY(0.55);
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .chatbot-eye {
-        transform: none;
-        transition: none;
-    }
-
     .chatbot-pupil {
         animation: none;
         transform: none;

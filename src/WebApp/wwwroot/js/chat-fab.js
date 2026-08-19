@@ -8,6 +8,7 @@
 (function () {
     const fab = () => document.querySelector('.show-chatbot[data-chat-toggle]');
     const footer = () => document.querySelector('.eshop-footer');
+    const actions = () => document.querySelector('.eshop-topbar-actions');
 
     let raf = 0;
 
@@ -32,6 +33,17 @@
             if (docked > bottom) bottom = docked;
         }
         f.style.setProperty('--fab-bottom', Math.round(bottom) + 'px');
+
+        // Right-align the FAB's right edge with the top-nav actions (the cart pill),
+        // measured directly so it matches regardless of scrollbar width or padding.
+        // For a fixed element, right:X puts its right edge at clientWidth - X, and
+        // getBoundingClientRect shares that origin, so X = clientWidth - actions.right.
+        const a = actions();
+        if (a) {
+            const cw = document.documentElement.clientWidth;
+            const right = Math.max(gap, cw - a.getBoundingClientRect().right);
+            f.style.setProperty('--fab-right', Math.round(right) + 'px');
+        }
     }
 
     function schedule() { if (!raf) raf = requestAnimationFrame(measure); }
