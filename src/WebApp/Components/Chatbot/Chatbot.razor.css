@@ -81,6 +81,66 @@
     height: 1rem;
 }
 
+/* Right-aligned header control cluster: size toggle + close. */
+.chatbot-header-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+    flex-shrink: 0;
+}
+
+/* Wide/condensed size toggle. Shares the ghost icon-button language with close.
+   Only meaningful on non-mobile, where the dock is a floating panel; hidden on
+   the phone/tablet sheet layouts (see the max-width guard below). */
+.chatbot-size {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+    border: none;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: background-color var(--dur-1) var(--ease),
+                color var(--dur-1) var(--ease);
+}
+
+.chatbot-size:hover {
+    background: var(--color-surface-3);
+    color: var(--color-ink);
+}
+
+.chatbot-size:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+}
+
+.chatbot-size svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Show the outward glyph when condensed, the inward glyph when wide. */
+.chatbot-size .chatbot-size-condense {
+    display: none;
+}
+
+.chatbot-size[aria-pressed="true"] .chatbot-size-expand {
+    display: none;
+}
+
+.chatbot-size[aria-pressed="true"] .chatbot-size-condense {
+    display: block;
+}
+
+@media only screen and (max-width: 768px) {
+    .chatbot-size {
+        display: none;
+    }
+}
+
 .chatbot-chat {
     flex: 1 1 auto;
     min-height: 0;

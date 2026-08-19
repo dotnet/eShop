@@ -8,7 +8,7 @@
 (function () {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
     const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
-    const MAX = 7; // degrees of tilt at the card edge
+    const MAX = 4; // degrees of tilt at the card edge (kept subtle)
 
     let active = null, raf = 0, rx = 0, ry = 0;
 

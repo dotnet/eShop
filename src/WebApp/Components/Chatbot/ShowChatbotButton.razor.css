@@ -187,6 +187,27 @@
     display: block;
 }
 
+/* Wide preset (non-mobile only): a roomier panel for longer conversations.
+   chat-dock.js toggles .is-wide from the header size button and clears any
+   free-form drag/resize geometry so the dock snaps cleanly to this preset. */
+@media only screen and (min-width: 769px) {
+    .chatbot-dock.is-wide {
+        width: min(40rem, calc(100vw - 3rem));
+        height: min(44rem, calc(100dvh - 4rem));
+    }
+}
+
+/* Ease the width/height change from the toggle only (a discrete user action).
+   The .is-sizing class is added for the length of the transition and removed
+   after, so free-form drag/resize (which mutates the same properties every
+   frame) stays instant. Never on the phone sheet, never under reduced motion. */
+@media only screen and (min-width: 769px) and (prefers-reduced-motion: no-preference) {
+    .chatbot-dock.is-sizing {
+        transition: width var(--dur-2, 220ms) var(--ease, ease),
+                    height var(--dur-2, 220ms) var(--ease, ease);
+    }
+}
+
 @media (prefers-reduced-motion: no-preference) {
     .chatbot-dock.is-open {
         animation: chatbot-in var(--dur-3, 360ms) var(--ease, ease);

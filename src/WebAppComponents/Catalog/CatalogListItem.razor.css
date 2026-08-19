@@ -29,10 +29,10 @@
 }
 
 .catalog-product:hover {
-    --card-lift: -6px;
-    --card-scale: 1.01;
+    --card-lift: -4px;
+    --card-scale: 1.008;
     border-color: var(--color-line-strong);
-    box-shadow: var(--shadow-lg, var(--shadow-md));
+    box-shadow: var(--shadow-md);
 }
 
 /* While tracking the pointer keep the transform gently eased so the tilt follows
@@ -61,7 +61,7 @@
 }
 
 .catalog-product:hover .catalog-product-image img {
-    transform: scale(1.04);
+    transform: scale(1.025);
 }
 
 .catalog-product-content {

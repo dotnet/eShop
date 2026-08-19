@@ -18,11 +18,25 @@
             </svg>
             Shopping assistant
         </span>
-        <button type="button" class="chatbot-close" data-chat-close title="Close" aria-label="Close assistant">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M18 6 6 18M6 6l12 12" />
-            </svg>
-        </button>
+        <div class="chatbot-header-actions">
+            <button type="button" class="chatbot-size" data-chat-size aria-pressed="false" title="Toggle wide view" aria-label="Toggle wide view">
+                <svg class="chatbot-size-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M8 8 4 12l4 4" />
+                    <path d="m16 8 4 4-4 4" />
+                    <path d="M4 12h16" />
+                </svg>
+                <svg class="chatbot-size-condense" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m4 8 4 4-4 4" />
+                    <path d="m20 8-4 4 4 4" />
+                    <path d="M9 12h6" />
+                </svg>
+            </button>
+            <button type="button" class="chatbot-close" data-chat-close title="Close" aria-label="Close assistant">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M18 6 6 18M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
     </header>
 
     <div class="chatbot-chat @(chatState is null && missingConfiguration ? "is-centered" : "")" @ref="chat">

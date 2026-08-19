@@ -5,6 +5,7 @@
 (function () {
     const GEOM_KEY = 'aw.chat.geometry.v2';
     const OPEN_KEY = 'aw.chat.open.v1';
+    const MODE_KEY = 'aw.chat.size.v1';
     const MIN_W = 320;
     const MIN_H = 380;
     const EDGE = 8;
@@ -25,6 +26,35 @@
     }
     function setOpenFlag(v) {
         try { sessionStorage.setItem(OPEN_KEY, v ? '1' : '0'); } catch { /* ignore */ }
+    }
+
+    // Wide/condensed size preference for the desktop floating panel.
+    function readMode() {
+        try { return localStorage.getItem(MODE_KEY) === 'wide' ? 'wide' : 'condensed'; } catch { return 'condensed'; }
+    }
+    function writeMode(m) {
+        try { localStorage.setItem(MODE_KEY, m); } catch { /* ignore */ }
+    }
+    function reflectSize(d) {
+        const wide = readMode() === 'wide';
+        d.classList.toggle('is-wide', wide);
+        const btn = d.querySelector('[data-chat-size]');
+        if (btn) btn.setAttribute('aria-pressed', wide ? 'true' : 'false');
+    }
+    // The header toggle is authoritative: it clears any free-form drag/resize
+    // geometry so the dock snaps to the CSS preset (anchored bottom-right) at the
+    // chosen size, then eases the change via a short-lived .is-sizing class.
+    function toggleSize() {
+        const d = dock();
+        if (!d || window.innerWidth <= SHEET_MAX) return;
+        const wide = readMode() !== 'wide';
+        writeMode(wide ? 'wide' : 'condensed');
+        try { localStorage.removeItem(GEOM_KEY); } catch { /* ignore */ }
+        delete d.dataset.moved;
+        d.style.width = d.style.height = d.style.left = d.style.top = d.style.right = d.style.bottom = '';
+        d.classList.add('is-sizing');
+        reflectSize(d);
+        setTimeout(() => d.classList.remove('is-sizing'), 280);
     }
 
     function persist(d) {
@@ -95,7 +125,7 @@
     }
     function startDrag(e) {
         const d = dock();
-        if (!d || e.target.closest('[data-chat-close]')) return;
+        if (!d || e.target.closest('[data-chat-close]') || e.target.closest('[data-chat-size]')) return;
         const r = pin(d);
         drag = { x: e.clientX, y: e.clientY, left: r.left, top: r.top };
         document.addEventListener('pointermove', onDragMove);
@@ -152,6 +182,7 @@
     document.addEventListener('click', (e) => {
         if (e.target.closest('[data-chat-toggle]')) { e.preventDefault(); toggle(); }
         else if (e.target.closest('[data-chat-close]')) { e.preventDefault(); close(); }
+        else if (e.target.closest('[data-chat-size]')) { e.preventDefault(); toggleSize(); }
     });
     document.addEventListener('pointerdown', (e) => {
         if (e.target.closest('[data-chat-resize]')) { startResize(e); }
@@ -177,6 +208,7 @@
         const d = dock();
         if (!d) return;
         applyGeom(d);
+        reflectSize(d);
         reflect(isOpen());
     }
 
