@@ -12,7 +12,7 @@
     <SectionContent SectionName="page-header-subtitle">@item.CatalogBrand?.Brand</SectionContent>
 
     <div class="item-page">
-        <a class="item-back" href="">
+        <a class="item-back" href="@backHref">
             <img role="presentation" src="icons/arrow-left.svg" /> Back to catalog
         </a>
 
@@ -84,7 +84,7 @@ else if (notFound)
 {
     <SectionContent SectionName="page-header-title">Not found</SectionContent>
     <div class="item-page">
-        <a class="item-back" href="">
+        <a class="item-back" href="@backHref">
             <img role="presentation" src="icons/arrow-left.svg" /> Back to catalog
         </a>
         <p class="item-notfound">Sorry, we couldn't find any such product.</p>
@@ -96,6 +96,7 @@ else if (notFound)
     private int numInCart;
     private bool isLoggedIn;
     private bool notFound;
+    private string backHref = "";
 
     [Parameter]
     public int ItemId { get; set; }
@@ -105,6 +106,8 @@ else if (notFound)
 
     protected override async Task OnInitializedAsync()
     {
+        backHref = ComputeBackHref();
+
         try
         {
             isLoggedIn = HttpContext?.User.Identity?.IsAuthenticated == true;
@@ -116,6 +119,27 @@ else if (notFound)
             HttpContext!.Response.StatusCode = 404;
             notFound = true;
         }
+    }
+
+    // Return the shopper to the catalog they came from, preserving any active
+    // brand/type/page filters. The catalog navigation is server rendered, so the
+    // Referer header carries the exact filtered URL. Falls back to the catalog
+    // root when the referrer is not the filtered catalog (deep link, external
+    // navigation, or an unfiltered listing) so behaviour is unchanged there.
+    private string ComputeBackHref()
+    {
+        var referer = HttpContext?.Request.Headers.Referer.ToString();
+        if (!string.IsNullOrEmpty(referer)
+            && Uri.TryCreate(referer, UriKind.Absolute, out var refUri)
+            && Uri.TryCreate(Nav.BaseUri, UriKind.Absolute, out var baseUri)
+            && string.Equals(refUri.Authority, baseUri.Authority, StringComparison.OrdinalIgnoreCase)
+            && string.Equals(refUri.AbsolutePath.TrimEnd('/'), baseUri.AbsolutePath.TrimEnd('/'), StringComparison.OrdinalIgnoreCase)
+            && !string.IsNullOrEmpty(refUri.Query))
+        {
+            return refUri.PathAndQuery;
+        }
+
+        return "";
     }
 
     private async Task AddToCartAsync()
