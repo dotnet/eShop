@@ -12,8 +12,9 @@
     z-index: 50;
     display: grid;
     place-items: center;
-    width: 3.5rem;
-    height: 3.5rem;
+    --orb: 3.5rem;
+    width: var(--orb);
+    height: var(--orb);
     padding: 0;
     border: none;
     border-radius: var(--radius-pill, 999px);
@@ -39,14 +40,23 @@
     transition:
         bottom var(--dur-3, 360ms) cubic-bezier(0.16, 1, 0.3, 1),
         right var(--dur-3, 360ms) cubic-bezier(0.16, 1, 0.3, 1),
+        width var(--dur-3, 360ms) cubic-bezier(0.16, 1, 0.3, 1),
+        height var(--dur-3, 360ms) cubic-bezier(0.16, 1, 0.3, 1),
         transform var(--dur-2, 220ms) var(--ease, ease),
         box-shadow var(--dur-2, 220ms) var(--ease, ease);
 }
 
-/* Docked as the panel's avatar: sit above the dock and drop the hover/press bounce so it
-   reads as a fixed avatar rather than a button. chat-fab.js pins it to the panel corner. */
+/* Docked as the panel's avatar: shrink to sit neatly inside the header's top-left (in
+   place of a separate title icon), sit above the dock, soften the resting shadow, and
+   drop the hover/press bounce so it reads as a fixed avatar rather than a button.
+   chat-fab.js pins it centred in the header band; chat-eyes.js re-seats the eyes to the
+   smaller radius. */
 .show-chatbot[aria-expanded="true"] {
+    --orb: 2.15rem;
     z-index: 60;
+    box-shadow:
+        0 0 0 3px var(--color-surface, #fff),
+        0 6px 16px rgba(20, 20, 20, 0.22);
 }
 
 .show-chatbot[aria-expanded="true"]:hover,
@@ -69,21 +79,27 @@
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 0.62rem;
-    height: 1rem;
-    margin: -0.5rem 0 0 -0.31rem;   /* centre the eye box on the orb centre */
+    /* Sized as fractions of the orb (--orb) so the eyes shrink with it when the launcher
+       docks as the smaller avatar. At the 3.5rem rest size these resolve to the original
+       0.62rem x 1rem box centred on the orb. */
+    width: calc(var(--orb) * 0.1771);
+    height: calc(var(--orb) * 0.2857);
+    margin: calc(var(--orb) * -0.1429) 0 0 calc(var(--orb) * -0.0886);
     transform-origin: center;
+    transition: width var(--dur-3, 360ms) var(--ease, ease),
+                height var(--dur-3, 360ms) var(--ease, ease),
+                margin var(--dur-3, 360ms) var(--ease, ease);
     will-change: transform;
 }
 
 /* No-JS / pre-hydration rest: hold the eyes apart. chat-eyes.js overrides this with
    the exact, foreshortened surface transform each frame. */
 .chatbot-eye:first-child {
-    transform: translate(-0.49rem, -0.1rem);
+    transform: translate(calc(var(--orb) * -0.14), calc(var(--orb) * -0.0286));
 }
 
 .chatbot-eye:last-child {
-    transform: translate(0.49rem, -0.1rem);
+    transform: translate(calc(var(--orb) * 0.14), calc(var(--orb) * -0.0286));
 }
 
 /* The pupil is a bespoke curved slit (an intentional character mark, so the inline

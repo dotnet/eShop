@@ -102,14 +102,35 @@
         render();
     }
 
+    // The launcher resizes when it docks/undocks (CSS --orb on .show-chatbot
+    // [aria-expanded]); the eyes ride the orb, so re-seat them the moment that state
+    // flips and again once the size transition settles, otherwise the rest pair keeps
+    // the previous radius and looks too wide on the smaller docked avatar.
+    let dockWatched = false;
+    function watchDockState() {
+        if (dockWatched) return;
+        const b = button();
+        if (!b) return;
+        dockWatched = true;
+        if (window.MutationObserver) {
+            new MutationObserver(() => { render(); kick(); })
+                .observe(b, { attributes: true, attributeFilter: ['aria-expanded'] });
+        }
+        b.addEventListener('transitionend', (e) => {
+            if (e.propertyName === 'width' || e.propertyName === 'height') render();
+        });
+    }
+
+    function init() { enable(); watchDockState(); }
+
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', enable);
+        document.addEventListener('DOMContentLoaded', init);
     } else {
-        enable();
+        init();
     }
     // Blazor enhanced navigation morphs the DOM and strips inline styles; re-seat the
     // eyes after each enhanced load so they never vanish to the overlapping centre.
-    document.addEventListener('enhancedload', () => { render(); kick(); });
+    document.addEventListener('enhancedload', () => { render(); kick(); watchDockState(); });
 
     if (reduce.addEventListener) {
         reduce.addEventListener('change', () => (reduce.matches ? disable() : enable()));

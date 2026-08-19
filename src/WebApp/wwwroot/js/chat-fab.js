@@ -22,25 +22,29 @@
     let morphTimer = 0;
     let dockObserver = null;
 
-    // Docked, the orb straddles the panel's top-left corner as its avatar.
-    const DOCK_OUT_X = 6;   // px the orb pokes past the panel's left edge
-    const DOCK_OUT_Y = 8;   // px the orb pokes above the panel's top edge
+    // Docked, the (shrunken) orb sits INSIDE the header's top-left as the avatar, in
+    // place of a title icon: inset from the panel's left edge and centred in the header.
+    const DOCK_IN_X = 12;   // px inset of the avatar from the panel's left edge
 
     // Comfortable corner gap, mirroring the CSS clamp(1.25rem, 4vw, 2rem).
     function gapPx() {
         return Math.min(32, Math.max(20, window.innerWidth * 0.04));
     }
 
-    // Pin the launcher to the open panel's top-left corner (its avatar spot). Written
-    // through the same --fab-right/--fab-bottom channel as the float position so the
-    // .is-morphing transition can ease between the two.
+    // Pin the launcher inside the open panel's header (its avatar spot), vertically
+    // centred in the header band and inset from the left edge. Written through the same
+    // --fab-right/--fab-bottom channel as the float position so the .is-morphing
+    // transition can ease between the two. The orb's offset size reflects the docked
+    // shrink (CSS --orb), so measuring offsetWidth/Height keeps the placement exact.
     function placeDocked(f, d) {
         const dr = d.getBoundingClientRect();
+        const header = d.querySelector('.chatbot-header');
+        const hr = header ? header.getBoundingClientRect() : dr;
         const cw = document.documentElement.clientWidth;
-        const fw = f.offsetWidth || 56;
-        const fh = f.offsetHeight || 56;
-        const left = dr.left - DOCK_OUT_X;
-        const top = dr.top - DOCK_OUT_Y;
+        const fw = f.offsetWidth || 34;
+        const fh = f.offsetHeight || 34;
+        const left = dr.left + DOCK_IN_X;
+        const top = hr.top + (hr.height - fh) / 2;
         f.style.setProperty('--fab-right', Math.round(cw - left - fw) + 'px');
         f.style.setProperty('--fab-bottom', Math.round(window.innerHeight - top - fh) + 'px');
     }
