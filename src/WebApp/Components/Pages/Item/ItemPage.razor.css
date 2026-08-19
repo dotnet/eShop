@@ -34,19 +34,75 @@
 
 /* Framed product shot, matching the catalog card language. */
 .item-media {
+    position: relative;
     display: grid;
     place-items: center;
     padding: clamp(1.5rem, 4vw, 3.5rem);
     border: 1px solid var(--color-line);
     border-radius: var(--radius-md);
     background: var(--color-surface-2);
+    overflow: hidden;
 }
 
-.item-media img {
+.item-media-trigger {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    line-height: 0;
+    cursor: zoom-in;
+}
+
+.item-media-img {
     width: 100%;
     max-width: 26rem;
     height: auto;
     object-fit: contain;
+    transform-origin: var(--zoom-x, 50%) var(--zoom-y, 50%);
+    transition: transform var(--dur-3, 360ms) var(--ease, ease);
+}
+
+.item-media.is-zooming .item-media-img {
+    transform: scale(2);
+    transition: transform var(--dur-1, 140ms) linear;
+}
+
+/* Affordance badge so the zoom is discoverable; recedes while magnifying. */
+.item-zoom-hint {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: var(--radius-pill, 999px);
+    border: 1px solid var(--color-line);
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    color: var(--color-ink);
+    opacity: 0.85;
+    transition: opacity var(--dur-2, 220ms) var(--ease, ease);
+}
+
+.item-zoom-hint svg {
+    width: 1.05rem;
+    height: 1.05rem;
+}
+
+.item-media.is-zooming .item-zoom-hint {
+    opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .item-media-img,
+    .item-media.is-zooming .item-media-img {
+        transition: none;
+    }
 }
 
 .item-buy {
@@ -134,5 +190,104 @@
 
     .item-buy {
         position: static;
+    }
+}
+
+/* ==========================================================================
+   Lightbox (native <dialog>, opened from the product shot)
+   ========================================================================== */
+.item-lightbox {
+    width: min(92vw, 60rem);
+    max-width: min(92vw, 60rem);
+    max-height: 90vh;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-md);
+    background: transparent;
+    overflow: visible;
+}
+
+.item-lightbox::backdrop {
+    background: rgba(20, 20, 20, 0.72);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+}
+
+.item-lightbox img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-line);
+}
+
+.item-lightbox-close {
+    position: absolute;
+    top: -0.75rem;
+    right: -0.75rem;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-pill, 999px);
+    background: var(--color-ink, #141414);
+    color: #ffffff;
+    box-shadow: 0 0 0 3px var(--color-surface, #fff), var(--shadow-md, 0 14px 30px rgba(20, 20, 20, 0.3));
+    cursor: pointer;
+    transition: transform var(--dur-2, 220ms) var(--ease, ease);
+}
+
+.item-lightbox-close svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.item-lightbox-close:hover {
+    transform: scale(1.06);
+}
+
+.item-lightbox-close:active {
+    transform: scale(0.96);
+}
+
+.item-lightbox-close:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-surface, #fff), 0 0 0 6px var(--color-ink, #141414);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .item-lightbox[open] {
+        animation: item-lightbox-in var(--dur-3, 360ms) var(--ease, ease);
+    }
+
+    @keyframes item-lightbox-in {
+        from {
+            opacity: 0;
+            transform: translateY(10px) scale(0.98);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .item-lightbox-close:hover,
+    .item-lightbox-close:active {
+        transform: none;
+    }
+}
+
+@media only screen and (max-width: 560px) {
+    .item-lightbox-close {
+        top: 0.5rem;
+        right: 0.5rem;
     }
 }

@@ -17,8 +17,17 @@
         </a>
 
         <div class="item-details">
-            <div class="item-media">
-                <img alt="@item.Name" src="@ProductImages.GetProductImageUrl(item)" />
+            <div class="item-media" data-zoom>
+                <button type="button" class="item-media-trigger" data-zoom-trigger aria-haspopup="dialog" aria-label="Zoom image of @item.Name">
+                    <img class="item-media-img" data-zoom-image alt="@item.Name" src="@ProductImages.GetProductImageUrl(item)" />
+                    <span class="item-zoom-hint" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="7" />
+                            <path d="m20 20-3.2-3.2" />
+                            <path d="M11 8.5v5M8.5 11h5" />
+                        </svg>
+                    </span>
+                </button>
             </div>
             <div class="item-buy">
                 <p class="item-desc">@item.Description</p>
@@ -60,6 +69,15 @@
                 }
             </div>
         </div>
+
+        <dialog class="item-lightbox" data-zoom-dialog aria-label="Enlarged image of @item.Name">
+            <button type="button" class="item-lightbox-close" data-zoom-close aria-label="Close image">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M18 6 6 18M6 6l12 12" />
+                </svg>
+            </button>
+            <img alt="@item.Name" src="@ProductImages.GetProductImageUrl(item)" />
+        </dialog>
     </div>
 }
 else if (notFound)

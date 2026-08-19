@@ -1,12 +1,10 @@
 @using eShop.WebApp.Components.Chatbot
 
-<button type="button" class="show-chatbot" data-chat-toggle aria-controls="chatbot-pane" aria-expanded="false" title="Ask the assistant" aria-label="Ask the assistant">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M7.5 18.5 4 21v-4.2A7.5 7.5 0 1 1 7.5 18.5Z" />
-        <circle cx="9" cy="11.5" r="1" fill="currentColor" stroke="none" />
-        <circle cx="12" cy="11.5" r="1" fill="currentColor" stroke="none" />
-        <circle cx="15" cy="11.5" r="1" fill="currentColor" stroke="none" />
-    </svg>
+<button type="button" class="show-chatbot" data-chat-toggle data-chat-eyes aria-controls="chatbot-pane" aria-expanded="false" title="Ask the assistant" aria-label="Ask the assistant">
+    <span class="chatbot-eyes" aria-hidden="true">
+        <span class="chatbot-eye"><span class="chatbot-pupil"></span></span>
+        <span class="chatbot-eye"><span class="chatbot-pupil"></span></span>
+    </span>
 </button>
 
 <div class="chatbot-dock" data-chat-dock>

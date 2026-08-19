@@ -161,6 +161,51 @@
     display: none;
 }
 
+/* Subtle scroll parallax on the home hero: the photograph drifts slowly while
+   the intro copy lifts and fades faster, so "Ready for a new adventure?" reads
+   with depth as you scroll toward the products. Native scroll-driven animation
+   (transform/opacity only); collapses to a static hero without support or under
+   reduced-motion. */
+@media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: scroll()) {
+        .eshop-hero.is-home .eshop-hero-media img {
+            animation: eshop-hero-zoom linear both;
+            animation-timeline: scroll(root);
+            animation-range: 0 32rem;
+            will-change: transform;
+        }
+
+        @keyframes eshop-hero-zoom {
+            from {
+                transform: scale(1.12) translateY(0);
+            }
+
+            to {
+                transform: scale(1.12) translateY(5%);
+            }
+        }
+
+        .eshop-hero.is-home .eshop-hero-intro {
+            animation: eshop-hero-lift linear both;
+            animation-timeline: scroll(root);
+            animation-range: 0 26rem;
+            will-change: transform, opacity;
+        }
+
+        @keyframes eshop-hero-lift {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(-1.75rem);
+                opacity: 0.5;
+            }
+        }
+    }
+}
+
 @media only screen and (max-width: 560px) {
     .eshop-topbar-inner {
         height: 3.75rem;

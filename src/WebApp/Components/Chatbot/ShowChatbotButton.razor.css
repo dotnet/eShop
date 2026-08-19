@@ -24,9 +24,72 @@
         box-shadow var(--dur-2, 220ms) var(--ease, ease);
 }
 
-.show-chatbot svg {
-    width: 1.5rem;
-    height: 1.5rem;
+/* Eyes: two sclera blobs with pupils that track the cursor (via --eye-x/--eye-y
+   set by chat-eyes.js) and an occasional blink. Motion is decorative, so it is
+   fully disabled under reduced-motion, where the eyes rest open and centred. */
+.chatbot-eyes {
+    display: flex;
+    align-items: center;
+    gap: 0.28rem;
+}
+
+.chatbot-eye {
+    position: relative;
+    width: 0.62rem;
+    height: 0.72rem;
+    border-radius: 50%;
+    background: #ffffff;
+    transform-origin: center;
+    animation: chatbot-blink 6.4s var(--ease, ease) infinite;
+}
+
+.chatbot-eye:last-child {
+    animation-delay: 80ms;
+}
+
+.chatbot-pupil {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.3rem;
+    height: 0.3rem;
+    margin: -0.15rem 0 0 -0.15rem;
+    border-radius: 50%;
+    background: var(--color-ink, #141414);
+    transform: translate(var(--eye-x, 0px), var(--eye-y, 0px));
+    transition: transform var(--dur-2, 220ms) var(--ease, ease);
+}
+
+@keyframes chatbot-blink {
+    0%, 91%, 100% {
+        transform: scaleY(1);
+    }
+
+    95% {
+        transform: scaleY(0.12);
+    }
+}
+
+/* Calm, content squint while the assistant panel is open. */
+.show-chatbot[aria-expanded="true"] .chatbot-eye {
+    animation: none;
+    transform: scaleY(0.5);
+}
+
+.show-chatbot[aria-expanded="true"] .chatbot-pupil {
+    transform: translate(0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .chatbot-eye {
+        animation: none;
+        transform: none;
+    }
+
+    .chatbot-pupil {
+        transition: none;
+        transform: none;
+    }
 }
 
 .show-chatbot:hover {
