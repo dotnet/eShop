@@ -3,6 +3,7 @@
 }
 
 .catalog-product {
+    position: relative;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -11,15 +12,53 @@
     background: var(--color-surface);
     overflow: hidden;
     text-decoration: none;
+    /* Pointer-tracked 3D tilt; card-tilt.js writes the rotation and glare vars. */
+    --card-rx: 0deg;
+    --card-ry: 0deg;
+    --card-lift: 0px;
+    --card-scale: 1;
+    transform:
+        perspective(820px)
+        rotateX(var(--card-rx))
+        rotateY(var(--card-ry))
+        translateY(var(--card-lift))
+        scale(var(--card-scale));
     transition: transform var(--dur-2) var(--ease),
                 box-shadow var(--dur-2) var(--ease),
                 border-color var(--dur-2) var(--ease);
 }
 
 .catalog-product:hover {
-    transform: translateY(-4px);
+    --card-lift: -6px;
+    --card-scale: 1.01;
     border-color: var(--color-line-strong);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-lg, var(--shadow-md));
+}
+
+/* Soft specular glare that follows the pointer across the card (Astro-shop feel). */
+.catalog-product::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: inherit;
+    background: radial-gradient(18rem 18rem at var(--card-gx, 50%) var(--card-gy, 50%),
+                rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 60%);
+    opacity: 0;
+    transition: opacity var(--dur-2) var(--ease);
+    pointer-events: none;
+}
+
+.catalog-product:hover::after {
+    opacity: 1;
+}
+
+/* While tracking the pointer, drop the transform easing so the tilt is direct
+   and promote the card to its own layer for the duration of the interaction. */
+.catalog-product.is-tilting {
+    transition: box-shadow var(--dur-2) var(--ease),
+                border-color var(--dur-2) var(--ease);
+    will-change: transform;
 }
 
 /* Framed product shot on a subtle surface; contain avoids cropping detail. */

@@ -96,7 +96,7 @@
     width: 100%;
     max-width: var(--content-max);
     margin: 0 auto 2.5rem;
-    min-height: clamp(13rem, 24vw, 17rem);
+    min-height: clamp(17rem, 28vw, 23rem);
 }
 
 .eshop-hero.is-home {
@@ -116,12 +116,24 @@
     object-position: center;
 }
 
-/* Scrim guarantees legible dark title text over any photograph. */
+/* Scrim + edge fades. The bottom-up white gradient keeps the dark title legible;
+   the added left/right and gentle bottom fades melt the full-bleed photo into the
+   page so it never ends on a hard rectangle. Fades to the surface colour, so it
+   reads as the photograph dissolving into the page rather than a boxed banner. */
 .eshop-hero::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(0deg,
+    background:
+        linear-gradient(to right,
+            #fff 0,
+            rgba(255, 255, 255, 0) 7%,
+            rgba(255, 255, 255, 0) 93%,
+            #fff 100%),
+        linear-gradient(to top,
+            #fff 0,
+            rgba(255, 255, 255, 0) 22%),
+        linear-gradient(0deg,
             rgba(255, 255, 255, 0.92) 0%,
             rgba(255, 255, 255, 0.4) 20%,
             rgba(255, 255, 255, 0) 44%);
