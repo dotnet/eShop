@@ -1,23 +1,22 @@
 // Astro-Shop-inspired pointer tilt for catalog product cards. On hover the card
-// tilts in 3D toward the cursor while a soft specular glare tracks the pointer.
-// All motion is written to CSS custom properties (never framework state) and
-// applied on a requestAnimationFrame tick. Runs only for fine pointers, is fully
-// skipped under reduced motion, and is safe across Blazor enhanced navigation
-// because every listener is delegated from document (new cards just work).
+// tilts in 3D toward the cursor. The rotation is written to CSS custom properties
+// (never framework state) and applied on a requestAnimationFrame tick; the card's
+// own CSS transition eases the motion so it follows smoothly rather than snapping.
+// Runs only for fine pointers, is fully skipped under reduced motion, and is safe
+// across Blazor enhanced navigation because every listener is delegated from
+// document (new cards just work).
 (function () {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
     const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
     const MAX = 7; // degrees of tilt at the card edge
 
-    let active = null, raf = 0, rx = 0, ry = 0, gx = 50, gy = 50;
+    let active = null, raf = 0, rx = 0, ry = 0;
 
     function apply() {
         raf = 0;
         if (!active) return;
         active.style.setProperty('--card-rx', rx.toFixed(2) + 'deg');
         active.style.setProperty('--card-ry', ry.toFixed(2) + 'deg');
-        active.style.setProperty('--card-gx', gx.toFixed(1) + '%');
-        active.style.setProperty('--card-gy', gy.toFixed(1) + '%');
     }
 
     function onMove(e) {
@@ -27,8 +26,6 @@
         const py = (e.clientY - r.top) / r.height;
         ry = (px - 0.5) * 2 * MAX;   // horizontal position -> rotateY
         rx = -(py - 0.5) * 2 * MAX;  // vertical position -> rotateX
-        gx = Math.max(0, Math.min(100, px * 100));
-        gy = Math.max(0, Math.min(100, py * 100));
         if (!raf) raf = requestAnimationFrame(apply);
     }
 
@@ -36,8 +33,6 @@
         card.classList.remove('is-tilting');
         card.style.setProperty('--card-rx', '0deg');
         card.style.setProperty('--card-ry', '0deg');
-        card.style.setProperty('--card-gx', '50%');
-        card.style.setProperty('--card-gy', '50%');
     }
 
     function onOver(e) {

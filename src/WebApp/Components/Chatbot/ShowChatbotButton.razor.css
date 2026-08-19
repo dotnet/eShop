@@ -32,24 +32,30 @@
     display: flex;
     align-items: center;
     gap: 0.34rem;
+    /* Sit the eyes slightly above the button's centre. */
+    transform: translateY(-0.14rem);
 }
 
 .chatbot-eye {
-    width: 0.5rem;
-    height: 1.05rem;
+    width: 0.62rem;
+    height: 1rem;
     transform: rotate(var(--eye-rot, 0deg));
     transform-origin: center;
     transition: transform var(--dur-2, 220ms) var(--ease, ease);
 }
 
-/* The pupil is a bespoke curved crescent (an intentional character mark, so the
-   inline SVG here is deliberate rather than a hand-rolled icon). It owns the
-   blink: a vertical collapse to a curved point. */
+/* The pupil is a bespoke curved slit (an intentional character mark, so the inline
+   SVG here is deliberate rather than a hand-rolled icon). A stroked curve with round
+   caps keeps an even thickness and soft, non-pointy ends. It owns the blink: a
+   vertical collapse to a curved point. */
 .chatbot-pupil {
     display: block;
     width: 100%;
     height: 100%;
-    fill: #ffffff;
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 5.5;
+    stroke-linecap: round;
     transform-origin: center;
     animation: chatbot-blink 5.6s var(--ease, ease) infinite;
 }

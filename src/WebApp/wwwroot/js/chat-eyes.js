@@ -6,7 +6,7 @@
 (function () {
     const face = () => document.querySelector('[data-chat-eyes]');
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const MAX_DEG = 34; // max slit tilt toward the cursor
+    const MAX_DEG = 20; // max slit tilt toward the cursor
     const REACH = 48; // px; within this radius the tilt eases back to upright
 
     let raf = 0, rot = 0;

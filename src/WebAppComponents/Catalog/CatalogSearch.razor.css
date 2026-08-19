@@ -1,6 +1,6 @@
 .catalog-search {
     flex-shrink: 0;
-    width: 16rem;
+    width: 24rem;
     align-self: flex-start;
     position: sticky;
     top: calc(var(--topbar-h) + 1rem);
@@ -10,8 +10,14 @@
     border: 1px solid var(--color-line);
     border-radius: var(--radius-md);
     background: var(--color-surface);
-    padding: 0.35rem 1.1rem 1.2rem;
+    padding: 0.35rem 1.1rem;
     box-shadow: var(--shadow-sm);
+}
+
+/* Extra breathing room below the filter groups only when expanded; collapsed the
+   box hugs its summary symmetrically (no dead space under the label + chevron). */
+.catalog-search-details[open] {
+    padding-bottom: 1.2rem;
 }
 
 .catalog-search-summary {
@@ -125,7 +131,6 @@
     border-radius: var(--radius-pill);
     background: var(--color-surface);
     color: var(--color-ink-2);
-    font-family: 'Open Sans';
     font-size: var(--text-sm);
     line-height: 1.2;
     text-decoration: none;
