@@ -17,26 +17,26 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 0.6rem;
-    max-width: 26rem;
+    gap: 0.65rem;
+    max-width: 28rem;
     margin: clamp(2rem, 8vh, 5rem) auto;
-    padding: 2.5rem 1.5rem;
+    padding: 2.5rem 1.5rem 3rem;
 }
 
 .orders-empty-icon {
     display: grid;
     place-items: center;
-    width: 4.5rem;
-    height: 4.5rem;
-    margin-bottom: 0.5rem;
+    width: 4.75rem;
+    height: 4.75rem;
+    margin-bottom: 0.4rem;
     border-radius: var(--radius-pill);
     background: var(--color-surface-2);
     color: var(--color-muted);
 }
 
 .orders-empty-icon svg {
-    width: 2rem;
-    height: 2rem;
+    width: 2.1rem;
+    height: 2.1rem;
 }
 
 .orders-empty h2 {
@@ -44,13 +44,20 @@
     color: var(--color-ink);
     font-size: var(--text-xl);
     font-weight: 700;
+    letter-spacing: -0.01em;
 }
 
 .orders-empty p {
-    margin: 0 0 0.75rem;
+    margin: 0;
+    max-width: 34ch;
     color: var(--color-muted);
     font-size: var(--text-base);
-    line-height: 1.5;
+    line-height: 1.55;
+}
+
+.orders-empty .button {
+    align-self: center;
+    margin-top: 0.85rem;
 }
 
 .orders-list {

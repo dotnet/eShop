@@ -93,6 +93,7 @@
     display: flex;
     align-items: flex-end;
     overflow: hidden;
+    width: 100%;
     max-width: var(--content-max);
     margin: 0 auto 2.5rem;
     min-height: clamp(13rem, 24vw, 17rem);
@@ -171,7 +172,7 @@
         .eshop-hero.is-home .eshop-hero-media img {
             animation: eshop-hero-zoom linear both;
             animation-timeline: scroll(root);
-            animation-range: 0 32rem;
+            animation-range: 0 34rem;
             will-change: transform;
         }
 
@@ -181,14 +182,14 @@
             }
 
             to {
-                transform: scale(1.12) translateY(5%);
+                transform: scale(1.2) translateY(3%);
             }
         }
 
         .eshop-hero.is-home .eshop-hero-intro {
             animation: eshop-hero-lift linear both;
             animation-timeline: scroll(root);
-            animation-range: 0 26rem;
+            animation-range: 0 24rem;
             will-change: transform, opacity;
         }
 
@@ -199,8 +200,8 @@
             }
 
             to {
-                transform: translateY(-1.75rem);
-                opacity: 0.5;
+                transform: translateY(-2rem);
+                opacity: 0.35;
             }
         }
     }

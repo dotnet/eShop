@@ -1,14 +1,15 @@
-// Gives the assistant FAB a pair of eyes whose pupils follow the cursor, so the
-// button reads as a friendly, discoverable helper rather than a generic icon.
-// Pointer position is written to CSS custom properties (never React state), the
-// blink lives in CSS, and the whole effect is skipped under reduced motion.
+// Gives the assistant FAB a pair of vertical slit eyes whose ANGLE tracks the
+// cursor: the horizontal direction to the pointer is mapped to a clamped tilt and
+// written to the --eye-rot custom property (never React state). Blink and the
+// hover "excited" burst live in CSS. Skipped under reduced motion, where the
+// slits rest upright.
 (function () {
     const face = () => document.querySelector('[data-chat-eyes]');
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const MAX = 2.4; // px of pupil travel from centre
-    const REACH = 260; // px at which the gaze is fully extended
+    const MAX_DEG = 34; // max slit tilt toward the cursor
+    const REACH = 48; // px; within this radius the tilt eases back to upright
 
-    let raf = 0, tx = 0, ty = 0;
+    let raf = 0, rot = 0;
 
     function onMove(e) {
         const f = face();
@@ -18,32 +19,29 @@
         const dy = e.clientY - (r.top + r.height / 2);
         const dist = Math.hypot(dx, dy) || 1;
         const reach = Math.min(1, dist / REACH);
-        tx = (dx / dist) * reach * MAX;
-        ty = (dy / dist) * reach * MAX;
+        rot = (dx / dist) * reach * MAX_DEG;
         if (!raf) raf = requestAnimationFrame(apply);
     }
 
     function apply() {
         raf = 0;
         const f = face();
-        if (!f) return;
-        f.style.setProperty('--eye-x', tx.toFixed(2) + 'px');
-        f.style.setProperty('--eye-y', ty.toFixed(2) + 'px');
+        if (f) f.style.setProperty('--eye-rot', rot.toFixed(2) + 'deg');
     }
 
-    function center() {
+    function upright() {
         const f = face();
-        if (f) { f.style.setProperty('--eye-x', '0px'); f.style.setProperty('--eye-y', '0px'); }
+        if (f) f.style.setProperty('--eye-rot', '0deg');
     }
 
     function enable() {
-        if (reduce.matches) { center(); return; }
+        if (reduce.matches) { upright(); return; }
         window.addEventListener('pointermove', onMove, { passive: true });
     }
     function disable() {
         window.removeEventListener('pointermove', onMove);
         if (raf) { cancelAnimationFrame(raf); raf = 0; }
-        center();
+        upright();
     }
 
     if (document.readyState === 'loading') {

@@ -61,13 +61,6 @@
     max-width: 26rem;
     height: auto;
     object-fit: contain;
-    transform-origin: var(--zoom-x, 50%) var(--zoom-y, 50%);
-    transition: transform var(--dur-3, 360ms) var(--ease, ease);
-}
-
-.item-media.is-zooming .item-media-img {
-    transform: scale(2);
-    transition: transform var(--dur-1, 140ms) linear;
 }
 
 /* Affordance badge so the zoom is discoverable; recedes while magnifying. */
@@ -92,17 +85,6 @@
 .item-zoom-hint svg {
     width: 1.05rem;
     height: 1.05rem;
-}
-
-.item-media.is-zooming .item-zoom-hint {
-    opacity: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .item-media-img,
-    .item-media.is-zooming .item-media-img {
-        transition: none;
-    }
 }
 
 .item-buy {
@@ -197,9 +179,9 @@
    Lightbox (native <dialog>, opened from the product shot)
    ========================================================================== */
 .item-lightbox {
-    width: min(92vw, 60rem);
-    max-width: min(92vw, 60rem);
-    max-height: 90vh;
+    width: auto;
+    max-width: 92vw;
+    max-height: 92vh;
     padding: 0;
     border: none;
     border-radius: var(--radius-md);
