@@ -1,6 +1,4 @@
 .catalog {
-    display: flex;
-    gap: clamp(1.5rem, 4vw, 4rem);
     max-width: var(--content-max);
     margin: 0 auto;
     padding: 0 var(--page-pad) 4rem;
@@ -16,7 +14,7 @@
     align-items: baseline;
     justify-content: space-between;
     gap: 1rem;
-    margin-bottom: 1.25rem;
+    margin: 1.25rem 0;
 }
 
 .catalog-count {
@@ -105,13 +103,6 @@
     align-items: flex-end;
     padding: 0 0.25rem;
     color: var(--color-muted);
-}
-
-@media only screen and (max-width: 1024px) {
-    .catalog {
-        flex-direction: column;
-        gap: 1.5rem;
-    }
 }
 
 @media only screen and (min-width: 481px) and (max-width: 1024px) {

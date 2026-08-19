@@ -1,127 +1,178 @@
-﻿.floating-pane {
+.floating-pane {
     position: fixed;
-    padding-top: 1em;
-    width: 25rem;
-    height: 35rem;
-    right: 3rem;
-    bottom: 3rem;
-    border: 0.0625rem solid silver;
-    border-radius: 0.5rem;
-    background-color: white;
+    width: min(25rem, calc(100vw - 2rem));
+    height: min(36rem, calc(100dvh - var(--topbar-h) - 2rem));
+    right: clamp(1rem, 2.5vw, 2.5rem);
+    bottom: clamp(1rem, 2.5vw, 2rem);
+    border: 1px solid var(--color-line);
+    border-radius: calc(var(--radius-md) + 6px);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     font-weight: 400;
-    font-family: "Segoe UI", arial, helvetica;
-    animation: slide-in-from-right 0.3s ease-out;
-    z-index: 2;
+    font-family: inherit;
+    animation: chatbot-enter var(--dur-3) var(--ease);
+    z-index: 200;
 }
 
-@keyframes slide-in-from-right {
-    0% {
-        transform: translateX(30rem);
-    }
-    100% {
-        transform: translateX(0);
-    }
+@keyframes chatbot-enter {
+    from { opacity: 0; transform: translateY(1rem) scale(0.98); }
+    to { opacity: 1; transform: none; }
+}
+
+.chatbot-header {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.85rem;
+    border-bottom: 1px solid var(--color-line);
+}
+
+.chatbot-header-icon {
+    display: grid;
+    place-items: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    flex: 0 0 auto;
+    border-radius: var(--radius-pill);
+    background: var(--color-ink);
+    color: #fff;
+    font-size: 1rem;
+}
+
+.chatbot-header > div {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.chatbot-header strong {
+    color: var(--color-ink);
+    font-size: var(--text-sm);
+}
+
+.chatbot-header div span {
+    color: var(--color-muted);
+    font-size: var(--text-xs);
 }
 
 .hide-chatbot {
-    border: none;
-    background-color: #B4B4B8;
-    color: white;
-    position: absolute;
-    top: 0.25rem;
-    right: 0.18rem;
-    border-radius: 0.55rem;
-    width: 2rem;
-    height: 2rem;
-    z-index: 10;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-left: auto;
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-2);
+    color: var(--color-ink);
     text-decoration: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-size: 1.35rem;
+    transition: background-color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+}
+
+.hide-chatbot:hover {
+    border-color: var(--color-line-strong);
+    background: var(--color-surface-3);
 }
 
 .chatbot-input {
     margin-top: auto;
     display: flex;
-    position: relative;
-    border: 0.125rem solid #f4f0f4;
-    border-radius: 0.5rem;
-    padding: 0.5rem;
-    margin: 0.5rem 0.75rem;
-    gap: 0.3rem;
-    height: 3.5rem;
-    align-items: stretch;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0.75rem;
+    padding: 0.4rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-2);
     flex-shrink: 0;
+    transition: border-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
 }
 
-    .chatbot-input textarea {
-        width: 100%;
-        background: none;
-        border: none;
-        outline: none;
-        resize: none;
-        font-weight: 400;
-        font-family: "Segoe UI", arial, helvetica;
-        font-size: 16px;
-    }
+.chatbot-input:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-tint);
+}
 
-    .chatbot-input button {
-        width: 6.25rem;
-        height: 3.125rem;
-        border-radius: 0.5rem;
-        border-width: 0;
-        cursor: pointer;
-        font-size: 0.875rem;
-        font-weight: 500;
-        padding: 0.6rem 0.8rem;
-        text-align: center;
-    }
+.chatbot-input textarea {
+    width: 100%;
+    min-height: 2.6rem;
+    padding: 0.55rem 0.65rem;
+    box-sizing: border-box;
+    background: none;
+    border: none;
+    outline: none;
+    resize: none;
+    color: var(--color-ink);
+    font: inherit;
+    font-size: var(--text-sm);
+}
+
+.chatbot-input button {
+    min-width: 4.5rem;
+    min-height: 2.6rem;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: var(--color-ink);
+    color: #fff;
+    cursor: pointer;
+    font: inherit;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    padding: 0.6rem 0.8rem;
+}
+
+.chatbot-input button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
 
 .chatbot-chat {
-    overflow-y: scroll;
+    overflow-y: auto;
     height: 100%;
-    padding: 0.5rem 0.75rem;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
 }
 
-    .chatbot-chat .message {
-        padding: 0.5rem 1rem;
-        border-radius: 1.25rem;
-        max-width: 85%;
-        display: inline-block;
-        white-space: break-spaces;
-        overflow-x: clip;
-        margin-bottom: 0.75rem;
-        margin-top: 0.25rem;
-    }
+.chatbot-chat .message {
+    padding: 0.7rem 0.9rem;
+    border-radius: var(--radius-md);
+    max-width: 85%;
+    display: inline-block;
+    white-space: break-spaces;
+    overflow-x: clip;
+    margin: 0.25rem 0 0.75rem;
+    font-size: var(--text-sm);
+    line-height: 1.55;
+}
 
-    .chatbot-chat .message-assistant {
-        background-color: #f4f0f4;
-        margin-right: auto;
-    }
+.chatbot-chat .message-assistant {
+    background: var(--color-surface-2);
+    margin-right: auto;
+}
 
-    .chatbot-chat .message-user {
-        background-color: #102c57;
-        margin-left: auto;
-        color: white;
-    }
+.chatbot-chat .message-user {
+    background: var(--color-ink);
+    margin-left: auto;
+    color: #fff;
+}
 
-    .chatbot-chat ::deep img {
-        max-height: 10rem;
-    }
+.chatbot-chat ::deep img {
+    max-height: 10rem;
+}
 
-    .thinking {
-        color: gray;
-        font-style: italic;
-        animation: fade-in-and-out 1s infinite;
-        padding: 0;
-        margin: 0;
-        padding-left: 0.6rem;
-        font-size: 90%;
-    }
+.thinking {
+    color: var(--color-muted);
+    font-style: italic;
+    animation: fade-in-and-out 1s infinite;
+    padding-left: 0.6rem;
+    margin: 0;
+    font-size: var(--text-xs);
+}
 
 @keyframes fade-in-and-out {
     0% {
@@ -134,5 +185,14 @@
 
     100% {
         opacity: 0.2;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .floating-pane {
+        width: calc(100vw - 1rem);
+        height: min(36rem, calc(100dvh - 1rem));
+        right: 0.5rem;
+        bottom: 0.5rem;
     }
 }

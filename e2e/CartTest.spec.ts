@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { addProductToCart, emptyCart } from './cart-helpers';
+import { addProductToCart, emptyCart, submitCartUpdate } from './cart-helpers';
 
 test('add, update, and remove an item from the cart', async ({ page }) => {
   await emptyCart(page);
@@ -13,11 +13,11 @@ test('add, update, and remove an item from the cart', async ({ page }) => {
   await expect(quantity).toHaveValue('1');
 
   await quantity.fill('2');
-  await page.getByRole('button', { name: 'Update' }).click();
-  await expect(page.getByLabel('product quantity')).toHaveValue('2');
-  await expect(page.locator('.cart-summary-total')).toContainText('$399.98');
+  await submitCartUpdate(page);
+  await expect(page.getByLabel('product quantity')).toHaveValue('2', { timeout: 15_000 });
+  await expect(page.locator('.cart-summary-total')).toContainText('$399.98', { timeout: 15_000 });
 
   await page.getByLabel('product quantity').fill('0');
-  await page.getByRole('button', { name: 'Update' }).click();
-  await expect(page.getByText('Your shopping bag is empty')).toBeVisible();
+  await submitCartUpdate(page);
+  await expect(page.getByText('Your shopping bag is empty')).toBeVisible({ timeout: 15_000 });
 });

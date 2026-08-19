@@ -1,8 +1,23 @@
 ﻿@inject NavigationManager Nav
 
-<a class="show-chatbot" href="@Nav.GetUriWithQueryParameter("chat", true)" title="Show chatbot"></a>
-
-@if (ShowChat)
+@if (!ShowChat)
+{
+    <a class="show-chatbot"
+       href="@Nav.GetUriWithQueryParameter("chat", true)"
+       aria-label="Open AdventureWorks AI"
+       title="Open AdventureWorks AI"
+       data-enhance-nav="true">
+        <span class="show-chatbot-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 3L13.3 7.2L17.5 8.5L13.3 9.8L12 14L10.7 9.8L6.5 8.5L10.7 7.2L12 3Z" />
+                <path d="M18.5 14L19.2 16.3L21.5 17L19.2 17.7L18.5 20L17.8 17.7L15.5 17L17.8 16.3L18.5 14Z" />
+                <path d="M6 13L6.9 15.6L9.5 16.5L6.9 17.4L6 20L5.1 17.4L2.5 16.5L5.1 15.6L6 13Z" />
+            </svg>
+        </span>
+        <span class="show-chatbot-label">Ask AI</span>
+    </a>
+}
+else
 {
     <Chatbot />
 }

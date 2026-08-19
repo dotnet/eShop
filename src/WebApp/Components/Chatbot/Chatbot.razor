@@ -12,7 +12,20 @@
 @inject IServiceProvider ServiceProvider
 
 <div class="floating-pane">
-    <a href="@Nav.GetUriWithQueryParameter("chat", (string?)null)" class="hide-chatbot" title="Close .NET Concierge"><span>✖</span></a>
+    <div class="chatbot-header">
+        <span class="chatbot-header-icon" aria-hidden="true">✦</span>
+        <div>
+            <strong>AdventureWorks AI</strong>
+            <span>Your personal gear guide</span>
+        </div>
+        <a href="@Nav.GetUriWithQueryParameter("chat", (string?)null)"
+           class="hide-chatbot"
+           aria-label="Close AdventureWorks AI"
+           title="Close AdventureWorks AI"
+           data-enhance-nav="true">
+            <span aria-hidden="true">&times;</span>
+        </a>
+    </div>
 
     <div class="chatbot-chat" @ref="chat">
         @if (chatState is not null)
@@ -37,7 +50,7 @@
     </div>
 
     <form class="chatbot-input" @onsubmit="SendMessageAsync">
-        <textarea placeholder="Start chatting..." @ref="@textbox" @bind="messageToSend"></textarea>
+        <textarea placeholder="Ask about products or gear..." aria-label="Message AdventureWorks AI" @ref="@textbox" @bind="messageToSend"></textarea>
         <button type="submit" title="Send" disabled="@(chatState is null)">Send</button>
     </form>
 </div>

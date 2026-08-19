@@ -1,30 +1,67 @@
-﻿.show-chatbot {
+.show-chatbot {
     position: fixed;
-    bottom: 5rem;
-    right: 3rem;
-    z-index: 1;
-    box-shadow: 0 2px 7px 2px rgba(0,0,0,0.2);
-    border-radius: 10px;
-    background-image: url('chat.png');
-    background-size: contain;
-    width: 4.5rem;
-    height: 3.5rem;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-color: #f3f4f3;
-    transition: transform ease-out 0.2s;
-    border: 2px solid transparent;
-    display: block;
+    right: clamp(1rem, 2.5vw, 2.5rem);
+    bottom: clamp(1rem, 2.5vw, 2rem);
+    z-index: 90;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-height: 3.25rem;
+    padding: 0.5rem 1rem 0.5rem 0.55rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-pill);
+    background: var(--color-ink);
+    color: #fff;
+    box-shadow: var(--shadow-lg);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform var(--dur-2) var(--ease),
+                background-color var(--dur-2) var(--ease),
+                box-shadow var(--dur-2) var(--ease);
 }
 
-    .show-chatbot:hover {
-        border-color: #49b4fe;
-        cursor: pointer;
-        transform: scale(1.2);
-        box-shadow: 0 2px 7px 2px rgba(0,0,0,0.4);
+.show-chatbot:hover {
+    background: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 20px 42px rgba(20, 20, 20, 0.2);
+}
+
+.show-chatbot:active {
+    transform: translateY(0);
+}
+
+.show-chatbot-icon {
+    display: grid;
+    place-items: center;
+    width: 2.15rem;
+    height: 2.15rem;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.show-chatbot-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@media only screen and (max-width: 480px) {
+    .show-chatbot {
+        width: 3.25rem;
+        padding: 0;
+        justify-content: center;
     }
 
-    .show-chatbot:active {
-        transform: scale(1.1);
-        transition: transform ease-out 0.01s;
+    .show-chatbot-label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
     }
+}
