@@ -1,11 +1,14 @@
 .show-chatbot {
-    /* Anchored to sit ON the content/footer divider: the negative top centres the
-       3.5rem bubble on the footer's top edge so it straddles the seam, right-aligned
-       to the content column. The surface-coloured ring keeps it legible across the
-       light content above and the dark footer below. */
-    position: absolute;
-    top: -1.75rem;
-    right: max(var(--page-pad, 1.5rem), calc((100% - var(--content-max, 120rem)) / 2 + var(--page-pad, 1.5rem)));
+    /* Persistent floating launcher. It floats at the bottom-right corner while the
+       page scrolls, then DOCKS onto the content/footer divider as the footer rises
+       into view, so on tablet and desktop it never drifts down over the dark footer.
+       js/chat-fab.js drives --fab-bottom from the footer's live top edge each frame;
+       with no JS it simply floats at the corner gap. Right-aligned to the content
+       column; the surface ring keeps it legible over the light content and the dark
+       footer it straddles at rest. */
+    position: fixed;
+    bottom: var(--fab-bottom, 1.5rem);
+    right: max(var(--page-pad, 1.5rem), calc((100vw - var(--content-max, 120rem)) / 2 + var(--page-pad, 1.5rem)));
     z-index: 50;
     display: grid;
     place-items: center;
