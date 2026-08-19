@@ -14,7 +14,7 @@
 
 .catalog-toolbar {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
     gap: 1rem;
     margin: 1.25rem 0;
@@ -25,6 +25,76 @@
     color: var(--color-muted);
     font-size: var(--text-sm);
     font-weight: 600;
+}
+
+.catalog-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.catalog-sort-label {
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+    font-weight: 600;
+}
+
+.catalog-sort-field {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.catalog-sort-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    margin: 0;
+    font: inherit;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-ink);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-pill);
+    padding: 0.5rem 2.25rem 0.5rem 0.95rem;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+}
+
+.catalog-sort-select:hover {
+    border-color: var(--color-ink);
+}
+
+.catalog-sort-select:focus-visible {
+    outline: none;
+    border-color: var(--focus);
+    box-shadow: var(--ring);
+}
+
+.catalog-sort-caret {
+    position: absolute;
+    right: 0.85rem;
+    width: 0.7rem;
+    height: 0.7rem;
+    color: var(--color-muted);
+    pointer-events: none;
+}
+
+@media (max-width: 32rem) {
+    .catalog-sort-label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+        border: 0;
+    }
 }
 
 .catalog-items {

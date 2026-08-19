@@ -48,12 +48,31 @@
         <div class="catalog-results">
             <div class="catalog-toolbar">
                 <p class="catalog-count">@catalogResult.Count @(catalogResult.Count == 1 ? "product" : "products")</p>
+                <div class="catalog-sort">
+                    <label class="catalog-sort-label" for="catalog-sort-select">Sort</label>
+                    <span class="catalog-sort-field">
+                        <select id="catalog-sort-select" class="catalog-sort-select" data-catalog-sort aria-label="Sort products">
+                            <option value="featured">Featured</option>
+                            <option value="name-asc">Name: A to Z</option>
+                            <option value="name-desc">Name: Z to A</option>
+                            <option value="price-asc">Price: Low to High</option>
+                            <option value="price-desc">Price: High to Low</option>
+                        </select>
+                        <svg class="catalog-sort-caret" viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m2.5 4.5 3.5 3.5 3.5-3.5" />
+                        </svg>
+                    </span>
+                </div>
             </div>
 
             <div class="catalog-items">
+                @{
+                    var sortIndex = 0;
+                }
                 @foreach (var item in catalogResult.Data)
                 {
-                    <CatalogListItem Item="@item" />
+                    <CatalogListItem Item="@item" SortIndex="sortIndex" />
+                    sortIndex++;
                 }
             </div>
 
