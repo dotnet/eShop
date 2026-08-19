@@ -1,114 +1,112 @@
-﻿@inject CatalogService CatalogService
+@inject CatalogService CatalogService
 @inject NavigationManager Nav
 
 @if (catalogBrands is not null && catalogItemTypes is not null)
 {
-    <aside class="catalog-search" aria-label="Catalog filters" data-enhance-nav="true">
-        <div class="catalog-search-toolbar">
-            <details class="catalog-search-details">
-                <summary class="catalog-search-summary">
-                    <span class="catalog-search-title">
-                        <img role="presentation" src="icons/filters.svg" />
-                        Filter products
-                    </span>
-                    @if (HasActiveFilter)
+    <aside class="catalog-search">
+        <details class="catalog-search-details" open>
+            <summary class="catalog-search-summary">
+                <span class="catalog-search-title">
+                    <img role="presentation" src="icons/filters.svg" />
+                    Filters
+                    @if (ActiveFilterCount > 0)
                     {
-                        <span class="catalog-search-count" aria-label="@ActiveFilterCount active filters">@ActiveFilterCount</span>
+                        <span class="catalog-search-title-count">@ActiveFilterCount</span>
                     }
-                </summary>
+                </span>
+            </summary>
 
-                <div class="catalog-search-body">
-                    <div class="catalog-search-heading">
-                        <div>
-                            <span>Refine results</span>
-                            <h2>Find the right gear</h2>
-                        </div>
-                        @if (HasActiveFilter)
+            <div class="catalog-search-body">
+                @if (HasActiveFilter)
+                {
+                    <a class="catalog-search-clear" href="@ResetUri()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M18 6 6 18M6 6l12 12" />
+                        </svg>
+                        Clear all filters
+                    </a>
+                }
+
+                <div class="catalog-search-group">
+                    <h3>Brand</h3>
+                    <div class="catalog-search-group-tags">
+                        <a href="@BrandUri(null)"
+                           class="catalog-search-tag @(BrandId == null ? "active" : "")">
+                            <span>All</span>
+                            <span class="catalog-search-tag-count">@BrandCount(null)</span>
+                        </a>
+                        @foreach (var brand in catalogBrands)
                         {
-                            <a class="catalog-search-reset" href="@ResetUri()">Clear all</a>
+                            var count = BrandCount(brand.Id);
+                            var isActive = BrandId == brand.Id;
+                            var isEmpty = count == 0 && !isActive;
+                            <a href="@BrandUri(brand.Id)"
+                               class="catalog-search-tag @(isActive ? "active" : "") @(isEmpty ? "is-empty" : "")"
+                               aria-disabled="@(isEmpty ? "true" : null)">
+                                <span>@brand.Brand</span>
+                                <span class="catalog-search-tag-count">@count</span>
+                            </a>
                         }
                     </div>
-
-                    <div class="catalog-search-groups">
-                        <div class="catalog-search-group">
-                            <h3>Brand</h3>
-                            <div class="catalog-search-group-tags">
-                                <a href="@BrandUri(null)"
-                                   class="catalog-search-tag @(BrandId == null ? "active" : "")">
-                                    All brands
-                                </a>
-                                @foreach (var brand in catalogBrands)
-                                {
-                                    <a href="@BrandUri(brand.Id)"
-                                       class="catalog-search-tag @(BrandId == brand.Id ? "active" : "")">
-                                        @brand.Brand
-                                    </a>
-                                }
-                            </div>
-                        </div>
-                        <div class="catalog-search-group">
-                            <h3>Category</h3>
-                            <div class="catalog-search-group-tags">
-                                <a href="@TypeUri(null)"
-                                   class="catalog-search-tag @(ItemTypeId == null ? "active" : "")">
-                                    All categories
-                                </a>
-                                @foreach (var itemType in catalogItemTypes)
-                                {
-                                    <a href="@TypeUri(itemType.Id)"
-                                       class="catalog-search-tag @(ItemTypeId == itemType.Id ? "active" : "")">
-                                        @itemType.Type
-                                    </a>
-                                }
-                            </div>
-                        </div>
+                </div>
+                <div class="catalog-search-group">
+                    <h3>Type</h3>
+                    <div class="catalog-search-group-tags">
+                        <a href="@TypeUri(null)"
+                           class="catalog-search-tag @(ItemTypeId == null ? "active" : "")">
+                            <span>All</span>
+                            <span class="catalog-search-tag-count">@TypeCount(null)</span>
+                        </a>
+                        @foreach (var itemType in catalogItemTypes)
+                        {
+                            var count = TypeCount(itemType.Id);
+                            var isActive = ItemTypeId == itemType.Id;
+                            var isEmpty = count == 0 && !isActive;
+                            <a href="@TypeUri(itemType.Id)"
+                               class="catalog-search-tag @(isActive ? "active" : "") @(isEmpty ? "is-empty" : "")"
+                               aria-disabled="@(isEmpty ? "true" : null)">
+                                <span>@itemType.Type</span>
+                                <span class="catalog-search-tag-count">@count</span>
+                            </a>
+                        }
                     </div>
                 </div>
-            </details>
-
-            @if (HasActiveFilter)
-            {
-                <div class="catalog-search-active" aria-label="Applied filters">
-                    @if (ActiveBrandName is not null)
-                    {
-                        <a class="catalog-active-chip" href="@BrandUri(null)" aria-label="Remove brand filter @ActiveBrandName">
-                            <span>@ActiveBrandName</span>
-                            <span class="catalog-active-chip-x" aria-hidden="true">&times;</span>
-                        </a>
-                    }
-                    @if (ActiveTypeName is not null)
-                    {
-                        <a class="catalog-active-chip" href="@TypeUri(null)" aria-label="Remove category filter @ActiveTypeName">
-                            <span>@ActiveTypeName</span>
-                            <span class="catalog-active-chip-x" aria-hidden="true">&times;</span>
-                        </a>
-                    }
-                </div>
-            }
-        </div>
+            </div>
+        </details>
     </aside>
 }
 
 @code {
     IEnumerable<CatalogBrand>? catalogBrands;
     IEnumerable<CatalogItemType>? catalogItemTypes;
+    List<CatalogItem>? allItems;
+
     [Parameter] public int? BrandId { get; set; }
     [Parameter] public int? ItemTypeId { get; set; }
 
     bool HasActiveFilter => BrandId is not null || ItemTypeId is not null;
-    int ActiveFilterCount => (BrandId is null ? 0 : 1) + (ItemTypeId is null ? 0 : 1);
-
-    string? ActiveBrandName => catalogBrands?.FirstOrDefault(b => b.Id == BrandId)?.Brand;
-    string? ActiveTypeName => catalogItemTypes?.FirstOrDefault(t => t.Id == ItemTypeId)?.Type;
+    int ActiveFilterCount => (BrandId is not null ? 1 : 0) + (ItemTypeId is not null ? 1 : 0);
 
     protected override async Task OnInitializedAsync()
     {
         var brandsTask = CatalogService.GetBrands();
         var itemTypesTask = CatalogService.GetTypes();
-        await Task.WhenAll(brandsTask, itemTypesTask);
+        var itemsTask = CatalogService.GetCatalogItems(0, 1000, null, null);
+        await Task.WhenAll(brandsTask, itemTypesTask, itemsTask);
         catalogBrands = brandsTask.Result;
         catalogItemTypes = itemTypesTask.Result;
+        allItems = itemsTask.Result.Data;
     }
+
+    // Contextual counts: how many items a facet would yield given the OTHER active filter.
+    // This lets us show badges and disable combinations that would return nothing.
+    private int BrandCount(int? brandId) => allItems is null ? 0 : allItems.Count(i =>
+        (brandId is null || i.CatalogBrandId == brandId) &&
+        (ItemTypeId is null || i.CatalogTypeId == ItemTypeId));
+
+    private int TypeCount(int? typeId) => allItems is null ? 0 : allItems.Count(i =>
+        (typeId is null || i.CatalogTypeId == typeId) &&
+        (BrandId is null || i.CatalogBrandId == BrandId));
 
     private string BrandUri(int? brandId) => Nav.GetUriWithQueryParameters(new Dictionary<string, object?>()
     {

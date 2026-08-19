@@ -31,6 +31,109 @@
 }
 
 /* ==========================================================================
+   Empty state (no results for the active filters)
+   ========================================================================== */
+.catalog-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.6rem;
+    max-width: 26rem;
+    margin: clamp(2rem, 8vh, 5rem) auto;
+    padding: 2.5rem 1.5rem;
+}
+
+.catalog-empty-icon {
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-2);
+    color: var(--color-muted);
+}
+
+.catalog-empty-icon svg {
+    width: 2rem;
+    height: 2rem;
+}
+
+.catalog-empty h2 {
+    margin: 0;
+    color: var(--color-ink);
+    font-size: var(--text-xl);
+    font-weight: 700;
+}
+
+.catalog-empty p {
+    margin: 0 0 0.75rem;
+    color: var(--color-muted);
+    font-size: var(--text-base);
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   Loading skeleton (mirrors the results grid shape)
+   ========================================================================== */
+.catalog-count-skeleton {
+    display: block;
+    width: 5.5rem;
+    height: 0.9rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-2);
+}
+
+.catalog-card-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.skeleton-media {
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-md);
+    background: var(--color-surface-2);
+}
+
+.skeleton-line {
+    height: 0.85rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-2);
+}
+
+.skeleton-line.short {
+    width: 40%;
+}
+
+.catalog-count-skeleton,
+.skeleton-media,
+.skeleton-line {
+    position: relative;
+    overflow: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .catalog-count-skeleton::after,
+    .skeleton-media::after,
+    .skeleton-line::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        transform: translateX(-100%);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+        animation: catalog-skeleton-shimmer 1.4s var(--ease) infinite;
+    }
+}
+
+@keyframes catalog-skeleton-shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* ==========================================================================
    Pagination
    ========================================================================== */
 .catalog-pagination {
@@ -82,10 +185,10 @@
 }
 
 .page-nav.is-disabled {
-    color: var(--color-line-strong);
+    color: var(--color-muted);
     border-color: var(--color-line);
-    opacity: 0.65;
-    pointer-events: none;
+    background: var(--color-surface-2);
+    cursor: not-allowed;
 }
 
 .page-nav img,

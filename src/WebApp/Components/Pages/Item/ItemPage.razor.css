@@ -115,8 +115,9 @@
 }
 
 .in-cart a {
-    color: var(--accent);
+    color: var(--color-ink);
     font-weight: 600;
+    text-decoration: underline;
     text-underline-offset: 2px;
 }
 

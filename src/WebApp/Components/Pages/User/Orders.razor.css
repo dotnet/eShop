@@ -9,6 +9,50 @@
     font-size: var(--text-lg);
 }
 
+/* ==========================================================================
+   Empty state (no orders yet)
+   ========================================================================== */
+.orders-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.6rem;
+    max-width: 26rem;
+    margin: clamp(2rem, 8vh, 5rem) auto;
+    padding: 2.5rem 1.5rem;
+}
+
+.orders-empty-icon {
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-2);
+    color: var(--color-muted);
+}
+
+.orders-empty-icon svg {
+    width: 2rem;
+    height: 2rem;
+}
+
+.orders-empty h2 {
+    margin: 0;
+    color: var(--color-ink);
+    font-size: var(--text-xl);
+    font-weight: 700;
+}
+
+.orders-empty p {
+    margin: 0 0 0.75rem;
+    color: var(--color-muted);
+    font-size: var(--text-base);
+    line-height: 1.5;
+}
+
 .orders-list {
     list-style: none;
     margin: 0;

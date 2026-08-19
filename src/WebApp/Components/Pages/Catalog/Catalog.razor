@@ -11,7 +11,37 @@
 
     @if (catalogResult is null)
     {
-        <p>Loading...</p>
+        <div class="catalog-results" role="status" aria-label="Loading products">
+            <div class="catalog-toolbar">
+                <span class="catalog-count-skeleton" aria-hidden="true"></span>
+            </div>
+            <div class="catalog-items">
+                @for (var i = 0; i < PageSize; i++)
+                {
+                    <div class="catalog-card-skeleton" aria-hidden="true">
+                        <div class="skeleton-media"></div>
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line short"></div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else if (catalogResult.Count == 0)
+    {
+        <div class="catalog-results">
+            <div class="catalog-empty">
+                <span class="catalog-empty-icon" aria-hidden="true">
+                    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="21" cy="21" r="13" />
+                        <path d="m38 38-7.6-7.6" />
+                    </svg>
+                </span>
+                <h2>No products match these filters</h2>
+                <p>Try removing a filter, or start over with the full collection.</p>
+                <a class="button button-primary" href="@ResetFiltersUri()">Clear all filters</a>
+            </div>
+        </div>
     }
     else
     {
@@ -121,6 +151,13 @@
     }
 
     private string PageUri(int page) => Nav.GetUriWithQueryParameter("page", page <= 1 ? (int?)null : page);
+
+    private string ResetFiltersUri() => Nav.GetUriWithQueryParameters(new Dictionary<string, object?>()
+    {
+        { "page", null },
+        { "brand", null },
+        { "type", null },
+    });
 
     protected override async Task OnInitializedAsync()
     {

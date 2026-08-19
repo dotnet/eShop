@@ -1,67 +1,112 @@
 .show-chatbot {
     position: fixed;
-    right: clamp(1rem, 2.5vw, 2.5rem);
-    bottom: clamp(1rem, 2.5vw, 2rem);
-    z-index: 90;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.65rem;
-    min-height: 3.25rem;
-    padding: 0.5rem 1rem 0.5rem 0.55rem;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: var(--radius-pill);
-    background: var(--color-ink);
-    color: #fff;
-    box-shadow: var(--shadow-lg);
-    font-size: var(--text-sm);
-    font-weight: 700;
+    bottom: clamp(1.25rem, 4vw, 2rem);
+    right: clamp(1.25rem, 4vw, 2rem);
+    z-index: 50;
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-pill, 999px);
+    background: var(--color-ink, #141414);
+    color: #ffffff;
+    /* Surface-coloured ring keeps the FAB legible on any background,
+       including the dark footer where a plain ink circle disappears. */
+    box-shadow:
+        0 0 0 4px var(--color-surface, #fff),
+        0 14px 30px rgba(20, 20, 20, 0.30);
+    cursor: pointer;
     text-decoration: none;
-    transition: transform var(--dur-2) var(--ease),
-                background-color var(--dur-2) var(--ease),
-                box-shadow var(--dur-2) var(--ease);
+    transition:
+        transform var(--dur-2, 220ms) var(--ease, ease),
+        box-shadow var(--dur-2, 220ms) var(--ease, ease);
+}
+
+.show-chatbot svg {
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 .show-chatbot:hover {
-    background: var(--accent);
-    transform: translateY(-2px);
-    box-shadow: 0 20px 42px rgba(20, 20, 20, 0.2);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow:
+        0 0 0 4px var(--color-surface, #fff),
+        0 20px 44px rgba(20, 20, 20, 0.38);
 }
 
 .show-chatbot:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.97);
 }
 
-.show-chatbot-icon {
-    display: grid;
-    place-items: center;
-    width: 2.15rem;
-    height: 2.15rem;
-    border-radius: var(--radius-pill);
-    background: rgba(255, 255, 255, 0.12);
+.show-chatbot:focus-visible {
+    outline: none;
+    box-shadow:
+        0 0 0 3px var(--color-surface, #fff),
+        0 0 0 6px var(--color-ink, #141414),
+        0 14px 30px rgba(20, 20, 20, 0.30);
 }
 
-.show-chatbot-icon svg {
-    width: 1.25rem;
-    height: 1.25rem;
-    stroke: currentColor;
-    stroke-width: 1.7;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-@media only screen and (max-width: 480px) {
+@media (prefers-reduced-motion: reduce) {
     .show-chatbot {
-        width: 3.25rem;
-        padding: 0;
-        justify-content: center;
+        transition: box-shadow var(--dur-1, 140ms) linear;
     }
 
-    .show-chatbot-label {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-        clip-path: inset(50%);
-        white-space: nowrap;
+    .show-chatbot:hover,
+    .show-chatbot:active {
+        transform: none;
+    }
+}
+
+/* Dock wrapper for the assistant panel. Owns fixed positioning, default size and
+   visibility; chat-dock.js toggles .is-open and manages drag/resize geometry.
+   These rules must live here (not in Chatbot.razor.css) because the
+   [data-chat-dock] element is part of THIS component's markup. */
+.chatbot-dock {
+    position: fixed;
+    right: clamp(1.25rem, 4vw, 2rem);
+    bottom: calc(clamp(1.25rem, 4vw, 2rem) + 4.25rem);
+    width: 24rem;
+    height: 34rem;
+    min-width: 20rem;
+    min-height: 24rem;
+    max-width: calc(100vw - 1.5rem);
+    max-height: calc(100dvh - 1.5rem);
+    z-index: 55;
+    display: none;
+}
+
+.chatbot-dock.is-open {
+    display: block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .chatbot-dock.is-open {
+        animation: chatbot-in var(--dur-3, 360ms) var(--ease, ease);
+    }
+}
+
+@keyframes chatbot-in {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Phones: dock to a near-full-screen sheet. */
+@media only screen and (max-width: 480px) {
+    .chatbot-dock {
+        right: 0.75rem;
+        left: 0.75rem;
+        bottom: 0.75rem;
+        top: auto;
+        width: auto;
+        height: min(32rem, 80dvh);
+        max-width: none;
     }
 }

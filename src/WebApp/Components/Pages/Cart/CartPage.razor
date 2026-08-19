@@ -15,9 +15,17 @@
     }
     else if (basketItems.Count == 0)
     {
-        <p class="cart-empty">
-            Your shopping bag is empty. <a href="">Continue shopping.</a>
-        </p>
+        <div class="cart-empty">
+            <span class="cart-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 16h24l-2 22H14z" />
+                    <path d="M18 16v-2a6 6 0 0 1 12 0v2" />
+                </svg>
+            </span>
+            <h2>Your shopping bag is empty</h2>
+            <p>Browse the catalog and add the gear you love. Anything you add shows up here, ready to check out.</p>
+            <a class="button button-primary" href="/">Start shopping</a>
+        </div>
     }
     else
     {

@@ -248,12 +248,12 @@
     --color-line: #e6e5e1;
     --color-line-strong: #c9c8c3;
 
-    /* Accent: interactive states only (focus, active filter, key hover). ~5.8:1 on white. */
-    --accent: #2f6b4f;
-    --accent-hover: #275c43;
+    /* Interactive accent repointed to monochrome ink (green fully demoted). */
+    --accent: var(--color-ink);
+    --accent-hover: var(--color-ink-2);
     --accent-contrast: #ffffff;
-    --accent-tint: #eef4f0;
-    --focus: var(--accent);
+    --accent-tint: var(--color-surface-3);
+    --focus: var(--color-ink);
 
     /* Radius (shape lock) */
     --radius-sm: 8px;
@@ -303,6 +303,31 @@ body {
     background: var(--color-surface);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+}
+
+/* Page content grows so the footer always rests at the bottom of the viewport. */
+.eshop-main {
+    flex: 1 0 auto;
+}
+
+/* Clickable elements show a pointer; disabled controls read as disabled. */
+a[href],
+button,
+summary,
+label[for],
+[role="button"] {
+    cursor: pointer;
+}
+
+button:disabled,
+button[disabled],
+.button:disabled,
+.button.disabled,
+[aria-disabled="true"] {
+    cursor: not-allowed;
 }
 
 /* Visible keyboard focus everywhere (specificity 0 so components can refine). */
