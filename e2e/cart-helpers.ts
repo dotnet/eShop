@@ -8,25 +8,25 @@ export async function addProductToCart(page: Page, productName: string) {
   await expect(page.locator('.in-cart').getByRole('link', { name: 'shopping bag' })).toBeVisible();
 }
 
-export async function submitCartUpdate(page: Page) {
+/** Remove the first cart line via its Remove control, waiting for the update to post. */
+export async function removeFirstCartItem(page: Page) {
   const updateRequest = page.waitForRequest(request =>
     request.method() === 'POST' && new URL(request.url()).pathname === '/cart');
 
   await Promise.all([
     updateRequest,
-    page.getByRole('button', { name: 'Update' }).first().click(),
+    page.getByRole('button', { name: /^Remove/ }).first().click(),
   ]);
 }
 
 export async function emptyCart(page: Page) {
   await page.goto('/cart');
-  await expect(page.getByRole('heading', { name: 'Shopping bag' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Shopping bag', exact: true })).toBeVisible();
 
-  const quantities = page.getByLabel('product quantity');
+  const quantities = page.locator('[data-cart-quantity-input]');
   while (await quantities.count() > 0) {
     const previousCount = await quantities.count();
-    await quantities.first().fill('0');
-    await submitCartUpdate(page);
+    await removeFirstCartItem(page);
     await expect(quantities).toHaveCount(previousCount - 1, { timeout: 15_000 });
   }
 
