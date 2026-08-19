@@ -39,4 +39,26 @@
             setTimeout(hookEnhancedNav, 150);
         }
     })();
+
+    // The @view-transition (navigation: auto) opt-in in app.css lets the browser run a
+    // cross-document view transition on full navigations. When one is superseded — Blazor
+    // enhanced navigation intercepts the click and turns it into a same-document morph, or
+    // a second navigation starts first — the browser SKIPS the prepared transition and
+    // rejects its promise with "AbortError: Transition was skipped". That is benign, but
+    // left unhandled it prints to the console. Attach no-op catches where the browser hands
+    // us the transition, plus a tightly scoped safety net for a skip that never surfaces
+    // through an event.
+    function absorb(vt) {
+        if (!vt) return;
+        if (vt.ready && vt.ready.catch) vt.ready.catch(() => {});
+        if (vt.finished && vt.finished.catch) vt.finished.catch(() => {});
+    }
+    window.addEventListener('pageswap', (e) => absorb(e.viewTransition));
+    window.addEventListener('pagereveal', (e) => absorb(e.viewTransition));
+    window.addEventListener('unhandledrejection', (e) => {
+        const r = e.reason;
+        if (r && r.name === 'AbortError' && /transition was skipped/i.test(r.message || '')) {
+            e.preventDefault(); // a superseded view transition; nothing to recover
+        }
+    });
 })();

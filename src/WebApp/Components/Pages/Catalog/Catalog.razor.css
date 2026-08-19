@@ -211,6 +211,20 @@
     color: var(--color-muted);
 }
 
+/* Compact "current / total" shown only on phones, in place of the numbered tokens. */
+.page-status {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    min-height: 2.5rem;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
 @media only screen and (max-width: 1024px) {
     .catalog {
         flex-direction: column;
@@ -228,5 +242,21 @@
     .catalog-items {
         grid-template-columns: 1fr;
         gap: 1.75rem;
+    }
+
+    /* Keep pagination to a single row: swap the numbered tokens for a compact
+       "current / total" indicator flanked by Prev / Next, so it never wraps. */
+    .catalog-pagination {
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        gap: 0.5rem;
+    }
+
+    .page-numbers {
+        display: none;
+    }
+
+    .page-status {
+        display: inline-flex;
     }
 }

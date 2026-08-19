@@ -31,6 +31,29 @@
         box-shadow var(--dur-2, 220ms) var(--ease, ease);
 }
 
+/* While the panel opens or closes, the launcher TRAVELS between its floating corner and
+   the panel's top-left, where it becomes the assistant avatar. Only that open/close flip
+   eases: chat-fab.js adds .is-morphing just for the beat, so scroll- and drag-driven
+   position updates stay 1:1 with no lag. */
+.show-chatbot.is-morphing {
+    transition:
+        bottom var(--dur-3, 360ms) cubic-bezier(0.16, 1, 0.3, 1),
+        right var(--dur-3, 360ms) cubic-bezier(0.16, 1, 0.3, 1),
+        transform var(--dur-2, 220ms) var(--ease, ease),
+        box-shadow var(--dur-2, 220ms) var(--ease, ease);
+}
+
+/* Docked as the panel's avatar: sit above the dock and drop the hover/press bounce so it
+   reads as a fixed avatar rather than a button. chat-fab.js pins it to the panel corner. */
+.show-chatbot[aria-expanded="true"] {
+    z-index: 60;
+}
+
+.show-chatbot[aria-expanded="true"]:hover,
+.show-chatbot[aria-expanded="true"]:active {
+    transform: none;
+}
+
 /* Eyes ride the FAB like it is a sphere: chat-eyes.js projects each eye onto the orb
    surface and foreshortens it toward the limb (see that file). The plane below fills
    the button so the JS translate is measured from the orb centre; each .chatbot-eye
@@ -93,10 +116,14 @@
     }
 }
 
-/* Excited on hover: a quick blink burst. The gaze eases to centre in chat-eyes.js as
-   the pointer settles on the button, so the eyes look straight ahead. */
-.show-chatbot:hover .chatbot-pupil {
-    animation: chatbot-blink-excited 1.6s var(--ease, ease) infinite;
+/* Excited on hover: a quick blink burst. Gated to true hover devices so a sticky
+   :hover left after a tap on touch never swaps the calm blink for the burst — on mobile
+   the eyes just blink normally. The gaze eases to centre in chat-eyes.js as the pointer
+   settles on the button, so the eyes look straight ahead. */
+@media (hover: hover) {
+    .show-chatbot:hover .chatbot-pupil {
+        animation: chatbot-blink-excited 1.6s var(--ease, ease) infinite;
+    }
 }
 
 @keyframes chatbot-blink-excited {

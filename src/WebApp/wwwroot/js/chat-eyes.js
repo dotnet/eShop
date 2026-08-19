@@ -6,9 +6,14 @@
 // reads as the ball physically turning to look. Positions are written as inline
 // transforms (never framework state). Blink + the hover burst live in CSS on the
 // inner pupil, so gaze and blink never fight over a single transform. Skipped under
-// reduced motion, where the eyes rest symmetric and upright.
+// reduced motion, and on touch / coarse pointers where the eyes rest FORWARD (centred
+// gaze) and simply blink — there is no pointer to follow.
 (function () {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    // Only a genuine hovering pointer (mouse / trackpad) drives the gaze. On phones and
+    // other touch devices there is nothing to track, so we never wire pointer events and
+    // the pair stays forward, blinking on the CSS timer.
+    const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
 
     const MAXG = 0.50;   // max gaze offset applied to both eyes (fraction of R)
     const RAMP = 320;    // px of pointer travel that maps to full gaze
@@ -85,8 +90,9 @@
     function rest() { px = py = null; tgx = tgy = 0; kick(); }
 
     function enable() {
-        render();                       // set the resting pair immediately
+        render();                       // set the resting pair immediately (forward gaze)
         if (reduce.matches) return;     // static under reduced motion
+        if (!fine.matches) return;      // touch / coarse pointer: rest forward, blink only
         window.addEventListener('pointermove', onMove, { passive: true });
     }
     function disable() {
@@ -107,5 +113,10 @@
 
     if (reduce.addEventListener) {
         reduce.addEventListener('change', () => (reduce.matches ? disable() : enable()));
+    }
+    if (fine.addEventListener) {
+        // A mouse being connected/removed (or the primary pointer changing) re-evaluates
+        // whether we track the pointer; disable() first resets the pair to forward.
+        fine.addEventListener('change', () => { disable(); enable(); });
     }
 })();

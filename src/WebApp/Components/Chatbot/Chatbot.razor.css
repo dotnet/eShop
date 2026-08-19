@@ -16,14 +16,16 @@
     font-weight: 400;
 }
 
-/* Header doubles as the drag handle. */
+/* Header doubles as the drag handle. The left padding reserves room for the launcher,
+   which docks into the top-left corner as the assistant avatar while the panel is open. */
 .chatbot-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
     flex-shrink: 0;
-    padding: 0.75rem 0.75rem 0.75rem 1.1rem;
+    min-height: 3.5rem;
+    padding: 0.75rem 0.75rem 0.75rem 3.9rem;
     border-bottom: 1px solid var(--color-line);
     background: var(--color-surface);
     cursor: grab;

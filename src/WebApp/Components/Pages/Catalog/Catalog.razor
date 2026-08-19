@@ -95,6 +95,8 @@
                         }
                     </span>
 
+                    <span class="page-status" aria-hidden="true">@current&nbsp;/&nbsp;@totalPages</span>
+
                     @if (current < totalPages)
                     {
                         <a class="page-nav" href="@PageUri(current + 1)" rel="next" aria-label="Next page">

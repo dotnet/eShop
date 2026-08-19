@@ -45,7 +45,7 @@ else
                     @order.Date
                 </div>
                 <div class="order-total">
-                   $@order.Total.ToString("0.00")
+                   $@order.Total.ToPriceDisplay()
                 </div>
                 <div class="order-status">
                     <span class="status @order.Status.ToLower()">

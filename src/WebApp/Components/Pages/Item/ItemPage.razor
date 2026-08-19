@@ -38,7 +38,7 @@
 
                 <form class="add-to-cart" method="post" @formname="add-to-cart" @onsubmit="@AddToCartAsync" data-enhance="@isLoggedIn">
                     <AntiforgeryToken />
-                    <span class="price">$@item.Price.ToString("0.00")</span>
+                    <span class="price">$@item.Price.ToPriceDisplay()</span>
 
                     @if (isLoggedIn)
                     {

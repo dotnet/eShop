@@ -43,10 +43,6 @@
                             <a href="@BrandUri(brand.Id)"
                                class="catalog-search-tag @(isActive ? "active" : "") @(isEmpty ? "is-empty" : "")"
                                aria-disabled="@(isEmpty ? "true" : null)">
-                                @if (isActive)
-                                {
-                                    <svg class="catalog-search-tag-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
-                                }
                                 <span>@brand.Brand</span>
                                 <span class="catalog-search-tag-count">@count</span>
                             </a>
@@ -69,10 +65,6 @@
                             <a href="@TypeUri(itemType.Id)"
                                class="catalog-search-tag @(isActive ? "active" : "") @(isEmpty ? "is-empty" : "")"
                                aria-disabled="@(isEmpty ? "true" : null)">
-                                @if (isActive)
-                                {
-                                    <svg class="catalog-search-tag-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
-                                }
                                 <span>@itemType.Type</span>
                                 <span class="catalog-search-tag-count">@count</span>
                             </a>

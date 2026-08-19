@@ -152,14 +152,6 @@
     color: var(--accent-contrast);
 }
 
-/* Check on active (selected) chips signals the additive, click-to-toggle-off behaviour. */
-.catalog-search-tag-check {
-    width: 0.9rem;
-    height: 0.9rem;
-    margin-left: -0.1rem;
-    flex-shrink: 0;
-}
-
 .catalog-search-tag-count {
     display: inline-grid;
     place-items: center;
