@@ -276,20 +276,36 @@
     height: 1.15rem;
 }
 
-/* Resize grip, bottom-right corner. */
-.chatbot-resize {
+/* Resize handles: every edge and corner. The strips sit just inside the pane
+   (which clips its overflow) so they overlap the border without being cut off.
+   Corners sit above the edges so their diagonal cursor wins in the shared zone. */
+.chatbot-grip {
     position: absolute;
-    right: 1px;
-    bottom: 1px;
-    width: 1.15rem;
-    height: 1.15rem;
-    cursor: nwse-resize;
-    touch-action: none;
     z-index: 4;
+    touch-action: none;
 }
 
-.chatbot-resize::after {
-    content: "";
+.chatbot-grip-n { top: 0; left: 12px; right: 12px; height: 8px; cursor: ns-resize; }
+.chatbot-grip-s { bottom: 0; left: 12px; right: 12px; height: 8px; cursor: ns-resize; }
+.chatbot-grip-e { right: 0; top: 12px; bottom: 12px; width: 8px; cursor: ew-resize; }
+.chatbot-grip-w { left: 0; top: 12px; bottom: 12px; width: 8px; cursor: ew-resize; }
+
+.chatbot-grip-nw,
+.chatbot-grip-ne,
+.chatbot-grip-sw,
+.chatbot-grip-se {
+    width: 15px;
+    height: 15px;
+    z-index: 5;
+}
+
+.chatbot-grip-nw { top: 0; left: 0; cursor: nwse-resize; }
+.chatbot-grip-ne { top: 0; right: 0; cursor: nesw-resize; }
+.chatbot-grip-sw { bottom: 0; left: 0; cursor: nesw-resize; }
+.chatbot-grip-se { bottom: 0; right: 0; cursor: nwse-resize; }
+
+/* Visible grip mark, kept only on the bottom-right corner. */
+.chatbot-grip-mark {
     position: absolute;
     right: 3px;
     bottom: 3px;
@@ -306,14 +322,14 @@
     }
 }
 
-/* Phones: the dock becomes a near-full-screen sheet (geometry in
+/* Small screens: the dock becomes a wide sheet (geometry in
    ShowChatbotButton.razor.css); disable drag/resize affordances on the pane. */
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 768px) {
     .chatbot-header {
         cursor: default;
     }
 
-    .chatbot-resize {
+    .chatbot-grip {
         display: none;
     }
 }

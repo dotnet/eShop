@@ -11,6 +11,8 @@
 
     const dock = () => document.querySelector('[data-chat-dock]');
     const fab = () => document.querySelector('[data-chat-toggle]');
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+    const SHEET_MAX = 768; // at or below this width the CSS sheet layout owns geometry
 
     function readGeom() {
         try { return JSON.parse(localStorage.getItem(GEOM_KEY) || 'null'); } catch { return null; }
@@ -32,6 +34,12 @@
     }
 
     function applyGeom(d) {
+        // On small screens the responsive CSS sheet owns the geometry: strip any
+        // desktop drag/resize inline styles so the dock renders full-width there.
+        if (window.innerWidth <= SHEET_MAX) {
+            d.style.width = d.style.height = d.style.left = d.style.top = d.style.right = d.style.bottom = '';
+            return;
+        }
         const g = readGeom();
         if (!g) return; // fall back to the default CSS position (bottom-right)
         const w = Math.max(MIN_W, Math.min(g.w, window.innerWidth - EDGE * 2));
@@ -99,12 +107,28 @@
     function onResizeMove(e) {
         if (!rez) return;
         const d = dock();
-        let w = rez.w + (e.clientX - rez.x);
-        let h = rez.h + (e.clientY - rez.y);
-        w = Math.max(MIN_W, Math.min(w, window.innerWidth - rez.left - EDGE));
-        h = Math.max(MIN_H, Math.min(h, window.innerHeight - rez.top - EDGE));
-        d.style.width = w + 'px';
-        d.style.height = h + 'px';
+        const dir = rez.dir;
+        const dx = e.clientX - rez.x;
+        const dy = e.clientY - rez.y;
+        let left = rez.left, top = rez.top, w = rez.w, h = rez.h;
+
+        if (dir.indexOf('e') !== -1) {
+            w = clamp(rez.w + dx, MIN_W, window.innerWidth - EDGE - rez.left);
+        }
+        if (dir.indexOf('w') !== -1) {
+            const right = rez.left + rez.w;      // right edge stays fixed
+            w = clamp(rez.w - dx, MIN_W, right - EDGE);
+            left = right - w;
+        }
+        if (dir.indexOf('s') !== -1) {
+            h = clamp(rez.h + dy, MIN_H, window.innerHeight - EDGE - rez.top);
+        }
+        if (dir.indexOf('n') !== -1) {
+            const bottom = rez.top + rez.h;      // bottom edge stays fixed
+            h = clamp(rez.h - dy, MIN_H, bottom - EDGE);
+            top = bottom - h;
+        }
+        Object.assign(d.style, { width: w + 'px', height: h + 'px', left: left + 'px', top: top + 'px' });
     }
     function onResizeEnd() {
         document.removeEventListener('pointermove', onResizeMove);
@@ -115,8 +139,10 @@
     function startResize(e) {
         const d = dock();
         if (!d) return;
+        const handle = e.target.closest('[data-chat-resize]');
+        const dir = (handle && handle.getAttribute('data-chat-resize')) || 'se';
         const r = pin(d);
-        rez = { x: e.clientX, y: e.clientY, w: r.width, h: r.height, left: r.left, top: r.top };
+        rez = { x: e.clientX, y: e.clientY, w: r.width, h: r.height, left: r.left, top: r.top, dir };
         document.addEventListener('pointermove', onResizeMove);
         document.addEventListener('pointerup', onResizeEnd);
         e.preventDefault();
