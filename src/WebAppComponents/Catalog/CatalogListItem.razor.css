@@ -30,7 +30,6 @@
 
 .catalog-product:hover {
     --card-lift: -4px;
-    --card-scale: 1.008;
     border-color: var(--color-line-strong);
     box-shadow: var(--shadow-md);
 }
@@ -80,11 +79,6 @@
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    transition: transform var(--dur-3) var(--ease);
-}
-
-.catalog-product:hover .catalog-product-image img {
-    transform: scale(1.025);
 }
 
 .catalog-product-content {

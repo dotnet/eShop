@@ -15,7 +15,7 @@
     </div>
 </header>
 
-<div class="eshop-hero @(IsCatalog ? "is-home" : "") @(IsItemPage ? "is-compact" : "")">
+<div class="eshop-hero @(IsCatalog ? "is-home" : "") @(IsCompactHero ? "is-compact" : "")">
     @{
         var headerImage = IsCatalog ? "images/header-home.webp" : "images/header.webp";
     }
@@ -38,4 +38,11 @@
     private Type? PageComponentType => HttpContext?.GetEndpoint()?.Metadata.OfType<ComponentTypeMetadata>().FirstOrDefault()?.Type;
     private bool IsCatalog => PageComponentType == typeof(Pages.Catalog.Catalog);
     private bool IsItemPage => PageComponentType == typeof(Pages.Item.ItemPage);
+
+    // Pages whose content should sit near the top under a shorter hero band.
+    private bool IsCompactHero =>
+        IsItemPage
+        || PageComponentType == typeof(Pages.Cart.CartPage)
+        || PageComponentType == typeof(Pages.User.Orders)
+        || PageComponentType == typeof(Pages.Checkout.Checkout);
 }
