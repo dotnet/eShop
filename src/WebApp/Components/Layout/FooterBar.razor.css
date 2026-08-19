@@ -1,4 +1,5 @@
 .eshop-footer {
+  position: relative;
   margin-top: 5rem;
   background-color: var(--color-ink);
   width: 100%;

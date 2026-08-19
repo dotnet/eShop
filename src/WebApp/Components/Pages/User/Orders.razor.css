@@ -123,15 +123,15 @@
 }
 
 .order-status .status.cancelled {
-    color: #c0341d;
-    border-color: #c0341d;
-    background: #fdecea;
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+    background: var(--color-danger-tint);
 }
 
 .order-status .status.paid {
-    color: #1f7a34;
-    border-color: #1f7a34;
-    background: #eaf5ec;
+    color: var(--color-success);
+    border-color: var(--color-success);
+    background: var(--color-success-tint);
 }
 
 @media only screen and (max-width: 480px) {

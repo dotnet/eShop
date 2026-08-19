@@ -47,15 +47,31 @@
                         </div>
                     </div>
                     <div class="catalog-item-quantity">
-                        <form method="post" data-enhance>
+                        <form method="post" data-enhance class="cart-quantity">
                             <input type="hidden" name="_handler" value="update-cart" />
                             <AntiforgeryToken />
-                            <input aria-label="product quantity" type="number" name="UpdateQuantityValue" value="@quantity" min="0" />
-                            <button type="submit" 
-                                    class="button button-secondary"
-                                    name="UpdateQuantityId" 
-                                    value="@item.ProductId">
-                                Update
+                            <input type="hidden" name="UpdateQuantityId" value="@item.ProductId" />
+                            <button type="submit" class="cart-quantity-apply" name="UpdateQuantityValue" value="@quantity" data-cart-quantity-apply tabindex="-1" aria-hidden="true">Apply</button>
+
+                            <div class="quantity-stepper">
+                                <button type="submit" class="quantity-step" name="UpdateQuantityValue" value="@(quantity - 1)"
+                                        aria-label="Decrease quantity of @item.ProductName" disabled="@(quantity <= 1)">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /></svg>
+                                </button>
+                                <input class="quantity-value" type="number" min="1" inputmode="numeric"
+                                       value="@quantity" aria-label="Quantity of @item.ProductName" data-cart-quantity-input />
+                                <button type="submit" class="quantity-step" name="UpdateQuantityValue" value="@(quantity + 1)"
+                                        aria-label="Increase quantity of @item.ProductName">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                                </button>
+                            </div>
+
+                            <button type="submit" class="cart-remove" name="UpdateQuantityValue" value="0"
+                                    aria-label="Remove @item.ProductName from your bag">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13" />
+                                </svg>
+                                <span>Remove</span>
                             </button>
                         </form>
                     </div>

@@ -107,31 +107,126 @@
     color: var(--color-ink);
 }
 
-.cart-items .cart-item .catalog-item-quantity form {
+.cart-items .cart-item .catalog-item-quantity .cart-quantity {
     display: flex;
-    gap: 0.5rem;
+    align-items: center;
+    gap: 0.85rem;
+    flex-wrap: wrap;
 }
 
-.cart-items .cart-item .catalog-item-quantity input {
-    max-width: 3.75rem;
-    padding: 0.6rem 0.65rem;
+/* Segmented [-] [number] [+] stepper. Custom buttons replace the native number
+   spinners, so the increment controls are obvious and use cursor: pointer. */
+.quantity-stepper {
+    display: inline-flex;
+    align-items: center;
     border: 1px solid var(--color-line-strong);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     background: var(--color-surface);
-    color: var(--color-ink);
-    font: inherit;
+    overflow: hidden;
     transition: border-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
 }
 
-.cart-items .cart-item .catalog-item-quantity input:focus {
-    outline: none;
+.quantity-stepper:focus-within {
     border-color: var(--color-ink);
-    box-shadow: 0 0 0 3px var(--color-surface-3);
+    box-shadow: var(--ring);
 }
 
-.cart-items .cart-item .catalog-item-quantity .button {
-    align-self: stretch;
-    padding: 0.6rem 1rem;
+.quantity-step {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.5rem;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--color-ink);
+    cursor: pointer;
+    transition: background-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+}
+
+.quantity-step svg {
+    width: 1.05rem;
+    height: 1.05rem;
+}
+
+.quantity-step:hover {
+    background: var(--color-surface-3);
+}
+
+.quantity-step:disabled {
+    color: var(--color-line-strong);
+    background: transparent;
+    cursor: not-allowed;
+}
+
+.quantity-value {
+    width: 2.75rem;
+    height: 2.5rem;
+    padding: 0;
+    border: none;
+    border-inline: 1px solid var(--color-line);
+    background: transparent;
+    color: var(--color-ink);
+    font: inherit;
+    font-weight: 600;
+    text-align: center;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.quantity-value::-webkit-outer-spin-button,
+.quantity-value::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.quantity-value:focus {
+    outline: none;
+}
+
+/* Visually hidden submitter that cart-quantity.js triggers to commit a typed value. */
+.cart-quantity-apply {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    border: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* Low-friction remove control: icon + label, destructive hover from the status token. */
+.cart-remove {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-muted);
+    font: inherit;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+}
+
+.cart-remove svg {
+    width: 1.05rem;
+    height: 1.05rem;
+}
+
+.cart-remove:hover {
+    background: var(--color-danger-tint);
+    color: var(--color-danger);
+}
+
+.cart-remove:focus-visible {
+    outline: 2px solid var(--color-danger);
+    outline-offset: 2px;
 }
 
 /* Framed product thumbnail, matching the catalog card language. */

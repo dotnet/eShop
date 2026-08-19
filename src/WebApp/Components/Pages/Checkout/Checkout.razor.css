@@ -57,13 +57,13 @@
 .checkout ::deep input:focus {
     outline: none;
     border-color: var(--color-ink);
-    box-shadow: 0 0 0 3px var(--color-surface-3);
+    box-shadow: var(--ring);
 }
 
 .checkout ::deep .validation-message {
     display: block;
     margin-top: 0.35rem;
-    color: #c0341d;
+    color: var(--color-danger);
     font-size: var(--text-xs);
     font-weight: 600;
 }

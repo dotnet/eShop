@@ -523,27 +523,33 @@
           {
             "name": "type",
             "in": "query",
-            "description": "The type of items to return",
+            "description": "The types of items to return. Repeat the parameter to filter by multiple types.",
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
-              "format": "int32"
+              "type": "array",
+              "items": {
+                "pattern": "^-?(?:0|[1-9]\\d*)$",
+                "type": [
+                  "integer",
+                  "string"
+                ],
+                "format": "int32"
+              }
             }
           },
           {
             "name": "brand",
             "in": "query",
-            "description": "The brand of items to return",
+            "description": "The brands of items to return. Repeat the parameter to filter by multiple brands.",
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
-              "format": "int32"
+              "type": "array",
+              "items": {
+                "pattern": "^-?(?:0|[1-9]\\d*)$",
+                "type": [
+                  "integer",
+                  "string"
+                ],
+                "format": "int32"
+              }
             }
           },
           {

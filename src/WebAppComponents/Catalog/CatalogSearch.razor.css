@@ -149,7 +149,15 @@
 .catalog-search-tag.active {
     background: var(--color-ink);
     border-color: var(--color-ink);
-    color: #fff;
+    color: var(--accent-contrast);
+}
+
+/* Check on active (selected) chips signals the additive, click-to-toggle-off behaviour. */
+.catalog-search-tag-check {
+    width: 0.9rem;
+    height: 0.9rem;
+    margin-left: -0.1rem;
+    flex-shrink: 0;
 }
 
 .catalog-search-tag-count {
@@ -175,7 +183,7 @@
 
 .catalog-search-tag.active .catalog-search-tag-count {
     background: rgba(255, 255, 255, 0.18);
-    color: #fff;
+    color: var(--accent-contrast);
 }
 
 /* Facets that would return zero in the current context: shown but not selectable. */

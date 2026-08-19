@@ -7,7 +7,7 @@
 <SectionContent SectionName="page-header-subtitle">Start the season with the latest in clothing and equipment.</SectionContent>
 
 <div class="catalog">
-    <CatalogSearch BrandId="@BrandId" ItemTypeId="@ItemTypeId" />
+    <CatalogSearch BrandIds="@BrandIds" TypeIds="@TypeIds" />
 
     @if (catalogResult is null)
     {
@@ -120,10 +120,10 @@
     public int? Page { get; set; }
 
     [SupplyParameterFromQuery(Name = "brand")]
-    public int? BrandId { get; set; }
+    public int[]? BrandIds { get; set; }
 
     [SupplyParameterFromQuery(Name = "type")]
-    public int? ItemTypeId { get; set; }
+    public int[]? TypeIds { get; set; }
 
     CatalogResult? catalogResult;
 
@@ -164,7 +164,7 @@
         catalogResult = await CatalogService.GetCatalogItems(
             Page.GetValueOrDefault(1) - 1,
             PageSize,
-            BrandId,
-            ItemTypeId);
+            BrandIds,
+            TypeIds);
     }
 }
