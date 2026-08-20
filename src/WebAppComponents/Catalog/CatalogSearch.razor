@@ -79,7 +79,7 @@
 @code {
     IEnumerable<CatalogBrand>? catalogBrands;
     IEnumerable<CatalogItemType>? catalogItemTypes;
-    List<CatalogItem>? allItems;
+    CatalogFacets? facets;
 
     [Parameter] public int[]? BrandIds { get; set; }
     [Parameter] public int[]? TypeIds { get; set; }
@@ -100,24 +100,57 @@
     {
         var brandsTask = CatalogService.GetBrands();
         var itemTypesTask = CatalogService.GetTypes();
-        var itemsTask = CatalogService.GetCatalogItems(0, 1000, null, null);
-        await Task.WhenAll(brandsTask, itemTypesTask, itemsTask);
+        var facetsTask = CatalogService.GetCatalogFacets(BrandIds, TypeIds);
+        await Task.WhenAll(brandsTask, itemTypesTask, facetsTask);
         catalogBrands = brandsTask.Result;
         catalogItemTypes = itemTypesTask.Result;
-        allItems = itemsTask.Result.Data;
+        facets = facetsTask.Result;
     }
 
     // Contextual counts. Within a facet, selections are additive (OR / union); across
-    // facets they intersect (AND). A brand option is therefore counted against the active
-    // TYPE set, and a type option against the active BRAND set, so the badges preview the
-    // result of adding that option to the current selection.
-    private int BrandCount(int? brandId) => allItems is null ? 0 : allItems.Count(i =>
-        (brandId is null || i.CatalogBrandId == brandId) &&
-        (Types.Count == 0 || Types.Contains(i.CatalogTypeId)));
+    // facets they intersect (AND). The counts come from a server-side aggregation, so a
+    // brand option is counted against the active TYPE set and a type option against the
+    // active BRAND set, previewing the result of adding that option to the current
+    // selection. A facet that is absent from the response has no matching items (count 0).
+    private int BrandCount(int? brandId)
+    {
+        if (facets is null)
+        {
+            return 0;
+        }
+        if (brandId is null)
+        {
+            return facets.BrandTotal;
+        }
+        foreach (var count in facets.BrandCounts)
+        {
+            if (count.Id == brandId)
+            {
+                return count.Count;
+            }
+        }
+        return 0;
+    }
 
-    private int TypeCount(int? typeId) => allItems is null ? 0 : allItems.Count(i =>
-        (typeId is null || i.CatalogTypeId == typeId) &&
-        (Brands.Count == 0 || Brands.Contains(i.CatalogBrandId)));
+    private int TypeCount(int? typeId)
+    {
+        if (facets is null)
+        {
+            return 0;
+        }
+        if (typeId is null)
+        {
+            return facets.TypeTotal;
+        }
+        foreach (var count in facets.TypeCounts)
+        {
+            if (count.Id == typeId)
+            {
+                return count.Count;
+            }
+        }
+        return 0;
+    }
 
     private string BrandUri(int? brandId) => Nav.GetUriWithQueryParameters(new Dictionary<string, object?>()
     {

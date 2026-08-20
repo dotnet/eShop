@@ -156,6 +156,14 @@
   color: #fff;
 }
 
+/* Placeholder entries are not wired to a route yet; without an href they do not
+   navigate, so keep the default cursor instead of implying a click target. */
+.eshop-footer-social a:not([href]),
+.eshop-footer-col a:not([href]),
+.eshop-footer-legal a:not([href]) {
+  cursor: default;
+}
+
 @media only screen and (max-width: 900px) {
   .eshop-footer-main {
     grid-template-columns: 1fr 1fr;

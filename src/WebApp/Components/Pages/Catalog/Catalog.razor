@@ -1,6 +1,7 @@
 @page "/"
 @inject NavigationManager Nav
 @inject CatalogService CatalogService
+@attribute [StreamRendering]
 
 <PageTitle>AdventureWorks</PageTitle>
 <SectionContent SectionName="page-header-title">Ready for a new adventure?</SectionContent>
@@ -48,20 +49,37 @@
         <div class="catalog-results">
             <div class="catalog-toolbar">
                 <p class="catalog-count">@catalogResult.Count @(catalogResult.Count == 1 ? "product" : "products")</p>
-                <div class="catalog-sort">
-                    <label class="catalog-sort-label" for="catalog-sort-select">Sort</label>
-                    <span class="catalog-sort-field">
-                        <select id="catalog-sort-select" class="catalog-sort-select" data-catalog-sort aria-label="Sort products">
-                            <option value="featured">Featured</option>
-                            <option value="name-asc">Name: A to Z</option>
-                            <option value="name-desc">Name: Z to A</option>
-                            <option value="price-asc">Price: Low to High</option>
-                            <option value="price-desc">Price: High to Low</option>
-                        </select>
-                        <svg class="catalog-sort-caret" viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m2.5 4.5 3.5 3.5 3.5-3.5" />
-                        </svg>
-                    </span>
+                <div class="catalog-sort" data-catalog-sort>
+                    <span class="catalog-sort-label" id="catalog-sort-label">Sort</span>
+                    <div class="catalog-sort-field">
+                        <div class="catalog-sort-trigger"
+                             id="catalog-sort-trigger"
+                             role="combobox"
+                             tabindex="0"
+                             aria-haspopup="listbox"
+                             aria-expanded="false"
+                             aria-controls="catalog-sort-listbox"
+                             aria-labelledby="catalog-sort-label catalog-sort-trigger"
+                             data-catalog-sort-trigger>
+                            <span class="catalog-sort-value" data-catalog-sort-value>Featured</span>
+                            <svg class="catalog-sort-caret" viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m2.5 4.5 3.5 3.5 3.5-3.5" />
+                            </svg>
+                        </div>
+                        <ul class="catalog-sort-listbox"
+                            id="catalog-sort-listbox"
+                            role="listbox"
+                            tabindex="-1"
+                            aria-labelledby="catalog-sort-label"
+                            data-catalog-sort-listbox
+                            hidden>
+                            <li class="catalog-sort-option" role="option" id="catalog-sort-opt-featured" data-value="featured" aria-selected="true">Featured</li>
+                            <li class="catalog-sort-option" role="option" id="catalog-sort-opt-name-asc" data-value="name-asc" aria-selected="false">Name: A to Z</li>
+                            <li class="catalog-sort-option" role="option" id="catalog-sort-opt-name-desc" data-value="name-desc" aria-selected="false">Name: Z to A</li>
+                            <li class="catalog-sort-option" role="option" id="catalog-sort-opt-price-asc" data-value="price-asc" aria-selected="false">Price: Low to High</li>
+                            <li class="catalog-sort-option" role="option" id="catalog-sort-opt-price-desc" data-value="price-desc" aria-selected="false">Price: High to Low</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 

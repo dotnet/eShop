@@ -130,7 +130,15 @@
     }
     // Blazor enhanced navigation morphs the DOM and strips inline styles; re-seat the
     // eyes after each enhanced load so they never vanish to the overlapping centre.
-    document.addEventListener('enhancedload', () => { render(); kick(); watchDockState(); });
+    // enhancedload is a Blazor registry event (not a DOM event), so it must be wired
+    // through Blazor.addEventListener like the sibling enhancement scripts.
+    (function hookEnhancedNav() {
+        if (window.Blazor && typeof window.Blazor.addEventListener === 'function') {
+            window.Blazor.addEventListener('enhancedload', () => { render(); kick(); watchDockState(); });
+        } else {
+            setTimeout(hookEnhancedNav, 150);
+        }
+    })();
 
     if (reduce.addEventListener) {
         reduce.addEventListener('change', () => (reduce.matches ? disable() : enable()));

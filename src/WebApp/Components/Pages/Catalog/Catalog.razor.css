@@ -18,6 +18,8 @@
     justify-content: space-between;
     gap: 1rem;
     margin: 1.25rem 0;
+    position: relative;
+    z-index: 3;
 }
 
 .catalog-count {
@@ -46,10 +48,11 @@
     align-items: center;
 }
 
-.catalog-sort-select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
+.catalog-sort-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 8.75rem;
     margin: 0;
     font: inherit;
     font-size: var(--text-sm);
@@ -58,29 +61,117 @@
     background: var(--color-surface);
     border: 1px solid var(--color-line-strong);
     border-radius: var(--radius-pill);
-    padding: 0.5rem 2.25rem 0.5rem 0.95rem;
+    padding: 0.5rem 0.9rem;
     line-height: 1.2;
     cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
     transition: border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
 }
 
-.catalog-sort-select:hover {
+.catalog-sort-value {
+    flex: 1 1 auto;
+    white-space: nowrap;
+}
+
+.catalog-sort-trigger:hover {
     border-color: var(--color-ink);
 }
 
-.catalog-sort-select:focus-visible {
+.catalog-sort-trigger:focus-visible {
     outline: none;
     border-color: var(--focus);
     box-shadow: var(--ring);
 }
 
 .catalog-sort-caret {
-    position: absolute;
-    right: 0.85rem;
     width: 0.7rem;
     height: 0.7rem;
+    flex-shrink: 0;
     color: var(--color-muted);
-    pointer-events: none;
+    transition: transform var(--dur-2) var(--ease);
+}
+
+.catalog-sort.is-open .catalog-sort-caret {
+    transform: rotate(180deg);
+}
+
+.catalog-sort-listbox {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    right: 0;
+    z-index: 40;
+    min-width: 100%;
+    width: max-content;
+    max-width: 17rem;
+    margin: 0;
+    padding: 0.35rem;
+    list-style: none;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    animation: catalog-sort-pop var(--dur-1) var(--ease);
+}
+
+.catalog-sort-listbox[hidden] {
+    display: none;
+}
+
+.catalog-sort-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
+    padding: 0.5rem 0.65rem;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-ink);
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.catalog-sort-option::after {
+    content: "";
+    width: 0.9rem;
+    height: 0.9rem;
+    flex-shrink: 0;
+    opacity: 0;
+    background: currentColor;
+    -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 8 3.5 3.5L13 5'/%3E%3C/svg%3E");
+    mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 8 3.5 3.5L13 5'/%3E%3C/svg%3E");
+}
+
+.catalog-sort-option[aria-selected="true"]::after {
+    opacity: 1;
+}
+
+.catalog-sort-option:hover,
+.catalog-sort-option.is-active {
+    background: var(--color-surface-2);
+}
+
+@keyframes catalog-sort-pop {
+    from {
+        opacity: 0;
+        transform: translateY(-0.25rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .catalog-sort-listbox {
+        animation: none;
+    }
+
+    .catalog-sort-caret {
+        transition: none;
+    }
 }
 
 @media (max-width: 32rem) {

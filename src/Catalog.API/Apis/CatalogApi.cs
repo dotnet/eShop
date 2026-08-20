@@ -49,6 +49,12 @@ public static class CatalogApi
             .WithDescription("Get the picture for a catalog item")
             .WithTags("Items");
 
+        api.MapGet("/items/facets", GetCatalogFacets)
+            .WithName("GetCatalogFacets")
+            .WithSummary("Get catalog facet counts")
+            .WithDescription("Get per-brand and per-type item counts for the current filter selection, used to drive the catalog filter badges without transferring every item to the client.")
+            .WithTags("Items");
+
         // Routes for resolving catalog items using AI.
         v1.MapGet("/items/withsemanticrelevance/{text:minlength(1)}", GetItemsBySemanticRelevanceV1)
             .WithName("GetRelevantItems")
@@ -157,6 +163,44 @@ public static class CatalogApi
             .ToListAsync();
 
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
+    }
+
+    public static async Task<Ok<CatalogFacets>> GetCatalogFacets(
+        [AsParameters] CatalogServices services,
+        [Description("The types the counts should be evaluated within. Repeat the parameter to include multiple types.")] int[]? type,
+        [Description("The brands the counts should be evaluated within. Repeat the parameter to include multiple brands.")] int[]? brand)
+    {
+        var items = (IQueryable<CatalogItem>)services.Context.CatalogItems;
+
+        // Brand counts are evaluated against the active type filter, and type counts against
+        // the active brand filter. This mirrors the catalog's additive-within-facet,
+        // intersect-across-facet selection semantics so each badge previews the result of
+        // adding that option to the current selection.
+        var brandScope = items;
+        if (type is { Length: > 0 })
+        {
+            brandScope = brandScope.Where(c => type.Contains(c.CatalogTypeId));
+        }
+        var brandCounts = await brandScope
+            .GroupBy(c => c.CatalogBrandId)
+            .Select(g => new CatalogFacetCount(g.Key, g.Count()))
+            .ToListAsync();
+
+        var typeScope = items;
+        if (brand is { Length: > 0 })
+        {
+            typeScope = typeScope.Where(c => brand.Contains(c.CatalogBrandId));
+        }
+        var typeCounts = await typeScope
+            .GroupBy(c => c.CatalogTypeId)
+            .Select(g => new CatalogFacetCount(g.Key, g.Count()))
+            .ToListAsync();
+
+        return TypedResults.Ok(new CatalogFacets(
+            brandCounts,
+            typeCounts,
+            brandCounts.Sum(b => b.Count),
+            typeCounts.Sum(t => t.Count)));
     }
 
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
