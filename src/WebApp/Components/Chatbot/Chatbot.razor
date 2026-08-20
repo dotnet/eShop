@@ -69,7 +69,7 @@
     </div>
 
     <form class="chatbot-input" @onsubmit="SendMessageAsync">
-        <textarea placeholder="Ask about products, orders or recommendations..." @ref="@textbox" @bind="messageToSend"></textarea>
+        <textarea placeholder="Ask about products, orders or recommendations..." aria-label="Message to the shopping assistant" @ref="@textbox" @bind="messageToSend"></textarea>
         <button type="submit" class="chatbot-send" title="Send" aria-label="Send message" disabled="@(chatState is null)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M12 19V5M5 12l7-7 7 7" />
