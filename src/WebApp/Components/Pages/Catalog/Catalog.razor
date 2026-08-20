@@ -61,7 +61,7 @@
                              aria-controls="catalog-sort-listbox"
                              aria-labelledby="catalog-sort-label catalog-sort-trigger"
                              data-catalog-sort-trigger>
-                            <span class="catalog-sort-value" data-catalog-sort-value>Featured</span>
+                            <span class="catalog-sort-value" data-catalog-sort-value>Name: A to Z</span>
                             <svg class="catalog-sort-caret" viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m2.5 4.5 3.5 3.5 3.5-3.5" />
                             </svg>
@@ -73,8 +73,7 @@
                             aria-labelledby="catalog-sort-label"
                             data-catalog-sort-listbox
                             hidden>
-                            <li class="catalog-sort-option" role="option" id="catalog-sort-opt-featured" data-value="featured" aria-selected="true">Featured</li>
-                            <li class="catalog-sort-option" role="option" id="catalog-sort-opt-name-asc" data-value="name-asc" aria-selected="false">Name: A to Z</li>
+                            <li class="catalog-sort-option" role="option" id="catalog-sort-opt-name-asc" data-value="name-asc" aria-selected="true">Name: A to Z</li>
                             <li class="catalog-sort-option" role="option" id="catalog-sort-opt-name-desc" data-value="name-desc" aria-selected="false">Name: Z to A</li>
                             <li class="catalog-sort-option" role="option" id="catalog-sort-opt-price-asc" data-value="price-asc" aria-selected="false">Price: Low to High</li>
                             <li class="catalog-sort-option" role="option" id="catalog-sort-opt-price-desc" data-value="price-desc" aria-selected="false">Price: High to Low</li>
@@ -84,13 +83,9 @@
             </div>
 
             <div class="catalog-items">
-                @{
-                    var sortIndex = 0;
-                }
                 @foreach (var item in catalogResult.Data)
                 {
-                    <CatalogListItem Item="@item" SortIndex="sortIndex" />
-                    sortIndex++;
+                    <CatalogListItem Item="@item" />
                 }
             </div>
 

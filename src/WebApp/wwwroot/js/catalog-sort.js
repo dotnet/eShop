@@ -1,14 +1,12 @@
 // Client-side sort for the catalog grid. A custom, on-theme "Sort" control in the toolbar
 // (an ARIA select-only combobox: a button-like trigger plus a listbox popup) reorders the
-// product cards on the current page by name or price (ascending or descending), or restores
-// the server's default "Featured" order. The choice is persisted to localStorage so it
-// sticks across pages and visits, and re-applied after every Blazor enhanced navigation and
-// after streaming-render populates the grid. This is pure DOM reordering of existing nodes;
-// it never touches framework state and adds no motion.
+// product cards on the current page by name or price (ascending or descending). The choice
+// is persisted to localStorage so it sticks across pages and visits, and re-applied after
+// every Blazor enhanced navigation and after streaming-render populates the grid. This is
+// pure DOM reordering of existing nodes; it never touches framework state and adds no motion.
 (function () {
     const STORAGE_KEY = 'aw.catalog.sort.v1';
     const OPTIONS = [
-        { value: 'featured', label: 'Featured' },
         { value: 'name-asc', label: 'Name: A to Z' },
         { value: 'name-desc', label: 'Name: Z to A' },
         { value: 'price-asc', label: 'Price: Low to High' },
@@ -22,9 +20,9 @@
     function readPref() {
         try {
             const value = localStorage.getItem(STORAGE_KEY);
-            return VALID.has(value) ? value : 'featured';
+            return VALID.has(value) ? value : 'name-asc';
         } catch {
-            return 'featured';
+            return 'name-asc';
         }
     }
 
@@ -39,11 +37,9 @@
     function comparatorFor(mode) {
         const name = el => el.dataset.sortName || '';
         const price = el => parseFloat(el.dataset.sortPrice) || 0;
-        const featured = el => parseInt(el.dataset.featuredIndex, 10) || 0;
 
         const byName = (a, b) => name(a).localeCompare(name(b), undefined, { sensitivity: 'base', numeric: true });
         const byPrice = (a, b) => price(a) - price(b);
-        const byFeatured = (a, b) => featured(a) - featured(b);
 
         let primary;
         switch (mode) {
@@ -51,11 +47,11 @@
             case 'name-desc': primary = (a, b) => byName(b, a); break;
             case 'price-asc': primary = byPrice; break;
             case 'price-desc': primary = (a, b) => byPrice(b, a); break;
-            default: primary = byFeatured; break;
+            default: primary = byName; break;
         }
 
-        // Featured order is the stable tie-breaker so equal names/prices keep a sensible order.
-        return (a, b) => primary(a, b) || byFeatured(a, b);
+        // Name order is the tie-breaker so equal prices fall back to a stable, alphabetical order.
+        return (a, b) => primary(a, b) || byName(a, b);
     }
 
     let sorting = false;
@@ -90,7 +86,7 @@
 
     function reflect(r, value) {
         const valueEl = r.querySelector('[data-catalog-sort-value]');
-        if (valueEl) valueEl.textContent = LABELS.get(value) || LABELS.get('featured');
+        if (valueEl) valueEl.textContent = LABELS.get(value) || LABELS.get('name-asc');
         for (const opt of optionsOf(r)) {
             opt.setAttribute('aria-selected', opt.dataset.value === value ? 'true' : 'false');
         }
@@ -127,7 +123,7 @@
     }
 
     function selectValue(r, value) {
-        if (!VALID.has(value)) value = 'featured';
+        if (!VALID.has(value)) value = 'name-asc';
         writePref(value);
         reflect(r, value);
         applySort(value);

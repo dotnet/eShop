@@ -4,8 +4,7 @@
 
 <div class="catalog-item"
      data-sort-name="@Item.Name"
-     data-sort-price="@Item.Price.ToString(CultureInfo.InvariantCulture)"
-     data-featured-index="@SortIndex">
+     data-sort-price="@Item.Price.ToString(CultureInfo.InvariantCulture)">
     <a class="catalog-product" href="@ItemHelper.Url(Item)" data-enhance-nav="false">
         <span class='catalog-product-image'>
             <img alt="@Item.Name" src='@ProductImages.GetProductImageUrl(Item)' />
@@ -27,11 +26,4 @@
 
     [Parameter]
     public bool IsLoggedIn { get; set; }
-
-    /// <summary>
-    /// Position of this item in the server's default ("Featured") order. Client-side
-    /// sorting uses it to restore that order and as a stable tie-breaker.
-    /// </summary>
-    [Parameter]
-    public int SortIndex { get; set; }
 }
