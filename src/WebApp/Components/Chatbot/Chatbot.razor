@@ -1,9 +1,8 @@
-﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.Extensions.AI
 @using eShop.WebApp.Chatbot
 @inject IJSRuntime JS
-@inject NavigationManager Nav
 @inject CatalogService CatalogService
 @inject IProductImageUrlProvider ProductImages
 @inject BasketState BasketState
@@ -11,10 +10,33 @@
 @inject ILoggerFactory LoggerFactory
 @inject IServiceProvider ServiceProvider
 
-<div class="floating-pane">
-    <a href="@Nav.GetUriWithQueryParameter("chat", (string?)null)" class="hide-chatbot" title="Close .NET Concierge"><span>✖</span></a>
+<div class="floating-pane" id="chatbot-pane" role="dialog" aria-label="Shopping assistant">
+    <header class="chatbot-header" data-chat-drag-handle>
+        <span class="chatbot-title">
+            Shopping assistant
+        </span>
+        <div class="chatbot-header-actions">
+            <button type="button" class="chatbot-size" data-chat-size aria-pressed="false" title="Toggle wide view" aria-label="Toggle wide view">
+                <svg class="chatbot-size-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M8 8 4 12l4 4" />
+                    <path d="m16 8 4 4-4 4" />
+                    <path d="M4 12h16" />
+                </svg>
+                <svg class="chatbot-size-condense" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m4 8 4 4-4 4" />
+                    <path d="m20 8-4 4 4 4" />
+                    <path d="M9 12h6" />
+                </svg>
+            </button>
+            <button type="button" class="chatbot-close" data-chat-close title="Close" aria-label="Close assistant">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M18 6 6 18M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </header>
 
-    <div class="chatbot-chat" @ref="chat">
+    <div class="chatbot-chat @(chatState is null && missingConfiguration ? "is-centered" : "")" @ref="chat">
         @if (chatState is not null)
         {
             foreach (var message in chatState.Messages.Where(m => m.Role == ChatRole.Assistant || m.Role == ChatRole.User))
@@ -27,7 +49,17 @@
         }
         else if (missingConfiguration)
         {
-            <p class="message message-assistant"><strong>The chatbot is missing required configuration.</strong> Set <code>UseFoundry=true</code> in the AppHost environment for Microsoft Foundry, or enable Ollama for local AI.</p>
+            <div class="chatbot-notice">
+                <span class="chatbot-notice-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M12 16v-4" />
+                        <path d="M12 8h.01" />
+                    </svg>
+                </span>
+                <p class="chatbot-notice-title">Assistant isn't switched on</p>
+                <p>Turn on Microsoft Foundry (<code>UseFoundry=true</code> in the AppHost) or enable Ollama for local AI, then reopen this panel.</p>
+            </div>
         }
 
         @if (thinking)
@@ -37,9 +69,24 @@
     </div>
 
     <form class="chatbot-input" @onsubmit="SendMessageAsync">
-        <textarea placeholder="Start chatting..." @ref="@textbox" @bind="messageToSend"></textarea>
-        <button type="submit" title="Send" disabled="@(chatState is null)">Send</button>
+        <textarea placeholder="Ask about products, orders or recommendations..." aria-label="Message to the shopping assistant" @ref="@textbox" @bind="messageToSend"></textarea>
+        <button type="submit" class="chatbot-send" title="Send" aria-label="Send message" disabled="@(chatState is null)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 19V5M5 12l7-7 7 7" />
+            </svg>
+        </button>
     </form>
+
+    <span class="chatbot-grip chatbot-grip-n" data-chat-resize="n" aria-hidden="true"></span>
+    <span class="chatbot-grip chatbot-grip-s" data-chat-resize="s" aria-hidden="true"></span>
+    <span class="chatbot-grip chatbot-grip-e" data-chat-resize="e" aria-hidden="true"></span>
+    <span class="chatbot-grip chatbot-grip-w" data-chat-resize="w" aria-hidden="true"></span>
+    <span class="chatbot-grip chatbot-grip-nw" data-chat-resize="nw" aria-hidden="true"></span>
+    <span class="chatbot-grip chatbot-grip-ne" data-chat-resize="ne" aria-hidden="true"></span>
+    <span class="chatbot-grip chatbot-grip-sw" data-chat-resize="sw" aria-hidden="true"></span>
+    <span class="chatbot-grip chatbot-grip-se" data-chat-resize="se" aria-hidden="true">
+        <span class="chatbot-grip-mark" aria-hidden="true"></span>
+    </span>
 </div>
 
 @code {
@@ -85,7 +132,6 @@
 
         if (firstRender)
         {
-            await textbox.FocusAsync();
             await jsModule.InvokeVoidAsync("submitOnEnter", textbox);
         }
     }

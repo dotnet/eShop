@@ -49,6 +49,12 @@ public static class CatalogApi
             .WithDescription("Get the picture for a catalog item")
             .WithTags("Items");
 
+        api.MapGet("/items/facets", GetCatalogFacets)
+            .WithName("GetCatalogFacets")
+            .WithSummary("Get catalog facet counts")
+            .WithDescription("Get per-brand and per-type item counts for the current filter selection, used to drive the catalog filter badges without transferring every item to the client.")
+            .WithTags("Items");
+
         // Routes for resolving catalog items using AI.
         v1.MapGet("/items/withsemanticrelevance/{text:minlength(1)}", GetItemsBySemanticRelevanceV1)
             .WithName("GetRelevantItems")
@@ -125,8 +131,8 @@ public static class CatalogApi
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
         [Description("The name of the item to return")] string? name,
-        [Description("The type of items to return")] int? type,
-        [Description("The brand of items to return")] int? brand)
+        [Description("The types of items to return. Repeat the parameter to filter by multiple types.")] int[]? type,
+        [Description("The brands of items to return. Repeat the parameter to filter by multiple brands.")] int[]? brand)
     {
         var pageSize = paginationRequest.PageSize;
         var pageIndex = paginationRequest.PageIndex;
@@ -137,25 +143,64 @@ public static class CatalogApi
         {
             root = root.Where(c => c.Name.StartsWith(name));
         }
-        if (type is not null)
+        if (type is { Length: > 0 })
         {
-            root = root.Where(c => c.CatalogTypeId == type);
+            root = root.Where(c => type.Contains(c.CatalogTypeId));
         }
-        if (brand is not null)
+        if (brand is { Length: > 0 })
         {
-            root = root.Where(c => c.CatalogBrandId == brand);
+            root = root.Where(c => brand.Contains(c.CatalogBrandId));
         }
 
         var totalItems = await root
             .LongCountAsync();
 
         var itemsOnPage = await root
+            .Include(ci => ci.CatalogBrand)
             .OrderBy(c => c.Name)
             .Skip(pageSize * pageIndex)
             .Take(pageSize)
             .ToListAsync();
 
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
+    }
+
+    public static async Task<Ok<CatalogFacets>> GetCatalogFacets(
+        [AsParameters] CatalogServices services,
+        [Description("The types the counts should be evaluated within. Repeat the parameter to include multiple types.")] int[]? type,
+        [Description("The brands the counts should be evaluated within. Repeat the parameter to include multiple brands.")] int[]? brand)
+    {
+        var items = (IQueryable<CatalogItem>)services.Context.CatalogItems;
+
+        // Brand counts are evaluated against the active type filter, and type counts against
+        // the active brand filter. This mirrors the catalog's additive-within-facet,
+        // intersect-across-facet selection semantics so each badge previews the result of
+        // adding that option to the current selection.
+        var brandScope = items;
+        if (type is { Length: > 0 })
+        {
+            brandScope = brandScope.Where(c => type.Contains(c.CatalogTypeId));
+        }
+        var brandCounts = await brandScope
+            .GroupBy(c => c.CatalogBrandId)
+            .Select(g => new CatalogFacetCount(g.Key, g.Count()))
+            .ToListAsync();
+
+        var typeScope = items;
+        if (brand is { Length: > 0 })
+        {
+            typeScope = typeScope.Where(c => brand.Contains(c.CatalogBrandId));
+        }
+        var typeCounts = await typeScope
+            .GroupBy(c => c.CatalogTypeId)
+            .Select(g => new CatalogFacetCount(g.Key, g.Count()))
+            .ToListAsync();
+
+        return TypedResults.Ok(new CatalogFacets(
+            brandCounts,
+            typeCounts,
+            brandCounts.Sum(b => b.Count),
+            typeCounts.Sum(t => t.Count)));
     }
 
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
@@ -295,7 +340,7 @@ public static class CatalogApi
         [Description("The type of items to return")] int typeId,
         [Description("The brand of items to return")] int? brandId)
     {
-        return await GetAllItems(paginationRequest, services, null, typeId, brandId);
+        return await GetAllItems(paginationRequest, services, null, [typeId], brandId is null ? null : [brandId.Value]);
     }
 
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
@@ -304,7 +349,7 @@ public static class CatalogApi
         [AsParameters] CatalogServices services,
         [Description("The brand of items to return")] int? brandId)
     {
-        return await GetAllItems(paginationRequest, services, null, null, brandId);
+        return await GetAllItems(paginationRequest, services, null, null, brandId is null ? null : [brandId.Value]);
     }
 
     public static async Task<Results<Created, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> UpdateItemV1(

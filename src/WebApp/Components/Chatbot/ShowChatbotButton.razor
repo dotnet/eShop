@@ -1,13 +1,20 @@
-﻿@inject NavigationManager Nav
+@using eShop.WebApp.Components.Chatbot
 
-<a class="show-chatbot" href="@Nav.GetUriWithQueryParameter("chat", true)" title="Show chatbot"></a>
+<button type="button" class="show-chatbot" data-chat-toggle data-chat-eyes aria-controls="chatbot-pane" aria-expanded="false" title="Ask the assistant" aria-label="Ask the assistant">
+    <span class="chatbot-eyes" aria-hidden="true">
+        <span class="chatbot-eye">
+            <svg class="chatbot-pupil" viewBox="0 0 20 32" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 6 Q 4 16 12 26" />
+            </svg>
+        </span>
+        <span class="chatbot-eye">
+            <svg class="chatbot-pupil" viewBox="0 0 20 32" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 6 Q 16 16 8 26" />
+            </svg>
+        </span>
+    </span>
+</button>
 
-@if (ShowChat)
-{
+<div class="chatbot-dock" data-chat-dock>
     <Chatbot />
-}
-
-@code {
-    [SupplyParameterFromQuery(Name = "chat")]
-    public bool ShowChat { get; set; }
-}
+</div>

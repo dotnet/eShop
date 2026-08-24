@@ -1,76 +1,142 @@
-﻿.orders {
-    padding: 0 10rem;
+.orders {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 0 var(--page-pad) 4rem;
+}
+
+.orders > p {
+    color: var(--color-ink-2);
+    font-size: var(--text-lg);
+}
+
+/* ==========================================================================
+   Empty state (no orders yet)
+   ========================================================================== */
+.orders-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.65rem;
+    max-width: 28rem;
+    margin: clamp(2rem, 8vh, 5rem) auto;
+    padding: 2.5rem 1.5rem 3rem;
+}
+
+.orders-empty-icon {
+    display: grid;
+    place-items: center;
+    width: 4.75rem;
+    height: 4.75rem;
+    margin-bottom: 0.4rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-2);
+    color: var(--color-muted);
+}
+
+.orders-empty-icon svg {
+    width: 2.1rem;
+    height: 2.1rem;
+}
+
+.orders-empty h2 {
+    margin: 0;
+    color: var(--color-ink);
+    font-size: var(--text-xl);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.orders-empty p {
+    margin: 0;
+    max-width: 34ch;
+    color: var(--color-muted);
+    font-size: var(--text-base);
+    line-height: 1.55;
+}
+
+.orders-empty .button {
+    align-self: center;
+    margin-top: 0.85rem;
+}
+
+.orders-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 56rem;
 }
 
 .orders-item {
     display: flex;
-    padding-bottom: 0;
     align-items: center;
     gap: 1.75rem;
     align-self: stretch;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--color-line);
 }
 
 .orders-item > div {
     flex: 1 0 0;
 }
 
-.orders-item {
-    padding: 1rem 0;
-    border-bottom: 1px solid #D2D2D2;
-}
-
 .orders-header {
-    color: #000;
-    font-size: 1rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 1.5rem;
+    color: var(--color-muted);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     padding-top: 0;
-    padding-bottom: 0.5rem;
+    padding-bottom: 0.75rem;
 }
 
 .total-header {
     text-align: right;
 }
 
+.order-number {
+    font-weight: 700;
+    color: var(--color-ink);
+}
+
+.order-date {
+    color: var(--color-ink-2);
+}
+
 .order-total {
-    color: #000;
+    color: var(--color-ink);
     text-align: right;
-    font-size: 1rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 150%;
+    font-size: var(--text-base);
+    font-weight: 700;
 }
 
 .order-status .status {
-    border-radius: 1.25rem;
-    border: 1px solid #A3A3A3;
-    color: #A3A3A3;
-    font-size: 0.75rem;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 1.25rem;
-    padding: 0.5rem 1rem;
+    display: inline-flex;
+    align-items: center;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-line-strong);
+    color: var(--color-muted);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    line-height: 1;
+    padding: 0.4rem 0.85rem;
 }
 
 .order-status .status.cancelled {
-    color: #FF4E4E;
-    border: 1px solid #FF4E4E;
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+    background: var(--color-danger-tint);
 }
 
 .order-status .status.paid {
-    color: #2A9E01;
-    border: 1px solid #2A9E01;
+    color: var(--color-success);
+    border-color: var(--color-success);
+    background: var(--color-success-tint);
 }
 
-@media only screen and (max-width: 480px) { 
-    .orders {
-        padding: 0 1rem;
+@media only screen and (max-width: 480px) {
+    .orders-item {
+        gap: 1rem;
+        flex-wrap: wrap;
     }
-}
-
-@media only screen and (min-width: 481px) and (max-width: 1024px) { 
-    .orders {
-        padding: 0 3rem;
-    }    
 }

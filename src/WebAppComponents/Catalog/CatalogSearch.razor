@@ -1,75 +1,190 @@
-﻿@inject CatalogService CatalogService
+@inject CatalogService CatalogService
 @inject NavigationManager Nav
 
 @if (catalogBrands is not null && catalogItemTypes is not null)
 {
-    <div class="catalog-search">
-        <div class="catalog-search-header">
-            <img role="presentation" src="icons/filters.svg" />
-            Filters
-        </div>
-        <div class="catalog-search-types">
-            <div class="catalog-search-group">
-                <h3>Brand</h3>
-                <div class="catalog-search-group-tags">
-                    <a href="@BrandUri(null)"
-                    class="catalog-search-tag @(BrandId == null ? "active " : "")">
-                        All
-                    </a>
-                    @foreach (var brand in catalogBrands)
+    <aside class="catalog-search">
+        <details class="catalog-search-details" open>
+            <summary class="catalog-search-summary">
+                <span class="catalog-search-title">
+                    <img role="presentation" src="icons/filters.svg" />
+                    Filters
+                    @if (ActiveFilterCount > 0)
                     {
-                        <a href="@BrandUri(brand.Id)"
-                        class="catalog-search-tag @(BrandId == brand.Id ? "active " : "")">
-                            @brand.Brand
-                        </a>
+                        <span class="catalog-search-title-count">@ActiveFilterCount</span>
                     }
-                </div>
-            </div>
-            <div class="catalog-search-group">
-                <h3>Type</h3>
+                </span>
+            </summary>
 
-                <div class="catalog-search-group-tags">
-                    <a href="@TypeUri(null)"
-                    class="catalog-search-tag @(ItemTypeId == null ? "active " : "")">
-                    All
+            <div class="catalog-search-body">
+                @if (HasActiveFilter)
+                {
+                    <a class="catalog-search-clear" href="@ResetUri()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M18 6 6 18M6 6l12 12" />
+                        </svg>
+                        Clear all filters
                     </a>
-                    @foreach (var itemType in catalogItemTypes)
-                    {
-                        <a href="@TypeUri(itemType.Id)"
-                        class="catalog-search-tag @(ItemTypeId == itemType.Id ? "active " : "")">
-                            @itemType.Type
+                }
+
+                <div class="catalog-search-group">
+                    <h3>Brand</h3>
+                    <div class="catalog-search-group-tags">
+                        <a href="@BrandUri(null)"
+                           class="catalog-search-tag @(BrandActiveCount == 0 ? "active" : "")">
+                            <span>All</span>
+                            <span class="catalog-search-tag-count">@BrandCount(null)</span>
                         </a>
-                    }
+                        @foreach (var brand in catalogBrands)
+                        {
+                            var count = BrandCount(brand.Id);
+                            var isActive = IsBrandActive(brand.Id);
+                            var isEmpty = count == 0 && !isActive;
+                            <a href="@BrandUri(brand.Id)"
+                               class="catalog-search-tag @(isActive ? "active" : "") @(isEmpty ? "is-empty" : "")"
+                               aria-disabled="@(isEmpty ? "true" : null)">
+                                <span>@brand.Brand</span>
+                                <span class="catalog-search-tag-count">@count</span>
+                            </a>
+                        }
+                    </div>
+                </div>
+                <div class="catalog-search-group">
+                    <h3>Type</h3>
+                    <div class="catalog-search-group-tags">
+                        <a href="@TypeUri(null)"
+                           class="catalog-search-tag @(TypeActiveCount == 0 ? "active" : "")">
+                            <span>All</span>
+                            <span class="catalog-search-tag-count">@TypeCount(null)</span>
+                        </a>
+                        @foreach (var itemType in catalogItemTypes)
+                        {
+                            var count = TypeCount(itemType.Id);
+                            var isActive = IsTypeActive(itemType.Id);
+                            var isEmpty = count == 0 && !isActive;
+                            <a href="@TypeUri(itemType.Id)"
+                               class="catalog-search-tag @(isActive ? "active" : "") @(isEmpty ? "is-empty" : "")"
+                               aria-disabled="@(isEmpty ? "true" : null)">
+                                <span>@itemType.Type</span>
+                                <span class="catalog-search-tag-count">@count</span>
+                            </a>
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </details>
+    </aside>
 }
 
 @code {
     IEnumerable<CatalogBrand>? catalogBrands;
     IEnumerable<CatalogItemType>? catalogItemTypes;
-    [Parameter] public int? BrandId { get; set; }
-    [Parameter] public int? ItemTypeId { get; set; }
+    CatalogFacets? facets;
+
+    [Parameter] public int[]? BrandIds { get; set; }
+    [Parameter] public int[]? TypeIds { get; set; }
+
+    private IReadOnlyList<int> Brands => BrandIds ?? [];
+    private IReadOnlyList<int> Types => TypeIds ?? [];
+
+    private int BrandActiveCount => Brands.Count;
+    private int TypeActiveCount => Types.Count;
+
+    bool HasActiveFilter => Brands.Count > 0 || Types.Count > 0;
+    int ActiveFilterCount => Brands.Count + Types.Count;
+
+    private bool IsBrandActive(int id) => Brands.Contains(id);
+    private bool IsTypeActive(int id) => Types.Contains(id);
 
     protected override async Task OnInitializedAsync()
     {
         var brandsTask = CatalogService.GetBrands();
         var itemTypesTask = CatalogService.GetTypes();
-        await Task.WhenAll(brandsTask, itemTypesTask);
+        var facetsTask = CatalogService.GetCatalogFacets(BrandIds, TypeIds);
+        await Task.WhenAll(brandsTask, itemTypesTask, facetsTask);
         catalogBrands = brandsTask.Result;
         catalogItemTypes = itemTypesTask.Result;
+        facets = facetsTask.Result;
+    }
+
+    // Contextual counts. Within a facet, selections are additive (OR / union); across
+    // facets they intersect (AND). The counts come from a server-side aggregation, so a
+    // brand option is counted against the active TYPE set and a type option against the
+    // active BRAND set, previewing the result of adding that option to the current
+    // selection. A facet that is absent from the response has no matching items (count 0).
+    private int BrandCount(int? brandId)
+    {
+        if (facets is null)
+        {
+            return 0;
+        }
+        if (brandId is null)
+        {
+            return facets.BrandTotal;
+        }
+        foreach (var count in facets.BrandCounts)
+        {
+            if (count.Id == brandId)
+            {
+                return count.Count;
+            }
+        }
+        return 0;
+    }
+
+    private int TypeCount(int? typeId)
+    {
+        if (facets is null)
+        {
+            return 0;
+        }
+        if (typeId is null)
+        {
+            return facets.TypeTotal;
+        }
+        foreach (var count in facets.TypeCounts)
+        {
+            if (count.Id == typeId)
+            {
+                return count.Count;
+            }
+        }
+        return 0;
     }
 
     private string BrandUri(int? brandId) => Nav.GetUriWithQueryParameters(new Dictionary<string, object?>()
     {
         { "page", null },
-        { "brand", brandId },
+        { "brand", ToggleValue(Brands, brandId) },
     });
 
     private string TypeUri(int? typeId) => Nav.GetUriWithQueryParameters(new Dictionary<string, object?>()
     {
         { "page", null },
-        { "type", typeId },
+        { "type", ToggleValue(Types, typeId) },
     });
+
+    private string ResetUri() => Nav.GetUriWithQueryParameters(new Dictionary<string, object?>()
+    {
+        { "page", null },
+        { "brand", null },
+        { "type", null },
+    });
+
+    // A null id clears the facet ("All"). Otherwise toggle the id's membership in the
+    // current set and return an array (emitted as repeated query params) or null when the
+    // set becomes empty.
+    private static int[]? ToggleValue(IReadOnlyList<int> current, int? id)
+    {
+        if (id is null)
+        {
+            return null;
+        }
+
+        int[] next = current.Contains(id.Value)
+            ? current.Where(v => v != id.Value).ToArray()
+            : [.. current, id.Value];
+
+        return next.Length == 0 ? null : next;
+    }
 }
