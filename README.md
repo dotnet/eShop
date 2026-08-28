@@ -11,73 +11,69 @@ A reference .NET application implementing an e-commerce website using a services
 This version of eShop is based on .NET 10.
 
 Previous eShop versions:
+
 * [.NET 8](https://github.com/dotnet/eShop/tree/release/8.0)
 
 ### Prerequisites
 
-- Clone the eShop repository: https://github.com/dotnet/eshop
-- Install and start a supported OCI-compatible container runtime, such as [Docker Desktop](https://docs.docker.com/engine/install/) or [Podman](https://podman.io/)
+1. Install a [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) that satisfies [`global.json`](global.json).
+2. Install the [Aspire CLI](https://aspire.dev/get-started/install-cli/) and verify that it is available:
 
-#### Windows with Visual Studio
-- Install [Visual Studio 2022 version 17.10 or newer](https://visualstudio.microsoft.com/vs/).
-    - Select the following workloads:
-        - `ASP.NET and web development` workload.
-        - `Aspire SDK` component in `Individual components`.
-        - Optional: `.NET Multi-platform App UI development` to run client apps
+    ```console
+    aspire --version
+    ```
 
-Or
+3. Install and start an OCI-compatible container runtime. [Docker Desktop](https://www.docker.com/products/docker-desktop/) is the recommended default. [Podman](https://podman.io/docs/installation) is also supported; follow the [Aspire prerequisites](https://aspire.dev/get-started/prerequisites/) to configure it.
+4. Clone the repository:
 
-- Run the following commands in an elevated PowerShell terminal to automatically configure your environment with the required tools to build and run this application. (A restart is required and included in the script below.)
+    ```console
+    git clone https://github.com/dotnet/eShop.git
+    cd eShop
+    ```
 
-```powershell
-install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense -Force
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-Get-WinGetConfiguration -File .\.config\configuration.vs.winget | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
-```
+No separate Aspire workload or Visual Studio component is required; the AppHost SDK and hosting integrations are referenced by the projects in this repository.
 
-Or
+#### Optional IDE setup
 
-- From Dev Home go to `Machine Configuration -> Clone repositories`. Enter the URL for this repository. In the confirmation screen look for the section `Configuration File Detected` and click `Run File`.
-
-#### Mac, Linux, & Windows without Visual Studio
-- Install the latest [.NET 10 SDK](https://dot.net/download?cid=eshop)
-
-Or
-
-- On Windows, run the following commands in an elevated PowerShell terminal to automatically configure your environment with the required tools to build and run this application. (A restart is required after running the script below.)
-
-##### Install Visual Studio Code and related extensions
-```powershell
-install-Module -Name Microsoft.WinGet.Configuration -AllowPrerelease -AcceptLicense  -Force
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-Get-WinGetConfiguration -File .\.config\configuration.vsCode.winget | Invoke-WinGetConfiguration -AcceptConfigurationAgreements
-```
-
-> Note: These commands may require `sudo`
-
-- Optional: Install [Visual Studio Code with C# Dev Kit](https://code.visualstudio.com/docs/csharp/get-started)
-- Optional: Install [.NET MAUI Workload](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=visual-studio-code)
-
-> Note: When running on Mac with Apple Silicon (M series processor), Rosetta 2 for grpc-tools. 
+- [Visual Studio](https://visualstudio.microsoft.com/vs/) with the `ASP.NET and web development` workload.
+- [Visual Studio Code with C# Dev Kit](https://code.visualstudio.com/docs/csharp/get-started) and the [Aspire extension](https://aspire.dev/get-started/aspire-vscode-extension/).
+- The [.NET MAUI workload](https://learn.microsoft.com/dotnet/maui/get-started/installation) if you want to run the client apps.
 
 ### Running the solution
 
 > [!WARNING]
-> Remember to ensure that your container runtime is started
+> Ensure that your container runtime is running before starting eShop.
 
-- (Windows only) Run the application from Visual Studio:
-- Open the `eShop.Web.slnf` file in Visual Studio
-- Ensure that `eShop.AppHost.csproj` is your startup project
-- Hit Ctrl-F5 to launch Aspire
+#### From the terminal
 
-* Or run the application from your terminal:
-```powershell
+From the repository root, run:
+
+```console
 aspire run
 ```
-`aspire.config.json` points this command to `src/eShop.AppHost/eShop.AppHost.csproj`. This repo also includes test AppHosts, so use `--apphost <path>` when you want to target one explicitly. Then look for lines like this in the console output to find the URL to open the Aspire dashboard:
-```sh
-Login to the dashboard at: http://localhost:19888/login?t=uniquelogincodeforyou
+
+The root [`aspire.config.json`](aspire.config.json) selects `src/eShop.AppHost/eShop.AppHost.csproj`, avoiding ambiguity with the test AppHosts in the repository. When startup completes, the CLI prints a dashboard URL similar to:
+
+```text
+Dashboard: https://localhost:<port>/login?t=<token>
 ```
+
+Press <kbd>Ctrl</kbd>+<kbd>C</kbd> to stop the AppHost. See the [`aspire run` command](https://aspire.dev/reference/cli/commands/aspire-run/) for additional options.
+
+To run the AppHost in the background instead:
+
+```console
+aspire start
+aspire ps
+```
+
+When you are finished, run `aspire stop`. See the [`aspire start` command](https://aspire.dev/reference/cli/commands/aspire-start/) for details.
+
+#### From Visual Studio
+
+1. Open `eShop.Web.slnf`.
+2. Set `src/eShop.AppHost/eShop.AppHost.csproj` as the startup project.
+3. Press <kbd>Ctrl</kbd>+<kbd>F5</kbd> to start eShop and open the Aspire dashboard.
 
 ### Running tests
 
@@ -97,55 +93,55 @@ npm run test:e2e
 
 ### Optional: AI Chatbot with Microsoft Foundry
 
-To use Microsoft Foundry for chat and embeddings, set `UseFoundry=true` in the
-AppHost environment. Aspire provisions the Foundry resource and the
-`gpt-4.1-mini` and `text-embedding-3-small` deployments, then injects their
-connection information into the consuming projects.
+This option provisions a Microsoft Foundry resource during local development, so first authenticate to Azure and configure the subscription and location:
 
-The Foundry hosting integration currently uses a preview package. It replaces
-the sample's previous direct OpenAI and existing Azure OpenAI configuration paths.
+```powershell
+az login
+aspire secret set "Azure:SubscriptionId" "<subscription-id>"
+aspire secret set "Azure:Location" "eastus"
+```
+
+Then enable Foundry and start eShop:
 
 ```powershell
 $env:UseFoundry = "true"
 aspire run
 ```
 
-See the [Microsoft Foundry Aspire hosting integration](https://aspire.dev/integrations/cloud/azure-ai-foundry/) for configuration and deployment details.
+Aspire provisions the `gpt-4.1-mini` and `text-embedding-3-small` deployments and injects their connection information into the consuming projects. The Foundry hosting integration currently uses a preview package. See [local Azure provisioning](https://aspire.dev/integrations/cloud/azure/local-provisioning/) and the [Microsoft Foundry hosting integration](https://aspire.dev/integrations/cloud/azure/azure-ai-foundry/azure-ai-foundry-host/) for details.
 
-### Deploy with Aspire CLI
+### Deploy to Azure Container Apps
 
-Use Aspire deployment from the AppHost model.
+The AppHost is already configured with an Azure Container Apps environment, so the Aspire CLI can deploy directly from the application model. See the [Aspire Azure Container Apps deployment guide](https://aspire.dev/deployment/azure/container-apps/) for details.
 
-This sample intentionally deploys disposable PostgreSQL, Redis, and RabbitMQ containers to Azure Container Apps. It is suitable for evaluation and demonstrations, not production data.
+> [!WARNING]
+> This sample deploys PostgreSQL, Redis, and RabbitMQ as containers in Azure Container Apps. This configuration is intended for evaluation and demonstrations, not production data.
 
 Prerequisites:
-- A supported container runtime must be running.
-- Azure CLI must be authenticated.
-- Azure deployment settings must be set (`Azure__SubscriptionId`, `Azure__Location`, `Azure__ResourceGroup`).
 
-1. Preview deployment steps:
-```sh
-aspire publish --list-steps
+- The prerequisites listed above, including a running container runtime.
+- The [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli), an active Azure subscription, and permission to create resources.
+
+Sign in, optionally preview the deployment pipeline, and deploy:
+
+```console
+az login
 aspire deploy --list-steps
-```
-1. Publish deployment artifacts for inspection or handoff:
-```sh
-aspire publish
-```
-1. Deploy directly from the AppHost model:
-```sh
 aspire deploy
 ```
 
-Example (PowerShell):
+For local interactive use, `aspire deploy` prompts for missing Azure settings. For non-interactive use, provide them explicitly:
+
 ```powershell
 $env:Azure__SubscriptionId = "<subscription-id>"
 $env:Azure__Location = "eastus"
-$env:Azure__ResourceGroup = "rg-eshop-prod"
+$env:Azure__ResourceGroup = "rg-eshop-demo"
 aspire deploy --non-interactive
 ```
 
-`aspire deploy` evaluates the AppHost directly; it does not consume a previous `aspire publish` output directory. Omit `--non-interactive` for interactive use; add it for automation or agent-driven runs so Aspire does not prompt for missing deployment settings. Set the required values explicitly.
+Use [`aspire publish`](https://aspire.dev/reference/cli/commands/aspire-publish/) when you need deployment artifacts for inspection or another deployment tool. Running it first is not required: `aspire deploy` invokes the deployment pipeline and its dependencies directly rather than consuming an earlier publish output.
+
+When you no longer need the deployment, run [`aspire destroy`](https://aspire.dev/reference/cli/commands/aspire-destroy/). This deletes the entire configured resource group, including resources that Aspire did not create, so review the target carefully before confirming.
 
 ## Contributing
 
