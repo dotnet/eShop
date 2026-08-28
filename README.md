@@ -58,7 +58,7 @@ The root [`aspire.config.json`](aspire.config.json) selects `src/eShop.AppHost/e
 Dashboard: https://localhost:<port>/login?t=<token>
 ```
 
-Press Ctrl+C to stop the AppHost. See the [`aspire run` command](https://aspire.dev/reference/cli/commands/aspire-run/) for additional options.
+Press <kbd>Ctrl</kbd>+<kbd>C</kbd> to stop the AppHost. See the [`aspire run` command](https://aspire.dev/reference/cli/commands/aspire-run/) for additional options.
 
 To run the AppHost in the background instead:
 
@@ -73,7 +73,7 @@ When you are finished, run `aspire stop`. See the [`aspire start` command](https
 
 1. Open `eShop.Web.slnf`.
 2. Set `src/eShop.AppHost/eShop.AppHost.csproj` as the startup project.
-3. Press Ctrl+F5 to start eShop and open the Aspire dashboard.
+3. Press <kbd>Ctrl</kbd>+<kbd>F5</kbd> to start eShop and open the Aspire dashboard.
 
 ### Running tests
 
@@ -91,9 +91,9 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-### Optional: AI chatbot with Azure AI Foundry
+### Optional: AI Chatbot with Microsoft Foundry
 
-This option provisions an Azure AI Foundry resource during local development, so first authenticate to Azure and configure the subscription and location:
+This option provisions a Microsoft Foundry resource during local development, so first authenticate to Azure and configure the subscription and location:
 
 ```powershell
 az login
@@ -108,7 +108,7 @@ $env:UseFoundry = "true"
 aspire run
 ```
 
-Aspire provisions the `gpt-4.1-mini` and `text-embedding-3-small` deployments and injects their connection information into the consuming projects. The Foundry hosting integration currently uses a preview package. See [local Azure provisioning](https://aspire.dev/integrations/cloud/azure/local-provisioning/) and the [Azure AI Foundry hosting integration](https://aspire.dev/integrations/cloud/azure/azure-ai-foundry/azure-ai-foundry-host/) for details.
+Aspire provisions the `gpt-4.1-mini` and `text-embedding-3-small` deployments and injects their connection information into the consuming projects. The Foundry hosting integration currently uses a preview package. See [local Azure provisioning](https://aspire.dev/integrations/cloud/azure/local-provisioning/) and the [Microsoft Foundry hosting integration](https://aspire.dev/integrations/cloud/azure/azure-ai-foundry/azure-ai-foundry-host/) for details.
 
 ### Deploy to Azure Container Apps
 
