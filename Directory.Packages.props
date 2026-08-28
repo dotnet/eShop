@@ -2,10 +2,10 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    <DotnetPackagesVersion>10.0.8</DotnetPackagesVersion>
+    <DotnetPackagesVersion>10.0.11</DotnetPackagesVersion>
     <MicrosoftExtensionsVersion>10.4.0</MicrosoftExtensionsVersion>
-    <AspireVersion>13.4.6</AspireVersion>
-    <AspireUnstablePackagesVersion>13.4.6-preview.1.26319.6</AspireUnstablePackagesVersion>
+    <AspireVersion>13.5.3</AspireVersion>
+    <AspireUnstablePackagesVersion>13.5.3-preview.1.26425.3</AspireUnstablePackagesVersion>
     <GrpcVersion>2.80.0</GrpcVersion>
     <DuendeVersion>7.3.1</DuendeVersion>
     <ApiVersioningVersion>10.0.0-preview.2</ApiVersioningVersion>
@@ -40,7 +40,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="$(DotnetPackagesVersion)" />
     <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="$(DotnetPackagesVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(DotnetPackagesVersion)" />
-    <PackageVersion Include="Microsoft.OpenApi" Version="2.7.0" />
+    <PackageVersion Include="Microsoft.OpenApi" Version="2.7.5" />
     <PackageVersion Include="MSTest" Version="4.0.2" />
     <!-- Version together with EF -->
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
