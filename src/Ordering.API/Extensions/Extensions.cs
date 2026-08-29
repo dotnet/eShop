@@ -21,7 +21,11 @@ internal static class Extensions
         services.AddMigration<OrderingContext, OrderingContextSeed>();
 
         // Add the integration services that consume the DbContext
-        services.AddTransient<IIntegrationEventLogService, IntegrationEventLogService<OrderingContext>>();
+        // Pass this project's assembly so the integration event types can be resolved for deserialization. Using the entry assembly breaks under functional tests, where the entry assembly is the test host and does not contain the derived IntegrationEvent types.
+        services.AddTransient<IIntegrationEventLogService>(sp =>
+            new IntegrationEventLogService<OrderingContext>(
+                sp.GetRequiredService<OrderingContext>(),
+                typeof(Extensions).Assembly));
 
         services.AddTransient<IOrderingIntegrationEventService, OrderingIntegrationEventService>();
 

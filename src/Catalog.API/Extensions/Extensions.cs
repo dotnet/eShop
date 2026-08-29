@@ -24,7 +24,11 @@ public static class Extensions
         builder.Services.AddMigration<CatalogContext, CatalogContextSeed>();
 
         // Add the integration services that consume the DbContext
-        builder.Services.AddTransient<IIntegrationEventLogService, IntegrationEventLogService<CatalogContext>>();
+        // Pass this project's assembly so the integration event types can be resolved for deserialization. Using the entry assembly breaks under functional tests, where the entry assembly is the test host and does not contain the derived IntegrationEvent types.
+        builder.Services.AddTransient<IIntegrationEventLogService>(sp =>
+            new IntegrationEventLogService<CatalogContext>(
+                sp.GetRequiredService<CatalogContext>(),
+                typeof(Extensions).Assembly));
 
         builder.Services.AddTransient<ICatalogIntegrationEventService, CatalogIntegrationEventService>();
 
