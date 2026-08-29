@@ -14,7 +14,7 @@
         }
 
         // ApiScope is used to protect the API 
-        //The effect is the same as that of API resources in IdentityServer 3.x
+        // The effect is the same as that of API resources in IdentityServer 3.x
         public static IEnumerable<ApiScope> GetApiScopes()
         {
             return new List<ApiScope>
@@ -26,7 +26,7 @@
         }
 
         // Identity resources are data like user ID, name, or email address of a user
-        // see: http://docs.identityserver.io/en/release/configuration/resources.html
+        // see: https://docs.duendesoftware.com/identityserver/fundamentals/resources/identity/
         public static IEnumerable<IdentityResource> GetResources()
         {
             return new List<IdentityResource>

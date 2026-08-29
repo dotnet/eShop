@@ -12,10 +12,10 @@ using eShop.ClientApp.Services.RequestProvider;
 using eShop.ClientApp.Services.Settings;
 using eShop.ClientApp.Services.Theme;
 using eShop.ClientApp.Views;
-using IdentityModel.OidcClient;
+using Duende.IdentityModel.OidcClient;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
+using IBrowser = Duende.IdentityModel.OidcClient.Browser.IBrowser;
 
 namespace eShop.ClientApp;
 

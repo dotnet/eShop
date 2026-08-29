@@ -143,6 +143,14 @@ Use [`aspire publish`](https://aspire.dev/reference/cli/commands/aspire-publish/
 
 When you no longer need the deployment, run [`aspire destroy`](https://aspire.dev/reference/cli/commands/aspire-destroy/). This deletes the entire configured resource group, including resources that Aspire did not create, so review the target carefully before confirming.
 
+## Third-party
+
+### Duende IdentityServer
+
+The eShop application uses [Duende IdentityServer](https://duendesoftware.com/products/identityserver/), which is software that may require a license when deploying to a production environment. Depending on revenue, a free [community edition](https://duendesoftware.com/products/communityedition/) is available for production use.
+
+For development, testing, and general exploration, no license is needed.
+
 ## Contributing
 
 For more information on contributing to this repo, read [the contribution documentation](./CONTRIBUTING.md) and [the Code of Conduct](CODE-OF-CONDUCT.md).

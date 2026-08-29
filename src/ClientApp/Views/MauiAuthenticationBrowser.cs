@@ -1,6 +1,6 @@
-using IdentityModel.Client;
-using IdentityModel.OidcClient.Browser;
-using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
+using Duende.IdentityModel.Client;
+using Duende.IdentityModel.OidcClient.Browser;
+using IBrowser = Duende.IdentityModel.OidcClient.Browser.IBrowser;
 
 namespace eShop.ClientApp.Views;
 

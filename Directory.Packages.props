@@ -71,11 +71,11 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.16.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.16.0" />
     <!-- IdentityServer -->
-    <PackageVersion Include="Duende.IdentityServer" Version="7.3.2" />
-    <PackageVersion Include="Duende.IdentityServer.AspNetIdentity" Version="7.3.2" />
-    <PackageVersion Include="Duende.IdentityServer.EntityFramework" Version="7.3.2" />
-    <PackageVersion Include="Duende.IdentityServer.EntityFramework.Storage" Version="7.3.2" />
-    <PackageVersion Include="Duende.IdentityServer.Storage" Version="7.3.2" />
+    <PackageVersion Include="Duende.IdentityServer" Version="7.4.5" />
+    <PackageVersion Include="Duende.IdentityServer.AspNetIdentity" Version="7.4.5" />
+    <PackageVersion Include="Duende.IdentityServer.EntityFramework" Version="7.4.5" />
+    <PackageVersion Include="Duende.IdentityServer.EntityFramework.Storage" Version="7.4.5" />
+    <PackageVersion Include="Duende.IdentityServer.Storage" Version="7.4.5" />
     <!-- Scaffolding -->
     <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0-rc.1.23461.3" />
     <!-- Grpc -->
@@ -90,7 +90,7 @@
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="3.0.71" />
     <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
     <PackageVersion Include="xunit.v3.mtp-v2" Version="3.2.1" />
-    <PackageVersion Include="IdentityModel" Version="7.0.0" />
+    <PackageVersion Include="Duende.IdentityModel" Version="8.0.0" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.8.6" />
     <!-- Before license change -->
     <PackageVersion Include="MediatR" Version="13.0.0" />
