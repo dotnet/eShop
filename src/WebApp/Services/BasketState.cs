@@ -10,7 +10,8 @@ public class BasketState(
     BasketService basketService,
     CatalogService catalogService,
     OrderingService orderingService,
-    AuthenticationStateProvider authenticationStateProvider) : IBasketState
+    AuthenticationStateProvider authenticationStateProvider,
+    ILogger<BasketState> logger) : IBasketState
 {
     private Task<IReadOnlyCollection<BasketItem>>? _cachedBasket;
     private HashSet<BasketStateChangedSubscription> _changeSubscriptions = new();
@@ -132,7 +133,13 @@ public class BasketState(
             var catalogItems = (await catalogService.GetCatalogItems(productIds)).ToDictionary(k => k.Id, v => v);
             foreach (var item in quantities)
             {
-                var catalogItem = catalogItems[item.ProductId];
+                // Skip items that no longer exist in the catalog (may have been deleted)
+                if (!catalogItems.TryGetValue(item.ProductId, out var catalogItem))
+                {
+                    logger.LogWarning("Basket item with ProductId {ProductId} not found in catalog and will be skipped", item.ProductId);
+                    continue;
+                }
+                
                 var orderItem = new BasketItem
                 {
                     Id = Guid.NewGuid().ToString(), // TODO: this value is meaningless, use ProductId instead.

@@ -22,6 +22,15 @@ public class OrderStatusChangedToAwaitingValidationIntegrationEventHandler(
 
                 confirmedOrderStockItems.Add(confirmedOrderStockItem);
             }
+            else
+            {
+                // Product no longer exists in catalog (may have been deleted)
+                // Treat as out of stock to reject the order
+                logger.LogWarning("Product with id {ProductId} in order {OrderId} not found in catalog", 
+                    orderStockItem.ProductId, @event.OrderId);
+                var confirmedOrderStockItem = new ConfirmedOrderStockItem(orderStockItem.ProductId, false);
+                confirmedOrderStockItems.Add(confirmedOrderStockItem);
+            }
         }
 
         var confirmedIntegrationEvent = confirmedOrderStockItems.Any(c => !c.HasStock)
