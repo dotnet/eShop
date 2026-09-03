@@ -3,9 +3,7 @@
 
 namespace IdentityServerHost.Quickstart.UI;
 
-[Authorize]
-[SecurityHeaders]
-public class DeviceController : Controller
+public class DeviceController : BaseApiController
 {
     private readonly IDeviceFlowInteractionService _interaction;
     private readonly IEventService _events;
