@@ -34,7 +34,7 @@ public class UsersSeed(ILogger<UsersSeed> logger, UserManager<ApplicationUser> u
 
             if (!result.Succeeded)
             {
-                throw new Exception(result.Errors.First().Description);
+                throw new Exception(string.Join(",", result.Errors.Select(error => error.Description)));
             }
 
             if (logger.IsEnabled(LogLevel.Debug))
@@ -79,7 +79,7 @@ public class UsersSeed(ILogger<UsersSeed> logger, UserManager<ApplicationUser> u
 
             if (!result.Succeeded)
             {
-                throw new Exception(result.Errors.First().Description);
+                throw new Exception(string.Join(",", result.Errors.Select(error => error.Description)));
             }
 
             if (logger.IsEnabled(LogLevel.Debug))
