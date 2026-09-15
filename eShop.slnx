@@ -1,7 +1,6 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/eShop.AppHost/eShop.AppHost.csproj" />
-    <Project Path="src/Assistant.MCP/Assistant.MCP.csproj" />
     <Project Path="src/Basket.API/Basket.API.csproj" />
     <Project Path="src/Catalog.API/Catalog.API.csproj" />
     <Project Path="src/Catalog.SDK/Catalog.SDK.csproj" />

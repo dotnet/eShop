@@ -30,7 +30,6 @@
     <ProjectReference Include="..\Webhooks.API\Webhooks.API.csproj" />
     <ProjectReference Include="..\WebApp\WebApp.csproj" />
     <ProjectReference Include="..\WebhookClient\WebhookClient.csproj" />
-    <ProjectReference Include="..\Assistant.MCP\Assistant.MCP.csproj" />
   </ItemGroup>
 
 </Project>

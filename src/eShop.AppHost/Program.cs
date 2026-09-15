@@ -61,10 +61,6 @@ builder.AddProject<Projects.OrderProcessor>("order-processor")
 
 builder.AddProject<Projects.PaymentProcessor>("payment-processor")
     .WithReference(rabbitMq).WaitFor(rabbitMq);
-
-builder.AddProject<Projects.Assistant_MCP>("mcp-server", launchProfileName)
-    .WithReference(catalogApi).WaitFor(catalogApi)
-    .WithReference(orderingApi).WaitFor(orderingApi);
  
 var webHooksApi = builder.AddProject<Projects.Webhooks_API>("webhooks-api")
     .WithReference(rabbitMq).WaitFor(rabbitMq)
@@ -108,11 +104,12 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
 // }
 
 var scalar = builder.AddScalarApiReference(options => options.WithTheme(ScalarTheme.DeepSpace))
-    .WithApiReference(catalogApi)
-    .WithApiReference(orderingApi, async (options, cancellationToken) => 
+    .WithApiReference(catalogApi, async (options, cancellationToken) => 
         { 
-            options.AddDocument("v1", "Ordering API v1.0"); 
+            options.AddDocument("v1", "Catalog API v1.0"); 
+            options.AddDocument("v2", "Catalog API v2.0"); 
         })
+    .WithApiReference(orderingApi)
     .WithApiReference(webHooksApi);
 
 // set to true if you want to use OpenAI
