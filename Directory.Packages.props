@@ -57,8 +57,8 @@
     <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="$(MicrosoftExtensionsVersion)" />
-    <PackageVersion Include="Microsoft.Kiota.Authentication.Azure" Version="2.0.0" />
-    <PackageVersion Include="Microsoft.Kiota.Bundle" Version="2.0.0" />
+    <PackageVersion Include="Microsoft.Kiota.Authentication.Azure" Version="2.1.2" />
+    <PackageVersion Include="Microsoft.Kiota.Bundle" Version="2.1.2" />
     <PackageVersion Include="Microsoft.OpenApi" Version="2.11.0" />
     <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="1.4.1" />
     <PackageVersion Include="MSTest" Version="4.3.3" />

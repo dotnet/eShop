@@ -7,6 +7,10 @@
     <RootNamespace>eShop.WebAppComponents</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Kiota.Authentication.Azure" />
+    <PackageReference Include="Microsoft.Kiota.Bundle" />
+  </ItemGroup>
 
   <ItemGroup>
     <SupportedPlatform Include="browser" />
