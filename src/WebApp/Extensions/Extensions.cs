@@ -10,9 +10,8 @@ using Microsoft.Extensions.AI;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
-using Microsoft.Kiota.Abstractions.Serialization;
+using Microsoft.Kiota.Bundle;
 using Microsoft.Kiota.Http.HttpClientLibrary;
-using Microsoft.Kiota.Serialization.Json;
 
 public static class Extensions
 {
@@ -53,19 +52,15 @@ public static class Extensions
             .AddAuthToken();
 
         builder.Services.AddKiotaHandlers();
-        builder.Services.AddSingleton<IParseNodeFactory, JsonParseNodeFactory>();
-        builder.Services.AddSingleton<ISerializationWriterFactory, JsonSerializationWriterFactory>();
         builder.Services.AddHttpClient(nameof(CatalogClient), o => o.BaseAddress = new("https+http://catalog-api"))
             .AttachKiotaHandlers()
             .AddAuthToken();
         builder.Services.AddScoped<IRequestAdapter>(services =>
         {
             var httpClient = services.GetRequiredService<IHttpClientFactory>().CreateClient(nameof(CatalogClient));
-            return new HttpClientRequestAdapter(
+            return new DefaultRequestAdapter(
                 new AnonymousAuthenticationProvider(),
-                services.GetRequiredService<IParseNodeFactory>(),
-                services.GetRequiredService<ISerializationWriterFactory>(),
-                httpClient)
+                httpClient: httpClient)
             {
                 BaseUrl = httpClient.BaseAddress!.ToString().TrimEnd('/')
             };

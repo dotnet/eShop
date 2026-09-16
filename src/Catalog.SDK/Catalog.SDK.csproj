@@ -3,10 +3,25 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <PackageId>eShop.Catalog.SDK</PackageId>
+    <Title>eShop Catalog SDK</Title>
+    <Authors>Alex Thissen</Authors>
+    <Company>Xebia</Company>
+    <Description>A .NET client SDK for interacting with the catalog service in the .NET eShop reference application.</Description>
+    <PackageTags>eshop;catalog;sdk;client;dotnet</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/dotnet/eShop</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Kiota.Bundle" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 
 </Project>
