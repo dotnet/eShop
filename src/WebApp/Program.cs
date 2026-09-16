@@ -1,6 +1,7 @@
 ﻿using eShop.WebApp.Components;
 using eShop.ServiceDefaults;
 using Microsoft.FeatureManagement;
+using Microsoft.Kiota.Http.HttpClientLibrary;
 using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,7 +33,9 @@ builder.Services.Configure<ConfigurationFeatureDefinitionProviderOptions>(o =>
 });
 
 builder.Services.ConfigureOpenTelemetryTracerProvider(tracing =>
-    tracing.AddSource("Microsoft.FeatureManagement"));
+    tracing
+        .AddSource("Microsoft.FeatureManagement")
+        .AddSource(typeof(ObservabilityOptions).Namespace!));
 
 Console.WriteLine(((IConfigurationRoot)builder.Configuration).GetDebugView());
 

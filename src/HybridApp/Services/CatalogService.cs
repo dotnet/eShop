@@ -10,44 +10,44 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
     private readonly string remoteServiceBaseUrl = "api/catalog/";
 
 
-    public Task<CatalogItem?> GetCatalogItem(int id)
+    public Task<CatalogItem?> GetCatalogItem(int id, CancellationToken cancellationToken = default)
     {
         var uri = $"{remoteServiceBaseUrl}items/{id}?api-version=2.0";
-        return httpClient.GetFromJsonAsync(uri, CatalogJsonContext.Default.CatalogItem);
+        return httpClient.GetFromJsonAsync(uri, CatalogJsonContext.Default.CatalogItem, cancellationToken);
     }
 
-    public async Task<CatalogResult> GetCatalogItems(int pageIndex, int pageSize, int? brand, int? type)
+    public async Task<CatalogResult> GetCatalogItems(int pageIndex, int pageSize, int? brand, int? type, CancellationToken cancellationToken = default)
     {
         var uri = GetAllCatalogItemsUri(remoteServiceBaseUrl, pageIndex, pageSize, brand, type);
-        var result = await httpClient.GetFromJsonAsync($"{uri}&api-version=2.0", CatalogJsonContext.Default.CatalogResult);
+        var result = await httpClient.GetFromJsonAsync($"{uri}&api-version=2.0", CatalogJsonContext.Default.CatalogResult, cancellationToken);
         return result!;
     }
 
-    public async Task<List<CatalogItem>> GetCatalogItems(IEnumerable<int> ids)
+    public async Task<List<CatalogItem>> GetCatalogItems(IEnumerable<int> ids, CancellationToken cancellationToken = default)
     {
         var uri = $"{remoteServiceBaseUrl}items/by?ids={string.Join("&ids=", ids)}&api-version=2.0";
-        var result = await httpClient.GetFromJsonAsync(uri, CatalogJsonContext.Default.ListCatalogItem);
+        var result = await httpClient.GetFromJsonAsync(uri, CatalogJsonContext.Default.ListCatalogItem, cancellationToken);
         return result!;
     }
 
-    public Task<CatalogResult> GetCatalogItemsWithSemanticRelevance(int page, int take, string text)
+    public Task<CatalogResult> GetCatalogItemsWithSemanticRelevance(int page, int take, string text, CancellationToken cancellationToken = default)
     {
         var url = $"{remoteServiceBaseUrl}items/withsemanticrelevance?text={HttpUtility.UrlEncode(text)}&pageIndex={page}&pageSize={take}&api-version=2.0";
-        var result = httpClient.GetFromJsonAsync(url, CatalogJsonContext.Default.CatalogResult);
+        var result = httpClient.GetFromJsonAsync(url, CatalogJsonContext.Default.CatalogResult, cancellationToken);
         return result!;
     }
 
-    public async Task<IEnumerable<CatalogBrand>> GetBrands()
+    public async Task<IEnumerable<CatalogBrand>> GetBrands(CancellationToken cancellationToken = default)
     {
         var uri = $"{remoteServiceBaseUrl}catalogBrands?api-version=2.0";
-        var result = await httpClient.GetFromJsonAsync(uri, CatalogJsonContext.Default.CatalogBrandArray);
+        var result = await httpClient.GetFromJsonAsync(uri, CatalogJsonContext.Default.CatalogBrandArray, cancellationToken);
         return result!;
     }
 
-    public async Task<IEnumerable<CatalogItemType>> GetTypes()
+    public async Task<IEnumerable<CatalogItemType>> GetTypes(CancellationToken cancellationToken = default)
     {
         var uri = $"{remoteServiceBaseUrl}catalogTypes?api-version=2.0";
-        var result = await httpClient.GetFromJsonAsync(uri, CatalogJsonContext.Default.CatalogItemTypeArray);
+        var result = await httpClient.GetFromJsonAsync(uri, CatalogJsonContext.Default.CatalogItemTypeArray, cancellationToken);
         return result!;
     }
 

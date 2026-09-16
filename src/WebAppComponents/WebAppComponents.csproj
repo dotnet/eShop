@@ -8,8 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Kiota.Authentication.Azure" />
-    <PackageReference Include="Microsoft.Kiota.Bundle" />
+    <ProjectReference Include="..\Catalog.SDK\Catalog.SDK.csproj" />
   </ItemGroup>
 
   <ItemGroup>

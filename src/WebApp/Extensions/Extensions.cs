@@ -1,4 +1,5 @@
-﻿using eShop.Basket.API.Grpc;
+﻿using Catalog.SDK;
+using eShop.Basket.API.Grpc;
 using eShop.WebApp.Services.OrderStatus.IntegrationEvents;
 using eShop.WebAppComponents.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -7,6 +8,11 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.Extensions.AI;
 using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.Kiota.Abstractions;
+using Microsoft.Kiota.Abstractions.Authentication;
+using Microsoft.Kiota.Abstractions.Serialization;
+using Microsoft.Kiota.Http.HttpClientLibrary;
+using Microsoft.Kiota.Serialization.Json;
 
 public static class Extensions
 {
@@ -46,13 +52,51 @@ public static class Extensions
             })
             .AddAuthToken();
 
-        builder.Services.AddHttpClient<CatalogService>(o => o.BaseAddress = new("https+http://catalog-api"))
-            .AddApiVersion(2.0)
+        builder.Services.AddKiotaHandlers();
+        builder.Services.AddSingleton<IParseNodeFactory, JsonParseNodeFactory>();
+        builder.Services.AddSingleton<ISerializationWriterFactory, JsonSerializationWriterFactory>();
+        builder.Services.AddHttpClient(nameof(CatalogClient), o => o.BaseAddress = new("https+http://catalog-api"))
+            .AttachKiotaHandlers()
             .AddAuthToken();
+        builder.Services.AddScoped<IRequestAdapter>(services =>
+        {
+            var httpClient = services.GetRequiredService<IHttpClientFactory>().CreateClient(nameof(CatalogClient));
+            return new HttpClientRequestAdapter(
+                new AnonymousAuthenticationProvider(),
+                services.GetRequiredService<IParseNodeFactory>(),
+                services.GetRequiredService<ISerializationWriterFactory>(),
+                httpClient)
+            {
+                BaseUrl = httpClient.BaseAddress!.ToString().TrimEnd('/')
+            };
+        });
+        builder.Services.AddScoped<CatalogClient>();
+        builder.Services.AddScoped<CatalogService>();
 
         builder.Services.AddHttpClient<OrderingService>(o => o.BaseAddress = new("https+http://ordering-api"))
             .AddApiVersion(1.0)
             .AddAuthToken();
+    }
+
+    private static IServiceCollection AddKiotaHandlers(this IServiceCollection services)
+    {
+        foreach (var handler in KiotaClientFactory.GetDefaultHandlerActivatableTypes())
+        {
+            services.AddTransient(handler.Type);
+        }
+
+        return services;
+    }
+
+    private static IHttpClientBuilder AttachKiotaHandlers(this IHttpClientBuilder builder)
+    {
+        foreach (var handler in KiotaClientFactory.GetDefaultHandlerActivatableTypes())
+        {
+            builder.AddHttpMessageHandler(services =>
+                (DelegatingHandler)services.GetRequiredService(handler.Type));
+        }
+
+        return builder;
     }
 
     public static void AddEventBusSubscriptions(this IEventBusBuilder eventBus)
