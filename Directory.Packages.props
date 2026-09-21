@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    <DotnetPackagesVersion>10.0.11</DotnetPackagesVersion>
+    <DotnetPackagesVersion>10.0.12</DotnetPackagesVersion>
     <MicrosoftExtensionsVersion>10.4.0</MicrosoftExtensionsVersion>
     <AspireVersion>13.5.3</AspireVersion>
     <AspireUnstablePackagesVersion>13.5.3-preview.1.26425.3</AspireUnstablePackagesVersion>
