@@ -1,8 +1,11 @@
-using Aspire.Hosting;
+﻿using Aspire.Hosting;
+using Aspire.Hosting.Dotnet;
 using eShop.AppHost;
 using Microsoft.Extensions.Configuration;
 
 namespace eShop.AppHost.UnitTests;
+
+#pragma warning disable ASPIREDOTNETPROJECT001
 
 [TestClass]
 public class AppHostConfigurationTests
@@ -26,8 +29,8 @@ public class AppHostConfigurationTests
     public void FoundryExtensionAddsExpectedDeployments()
     {
         var builder = CreateBuilder();
-        var catalog = builder.AddProject("catalog-api", ProjectPath("Catalog.API", "Catalog.API.csproj"));
-        var webApp = builder.AddProject("webapp", ProjectPath("WebApp", "WebApp.csproj"));
+        var catalog = builder.AddDotnetProject("catalog-api", ProjectPath("Catalog.API", "Catalog.API.csproj"));
+        var webApp = builder.AddDotnetProject("webapp", ProjectPath("WebApp", "WebApp.csproj"));
 
         builder.AddFoundry(catalog, webApp);
 
@@ -40,8 +43,8 @@ public class AppHostConfigurationTests
     public void OllamaExtensionAddsExpectedModels()
     {
         var builder = CreateBuilder();
-        var catalog = builder.AddProject("catalog-api", ProjectPath("Catalog.API", "Catalog.API.csproj"));
-        var webApp = builder.AddProject("webapp", ProjectPath("WebApp", "WebApp.csproj"));
+        var catalog = builder.AddDotnetProject("catalog-api", ProjectPath("Catalog.API", "Catalog.API.csproj"));
+        var webApp = builder.AddDotnetProject("webapp", ProjectPath("WebApp", "WebApp.csproj"));
 
         builder.AddOllama(catalog, webApp);
 

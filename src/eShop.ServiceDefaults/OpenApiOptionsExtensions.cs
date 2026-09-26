@@ -17,6 +17,7 @@ internal static class OpenApiOptionsExtensions
     {
         options.AddDocumentTransformer((document, context, cancellationToken) =>
         {
+#pragma warning disable AV0027 // pp.DescribeApiVersions() is called in OpenApi.Extensions.cs
             var versionedDescriptionProvider = context.ApplicationServices.GetService<IApiVersionDescriptionProvider>();
             var apiDescription = versionedDescriptionProvider?.ApiVersionDescriptions
                 .SingleOrDefault(description => description.GroupName == context.DocumentName);
@@ -28,6 +29,7 @@ internal static class OpenApiOptionsExtensions
             document.Info.Title = title;
             document.Info.Description = BuildDescription(apiDescription, description);
             return Task.CompletedTask;
+#pragma warning restore AV0027
         });
         return options;
     }
@@ -154,9 +156,9 @@ internal static class OpenApiOptionsExtensions
         {
             // Add an example for the API version parameter and remove the default value
             var apiVersionParameter = operation.Parameters?.FirstOrDefault(p => p.Name == "api-version");
-            if (apiVersionParameter?.Schema is OpenApiSchema targetSchema)
+            if (apiVersionParameter?.Schema is OpenApiSchema { Default: { }} targetSchema)
             {
-                targetSchema.Example = targetSchema.Default;
+                targetSchema.Examples = [targetSchema.Default];
                 targetSchema.Default = null;
             }
             return Task.CompletedTask;
