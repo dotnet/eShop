@@ -29,7 +29,7 @@ internal static class Extensions
         {
             eventing.Subscribe<BeforeStartEvent>((@event, ct) =>
             {
-                foreach (var p in @event.Model.GetProjectResources())
+                foreach (var p in @event.Model.Resources.OfType<DotnetProjectResource>())
                 {
                     p.Annotations.Add(new EnvironmentCallbackAnnotation(context =>
                     {
