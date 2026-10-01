@@ -5,9 +5,9 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Version together with Aspire -->
-    <PackageVersion Include="Aspire.Hosting.Dotnet" Version="13.6.0-preview.1.26475.6" />
+    <PackageVersion Include="Aspire.Hosting.Dotnet" Version="13.6.0-preview.1.26479.8" />
     <PackageVersion Include="Aspire.Hosting.Azure.AppContainers" Version="13.6.0" />
-    <PackageVersion Include="Aspire.Hosting.Foundry" Version="13.6.0-preview.1.26475.6" />
+    <PackageVersion Include="Aspire.Hosting.Foundry" Version="13.6.0-preview.1.26479.8" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.6.0" />
     <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="13.6.0" />
     <PackageVersion Include="Aspire.Hosting.Redis" Version="13.6.0" />
@@ -16,7 +16,7 @@
     <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.6.0" />
     <PackageVersion Include="Aspire.RabbitMQ.Client" Version="13.6.0" />
     <PackageVersion Include="Aspire.StackExchange.Redis" Version="13.6.0" />
-    <PackageVersion Include="Aspire.Azure.AI.OpenAI" Version="13.6.0-preview.1.26475.6" />
+    <PackageVersion Include="Aspire.Azure.AI.OpenAI" Version="13.6.0-preview.1.26479.8" />
     <!-- Version together with Asp.Versioning -->
     <PackageVersion Include="Asp.Versioning.Http" Version="10.2.3" />
     <PackageVersion Include="Asp.Versioning.Http.Client" Version="10.2.0" />

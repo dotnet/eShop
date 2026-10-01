@@ -5,8 +5,6 @@ using Microsoft.Extensions.Configuration;
 
 namespace eShop.AppHost.UnitTests;
 
-#pragma warning disable ASPIREDOTNETPROJECT001
-
 [TestClass]
 public class AppHostConfigurationTests
 {

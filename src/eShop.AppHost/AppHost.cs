@@ -21,8 +21,6 @@ var webhooksDb = postgres.AddDatabase("webhooksdb");
 
 var launchProfileName = ShouldUseHttpForEndpoints() ? "http" : "https";
 
-#pragma warning disable ASPIREDOTNETPROJECT001
-
 // Services
 var identityApi = builder.AddDotnetProject("identity-api", "../Identity.API", o => o.LaunchProfileName = launchProfileName)
     .WithExternalHttpEndpoints()

@@ -4,6 +4,5 @@
   },
   "sdk": {
     "version": "13.6.0"
-  },
-  "channel": "staging"
+  }
 }

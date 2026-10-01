@@ -9,8 +9,6 @@ using Yarp.ReverseProxy.Configuration;
 
 namespace eShop.AppHost;
 
-#pragma warning disable ASPIREDOTNETPROJECT001
-
 internal static class Extensions
 {
     public static bool IsFoundryEnabled(IConfiguration configuration) =>
