@@ -436,7 +436,7 @@ public static class CatalogApi
         [AsParameters] CatalogServices services,
         [Description("The id of the catalog item to delete")] int id)
     {
-        var item = services.Context.CatalogItems.SingleOrDefault(x => x.Id == id);
+        var item = await services.Context.CatalogItems.SingleOrDefaultAsync(x => x.Id == id);
 
         if (item is null)
         {
