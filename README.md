@@ -85,10 +85,28 @@ dotnet test --solution eShop.Web.slnf
 
 Run the Playwright browser journeys. Playwright starts the AppHost automatically, so ensure your container runtime is running first.
 
+First, create a `.env` file from the template:
+```powershell
+cp .env.example .env
+```
+
+Then update `.env` with actual test credentials. Default test users seeded by the Identity API:
+- **Username:** `alice` or `bob`
+- **Password:** `Pass123$`
+- See [src/Identity.API/UsersSeed.cs](src/Identity.API/UsersSeed.cs) for seed configuration
+
+Run E2E tests:
 ```powershell
 npm ci
 npx playwright install chromium
-npm run test:e2e
+npm run test:e2e          # headless
+npm run test:e2e:headed   # with visible browser
+npm run test:e2e:report   # view HTML report
+```
+
+To test against a custom URL (e.g., remote deployment):
+```powershell
+PLAYWRIGHT_BASE_URL=https://localhost:7298 npm run test:e2e
 ```
 
 ### Optional: AI Chatbot with Microsoft Foundry
