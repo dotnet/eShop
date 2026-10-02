@@ -67,18 +67,6 @@
             if (!string.IsNullOrWhiteSpace(user.LastName))
                 claims.Add(new Claim("last_name", user.LastName));
 
-            if (!string.IsNullOrWhiteSpace(user.CardNumber))
-                claims.Add(new Claim("card_number", user.CardNumber));
-
-            if (!string.IsNullOrWhiteSpace(user.CardHolderName))
-                claims.Add(new Claim("card_holder", user.CardHolderName));
-
-            if (!string.IsNullOrWhiteSpace(user.SecurityNumber))
-                claims.Add(new Claim("card_security_number", user.SecurityNumber));
-
-            if (!string.IsNullOrWhiteSpace(user.Expiration))
-                claims.Add(new Claim("card_expiration", user.Expiration));
-
             if (!string.IsNullOrWhiteSpace(user.City))
                 claims.Add(new Claim("address_city", user.City));
 

@@ -55,15 +55,6 @@ public partial class CheckoutViewModel : ViewModelBase
                     City = userInfo?.Address
                 };
 
-                // Create Payment Info
-                var paymentInfo = new PaymentInfo
-                {
-                    CardNumber = userInfo?.CardNumber,
-                    CardHolderName = userInfo?.CardHolder,
-                    CardType = new CardType {Id = 3, Name = "MasterCard"},
-                    SecurityNumber = userInfo?.CardSecurityNumber
-                };
-
                 var orderItems = CreateOrderItems(basketItems);
 
                 // Create new Order
@@ -76,11 +67,7 @@ public partial class CheckoutViewModel : ViewModelBase
                     OrderItems = orderItems,
                     OrderStatus = "Submitted",
                     OrderDate = DateTime.Now,
-                    CardHolderName = paymentInfo.CardHolderName,
-                    CardNumber = paymentInfo.CardNumber,
-                    CardSecurityNumber = paymentInfo.SecurityNumber,
-                    CardExpiration = DateTime.UtcNow.AddYears(5),
-                    CardTypeId = paymentInfo.CardType.Id,
+                    PaymentMethodId = "pm_sample_mobile",
                     ShippingState = ShippingAddress.State,
                     ShippingCountry = ShippingAddress.Country,
                     ShippingStreet = ShippingAddress.Street,

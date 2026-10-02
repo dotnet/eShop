@@ -7,37 +7,18 @@ public class PaymentMethod : Entity
     [Required]
     private string _alias;
     [Required]
-    private string _cardNumber;
-    private string _securityNumber;
-    [Required]
-    private string _cardHolderName;
-    private DateTime _expiration;
-
-    private int _cardTypeId;
-    public CardType CardType { get; private set; }
+    private string _paymentMethodId;
 
     protected PaymentMethod() { }
 
-    public PaymentMethod(int cardTypeId, string alias, string cardNumber, string securityNumber, string cardHolderName, DateTime expiration)
+    public PaymentMethod(string alias, string paymentMethodId)
     {
-        _cardNumber = !string.IsNullOrWhiteSpace(cardNumber) ? cardNumber : throw new OrderingDomainException(nameof(cardNumber));
-        _securityNumber = !string.IsNullOrWhiteSpace(securityNumber) ? securityNumber : throw new OrderingDomainException(nameof(securityNumber));
-        _cardHolderName = !string.IsNullOrWhiteSpace(cardHolderName) ? cardHolderName : throw new OrderingDomainException(nameof(cardHolderName));
-
-        if (expiration < DateTime.UtcNow)
-        {
-            throw new OrderingDomainException(nameof(expiration));
-        }
-
         _alias = alias;
-        _expiration = expiration;
-        _cardTypeId = cardTypeId;
+        _paymentMethodId = !string.IsNullOrWhiteSpace(paymentMethodId) ? paymentMethodId : throw new OrderingDomainException(nameof(paymentMethodId));
     }
 
-    public bool IsEqualTo(int cardTypeId, string cardNumber, DateTime expiration)
+    public bool IsEqualTo(string paymentMethodId)
     {
-        return _cardTypeId == cardTypeId
-            && _cardNumber == cardNumber
-            && _expiration == expiration;
+        return _paymentMethodId == paymentMethodId;
     }
 }

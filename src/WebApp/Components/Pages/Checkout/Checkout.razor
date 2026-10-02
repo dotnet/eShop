@@ -110,7 +110,6 @@
 
     private async Task HandleValidSubmitAsync()
     {
-        Info.CardTypeId = 1;
         await Basket.CheckoutAsync(Info);
         Nav.NavigateTo("user/orders");
     }

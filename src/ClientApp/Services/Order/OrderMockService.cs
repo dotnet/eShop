@@ -1,12 +1,11 @@
 using eShop.ClientApp.Models.Basket;
 using eShop.ClientApp.Models.Orders;
-using eShop.ClientApp.Models.User;
 
 namespace eShop.ClientApp.Services.Order;
 
 public class OrderMockService : IOrderService
 {
-    private static readonly DateTime MockExpirationDate = DateTime.Now.AddYears(5);
+    private const string MockPaymentMethodId = "pm_mock_mobile";
 
     private static readonly Address MockAdress = new()
     {
@@ -20,22 +19,6 @@ public class OrderMockService : IOrderService
         State = "Seattle",
         StateCode = "WA",
         ZipCode = "98101"
-    };
-
-    private static readonly PaymentInfo MockPaymentInfo = new()
-    {
-        Id = Guid.NewGuid(),
-        CardHolderName = "American Express",
-        CardNumber = "XXXXXXXXXXXX0005",
-        CardType = new CardType
-        {
-            Id = 3,
-            Name = "MasterCard"
-        },
-        Expiration = MockExpirationDate.ToString(),
-        ExpirationMonth = MockExpirationDate.Month,
-        ExpirationYear = MockExpirationDate.Year,
-        SecurityNumber = "123"
     };
 
     private static readonly List<OrderItem> MockOrderItems = new()
@@ -64,11 +47,7 @@ public class OrderMockService : IOrderService
 
     private static readonly OrderCheckout MockOrderCheckout = new()
     {
-        CardExpiration = DateTime.UtcNow,
-        CardHolderName = "FakeCardHolderName",
-        CardNumber = "XXXXXXXXXXXX3224",
-        CardSecurityNumber = "1234",
-        CardTypeId = 1,
+        PaymentMethodId = MockPaymentMethodId,
         City = "FakeCity",
         Country = "FakeCountry",
         ZipCode = "FakeZipCode",
@@ -84,11 +63,7 @@ public class OrderMockService : IOrderService
             OrderDate = DateTime.Now,
             OrderStatus = "Submitted",
             OrderItems = MockOrderItems,
-            CardTypeId = MockPaymentInfo.CardType.Id,
-            CardHolderName = MockPaymentInfo.CardHolderName,
-            CardNumber = MockPaymentInfo.CardNumber,
-            CardSecurityNumber = MockPaymentInfo.SecurityNumber,
-            CardExpiration = new DateTime(MockPaymentInfo.ExpirationYear, MockPaymentInfo.ExpirationMonth, 1),
+            PaymentMethodId = MockPaymentMethodId,
             ShippingCity = MockAdress.City,
             ShippingState = MockAdress.State,
             ShippingCountry = MockAdress.Country,
@@ -102,11 +77,7 @@ public class OrderMockService : IOrderService
             OrderDate = DateTime.Now,
             OrderStatus = "Paid",
             OrderItems = MockOrderItems,
-            CardTypeId = MockPaymentInfo.CardType.Id,
-            CardHolderName = MockPaymentInfo.CardHolderName,
-            CardNumber = MockPaymentInfo.CardNumber,
-            CardSecurityNumber = MockPaymentInfo.SecurityNumber,
-            CardExpiration = new DateTime(MockPaymentInfo.ExpirationYear, MockPaymentInfo.ExpirationMonth, 1),
+            PaymentMethodId = MockPaymentMethodId,
             ShippingCity = MockAdress.City,
             ShippingState = MockAdress.State,
             ShippingCountry = MockAdress.Country,
@@ -120,11 +91,7 @@ public class OrderMockService : IOrderService
             OrderDate = DateTime.Now,
             OrderStatus = "Cancelled",
             OrderItems = MockOrderItems,
-            CardTypeId = MockPaymentInfo.CardType.Id,
-            CardHolderName = MockPaymentInfo.CardHolderName,
-            CardNumber = MockPaymentInfo.CardNumber,
-            CardSecurityNumber = MockPaymentInfo.SecurityNumber,
-            CardExpiration = new DateTime(MockPaymentInfo.ExpirationYear, MockPaymentInfo.ExpirationMonth, 1),
+            PaymentMethodId = MockPaymentMethodId,
             ShippingCity = MockAdress.City,
             ShippingState = MockAdress.State,
             ShippingCountry = MockAdress.Country,
@@ -138,11 +105,7 @@ public class OrderMockService : IOrderService
             OrderDate = DateTime.Now,
             OrderStatus = "Shipped",
             OrderItems = MockOrderItems,
-            CardTypeId = MockPaymentInfo.CardType.Id,
-            CardHolderName = MockPaymentInfo.CardHolderName,
-            CardNumber = MockPaymentInfo.CardNumber,
-            CardSecurityNumber = MockPaymentInfo.SecurityNumber,
-            CardExpiration = new DateTime(MockPaymentInfo.ExpirationYear, MockPaymentInfo.ExpirationMonth, 1),
+            PaymentMethodId = MockPaymentMethodId,
             ShippingCity = MockAdress.City,
             ShippingState = MockAdress.State,
             ShippingCountry = MockAdress.Country,
