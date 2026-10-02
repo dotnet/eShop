@@ -1,4 +1,5 @@
-﻿using Aspire.Hosting.Eventing;
+﻿using Aspire.Hosting.Dotnet;
+using Aspire.Hosting.Eventing;
 using Aspire.Hosting.Foundry;
 using Aspire.Hosting.Lifecycle;
 using Aspire.Hosting.Yarp;
@@ -28,7 +29,7 @@ internal static class Extensions
         {
             eventing.Subscribe<BeforeStartEvent>((@event, ct) =>
             {
-                foreach (var p in @event.Model.GetProjectResources())
+                foreach (var p in @event.Model.Resources.OfType<DotnetProjectResource>())
                 {
                     p.Annotations.Add(new EnvironmentCallbackAnnotation(context =>
                     {
@@ -47,8 +48,8 @@ internal static class Extensions
     /// Configures eShop projects to use Microsoft Foundry for text embedding and chat.
     /// </summary>
     public static IDistributedApplicationBuilder AddFoundry(this IDistributedApplicationBuilder builder,
-        IResourceBuilder<ProjectResource> catalogApi,
-        IResourceBuilder<ProjectResource> webApp)
+        IResourceBuilder<DotnetProjectResource> catalogApi,
+        IResourceBuilder<DotnetProjectResource> webApp)
     {
         var foundry = builder.AddFoundry("foundry");
         var chat = foundry.AddDeployment("chatModel", "gpt-4.1-mini", "2025-04-14", "OpenAI");
@@ -64,8 +65,8 @@ internal static class Extensions
     /// Configures eShop projects to use Ollama for text embedding and chat.
     /// </summary>
     public static IDistributedApplicationBuilder AddOllama(this IDistributedApplicationBuilder builder,
-        IResourceBuilder<ProjectResource> catalogApi,
-        IResourceBuilder<ProjectResource> webApp)
+        IResourceBuilder<DotnetProjectResource> catalogApi,
+        IResourceBuilder<DotnetProjectResource> webApp)
     {
         var ollama = builder.AddOllama("ollama")
             .WithDataVolume()
@@ -85,9 +86,9 @@ internal static class Extensions
     }
 
     public static IResourceBuilder<YarpResource> ConfigureMobileBffRoutes(this IResourceBuilder<YarpResource> builder,
-        IResourceBuilder<ProjectResource> catalogApi,
-        IResourceBuilder<ProjectResource> orderingApi,
-        IResourceBuilder<ProjectResource> identityApi)
+        IResourceBuilder<DotnetProjectResource> catalogApi,
+        IResourceBuilder<DotnetProjectResource> orderingApi,
+        IResourceBuilder<DotnetProjectResource> identityApi)
     {
         return builder.WithConfiguration(yarp =>
         {

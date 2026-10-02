@@ -1,12 +1,54 @@
-using Aspire.Hosting;
+﻿using Aspire.Hosting;
+using Aspire.Hosting.ApplicationModel;
+using Aspire.Hosting.Dotnet;
+using Aspire.Hosting.Eventing;
+using Aspire.Hosting.Lifecycle;
 using eShop.AppHost;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace eShop.AppHost.UnitTests;
 
 [TestClass]
 public class AppHostConfigurationTests
 {
+    public TestContext TestContext { get; set; } = null!;
+
+    [TestMethod]
+    public async Task ForwardedHeadersExtensionConfiguresDotnetProjectsOnly()
+    {
+        var builder = CreateBuilder();
+        builder.Services.RemoveAll<IDistributedApplicationEventingSubscriber>();
+        builder.AddForwardedHeaders();
+        var catalog = builder.AddDotnetProject("catalog-api", ProjectPath("Catalog.API", "Catalog.API.csproj"));
+        var webApp = builder.AddDotnetProject("webapp", ProjectPath("WebApp", "WebApp.csproj"));
+        var redis = builder.AddRedis("redis");
+        var annotationCounts = builder.Resources.ToDictionary(resource => resource, resource => resource.Annotations.Count);
+
+        using var services = builder.Services.BuildServiceProvider();
+        var eventing = new DistributedApplicationEventing();
+        foreach (var subscriber in services.GetServices<IDistributedApplicationEventingSubscriber>())
+        {
+            await subscriber.SubscribeAsync(eventing, builder.ExecutionContext, TestContext.CancellationToken);
+        }
+
+        var model = services.GetRequiredService<DistributedApplicationModel>();
+        await eventing.PublishAsync(new BeforeStartEvent(services, model), TestContext.CancellationToken);
+
+        foreach (var project in new[] { catalog.Resource, webApp.Resource })
+        {
+            var annotation = project.Annotations.Skip(annotationCounts[project])
+                .OfType<EnvironmentCallbackAnnotation>().Single();
+            var context = new EnvironmentCallbackContext(builder.ExecutionContext, project, cancellationToken: TestContext.CancellationToken);
+            await annotation.Callback(context);
+
+            Assert.AreEqual("true", context.EnvironmentVariables["ASPNETCORE_FORWARDEDHEADERS_ENABLED"]);
+        }
+
+        Assert.HasCount(annotationCounts[redis.Resource], redis.Resource.Annotations);
+    }
+
     [TestMethod]
     [DataRow(null, false)]
     [DataRow("", false)]
@@ -26,8 +68,8 @@ public class AppHostConfigurationTests
     public void FoundryExtensionAddsExpectedDeployments()
     {
         var builder = CreateBuilder();
-        var catalog = builder.AddProject("catalog-api", ProjectPath("Catalog.API", "Catalog.API.csproj"));
-        var webApp = builder.AddProject("webapp", ProjectPath("WebApp", "WebApp.csproj"));
+        var catalog = builder.AddDotnetProject("catalog-api", ProjectPath("Catalog.API", "Catalog.API.csproj"));
+        var webApp = builder.AddDotnetProject("webapp", ProjectPath("WebApp", "WebApp.csproj"));
 
         builder.AddFoundry(catalog, webApp);
 
@@ -40,8 +82,8 @@ public class AppHostConfigurationTests
     public void OllamaExtensionAddsExpectedModels()
     {
         var builder = CreateBuilder();
-        var catalog = builder.AddProject("catalog-api", ProjectPath("Catalog.API", "Catalog.API.csproj"));
-        var webApp = builder.AddProject("webapp", ProjectPath("WebApp", "WebApp.csproj"));
+        var catalog = builder.AddDotnetProject("catalog-api", ProjectPath("Catalog.API", "Catalog.API.csproj"));
+        var webApp = builder.AddDotnetProject("webapp", ProjectPath("WebApp", "WebApp.csproj"));
 
         builder.AddOllama(catalog, webApp);
 

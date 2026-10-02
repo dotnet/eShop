@@ -74,7 +74,7 @@ public static partial class Extensions
                 {
                     var document = options.Document;
 
-                    document.ApplyApiVersionInfo(openApi.GetRequiredValue("Document:Title"), openApi.GetRequiredValue("Document:Description"));
+                    document.ApplyApiVersionInfo(options.Description, openApi.GetRequiredValue("Document:Title"), openApi.GetRequiredValue("Document:Description"));
                     document.ApplyAuthorizationChecks([.. scopes.Keys]);
                     document.ApplySecuritySchemeDefinitions();
                     document.ApplyOperationDeprecatedStatus();
