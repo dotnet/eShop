@@ -87,6 +87,6 @@
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.17.10" />
     <!-- Before license change -->
-    <PackageVersion Include="MediatR" Version="13.1.0" />
+    <PackageVersion Include="MediatR" Version="14.2.0" />
   </ItemGroup>
 </Project>
