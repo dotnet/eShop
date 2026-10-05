@@ -65,11 +65,11 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.19.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.19.0" />
     <!-- IdentityServer -->
-    <PackageVersion Include="Duende.IdentityServer" Version="7.3.2" />
-    <PackageVersion Include="Duende.IdentityServer.AspNetIdentity" Version="7.3.2" />
+    <PackageVersion Include="Duende.IdentityServer" Version="8.0.9" />
+    <PackageVersion Include="Duende.IdentityServer.AspNetIdentity" Version="8.0.9" />
     <PackageVersion Include="Duende.IdentityServer.EntityFramework" Version="7.3.2" />
     <PackageVersion Include="Duende.IdentityServer.EntityFramework.Storage" Version="7.3.2" />
-    <PackageVersion Include="Duende.IdentityServer.Storage" Version="7.3.2" />
+    <PackageVersion Include="Duende.IdentityServer.Storage" Version="8.0.9" />
     <!-- Scaffolding -->
     <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
     <!-- Grpc -->
