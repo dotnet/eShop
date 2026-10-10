@@ -6,7 +6,7 @@ namespace eShop.HybridApp;
 public static class MauiProgram
 {
     // NOTE: Must have a trailing slash on base URLs to ensure the full BaseAddress URL is used to resolve relative URLs
-    internal static string MobileBffHost = "http://localhost:11632/";
+    internal static string MobileBffHost = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:11632/" : "http://localhost:11632/";
 
 
     public static MauiApp CreateMauiApp()

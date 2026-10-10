@@ -1,6 +1,6 @@
 {
   "solution": {
-    "path": "eShop.sln",
+    "path": "eShop.slnx",
     "projects": [
       "src\\Basket.API\\Basket.API.csproj",
       "src\\Catalog.API\\Catalog.API.csproj",
@@ -8,7 +8,6 @@
       "src\\EventBus\\EventBus.csproj",
       "src\\Identity.API\\Identity.API.csproj",
       "src\\IntegrationEventLogEF\\IntegrationEventLogEF.csproj",
-      "src\\Mobile.Bff.Shopping\\Mobile.Bff.Shopping.csproj",
       "src\\Ordering.API\\Ordering.API.csproj",
       "src\\OrderProcessor\\OrderProcessor.csproj",
       "src\\Ordering.Domain\\Ordering.Domain.csproj",
@@ -21,9 +20,13 @@
       "src\\eShop.AppHost\\eShop.AppHost.csproj",
       "src\\eShop.ServiceDefaults\\eShop.ServiceDefaults.csproj",
       "tests\\Basket.UnitTests\\Basket.UnitTests.csproj",
+      "tests\\Basket.FunctionalTests\\Basket.FunctionalTests.csproj",
+      "tests\\Application.UnitTests\\Application.UnitTests.csproj",
       "tests\\Catalog.FunctionalTests\\Catalog.FunctionalTests.csproj",
       "tests\\Ordering.FunctionalTests\\Ordering.FunctionalTests.csproj",
-      "tests\\Ordering.UnitTests\\Ordering.UnitTests.csproj"
+      "tests\\Ordering.UnitTests\\Ordering.UnitTests.csproj",
+      "tests\\Webhooks.FunctionalTests\\Webhooks.FunctionalTests.csproj",
+      "tests\\eShop.AppHost.UnitTests\\eShop.AppHost.UnitTests.csproj"
     ]
   }
 }

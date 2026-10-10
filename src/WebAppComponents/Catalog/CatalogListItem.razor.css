@@ -1,63 +1,128 @@
-﻿.catalog-item {
-    flex-basis: calc(33.33% - 2.5rem);
-    flex-shrink: 0;
+.catalog-item {
     box-sizing: border-box;
-    padding: 2px;
-}
-
-.catalog-item:hover {
-    cursor: pointer;
-    padding: 0;
-    border: 2px solid #000;
 }
 
 .catalog-product {
-    background-color: transparent;
-    padding: 0;
-    margin: 0;
-    border: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    overflow: hidden;
+    text-decoration: none;
+    /* Pointer-tracked 3D tilt; card-tilt.js writes the rotation vars. */
+    --card-rx: 0deg;
+    --card-ry: 0deg;
+    --card-lift: 0px;
+    --card-scale: 1;
+    transform:
+        perspective(820px)
+        rotateX(var(--card-rx))
+        rotateY(var(--card-ry))
+        translateY(var(--card-lift))
+        scale(var(--card-scale));
+    transition: transform var(--dur-2) var(--ease),
+                box-shadow var(--dur-2) var(--ease),
+                border-color var(--dur-2) var(--ease);
+}
+
+.catalog-product:hover {
+    --card-lift: -4px;
+    border-color: var(--color-line-strong);
+    box-shadow: var(--shadow-md);
+}
+
+/* While tracking the pointer keep the transform gently eased so the tilt follows
+   the cursor smoothly instead of snapping, and promote the card to its own layer. */
+.catalog-product.is-tilting {
+    transition: transform var(--dur-2) var(--ease),
+                box-shadow var(--dur-2) var(--ease),
+                border-color var(--dur-2) var(--ease);
+    will-change: transform;
+}
+
+/* Framed product shot on a subtle surface; contain avoids cropping detail. */
+.catalog-product-image {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 3;
+    padding: 1rem;
+    background: var(--color-surface-2);
+}
+
+/* Tiny brand chip, top-left of the shot. Subtle monochrome pill so it labels the
+   maker without competing with the product. */
+.catalog-product-brand {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    z-index: 1;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill, 999px);
+    background: rgba(255, 255, 255, 0.82);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    color: var(--color-ink-2, #444);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-transform: uppercase;
+    pointer-events: none;
 }
 
 .catalog-product-image img {
     max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
-.catalog-product .catalog-product-content {
+.catalog-product-content {
     display: flex;
-    padding: 0 0.75rem;
-    align-items: center;
-    gap: 0.5rem;
-    align-self: stretch;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem 1.1rem;
 }
 
 .catalog-product-content .name {
-    color: #000;
-    font-size: 1rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 150%;
+    color: var(--color-ink);
+    font-size: var(--text-base);
+    font-weight: 700;
+    line-height: 1.35;
     text-align: left;
 }
 
 .catalog-product-content .price {
-    color: #444;
-    text-align: right;
-    font-size: 1rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 150%;
     margin-left: auto;
+    color: var(--color-ink);
+    font-size: var(--text-base);
+    font-weight: 700;
+    white-space: nowrap;
 }
 
+/* Scroll-reveal on the wrapper (kept off .catalog-product so hover-lift stays free).
+   Progressive enhancement: static when unsupported or reduced-motion is set. */
+@media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+        .catalog-item {
+            animation: eshop-card-reveal linear both;
+            animation-timeline: view();
+            animation-range: entry 0% entry 38%;
+        }
 
-@media only screen and (max-width: 480px) { 
-    .catalog-item {
-        flex-basis: calc(100% - 2rem);
-    }    
-}
-
-@media only screen and (min-width: 481px) and (max-width: 1024px) { 
-    .catalog-item {
-        flex-basis: calc(50% - 3rem);
-    }    
+        @keyframes eshop-card-reveal {
+            from {
+                opacity: 0;
+                transform: translateY(1.25rem);
+            }
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+    }
 }

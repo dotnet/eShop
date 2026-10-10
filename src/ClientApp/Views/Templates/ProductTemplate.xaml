@@ -28,15 +28,8 @@
         </ResourceDictionary>
     </ContentView.Resources>
     <ContentView.Content>
-        <Grid Margin="0" Padding="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="150" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+        <Grid Margin="0" Padding="10" ColumnSpacing="10" ColumnDefinitions="*,Auto"
+              RowDefinitions="Auto,*">
             <!--  IMAGE  -->
             <Border
                 Grid.Row="0"
@@ -54,11 +47,14 @@
 
             <!--  NAME  -->
             <Label
-                Grid.Row="1"
+                Grid.Row="2"
                 Grid.Column="0"
+                HorizontalOptions="Fill"
                 Style="{StaticResource ProductNameStyle}"
                 Text="{Binding Name, Mode=OneTime, Converter={StaticResource ToUpperConverter}}"
-                VerticalTextAlignment="Center" />
+                VerticalTextAlignment="Start"
+                VerticalOptions="Start"
+                />
             <!--  PRICE  -->
             <Label
                 Grid.Row="1"
@@ -66,7 +62,7 @@
                 MaxLines="1"
                 Style="{StaticResource ProductPriceStyle}"
                 Text="{Binding Price, Mode=OneTime, StringFormat='${0:N2}'}"
-                VerticalTextAlignment="Center" />
+                VerticalTextAlignment="Start" />
         </Grid>
     </ContentView.Content>
     <VisualStateManager.VisualStateGroups>

@@ -1,0 +1,116 @@
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+properties:
+  configurationVersion: 0.2.0
+  ########################################
+  ### RESOURCES: System Configuration
+  ########################################
+  resources:
+    ########################################
+    ### OS Configurations
+    ########################################
+    ### Enable: Developer Mode
+    ### -------------------------------------
+    - resource: Microsoft.Windows.Developer/DeveloperMode
+      directives:
+        description: Enable Developer Mode
+        # Requires elevation only for the set operation
+        securityContext: elevated
+        allowPrerelease: true
+      settings:
+        Ensure: Present
+    ### Install Windows VirtualMachinePlatform
+    ### -------------------------------------
+    - resource: PSDscResources/WindowsOptionalFeature
+      directives:
+        description: Install VirtualMachinePlatform
+        securityContext: elevated
+      settings:
+        name: VirtualMachinePlatform
+        ensure: Present
+    ### Install WSL
+    ### -------------------------------------
+    - resource: PSDscResources/WindowsOptionalFeature
+      directives:
+        description: Install WSL
+        securityContext: elevated
+      settings:
+        name: Microsoft-Windows-Subsystem-Linux
+        ensure: Present
+    ### Configure Install Ubuntu
+    ### -------------------------------------
+    - resource: PSDscResources/Script
+      id: ubuntuwsl
+      directives:
+        description: Install Ubuntu for WSL
+      settings:
+        SetScript: |
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+          wsl --install -d Ubuntu
+        GetScript: return $false
+        TestScript: return $false
+    ########################################
+    ### Install CLIs, SDKs & Tools
+    ########################################
+    ### Install DotNET SDK Preview
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: dotnetsdk
+      directives:
+        description: Install DotNET SDK Preview
+        # Requires elevation only for the set operation (i.e., installing the package)
+        securityContext: elevated
+      settings:
+        id: Microsoft.DotNet.SDK.Preview
+    ### Install Azure CLI
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: azurecli
+      directives:
+        description: Install Azure CLI
+        # Requires elevation only for the set operation (i.e., installing the package)
+        securityContext: elevated
+      settings:
+        id:  Microsoft.AzureCLI
+    ### Install Azd
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Azd
+      directives:
+        description: Install Azd
+      settings:
+        id: Microsoft.Azd
+    ### Install Docker Desktop
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: docker
+      directives:
+        description: Install Docker Desktop
+        # Requires elevation only for the set operation (i.e., installing the package)
+        securityContext: elevated
+      settings:
+        id: Docker.DockerDesktop
+    ### Install Visual Sudio
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: vscommunity
+      directives:
+        description: Install Visual Studio 2022 Community
+        # Requires elevation only for the set operation (i.e., installing the package)
+        # Only requires elevation when the VS Installer isn't installed yet
+        securityContext: elevated
+      settings:
+        id: Microsoft.VisualStudio.2022.Community.Preview
+    ### Install VS Workloads
+    ### -------------------------------------
+    - resource: Microsoft.VisualStudio.DSC/VSComponents
+      directives:
+        description: Install required VS workloads from vsconfig file
+        securityContext: elevated
+        allowPrerelease: true
+      dependsOn:
+        - vscommunity
+      settings:
+        productId: Microsoft.VisualStudio.Product.Community
+        channelId: VisualStudio.17.Preview
+        components: [Microsoft.VisualStudio.Workload.NetWeb, Microsoft.VisualStudio.Workload.NetCrossPlat, aspire]
+        includeRecommended: true

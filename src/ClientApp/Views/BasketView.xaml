@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8" ?>
-
 <views:ContentPageBase
     x:Class="eShop.ClientApp.Views.BasketView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -18,7 +17,7 @@
             Grid.Row="0"
             ItemsSource="{Binding BasketItems}"
             SelectionChangedCommand="{Binding AddCommand}"
-            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}">
+            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}, x:DataType=CollectionView}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <templates:BasketItemTemplate />

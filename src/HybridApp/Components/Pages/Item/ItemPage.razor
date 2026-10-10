@@ -19,7 +19,7 @@
                 Brand: <strong>@item.CatalogBrand?.Brand</strong>
             </p>
             <form class="add-to-cart" >
-                <span class="price">$@item.Price.ToString("0.00")</span>
+                <span class="price">$@item.Price.ToPriceDisplay()</span>
             </form>
 
         @*     @if (numInCart > 0)

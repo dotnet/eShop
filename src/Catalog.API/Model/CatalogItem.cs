@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Pgvector;
 
@@ -11,19 +11,19 @@ public class CatalogItem
     [Required]
     public string Name { get; set; }
 
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     public decimal Price { get; set; }
 
-    public string PictureFileName { get; set; }
+    public string? PictureFileName { get; set; }
 
     public int CatalogTypeId { get; set; }
 
-    public CatalogType CatalogType { get; set; }
+    public CatalogType? CatalogType { get; set; }
 
     public int CatalogBrandId { get; set; }
 
-    public CatalogBrand CatalogBrand { get; set; }
+    public CatalogBrand? CatalogBrand { get; set; }
 
     // Quantity in stock
     public int AvailableStock { get; set; }
@@ -37,14 +37,14 @@ public class CatalogItem
 
     /// <summary>Optional embedding for the catalog item's description.</summary>
     [JsonIgnore]
-    public Vector Embedding { get; set; }
+    public Vector? Embedding { get; set; }
 
     /// <summary>
     /// True if item is on reorder
     /// </summary>
     public bool OnReorder { get; set; }
 
-    public CatalogItem() { }
+    public CatalogItem(string name) { Name = name; }
 
 
     /// <summary>

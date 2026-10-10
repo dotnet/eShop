@@ -49,10 +49,24 @@ public static class MauiProgram
 #if !WINDOWS
             .UseMauiMaps()
 #endif
+            .ConfigureHandlers()
             .RegisterAppServices()
             .RegisterViewModels()
             .RegisterViews()
             .Build();
+    }
+
+    public static MauiAppBuilder ConfigureHandlers(this MauiAppBuilder mauiAppBuilder)
+    {
+#if IOS || MACCATALYST
+        mauiAppBuilder.ConfigureMauiHandlers(handlers =>
+        {
+            handlers.AddHandler<Microsoft.Maui.Controls.CollectionView, Microsoft.Maui.Controls.Handlers.Items2.CollectionViewHandler2>();
+            handlers.AddHandler<Microsoft.Maui.Controls.CarouselView, Microsoft.Maui.Controls.Handlers.Items2.CarouselViewHandler2>();
+        });
+#endif
+
+        return mauiAppBuilder;
     }
 
     public static MauiAppBuilder RegisterAppServices(this MauiAppBuilder mauiAppBuilder)

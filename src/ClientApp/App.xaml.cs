@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
 using eShop.ClientApp.Services;
 using eShop.ClientApp.Services.AppEnvironment;
@@ -32,9 +32,13 @@ public partial class App : Application
 
         InitApp();
 
-        MainPage = new AppShell(navigationService);
 
         Current.UserAppTheme = AppTheme.Light;
+    }
+
+    protected override Window CreateWindow(IActivationState activationState)
+    {
+        return new Window(new AppShell(_navigationService));
     }
 
     private void InitApp()
@@ -86,7 +90,7 @@ public partial class App : Application
 
     private void SetStatusBar()
     {
-        var nav = Current.MainPage as NavigationPage;
+        var nav = Windows[0].Page as NavigationPage;
 
         if (Current.RequestedTheme == AppTheme.Dark)
         {

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>eShop.EventBusRabbitMQ</RootNamespace>
     <IsAotCompatible>true</IsAotCompatible>
     <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
@@ -13,8 +13,6 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.RabbitMQ.Client" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
-    <PackageReference Include="Polly.Core" />
   </ItemGroup>
 
   <ItemGroup>

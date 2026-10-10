@@ -125,9 +125,11 @@
 }
 
 body {
-    margin-top: 0;
-    font-family: 'Plus Jakarta Sans';
-    min-width:480px;
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    min-width: 0;
+    color: #141414;
+    background: #f6f6f4;
 }
 
 .content {
@@ -188,7 +190,7 @@ body {
 }
 
 .eshop-header-intro h1 {
-    color: #000;
+    color: #141414;
     font-size: 3.5rem;
     font-style: normal;
     font-weight: 700;
@@ -197,7 +199,7 @@ body {
 }
 
 .eshop-header-intro p {
-    color: #000;
+    color: #141414;
     font-size: 2rem;
     font-style: normal;
     font-weight: 700;
@@ -206,7 +208,7 @@ body {
 }
 
 .eshop-header .logo-header {
-    color: black;
+    color: #141414;
     margin-right: auto;
 }
 
@@ -221,7 +223,7 @@ body {
 
 .eshop-footer {
     margin-top: 3.5rem;
-    background-color: #000;
+    background-color: #141414;
     width: 100%;
 }
 
@@ -253,11 +255,367 @@ body {
     flex: 1 0 0;
     align-self: stretch;
     background: #FFF;
-    box-shadow: 0px 3.38082px 3.38082px 0px rgba(0, 0, 0, 0.01), 0px 27px 27px 0px rgba(0, 0, 0, 0.03);
+    box-shadow: 0px 3.38082px 3.38082px 0px rgba(20, 20, 20, 0.01), 0px 27px 27px 0px rgba(20, 20, 20, 0.03);
+}
+
+.identity-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.95), rgba(246, 246, 244, 0) 34rem),
+        #f6f6f4;
+}
+
+.identity-shell .eshop-banner {
+    display: none;
+}
+
+.identity-shell .eshop-header {
+    width: 100%;
+    max-width: none;
+    border-bottom: 1px solid #e6e5e1;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(14px);
+}
+
+.identity-shell .eshop-header .eshop-header-container {
+    margin: 0 auto;
+    max-width: 72rem;
+    padding: 1rem 1.5rem;
+}
+
+.identity-shell .eshop-header-navbar {
+    margin-top: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.identity-shell .logo-header img {
+    display: block;
+    height: 2.25rem;
+    width: auto;
+}
+
+.identity-shell .content {
+    flex: 1;
+    display: flex;
+}
+
+.identity-shell .eshop-footer {
+    margin-top: 0;
+    background: #141414;
+    border-top: 1px solid #3d3d3d;
+}
+
+.identity-shell .eshop-footer-content {
+    max-width: 72rem;
+}
+
+.identity-shell .eshop-footer-row {
+    padding: 1.25rem 1.5rem;
+    color: #ffffff;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.identity-shell .eshop-footer .logo-footer {
+    margin-right: 0;
+    max-height: 2rem;
+}
+
+.identity-shell .eshop-footer p {
+    margin: 0;
+    color: #f6f6f4;
+    font-size: 0.9rem;
+}
+
+/* Scoped border-box so width:100% fields never overflow the card padding. */
+.login-page,
+.login-page *,
+.login-page *::before,
+.login-page *::after {
+    box-sizing: border-box;
+}
+
+.login-page {
+    flex: 1;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: stretch;
+    min-height: 34rem;
+}
+
+/* Brand visual fills what used to be dead space beside the form. */
+.login-visual {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 2.75rem;
+    background-image:
+        linear-gradient(180deg, rgba(20,20,20,0.10) 0%, rgba(20,20,20,0.60) 100%),
+        url('/images/header.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.login-visual-inner {
+    color: #ffffff;
+    max-width: 24rem;
+}
+
+.login-visual-kicker {
+    margin: 0 0 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.92;
+}
+
+.login-visual-line {
+    margin: 0;
+    font-size: clamp(1.75rem, 2.6vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+}
+
+.login-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #ffffff;
+    padding: 3rem 2rem;
+}
+
+.login-card-header,
+.login-form {
+    width: 100%;
+    max-width: 24rem;
+    margin-inline: auto;
+}
+
+.login-card-header {
+    margin-bottom: 1.75rem;
+}
+
+.login-card h1 {
+    margin: 0;
+    color: #141414;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+@media (max-width: 900px) {
+    .login-page {
+        display: flex;
+        min-height: 0;
+    }
+
+    .login-visual {
+        display: none;
+    }
+
+    .login-card {
+        flex: 1;
+        padding: 2.5rem 1.5rem;
+    }
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.login-form .form-group {
+    margin-bottom: 0;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 0.45rem;
+    color: #141414;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.login-form .form-control,
+.login-form input[type="text"],
+.login-form input[type="password"] {
+    width: 100%;
+    max-width: none;
+    min-height: 2.85rem;
+    border: 1px solid #c9c8c3;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #141414;
+    padding: 0.7rem 0.85rem;
+    font: inherit;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.login-form .form-control::placeholder {
+    color: #6b6b6b;
+}
+
+.login-form .form-control:focus,
+.login-form .form-check-input:focus,
+.login-submit:focus {
+    outline: 2px solid #141414;
+    outline-offset: 2px;
+    box-shadow: none;
+}
+
+.login-form .form-group-check {
+    margin-top: 0.1rem;
+}
+
+.login-form .form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 1.5rem;
+    padding-left: 0;
+}
+
+.login-form .form-check-input {
+    float: none;
+    flex: 0 0 auto;
+    width: 1.1rem;
+    height: 1.1rem;
+    max-width: none;
+    margin: 0;
+    border: 1px solid #c9c8c3;
+    border-radius: 4px;
+    background-color: #ffffff;
+}
+
+.login-form .form-check-input:checked {
+    background-color: #141414;
+    border-color: #141414;
+}
+
+.login-form .form-check-label {
+    margin-bottom: 0;
+    color: #3d3d3d;
+    font-weight: 500;
+}
+
+.login-hint {
+    margin: 0.15rem 0 0;
+    color: #6b6b6b;
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+.login-submit.btn.btn-primary {
+    width: 100%;
+    margin-top: 0.25rem;
+    border: 1px solid #141414;
+    border-radius: 12px;
+    background: #141414;
+    color: #ffffff;
+    padding: 0.85rem 1.25rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+.login-submit.btn.btn-primary:hover {
+    background: #141414;
+    border-color: #141414;
+    color: #ffffff;
+    box-shadow: 0 10px 22px rgba(20,20,20,0.14), 0 3px 8px rgba(20,20,20,0.08);
+    transform: translateY(-1px);
+}
+
+.login-submit.btn.btn-primary:active {
+    background: #141414;
+    color: #ffffff;
+    transform: translateY(1px);
+}
+
+.login-submit.btn.btn-primary:disabled,
+.login-submit.btn.btn-primary[disabled] {
+    background: #ededea;
+    border-color: #ededea;
+    color: #6b6b6b;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Clickable elements get a pointer; disabled controls read as disabled. */
+.identity-shell a,
+.identity-shell button,
+.identity-shell .btn,
+.identity-shell summary,
+.identity-shell label.form-check-label,
+.identity-shell input[type="checkbox"],
+.identity-shell input[type="radio"] {
+    cursor: pointer;
+}
+
+.identity-shell button:disabled,
+.identity-shell button[disabled],
+.identity-shell .btn:disabled,
+.identity-shell .btn.disabled {
+    cursor: not-allowed;
+}
+
+.login-form .alert {
+    margin: 0;
+    border: 1px solid rgba(179, 38, 30, 0.24);
+    border-radius: 8px;
+    background: rgba(179, 38, 30, 0.08);
+    color: #b3261e;
+    padding: 0.85rem 1rem;
+    font-size: 0.9rem;
+}
+
+.login-form .alert strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.login-form .field-validation-error,
+.login-form .validation-summary-errors,
+.login-form .danger {
+    display: block;
+    color: #b3261e;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.login-form .field-validation-error {
+    margin-top: 0.35rem;
+}
+
+.login-form .validation-summary-errors ul {
+    margin: 0.25rem 0 0;
+    padding-left: 1.1rem;
+}
+
+@media (max-width: 640px) {
+    .identity-shell .eshop-header .eshop-header-container,
+    .identity-shell .eshop-footer-row {
+        padding-inline: 1rem;
+    }
+
+    .login-card {
+        padding: 2rem 1.25rem;
+    }
 }
 
 .login-container h2 {
-    color: #000;
+    color: #141414;
     font-size: 36px;
     font-style: normal;
     font-weight: 700;
@@ -273,19 +631,19 @@ body {
 }
 
 .login-container input {
-    border: 1px solid #000;
+    border: 1px solid #141414;
     background: #FFF;
     max-width: 100%;
     border-radius: 0;
-    color: #000;
+    color: #141414;
 }
 
 .login-container input {
-    border: 1px solid #000;
+    border: 1px solid #141414;
     background: #FFF;
     max-width: 100%;
     border-radius: 0;
-    color: #000;
+    color: #141414;
 }
 
 .login-container .form-check {
@@ -313,7 +671,7 @@ body {
     align-items: flex-end;
     gap: 8px;
     align-self: stretch;
-    background: #000;
+    background: #141414;
 }
 
 .icon {
@@ -1007,13 +1365,13 @@ form .col-md-4 {
     position: absolute;
     background-color: #FFFFFF;
     min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px 0px rgba(20,20,20,0.2);
     /*left: 100px;*/
     right: 0px;
 }
 
 .login-user-dropdown-content a {
-    color: black;
+    color: #141414;
     padding: 12px 16px;
     text-decoration: none;
     display: block;

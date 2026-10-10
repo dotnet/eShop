@@ -1,0 +1,181 @@
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+properties:
+  configurationVersion: 0.2.0
+  ########################################
+  ### RESOURCES: System Configuration
+  ########################################
+  resources:
+    ########################################
+    ### OS Configurations
+    ########################################
+    ### Enable: Developer Mode
+    ### -------------------------------------
+    - resource: Microsoft.Windows.Developer/DeveloperMode
+      directives:
+        description: Enable Developer Mode
+        # Requires elevation only for the set operation
+        securityContext: elevated
+        allowPrerelease: true
+      settings:
+        Ensure: Present
+    ### Install Windows VirtualMachinePlatform
+    ### -------------------------------------
+    - resource: PSDscResources/WindowsOptionalFeature
+      directives:
+        description: Install VirtualMachinePlatform
+        securityContext: elevated
+      settings:
+        name: VirtualMachinePlatform
+        ensure: Present
+    ### Install WSL
+    ### -------------------------------------
+    - resource: PSDscResources/WindowsOptionalFeature
+      directives:
+        description: Install WSL
+        securityContext: elevated
+      settings:
+        name: Microsoft-Windows-Subsystem-Linux
+        ensure: Present
+    ### Configure Install Ubuntu
+    ### -------------------------------------
+    - resource: PSDscResources/Script
+      id: ubuntuwsl
+      directives:
+        description: Install Ubuntu for WSL
+      settings:
+        SetScript: |
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+          wsl --install -d Ubuntu
+        GetScript: return $false
+        TestScript: return $false
+    ########################################
+    ### Install CLIs, SDKs & Tools
+    ########################################
+    ### Install DotNET SDK Preview
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: dotnetsdk
+      directives:
+        description: Install DotNET SDK Preview
+        # Requires elevation only for the set operation (i.e., installing the package)
+        securityContext: elevated
+      settings:
+        id: Microsoft.DotNet.SDK.Preview
+    ### Install Azure CLI
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: azurecli
+      directives:
+        description: Install Azure CLI
+        # Requires elevation only for the set operation (i.e., installing the package)
+        securityContext: elevated
+      settings:
+        id:  Microsoft.AzureCLI
+    ### Install Azd
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Azd
+      directives:
+        description: Install Azd
+      settings:
+        id: Microsoft.Azd
+    ### Install Docker Desktop
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: docker
+      directives:
+        description: Install Docker Desktop
+        # Requires elevation only for the set operation (i.e., installing the package)
+        securityContext: elevated
+      settings:
+        id: Docker.DockerDesktop
+    ### Install Microsoft Visual Studio Code
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: vscode
+      directives:
+        description: Install Microsoft Visual Studio Code
+      settings:
+        id: Microsoft.VisualStudioCode
+        ensure: Present
+    ########################################
+    ### Install VSCode Extensions
+    ########################################
+    ### Install VSCode Azure Developer CLI Extension
+    ### -------------------------------------
+    - resource: Microsoft.VSCode.Dsc/VSCodeExtension
+      id: azure-dev-cli-extension
+      dependsOn:
+        - vscode
+        - docker
+      directives:
+        description: Install Azure Developer CLI Extension
+        allowPrerelease: true
+      settings:
+        name: ms-azuretools.azure-dev
+        exist: true
+    ### Install VSCode WSL Extension
+    ### -------------------------------------
+    - resource: Microsoft.VSCode.Dsc/VSCodeExtension
+      id: wsl-extension
+      dependsOn:
+        - vscode
+        - docker
+      directives:
+        description: Install WSL extension
+        allowPrerelease: true
+      settings:
+        name: ms-vscode-remote.remote-wsl
+        exist: true
+    ### Install VSCode Dev Containers Extension
+    ### -------------------------------------
+    - resource: Microsoft.VSCode.Dsc/VSCodeExtension
+      id: devcontainers-extension
+      dependsOn:
+        - vscode
+        - docker
+      directives:
+        description: Install Dev Containers extension
+        allowPrerelease: true
+      settings:
+        name: ms-vscode-remote.remote-containers
+        exist: true
+    ### Install VSCode Docker Extension
+    ### -------------------------------------
+    - resource: Microsoft.VSCode.Dsc/VSCodeExtension
+      id: docker-extension
+      dependsOn:
+        - vscode
+        - docker
+      directives:
+        description: Install Docker extension
+        allowPrerelease: true
+      settings:
+        name: ms-azuretools.vscode-docker
+        exist: true
+    ### Install VSCode C# DevKit Extension
+    ### -------------------------------------
+    - resource: Microsoft.VSCode.Dsc/VSCodeExtension
+      id: c#-devkit-extension
+      dependsOn:
+        - vscode
+        - docker
+      directives:
+        description: Install C# DevKit extension
+        allowPrerelease: true
+      settings:
+        name: ms-dotnettools.csdevkit
+        exist: true
+    ### Install .NET MAUI Extension
+    ### -------------------------------------
+    - resource: Microsoft.VSCode.Dsc/VSCodeExtension
+      id: dotnet-maui-extension
+      dependsOn:
+        - vscode
+        - docker
+      directives:
+        description: Install .NET MAUI extension
+        allowPrerelease: true
+      settings:
+        name: ms-dotnettools.dotnet-maui
+        exist: true

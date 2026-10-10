@@ -30,7 +30,7 @@ public class UsersSeed(ILogger<UsersSeed> logger, UserManager<ApplicationUser> u
                 SecurityNumber = "123"
             };
 
-            var result = userManager.CreateAsync(alice, "Pass123$").Result;
+            var result = await userManager.CreateAsync(alice, "Pass123$");
 
             if (!result.Succeeded)
             {

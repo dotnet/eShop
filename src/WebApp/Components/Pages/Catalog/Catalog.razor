@@ -1,4 +1,4 @@
-﻿@page "/"
+@page "/"
 @inject NavigationManager Nav
 @inject CatalogService CatalogService
 @attribute [StreamRendering]
@@ -8,15 +8,80 @@
 <SectionContent SectionName="page-header-subtitle">Start the season with the latest in clothing and equipment.</SectionContent>
 
 <div class="catalog">
-    <CatalogSearch BrandId="@BrandId" ItemTypeId="@ItemTypeId" />
+    <CatalogSearch BrandIds="@BrandIds" TypeIds="@TypeIds" />
 
     @if (catalogResult is null)
     {
-        <p>Loading...</p>
+        <div class="catalog-results" role="status" aria-label="Loading products">
+            <div class="catalog-toolbar">
+                <span class="catalog-count-skeleton" aria-hidden="true"></span>
+            </div>
+            <div class="catalog-items">
+                @for (var i = 0; i < PageSize; i++)
+                {
+                    <div class="catalog-card-skeleton" aria-hidden="true">
+                        <div class="skeleton-media"></div>
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line short"></div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else if (catalogResult.Count == 0)
+    {
+        <div class="catalog-results">
+            <div class="catalog-empty">
+                <span class="catalog-empty-icon" aria-hidden="true">
+                    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="21" cy="21" r="13" />
+                        <path d="m38 38-7.6-7.6" />
+                    </svg>
+                </span>
+                <h2>No products match these filters</h2>
+                <p>Try removing a filter, or start over with the full collection.</p>
+                <a class="button button-primary" href="@ResetFiltersUri()">Clear all filters</a>
+            </div>
+        </div>
     }
     else
     {
-        <div>
+        <div class="catalog-results">
+            <div class="catalog-toolbar">
+                <p class="catalog-count">@catalogResult.Count @(catalogResult.Count == 1 ? "product" : "products")</p>
+                <div class="catalog-sort" data-catalog-sort>
+                    <span class="catalog-sort-label" id="catalog-sort-label">Sort</span>
+                    <div class="catalog-sort-field">
+                        <div class="catalog-sort-trigger"
+                             id="catalog-sort-trigger"
+                             role="combobox"
+                             tabindex="0"
+                             aria-haspopup="listbox"
+                             aria-expanded="false"
+                             aria-controls="catalog-sort-listbox"
+                             aria-labelledby="catalog-sort-label catalog-sort-trigger"
+                             data-catalog-sort-trigger>
+                            <span class="catalog-sort-value" data-catalog-sort-value>Name: A to Z</span>
+                            <svg class="catalog-sort-caret" viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m2.5 4.5 3.5 3.5 3.5-3.5" />
+                            </svg>
+                        </div>
+                        <ul class="catalog-sort-listbox"
+                            id="catalog-sort-listbox"
+                            role="listbox"
+                            tabindex="-1"
+                            aria-labelledby="catalog-sort-label"
+                            data-catalog-sort-listbox
+                            hidden>
+                            <li class="catalog-sort-option" role="option" id="catalog-sort-opt-name-asc" data-value="name-asc" aria-selected="true">Name: A to Z</li>
+                            <li class="catalog-sort-option" role="option" id="catalog-sort-opt-name-desc" data-value="name-desc" aria-selected="false">Name: Z to A</li>
+                            <li class="catalog-sort-option" role="option" id="catalog-sort-opt-price-asc" data-value="price-asc" aria-selected="false">Price: Low to High</li>
+                            <li class="catalog-sort-option" role="option" id="catalog-sort-opt-price-desc" data-value="price-desc" aria-selected="false">Price: High to Low</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
             <div class="catalog-items">
                 @foreach (var item in catalogResult.Data)
                 {
@@ -24,12 +89,60 @@
                 }
             </div>
 
-            <div class="page-links">
-                @foreach (var pageIndex in GetVisiblePageIndexes(catalogResult))
-                {
-                    <NavLink ActiveClass="active-page" Match="@NavLinkMatch.All" href="@Nav.GetUriWithQueryParameter("page", pageIndex == 1 ? null : pageIndex)">@pageIndex</NavLink>
-                }
-            </div>
+            @{
+                var totalPages = (int)Math.Ceiling(1.0 * catalogResult.Count / PageSize);
+                var current = Page.GetValueOrDefault(1);
+            }
+            @if (totalPages > 1)
+            {
+                <nav class="catalog-pagination" aria-label="Catalog pages">
+                    @if (current > 1)
+                    {
+                        <a class="page-nav" href="@PageUri(current - 1)" rel="prev" aria-label="Previous page">
+                            <img role="presentation" src="icons/arrow-left.svg" /> Prev
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="page-nav is-disabled" aria-disabled="true">
+                            <img role="presentation" src="icons/arrow-left.svg" /> Prev
+                        </span>
+                    }
+
+                    <span class="page-numbers">
+                        @foreach (var token in GetPageTokens(totalPages, current))
+                        {
+                            @if (token == -1)
+                            {
+                                <span class="page-ellipsis" aria-hidden="true">&hellip;</span>
+                            }
+                            else if (token == current)
+                            {
+                                <span class="page-number active-page" aria-current="page">@token</span>
+                            }
+                            else
+                            {
+                                <a class="page-number" href="@PageUri(token)">@token</a>
+                            }
+                        }
+                    </span>
+
+                    <span class="page-status" aria-hidden="true">@current&nbsp;/&nbsp;@totalPages</span>
+
+                    @if (current < totalPages)
+                    {
+                        <a class="page-nav" href="@PageUri(current + 1)" rel="next" aria-label="Next page">
+                            Next <img class="flip" role="presentation" src="icons/arrow-left.svg" />
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="page-nav is-disabled" aria-disabled="true">
+                            Next <img class="flip" role="presentation" src="icons/arrow-left.svg" />
+                        </span>
+                    }
+                </nav>
+            }
         </div>
     }
 </div>
@@ -41,22 +154,51 @@
     public int? Page { get; set; }
 
     [SupplyParameterFromQuery(Name = "brand")]
-    public int? BrandId { get; set; }
+    public int[]? BrandIds { get; set; }
 
     [SupplyParameterFromQuery(Name = "type")]
-    public int? ItemTypeId { get; set; }
+    public int[]? TypeIds { get; set; }
 
     CatalogResult? catalogResult;
 
-    static IEnumerable<int> GetVisiblePageIndexes(CatalogResult result)
-        => Enumerable.Range(1, (int)Math.Ceiling(1.0 * result.Count / PageSize));
+    static IEnumerable<int> GetPageTokens(int totalPages, int current)
+    {
+        var pages = new SortedSet<int> { 1, totalPages };
+        for (var p = current - 1; p <= current + 1; p++)
+        {
+            if (p >= 1 && p <= totalPages)
+            {
+                pages.Add(p);
+            }
+        }
+
+        var prev = 0;
+        foreach (var p in pages)
+        {
+            if (prev != 0 && p - prev > 1)
+            {
+                yield return -1; // ellipsis marker
+            }
+            yield return p;
+            prev = p;
+        }
+    }
+
+    private string PageUri(int page) => Nav.GetUriWithQueryParameter("page", page <= 1 ? (int?)null : page);
+
+    private string ResetFiltersUri() => Nav.GetUriWithQueryParameters(new Dictionary<string, object?>()
+    {
+        { "page", null },
+        { "brand", null },
+        { "type", null },
+    });
 
     protected override async Task OnInitializedAsync()
     {
         catalogResult = await CatalogService.GetCatalogItems(
             Page.GetValueOrDefault(1) - 1,
             PageSize,
-            BrandId,
-            ItemTypeId);
+            BrandIds,
+            TypeIds);
     }
 }

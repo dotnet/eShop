@@ -12,7 +12,7 @@ public class BasketState(
     CatalogService catalogService,
     OrderingService orderingService,
     AuthenticationStateProvider authenticationStateProvider,
-    IHttpContextAccessor httpContextAccessor)
+    IHttpContextAccessor httpContextAccessor) : IBasketState
 {
     private Task<IReadOnlyCollection<BasketItem>>? _cachedBasket;
     private HashSet<BasketStateChangedSubscription> _changeSubscriptions = new();

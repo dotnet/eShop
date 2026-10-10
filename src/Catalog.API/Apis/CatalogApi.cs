@@ -1,49 +1,162 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Pgvector.EntityFrameworkCore;
 
 namespace eShop.Catalog.API;
 
 public static class CatalogApi
 {
-    public static IEndpointRouteBuilder MapCatalogApiV1(this IEndpointRouteBuilder app)
+    public static IEndpointRouteBuilder MapCatalogApi(this IEndpointRouteBuilder app)
     {
-        var api = app.MapGroup("api/catalog").HasApiVersion(1.0);
+        // RouteGroupBuilder for catalog endpoints
+        var vApi = app.NewVersionedApi("Catalog");
+        var api = vApi.MapGroup("api/catalog").HasApiVersion(1, 0).HasApiVersion(2, 0);
+        var v1 = vApi.MapGroup("api/catalog").HasApiVersion(1, 0);
+        var v2 = vApi.MapGroup("api/catalog").HasApiVersion(2, 0);
 
         // Routes for querying catalog items.
-        api.MapGet("/items", GetAllItems);
-        api.MapGet("/items/by", GetItemsByIds);
-        api.MapGet("/items/{id:int}", GetItemById);
-        api.MapGet("/items/by/{name:minlength(1)}", GetItemsByName);
-        api.MapGet("/items/{catalogItemId:int}/pic", GetItemPictureById);
+        v1.MapGet("/items", GetAllItemsV1)
+            .WithName("ListItems")
+            .WithSummary("List catalog items")
+            .WithDescription("Get a paginated list of items in the catalog.")
+            .WithTags("Items");
+        v2.MapGet("/items", GetAllItems)
+            .WithName("ListItems-V2")
+            .WithSummary("List catalog items")
+            .WithDescription("Get a paginated list of items in the catalog.")
+            .WithTags("Items");
+        api.MapGet("/items/by", GetItemsByIds)
+            .WithName("BatchGetItems")
+            .WithSummary("Batch get catalog items")
+            .WithDescription("Get multiple items from the catalog")
+            .WithTags("Items");
+        api.MapGet("/items/{id:int}", GetItemById)
+            .WithName("GetItem")
+            .WithSummary("Get catalog item")
+            .WithDescription("Get an item from the catalog")
+            .WithTags("Items");
+        v1.MapGet("/items/by/{name:minlength(1)}", GetItemsByName)
+            .WithName("GetItemsByName")
+            .WithSummary("Get catalog items by name")
+            .WithDescription("Get a paginated list of catalog items with the specified name.")
+            .WithTags("Items");
+        api.MapGet("/items/{id:int}/pic", GetItemPictureById)
+            .WithName("GetItemPicture")
+            .WithSummary("Get catalog item picture")
+            .WithDescription("Get the picture for a catalog item")
+            .WithTags("Items");
+
+        api.MapGet("/items/facets", GetCatalogFacets)
+            .WithName("GetCatalogFacets")
+            .WithSummary("Get catalog facet counts")
+            .WithDescription("Get per-brand and per-type item counts for the current filter selection, used to drive the catalog filter badges without transferring every item to the client.")
+            .WithTags("Items");
 
         // Routes for resolving catalog items using AI.
-        api.MapGet("/items/withsemanticrelevance/{text:minlength(1)}", GetItemsBySemanticRelevance);
+        v1.MapGet("/items/withsemanticrelevance/{text:minlength(1)}", GetItemsBySemanticRelevanceV1)
+            .WithName("GetRelevantItems")
+            .WithSummary("Search catalog for relevant items")
+            .WithDescription("Search the catalog for items related to the specified text")
+            .WithTags("Search");
+
+                // Routes for resolving catalog items using AI.
+        v2.MapGet("/items/withsemanticrelevance", GetItemsBySemanticRelevance)
+            .WithName("GetRelevantItems-V2")
+            .WithSummary("Search catalog for relevant items")
+            .WithDescription("Search the catalog for items related to the specified text")
+            .WithTags("Search");
 
         // Routes for resolving catalog items by type and brand.
-        api.MapGet("/items/type/{typeId}/brand/{brandId?}", GetItemsByBrandAndTypeId);
-        api.MapGet("/items/type/all/brand/{brandId:int?}", GetItemsByBrandId);
-        api.MapGet("/catalogtypes", async (CatalogContext context) => await context.CatalogTypes.OrderBy(x => x.Type).ToListAsync());
-        api.MapGet("/catalogbrands", async (CatalogContext context) => await context.CatalogBrands.OrderBy(x => x.Brand).ToListAsync());
+        v1.MapGet("/items/type/{typeId}/brand/{brandId?}", GetItemsByBrandAndTypeId)
+            .WithName("GetItemsByTypeAndBrand")
+            .WithSummary("Get catalog items by type and brand")
+            .WithDescription("Get catalog items of the specified type and brand")
+            .WithTags("Types");
+        v1.MapGet("/items/type/all/brand/{brandId:int?}", GetItemsByBrandId)
+            .WithName("GetItemsByBrand")
+            .WithSummary("List catalog items by brand")
+            .WithDescription("Get a list of catalog items for the specified brand")
+            .WithTags("Brands");
+        api.MapGet("/catalogtypes",
+            [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+            async (CatalogContext context) => await context.CatalogTypes.OrderBy(x => x.Type).ToListAsync())
+            .WithName("ListItemTypes")
+            .WithSummary("List catalog item types")
+            .WithDescription("Get a list of the types of catalog items")
+            .WithTags("Types");
+        api.MapGet("/catalogbrands",
+            [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+            async (CatalogContext context) => await context.CatalogBrands.OrderBy(x => x.Brand).ToListAsync())
+            .WithName("ListItemBrands")
+            .WithSummary("List catalog item brands")
+            .WithDescription("Get a list of the brands of catalog items")
+            .WithTags("Brands");
 
         // Routes for modifying catalog items.
-        api.MapPut("/items", UpdateItem);
-        api.MapPost("/items", CreateItem);
-        api.MapDelete("/items/{id:int}", DeleteItemById);
+        v1.MapPut("/items", UpdateItemV1)
+            .WithName("UpdateItem")
+            .WithSummary("Create or replace a catalog item")
+            .WithDescription("Create or replace a catalog item")
+            .WithTags("Items");
+        v2.MapPut("/items/{id:int}", UpdateItem)
+            .WithName("UpdateItem-V2")
+            .WithSummary("Create or replace a catalog item")
+            .WithDescription("Create or replace a catalog item")
+            .WithTags("Items");
+        api.MapPost("/items", CreateItem)
+            .WithName("CreateItem")
+            .WithSummary("Create a catalog item")
+            .WithDescription("Create a new item in the catalog");
+        api.MapDelete("/items/{id:int}", DeleteItemById)
+            .WithName("DeleteItem")
+            .WithSummary("Delete catalog item")
+            .WithDescription("Delete the specified catalog item");
 
         return app;
     }
 
-    public static async Task<Results<Ok<PaginatedItems<CatalogItem>>, BadRequest<string>>> GetAllItems(
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    public static async Task<Ok<PaginatedItems<CatalogItem>>> GetAllItemsV1(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services)
+    {
+        return await GetAllItems(paginationRequest, services, null, null, null);
+    }
+
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    public static async Task<Ok<PaginatedItems<CatalogItem>>> GetAllItems(
+        [AsParameters] PaginationRequest paginationRequest,
+        [AsParameters] CatalogServices services,
+        [Description("The name of the item to return")] string? name,
+        [Description("The types of items to return. Repeat the parameter to filter by multiple types.")] int[]? type,
+        [Description("The brands of items to return. Repeat the parameter to filter by multiple brands.")] int[]? brand)
     {
         var pageSize = paginationRequest.PageSize;
         var pageIndex = paginationRequest.PageIndex;
 
-        var totalItems = await services.Context.CatalogItems
+        var root = (IQueryable<CatalogItem>)services.Context.CatalogItems;
+
+        if (name is not null)
+        {
+            root = root.Where(c => c.Name.StartsWith(name));
+        }
+        if (type is { Length: > 0 })
+        {
+            root = root.Where(c => type.Contains(c.CatalogTypeId));
+        }
+        if (brand is { Length: > 0 })
+        {
+            root = root.Where(c => brand.Contains(c.CatalogBrandId));
+        }
+
+        var totalItems = await root
             .LongCountAsync();
 
-        var itemsOnPage = await services.Context.CatalogItems
+        var itemsOnPage = await root
+            .Include(ci => ci.CatalogBrand)
             .OrderBy(c => c.Name)
             .Skip(pageSize * pageIndex)
             .Take(pageSize)
@@ -52,21 +165,64 @@ public static class CatalogApi
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
+    public static async Task<Ok<CatalogFacets>> GetCatalogFacets(
+        [AsParameters] CatalogServices services,
+        [Description("The types the counts should be evaluated within. Repeat the parameter to include multiple types.")] int[]? type,
+        [Description("The brands the counts should be evaluated within. Repeat the parameter to include multiple brands.")] int[]? brand)
+    {
+        var items = (IQueryable<CatalogItem>)services.Context.CatalogItems;
+
+        // Brand counts are evaluated against the active type filter, and type counts against
+        // the active brand filter. This mirrors the catalog's additive-within-facet,
+        // intersect-across-facet selection semantics so each badge previews the result of
+        // adding that option to the current selection.
+        var brandScope = items;
+        if (type is { Length: > 0 })
+        {
+            brandScope = brandScope.Where(c => type.Contains(c.CatalogTypeId));
+        }
+        var brandCounts = await brandScope
+            .GroupBy(c => c.CatalogBrandId)
+            .Select(g => new CatalogFacetCount(g.Key, g.Count()))
+            .ToListAsync();
+
+        var typeScope = items;
+        if (brand is { Length: > 0 })
+        {
+            typeScope = typeScope.Where(c => brand.Contains(c.CatalogBrandId));
+        }
+        var typeCounts = await typeScope
+            .GroupBy(c => c.CatalogTypeId)
+            .Select(g => new CatalogFacetCount(g.Key, g.Count()))
+            .ToListAsync();
+
+        return TypedResults.Ok(new CatalogFacets(
+            brandCounts,
+            typeCounts,
+            brandCounts.Sum(b => b.Count),
+            typeCounts.Sum(t => t.Count)));
+    }
+
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public static async Task<Ok<List<CatalogItem>>> GetItemsByIds(
         [AsParameters] CatalogServices services,
-        int[] ids)
+        [Description("List of ids for catalog items to return")] int[] ids)
     {
         var items = await services.Context.CatalogItems.Where(item => ids.Contains(item.Id)).ToListAsync();
         return TypedResults.Ok(items);
     }
 
-    public static async Task<Results<Ok<CatalogItem>, NotFound, BadRequest<string>>> GetItemById(
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    public static async Task<Results<Ok<CatalogItem>, NotFound, BadRequest<ProblemDetails>>> GetItemById(
+        HttpContext httpContext,
         [AsParameters] CatalogServices services,
-        int id)
+        [Description("The catalog item id")] int id)
     {
         if (id <= 0)
         {
-            return TypedResults.BadRequest("Id is not valid.");
+            return TypedResults.BadRequest<ProblemDetails>(new (){
+                Detail = "Id is not valid"
+            });
         }
 
         var item = await services.Context.CatalogItems.Include(ci => ci.CatalogBrand).SingleOrDefaultAsync(ci => ci.Id == id);
@@ -79,49 +235,54 @@ public static class CatalogApi
         return TypedResults.Ok(item);
     }
 
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public static async Task<Ok<PaginatedItems<CatalogItem>>> GetItemsByName(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
-        string name)
+        [Description("The name of the item to return")] string name)
     {
-        var pageSize = paginationRequest.PageSize;
-        var pageIndex = paginationRequest.PageIndex;
-
-        var totalItems = await services.Context.CatalogItems
-            .Where(c => c.Name.StartsWith(name))
-            .LongCountAsync();
-
-        var itemsOnPage = await services.Context.CatalogItems
-            .Where(c => c.Name.StartsWith(name))
-            .Skip(pageSize * pageIndex)
-            .Take(pageSize)
-            .ToListAsync();
-
-        return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
+        return await GetAllItems(paginationRequest, services, name, null, null);
     }
 
-    public static async Task<Results<NotFound, PhysicalFileHttpResult>> GetItemPictureById(CatalogContext context, IWebHostEnvironment environment, int catalogItemId)
+    [ProducesResponseType<byte[]>(StatusCodes.Status200OK, "application/octet-stream",
+        [ "image/png", "image/gif", "image/jpeg", "image/bmp", "image/tiff",
+          "image/wmf", "image/jp2", "image/svg+xml", "image/webp" ])]
+    public static async Task<Results<PhysicalFileHttpResult,NotFound>> GetItemPictureById(
+        CatalogContext context,
+        IWebHostEnvironment environment,
+        [Description("The catalog item id")] int id)
     {
-        var item = await context.CatalogItems.FindAsync(catalogItemId);
+        var item = await context.CatalogItems.FindAsync(id);
 
-        if (item is null)
+        if (item is null || item.PictureFileName is null)
         {
             return TypedResults.NotFound();
         }
 
         var path = GetFullPath(environment.ContentRootPath, item.PictureFileName);
 
-        string imageFileExtension = Path.GetExtension(item.PictureFileName);
+        string imageFileExtension = Path.GetExtension(item.PictureFileName) ?? string.Empty;
         string mimetype = GetImageMimeTypeFromImageFileExtension(imageFileExtension);
         DateTime lastModified = File.GetLastWriteTimeUtc(path);
 
         return TypedResults.PhysicalFile(path, mimetype, lastModified: lastModified);
     }
 
-    public static async Task<Results<BadRequest<string>, RedirectToRouteHttpResult, Ok<PaginatedItems<CatalogItem>>>> GetItemsBySemanticRelevance(
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    public static async Task<Results<Ok<PaginatedItems<CatalogItem>>, RedirectToRouteHttpResult>> GetItemsBySemanticRelevanceV1(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
-        string text)
+        [Description("The text string to use when search for related items in the catalog")] string text)
+
+    {
+        return await GetItemsBySemanticRelevance(paginationRequest, services, text);
+    }
+
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    public static async Task<Results<Ok<PaginatedItems<CatalogItem>>, RedirectToRouteHttpResult>> GetItemsBySemanticRelevance(
+        [AsParameters] PaginationRequest paginationRequest,
+        [AsParameters] CatalogServices services,
+        [Description("The text string to use when search for related items in the catalog"), Required, MinLength(1)] string text)
     {
         var pageSize = paginationRequest.PageSize;
         var pageIndex = paginationRequest.PageIndex;
@@ -134,6 +295,11 @@ public static class CatalogApi
         // Create an embedding for the input search
         var vector = await services.CatalogAI.GetEmbeddingAsync(text);
 
+        if (vector is null)
+        {
+            return await GetItemsByName(paginationRequest, services, text);
+        }
+
         // Get the total number of items
         var totalItems = await services.Context.CatalogItems
             .LongCountAsync();
@@ -143,7 +309,8 @@ public static class CatalogApi
         if (services.Logger.IsEnabled(LogLevel.Debug))
         {
             var itemsWithDistance = await services.Context.CatalogItems
-                .Select(c => new { Item = c, Distance = c.Embedding.CosineDistance(vector) })
+                .Where(c => c.Embedding != null)
+                .Select(c => new { Item = c, Distance = c.Embedding!.CosineDistance(vector) })
                 .OrderBy(c => c.Distance)
                 .Skip(pageSize * pageIndex)
                 .Take(pageSize)
@@ -156,7 +323,8 @@ public static class CatalogApi
         else
         {
             itemsOnPage = await services.Context.CatalogItems
-                .OrderBy(c => c.Embedding.CosineDistance(vector))
+                .Where(c => c.Embedding != null)
+                .OrderBy(c => c.Embedding!.CosineDistance(vector))
                 .Skip(pageSize * pageIndex)
                 .Take(pageSize)
                 .ToListAsync();
@@ -165,68 +333,52 @@ public static class CatalogApi
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public static async Task<Ok<PaginatedItems<CatalogItem>>> GetItemsByBrandAndTypeId(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
-        int typeId,
-        int? brandId)
+        [Description("The type of items to return")] int typeId,
+        [Description("The brand of items to return")] int? brandId)
     {
-        var pageSize = paginationRequest.PageSize;
-        var pageIndex = paginationRequest.PageIndex;
-
-        var root = (IQueryable<CatalogItem>)services.Context.CatalogItems;
-        root = root.Where(c => c.CatalogTypeId == typeId);
-        if (brandId is not null)
-        {
-            root = root.Where(c => c.CatalogBrandId == brandId);
-        }
-
-        var totalItems = await root
-            .LongCountAsync();
-
-        var itemsOnPage = await root
-            .Skip(pageSize * pageIndex)
-            .Take(pageSize)
-            .ToListAsync();
-
-        return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
+        return await GetAllItems(paginationRequest, services, null, [typeId], brandId is null ? null : [brandId.Value]);
     }
 
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public static async Task<Ok<PaginatedItems<CatalogItem>>> GetItemsByBrandId(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
-        int? brandId)
+        [Description("The brand of items to return")] int? brandId)
     {
-        var pageSize = paginationRequest.PageSize;
-        var pageIndex = paginationRequest.PageIndex;
-
-        var root = (IQueryable<CatalogItem>)services.Context.CatalogItems;
-
-        if (brandId is not null)
-        {
-            root = root.Where(ci => ci.CatalogBrandId == brandId);
-        }
-
-        var totalItems = await root
-            .LongCountAsync();
-
-        var itemsOnPage = await root
-            .Skip(pageSize * pageIndex)
-            .Take(pageSize)
-            .ToListAsync();
-
-        return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
+        return await GetAllItems(paginationRequest, services, null, null, brandId is null ? null : [brandId.Value]);
     }
 
-    public static async Task<Results<Created, NotFound<string>>> UpdateItem(
+    public static async Task<Results<Created, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> UpdateItemV1(
+        HttpContext httpContext,
         [AsParameters] CatalogServices services,
         CatalogItem productToUpdate)
     {
-        var catalogItem = await services.Context.CatalogItems.SingleOrDefaultAsync(i => i.Id == productToUpdate.Id);
+        if (productToUpdate?.Id == null)
+        {
+            return TypedResults.BadRequest<ProblemDetails>(new (){
+                Detail = "Item id must be provided in the request body."
+            });
+        }
+        return await UpdateItem(httpContext, productToUpdate.Id, services, productToUpdate);
+    }
+
+    public static async Task<Results<Created, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> UpdateItem(
+        HttpContext httpContext,
+        [Description("The id of the catalog item to delete")] int id,
+        [AsParameters] CatalogServices services,
+        CatalogItem productToUpdate)
+    {
+        var catalogItem = await services.Context.CatalogItems.SingleOrDefaultAsync(i => i.Id == id);
 
         if (catalogItem == null)
         {
-            return TypedResults.NotFound($"Item with id {productToUpdate.Id} not found.");
+            return TypedResults.NotFound<ProblemDetails>(new (){
+                Detail = $"Item with id {id} not found."
+            });
         }
 
         // Update current product
@@ -252,20 +404,20 @@ public static class CatalogApi
         {
             await services.Context.SaveChangesAsync();
         }
-        return TypedResults.Created($"/api/catalog/items/{productToUpdate.Id}");
+        return TypedResults.Created($"/api/catalog/items/{id}");
     }
 
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public static async Task<Created> CreateItem(
         [AsParameters] CatalogServices services,
         CatalogItem product)
     {
-        var item = new CatalogItem
+        var item = new CatalogItem(product.Name)
         {
             Id = product.Id,
             CatalogBrandId = product.CatalogBrandId,
             CatalogTypeId = product.CatalogTypeId,
             Description = product.Description,
-            Name = product.Name,
             PictureFileName = product.PictureFileName,
             Price = product.Price,
             AvailableStock = product.AvailableStock,
@@ -282,7 +434,7 @@ public static class CatalogApi
 
     public static async Task<Results<NoContent, NotFound>> DeleteItemById(
         [AsParameters] CatalogServices services,
-        int id)
+        [Description("The id of the catalog item to delete")] int id)
     {
         var item = services.Context.CatalogItems.SingleOrDefault(x => x.Id == id);
 

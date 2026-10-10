@@ -1,19 +1,12 @@
-﻿using System;
-using Azure.AI.OpenAI;
-using eShop.WebApp;
+﻿using eShop.Basket.API.Grpc;
+using eShop.WebApp.Services.OrderStatus.IntegrationEvents;
 using eShop.WebAppComponents.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.AI;
 using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
-using Microsoft.SemanticKernel.TextGeneration;
-using eShop.WebApp.Services.OrderStatus.IntegrationEvents;
-using eShop.Basket.API.Grpc;
 
 public static class Extensions
 {
@@ -46,11 +39,11 @@ public static class Extensions
         builder.Services.AddGrpcClient<Basket.BasketClient>(o => o.Address = new("http://basket-api"))
             .AddAuthToken();
 
-        builder.Services.AddHttpClient<CatalogService>(o => o.BaseAddress = new("http://catalog-api"))
-            .AddApiVersion(1.0)
+        builder.Services.AddHttpClient<CatalogService>(o => o.BaseAddress = new("https+http://catalog-api"))
+            .AddApiVersion(2.0)
             .AddAuthToken();
 
-        builder.Services.AddHttpClient<OrderingService>(o => o.BaseAddress = new("http://ordering-api"))
+        builder.Services.AddHttpClient<OrderingService>(o => o.BaseAddress = new("https+http://ordering-api"))
             .AddApiVersion(1.0)
             .AddAuthToken();
     }
@@ -108,15 +101,19 @@ public static class Extensions
 
     private static void AddAIServices(this IHostApplicationBuilder builder)
     {
-        var openAIOptions = builder.Configuration.GetSection("AI").Get<AIOptions>()?.OpenAI;
-        var deploymentName = openAIOptions?.ChatModel;
-
-        if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("openai")) && !string.IsNullOrWhiteSpace(deploymentName))
+        ChatClientBuilder? chatClientBuilder = null;
+        if (builder.Configuration["OllamaEnabled"] is string ollamaEnabled && bool.Parse(ollamaEnabled))
         {
-            builder.Services.AddKernel();
-            builder.AddAzureOpenAIClient("openai");
-            builder.Services.AddAzureOpenAIChatCompletion(deploymentName);
+            chatClientBuilder = builder.AddOllamaApiClient("chat")
+                .AddChatClient();
         }
+        else if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("chatModel")))
+        {
+            chatClientBuilder = builder.AddOpenAIClientFromConfiguration("chatModel")
+                .AddChatClient();
+        }
+
+        chatClientBuilder?.UseFunctionInvocation();
     }
 
     public static async Task<string?> GetBuyerIdAsync(this AuthenticationStateProvider authenticationStateProvider)

@@ -50,7 +50,7 @@ public class NewOrderRequestHandlerTest
     public void Handle_throws_exception_when_no_buyerId()
     {
         //Assert
-        Assert.ThrowsException<ArgumentNullException>(() => new Buyer(string.Empty, string.Empty));
+        Assert.ThrowsExactly<ArgumentNullException>(() => new Buyer(string.Empty, string.Empty));
     }
 
     private Buyer FakeBuyer()

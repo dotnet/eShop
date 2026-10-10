@@ -8,6 +8,6 @@ public class BasketServiceTests
     {
         var catalogMockService = new CatalogMockService();
         var result = await catalogMockService.GetCatalogAsync();
-        Assert.AreNotEqual(result.Count(), 0);
+        Assert.AreNotEqual(0, result.Count());
     }
 }

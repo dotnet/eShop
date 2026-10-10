@@ -1,6 +1,9 @@
-﻿global using System.IO;
+﻿global using System;
+global using System.Collections.Generic;
+global using System.Linq;
 global using System.Net.Http;
 global using System.Security.Claims;
+global using System.Threading.Tasks;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.AspNetCore.Http;

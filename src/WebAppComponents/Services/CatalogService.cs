@@ -14,9 +14,9 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
         return httpClient.GetFromJsonAsync<CatalogItem>(uri);
     }
 
-    public async Task<CatalogResult> GetCatalogItems(int pageIndex, int pageSize, int? brand, int? type)
+    public async Task<CatalogResult> GetCatalogItems(int pageIndex, int pageSize, int[]? brands, int[]? types)
     {
-        var uri = GetAllCatalogItemsUri(remoteServiceBaseUrl, pageIndex, pageSize, brand, type);
+        var uri = GetAllCatalogItemsUri(remoteServiceBaseUrl, pageIndex, pageSize, brands, types);
         var result = await httpClient.GetFromJsonAsync<CatalogResult>(uri);
         return result!;
     }
@@ -30,7 +30,7 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
 
     public Task<CatalogResult> GetCatalogItemsWithSemanticRelevance(int page, int take, string text)
     {
-        var url = $"{remoteServiceBaseUrl}items/withsemanticrelevance/{HttpUtility.UrlEncode(text)}?pageIndex={page}&pageSize={take}";
+        var url = $"{remoteServiceBaseUrl}items/withsemanticrelevance?text={HttpUtility.UrlEncode(text)}&pageIndex={page}&pageSize={take}";
         var result = httpClient.GetFromJsonAsync<CatalogResult>(url);
         return result!;
     }
@@ -49,26 +49,36 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
         return result!;
     }
 
-    private static string GetAllCatalogItemsUri(string baseUri, int pageIndex, int pageSize, int? brand, int? type)
+    public async Task<CatalogFacets> GetCatalogFacets(int[]? brands, int[]? types)
     {
-        string filterQs;
-
-        if (type.HasValue)
+        var filterQs = string.Empty;
+        if (types is { Length: > 0 })
         {
-            var brandQs = brand.HasValue ? brand.Value.ToString() : string.Empty;
-            filterQs = $"/type/{type.Value}/brand/{brandQs}";
-
+            filterQs += string.Join("&", types.Select(t => $"type={t}")) + "&";
         }
-        else if (brand.HasValue)
+        if (brands is { Length: > 0 })
         {
-            var brandQs = brand.HasValue ? brand.Value.ToString() : string.Empty;
-            filterQs = $"/type/all/brand/{brandQs}";
-        }
-        else
-        {
-            filterQs = string.Empty;
+            filterQs += string.Join("&", brands.Select(b => $"brand={b}")) + "&";
         }
 
-        return $"{baseUri}items{filterQs}?pageIndex={pageIndex}&pageSize={pageSize}";
+        var uri = $"{remoteServiceBaseUrl}items/facets?{filterQs}".TrimEnd('&', '?');
+        var result = await httpClient.GetFromJsonAsync<CatalogFacets>(uri);
+        return result!;
+    }
+
+    private static string GetAllCatalogItemsUri(string baseUri, int pageIndex, int pageSize, int[]? brands, int[]? types)
+    {
+        string filterQs = string.Empty;
+
+        if (types is { Length: > 0 })
+        {
+            filterQs += string.Join("&", types.Select(t => $"type={t}")) + "&";
+        }
+        if (brands is { Length: > 0 })
+        {
+            filterQs += string.Join("&", brands.Select(b => $"brand={b}")) + "&";
+        }
+
+        return $"{baseUri}items?{filterQs}pageIndex={pageIndex}&pageSize={pageSize}";
     }
 }

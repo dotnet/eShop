@@ -64,6 +64,7 @@ BenchmarkDotNet.Artifacts/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+src/eShop.AppHost/aspire-output/
 
 # Tye
 .tye/
@@ -487,6 +488,7 @@ $RECYCLE.BIN/
 /test-results/
 /playwright-report/
 /blob-report/
+/.playwright-cli/
 /playwright/.cache/
 /playwright/.auth/
 /user.json

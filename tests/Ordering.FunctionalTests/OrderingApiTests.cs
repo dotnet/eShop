@@ -27,8 +27,8 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     public async Task GetAllStoredOrdersWorks()
     {
         // Act
-        var response = await _httpClient.GetAsync("api/orders");
-        var s = await response.Content.ReadAsStringAsync();
+        var response = await _httpClient.GetAsync("api/orders", TestContext.Current.CancellationToken);
+        var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
         // Assert
@@ -43,8 +43,8 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.Empty.ToString() } }
         };
-        var response = await _httpClient.PutAsync("/api/orders/cancel", content);
-        var s = await response.Content.ReadAsStringAsync();
+        var response = await _httpClient.PutAsync("/api/orders/cancel", content, TestContext.Current.CancellationToken);
+        var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -58,8 +58,8 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
-        var response = await _httpClient.PutAsync("api/orders/cancel", content);
-        var s = await response.Content.ReadAsStringAsync();
+        var response = await _httpClient.PutAsync("api/orders/cancel", content, TestContext.Current.CancellationToken);
+        var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
@@ -73,8 +73,8 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.Empty.ToString() } }
         };
-        var response = await _httpClient.PutAsync("api/orders/ship", content);
-        var s = await response.Content.ReadAsStringAsync();
+        var response = await _httpClient.PutAsync("api/orders/ship", content, TestContext.Current.CancellationToken);
+        var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -88,7 +88,7 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
-        var response = await _httpClient.PutAsync("api/orders/ship", content);
+        var response = await _httpClient.PutAsync("api/orders/ship", content, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
@@ -98,8 +98,8 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     public async Task GetAllOrdersCardType()
     {
         // Act 1
-        var response = await _httpClient.GetAsync("api/orders/cardtypes");
-        var s = await response.Content.ReadAsStringAsync();
+        var response = await _httpClient.GetAsync("api/orders/cardtypes", TestContext.Current.CancellationToken);
+        var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
         // Assert
@@ -110,7 +110,7 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     public async Task GetStoredOrdersWithOrderId()
     {
         // Act
-        var response = await _httpClient.GetAsync("api/orders/1");
+        var response = await _httpClient.GetAsync("api/orders/1", TestContext.Current.CancellationToken);
         var responseStatus = response.StatusCode;
 
         // Assert
@@ -125,8 +125,8 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.Empty.ToString() } }
         };
-        var response = await _httpClient.PostAsync("api/orders", content);
-        var s = await response.Content.ReadAsStringAsync();
+        var response = await _httpClient.PostAsync("api/orders", content, TestContext.Current.CancellationToken);
+        var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -152,8 +152,8 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
-        var response = await _httpClient.PostAsync("api/orders", content);
-        var s = await response.Content.ReadAsStringAsync();
+        var response = await _httpClient.PostAsync("api/orders", content, TestContext.Current.CancellationToken);
+        var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -178,8 +178,8 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
-        var response = await _httpClient.PostAsync("api/orders/draft", content);
-        var s = await response.Content.ReadAsStringAsync();
+        var response = await _httpClient.PostAsync("api/orders/draft", content, TestContext.Current.CancellationToken);
+        var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -193,9 +193,9 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
         };
-        var response = await _httpClient.PostAsync("api/orders/draft", content);
+        var response = await _httpClient.PostAsync("api/orders/draft", content, TestContext.Current.CancellationToken);
 
-        var s = await response.Content.ReadAsStringAsync();
+        var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var responseData = JsonSerializer.Deserialize<OrderDraftDTO>(s, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

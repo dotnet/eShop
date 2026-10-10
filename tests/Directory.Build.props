@@ -1,0 +1,13 @@
+<Project>
+
+  <!-- MSTest settings -->
+  <PropertyGroup>
+    <MSTestAnalysisMode>Recommended</MSTestAnalysisMode>
+  </PropertyGroup>
+
+  <!-- xUnit settings -->
+  <PropertyGroup>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+  </PropertyGroup>
+
+</Project>

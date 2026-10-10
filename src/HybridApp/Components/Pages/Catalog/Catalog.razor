@@ -55,7 +55,7 @@
         catalogResult = await CatalogService.GetCatalogItems(
             Page.GetValueOrDefault(1) - 1,
             PageSize,
-            BrandId,
-            ItemTypeId);
+            BrandId is null ? null : [BrandId.Value],
+            ItemTypeId is null ? null : [ItemTypeId.Value]);
     }
 }

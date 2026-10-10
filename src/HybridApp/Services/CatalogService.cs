@@ -12,65 +12,58 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
 
     public Task<CatalogItem?> GetCatalogItem(int id)
     {
-        var uri = $"{remoteServiceBaseUrl}items/{id}?api-version=1.0";
-        return httpClient.GetFromJsonAsync<CatalogItem>(uri);
+        var uri = $"{remoteServiceBaseUrl}items/{id}?api-version=2.0";
+        return httpClient.GetFromJsonAsync(uri, CatalogJsonContext.Default.CatalogItem);
     }
 
-    public async Task<CatalogResult> GetCatalogItems(int pageIndex, int pageSize, int? brand, int? type)
+    public async Task<CatalogResult> GetCatalogItems(int pageIndex, int pageSize, int[]? brands, int[]? types)
     {
-        var uri = GetAllCatalogItemsUri(remoteServiceBaseUrl, pageIndex, pageSize, brand, type);
-        var result = await httpClient.GetFromJsonAsync<CatalogResult>($"{uri}&api-version=1.0");
+        var uri = GetAllCatalogItemsUri(remoteServiceBaseUrl, pageIndex, pageSize, brands, types);
+        var result = await httpClient.GetFromJsonAsync($"{uri}&api-version=2.0", CatalogJsonContext.Default.CatalogResult);
         return result!;
     }
 
     public async Task<List<CatalogItem>> GetCatalogItems(IEnumerable<int> ids)
     {
-        var uri = $"{remoteServiceBaseUrl}items/by?ids={string.Join("&ids=", ids)}&api-version=1.0";
-        var result = await httpClient.GetFromJsonAsync<List<CatalogItem>>(uri);
+        var uri = $"{remoteServiceBaseUrl}items/by?ids={string.Join("&ids=", ids)}&api-version=2.0";
+        var result = await httpClient.GetFromJsonAsync(uri, CatalogJsonContext.Default.ListCatalogItem);
         return result!;
     }
 
     public Task<CatalogResult> GetCatalogItemsWithSemanticRelevance(int page, int take, string text)
     {
-        var url = $"{remoteServiceBaseUrl}items/withsemanticrelevance/{HttpUtility.UrlEncode(text)}?pageIndex={page}&pageSize={take}&api-version=1.0";
-        var result = httpClient.GetFromJsonAsync<CatalogResult>(url);
+        var url = $"{remoteServiceBaseUrl}items/withsemanticrelevance?text={HttpUtility.UrlEncode(text)}&pageIndex={page}&pageSize={take}&api-version=2.0";
+        var result = httpClient.GetFromJsonAsync(url, CatalogJsonContext.Default.CatalogResult);
         return result!;
     }
 
     public async Task<IEnumerable<CatalogBrand>> GetBrands()
     {
-        var uri = $"{remoteServiceBaseUrl}catalogBrands?api-version=1.0";
-        var result = await httpClient.GetFromJsonAsync<CatalogBrand[]>(uri);
+        var uri = $"{remoteServiceBaseUrl}catalogBrands?api-version=2.0";
+        var result = await httpClient.GetFromJsonAsync(uri, CatalogJsonContext.Default.CatalogBrandArray);
         return result!;
     }
 
     public async Task<IEnumerable<CatalogItemType>> GetTypes()
     {
-        var uri = $"{remoteServiceBaseUrl}catalogTypes?api-version=1.0";
-        var result = await httpClient.GetFromJsonAsync<CatalogItemType[]>(uri);
+        var uri = $"{remoteServiceBaseUrl}catalogTypes?api-version=2.0";
+        var result = await httpClient.GetFromJsonAsync(uri, CatalogJsonContext.Default.CatalogItemTypeArray);
         return result!;
     }
 
-    private static string GetAllCatalogItemsUri(string baseUri, int pageIndex, int pageSize, int? brand, int? type)
+    private static string GetAllCatalogItemsUri(string baseUri, int pageIndex, int pageSize, int[]? brands, int[]? types)
     {
-        string filterQs;
+        string filterQs = string.Empty;
 
-        if (type.HasValue)
+        if (types is { Length: > 0 })
         {
-            var brandQs = brand.HasValue ? brand.Value.ToString() : string.Empty;
-            filterQs = $"/type/{type.Value}/brand/{brandQs}";
-
+            filterQs += string.Join("&", types.Select(t => $"type={t}")) + "&";
         }
-        else if (brand.HasValue)
+        if (brands is { Length: > 0 })
         {
-            var brandQs = brand.HasValue ? brand.Value.ToString() : string.Empty;
-            filterQs = $"/type/all/brand/{brandQs}";
-        }
-        else
-        {
-            filterQs = string.Empty;
+            filterQs += string.Join("&", brands.Select(b => $"brand={b}")) + "&";
         }
 
-        return $"{baseUri}items{filterQs}?pageIndex={pageIndex}&pageSize={pageSize}&api-version=1.0";
+        return $"{baseUri}items?{filterQs}pageIndex={pageIndex}&pageSize={pageSize}&api-version=2.0";
     }
 }

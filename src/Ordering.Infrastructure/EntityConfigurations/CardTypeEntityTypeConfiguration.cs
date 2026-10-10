@@ -11,6 +11,7 @@ class CardTypeEntityTypeConfiguration
             .ValueGeneratedNever();
 
         cardTypesConfiguration.Property(ct => ct.Name)
-            .HasMaxLength(200);
+            .HasMaxLength(200)
+            .IsRequired();
     }
 }
