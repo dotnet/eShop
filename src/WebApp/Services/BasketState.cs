@@ -145,7 +145,7 @@ public class BasketState(
         // The user added items before logging in, move them into the basket that is saved for them
         var mergedBasket = basket.Concat(sessionBasket)
             .GroupBy(row => row.ProductId)
-            .Select(group => new BasketQuantity(group.Key, group.Sum(row => row.Quantity)))
+            .Select(group => new BasketQuantity(group.Key, (int)Math.Min(group.Sum(row => (long)row.Quantity), int.MaxValue)))
             .ToList();
 
         await basketService.UpdateBasketAsync(mergedBasket);
