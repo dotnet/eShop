@@ -55,9 +55,6 @@ else
 
     private async Task UpdateBasketItemsAsync()
     {
-        basketItems = (HttpContext?.User?.Identity?.IsAuthenticated ?? false)
-      ? await Basket.GetBasketItemsAsync()
-      : await Basket.GetBasketItemsAsAnonymous();
-
+        basketItems = await Basket.GetBasketItemsAsync();
     }
 }

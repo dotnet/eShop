@@ -114,14 +114,9 @@
     [SupplyParameterFromForm]
     public int? UpdateQuantityValue { get; set; }
 
-    [CascadingParameter]
-    public HttpContext? HttpContext { get; set; }
-
     protected override async Task OnInitializedAsync()
     {
-        basketItems = (HttpContext?.User?.Identity?.IsAuthenticated ?? false)
-        ? await Basket.GetBasketItemsAsync()
-        : await Basket.GetBasketItemsAsAnonymous();
+        basketItems = await Basket.GetBasketItemsAsync();
     }
 
     private decimal? TotalPrice => basketItems?.Sum(i => i.Quantity * i.UnitPrice);

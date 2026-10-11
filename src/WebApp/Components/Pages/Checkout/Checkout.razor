@@ -110,6 +110,14 @@
 
     private async Task HandleValidSubmitAsync()
     {
+        // The order is placed for a user, so someone who is not logged in has to do that first.
+        // Their basket is kept and moved to their account when they do.
+        if (HttpContext.User.Identity?.IsAuthenticated != true)
+        {
+            Nav.NavigateTo(Pages.User.LogIn.Url(Nav));
+            return;
+        }
+
         Info.CardTypeId = 1;
         await Basket.CheckoutAsync(Info);
         Nav.NavigateTo("user/orders");

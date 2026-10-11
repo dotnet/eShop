@@ -81,7 +81,6 @@ else if (notFound)
 @code {
     private CatalogItem? item;
     private int numInCart;
-    private bool isLoggedIn;
     private bool notFound;
     private string backHref = "";
 
@@ -97,7 +96,6 @@ else if (notFound)
 
         try
         {
-            isLoggedIn = HttpContext?.User.Identity?.IsAuthenticated == true;
             item = await CatalogService.GetCatalogItem(ItemId);
             await UpdateNumInCartAsync();
         }
@@ -131,27 +129,13 @@ else if (notFound)
 
     private async Task AddToCartAsync()
     {
-        if(item is not null)
+        if (item is not null)
         {
-            if (!isLoggedIn)
-            {
-                await BasketState.AddAsAnonymousUser(item);
-                await UpdateNumInCartAsAnonymousAsync();
-            }
-            else
-            {
-                await BasketState.AddAsync(item);
-                await UpdateNumInCartAsync();
-            }                  
+            await BasketState.AddAsync(item);
+            await UpdateNumInCartAsync();
         }
-
     }
 
-    private async Task UpdateNumInCartAsAnonymousAsync()
-    {
-        var items = await BasketState.GetBasketItemsAsAnonymous();
-        numInCart = items.FirstOrDefault(row => row.ProductId == ItemId)?.Quantity ?? 0;
-    }
     private async Task UpdateNumInCartAsync()
     {
         var items = await BasketState.GetBasketItemsAsync();

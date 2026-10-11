@@ -44,17 +44,6 @@ public class BasketService(GrpcBasketClient basketClient)
 
         return result;
     }
-
-    public List<BasketQuantity> MapToBasket(Dictionary<int,int> productIdToQuantity)
-    {
-        var result = new List<BasketQuantity>();
-        foreach (var item in productIdToQuantity)
-        {
-            result.Add(new BasketQuantity(item.Key, item.Value));
-        }
-
-        return result;
-    }
 }
 
 public record BasketQuantity(int ProductId, int Quantity);

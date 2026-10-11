@@ -1,6 +1,8 @@
-﻿using eShop.Basket.API.Grpc;
+﻿using System.Globalization;
+using eShop.Basket.API.Grpc;
 using eShop.WebApp.Services.OrderStatus.IntegrationEvents;
 using eShop.WebAppComponents.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -76,7 +78,11 @@ public static class Extensions
             options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
         })
-        .AddCookie(options => options.ExpireTimeSpan = TimeSpan.FromMinutes(sessionCookieLifetime))
+        .AddCookie(options =>
+        {
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(sessionCookieLifetime);
+            options.Events.OnValidatePrincipal = RejectExpiredAccessTokenAsync;
+        })
         .AddOpenIdConnect(options =>
         {
             options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -97,6 +103,20 @@ public static class Extensions
         // Blazor auth services
         services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
         services.AddCascadingAuthenticationState();
+    }
+
+    // The login cookie is renewed while the user is active, so it can outlive the access token it carries.
+    // The APIs treat a user with an expired token as anonymous, so the WebApp has to as well: the user logs in again.
+    private static async Task RejectExpiredAccessTokenAsync(CookieValidatePrincipalContext context)
+    {
+        var expiresAt = context.Properties.GetTokenValue("expires_at");
+
+        if (DateTimeOffset.TryParse(expiresAt, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var accessTokenExpiration)
+            && accessTokenExpiration <= DateTimeOffset.UtcNow)
+        {
+            context.RejectPrincipal();
+            await context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        }
     }
 
     private static void AddAIServices(this IHostApplicationBuilder builder)
