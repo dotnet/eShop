@@ -1,7 +1,12 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Microsoft.Extensions.FileProviders;
+
+var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddApplicationServices();
+builder.Services.AddKeyedSingleton<IFileProvider>("pics", (services, _) =>
+    new PhysicalFileProvider(Path.Combine(
+        services.GetRequiredService<IWebHostEnvironment>().ContentRootPath, "Pics")));
 builder.Services.AddProblemDetails();
 
 var withApiVersioning = builder.Services.AddApiVersioning(options =>
