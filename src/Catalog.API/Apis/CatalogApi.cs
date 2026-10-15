@@ -250,7 +250,7 @@ public static class CatalogApi
           "image/wmf", "image/jp2", "image/svg+xml", "image/webp" ])]
     public static async Task<Results<FileStreamHttpResult, NotFound>> GetItemPictureById(
         CatalogContext context,
-        IFileProvider pictureFileProvider,
+        [FromKeyedServices("pics")] IFileProvider pictureFileProvider,
         [Description("The catalog item id")] int id)
     {
         var item = await context.CatalogItems.FindAsync(id);
