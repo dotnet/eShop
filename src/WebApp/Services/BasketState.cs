@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using eShop.WebAppComponents.Catalog;
 using eShop.WebAppComponents.Services;
+using System.Text.Json;
 
 namespace eShop.WebApp.Services;
 
@@ -10,18 +11,19 @@ public class BasketState(
     BasketService basketService,
     CatalogService catalogService,
     OrderingService orderingService,
-    AuthenticationStateProvider authenticationStateProvider) : IBasketState
+    AuthenticationStateProvider authenticationStateProvider,
+    IHttpContextAccessor httpContextAccessor) : IBasketState
 {
+    private const string SessionBasketKey = "Basket";
+
     private Task<IReadOnlyCollection<BasketItem>>? _cachedBasket;
     private HashSet<BasketStateChangedSubscription> _changeSubscriptions = new();
 
     public Task DeleteBasketAsync()
         => basketService.DeleteBasketAsync();
 
-    public async Task<IReadOnlyCollection<BasketItem>> GetBasketItemsAsync()
-        => (await GetUserAsync()).Identity?.IsAuthenticated == true
-        ? await FetchBasketItemsAsync()
-        : [];
+    public Task<IReadOnlyCollection<BasketItem>> GetBasketItemsAsync()
+        => FetchBasketItemsAsync();
 
     public IDisposable NotifyOnChange(EventCallback callback)
     {
@@ -51,7 +53,7 @@ public class BasketState(
         }
 
         _cachedBasket = null;
-        await basketService.UpdateBasketAsync(items);
+        await SaveBasketAsync(items);
         await NotifyChangeSubscribersAsync();
     }
 
@@ -70,7 +72,7 @@ public class BasketState(
             }
 
             _cachedBasket = null;
-            await basketService.UpdateBasketAsync(existingItems.Select(i => new BasketQuantity(i.ProductId, i.Quantity)).ToList());
+            await SaveBasketAsync(existingItems.Select(i => new BasketQuantity(i.ProductId, i.Quantity)).ToList());
             await NotifyChangeSubscribersAsync();
         }
     }
@@ -114,13 +116,64 @@ public class BasketState(
     private async Task<ClaimsPrincipal> GetUserAsync()
         => (await authenticationStateProvider.GetAuthenticationStateAsync()).User;
 
+    private async Task<bool> IsAuthenticatedAsync()
+        => (await GetUserAsync()).Identity?.IsAuthenticated == true;
+
+    // Until the user logs in, the basket is kept in the session. There is no request (and so no session) to
+    // read from or write to once the app is running interactively, for example in the chatbot.
+    private ISession? Session => httpContextAccessor.HttpContext?.Session;
+
+    private List<BasketQuantity> GetSessionBasket()
+        => Session?.GetString(SessionBasketKey) is { } json
+        ? JsonSerializer.Deserialize<List<BasketQuantity>>(json) ?? []
+        : [];
+
+    private async Task<IReadOnlyCollection<BasketQuantity>> GetBasketAsync()
+    {
+        var sessionBasket = GetSessionBasket();
+        if (!await IsAuthenticatedAsync())
+        {
+            return sessionBasket;
+        }
+
+        var basket = await basketService.GetBasketAsync();
+        if (sessionBasket.Count == 0)
+        {
+            return basket;
+        }
+
+        // The user added items before logging in, move them into the basket that is saved for them
+        var mergedBasket = basket.Concat(sessionBasket)
+            .GroupBy(row => row.ProductId)
+            .Select(group => new BasketQuantity(group.Key, (int)Math.Min(group.Sum(row => (long)row.Quantity), int.MaxValue)))
+            .ToList();
+
+        await basketService.UpdateBasketAsync(mergedBasket);
+        Session!.Remove(SessionBasketKey);
+
+        return mergedBasket;
+    }
+
+    private async Task SaveBasketAsync(IReadOnlyCollection<BasketQuantity> basket)
+    {
+        if (await IsAuthenticatedAsync())
+        {
+            await basketService.UpdateBasketAsync(basket);
+        }
+        else
+        {
+            var session = Session ?? throw new InvalidOperationException("The basket of a user who is not logged in can only be changed during a request.");
+            session.SetString(SessionBasketKey, JsonSerializer.Serialize(basket));
+        }
+    }
+
     private Task<IReadOnlyCollection<BasketItem>> FetchBasketItemsAsync()
     {
         return _cachedBasket ??= FetchCoreAsync();
 
         async Task<IReadOnlyCollection<BasketItem>> FetchCoreAsync()
         {
-            var quantities = await basketService.GetBasketAsync();
+            var quantities = await GetBasketAsync();
             if (quantities.Count == 0)
             {
                 return [];
