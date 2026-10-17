@@ -23,6 +23,9 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: 'http://localhost:5045',
 
+    /* Headless unless PW_HEADED is set (the post-merge QA agent sets it for QA_HEADED=1). */
+    headless: !process.env.PW_HEADED,
+
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     ...devices['Desktop Chrome'],
@@ -36,7 +39,8 @@ export default defineConfig({
     },
     {
       name: 'e2e tests logged in',
-      testMatch: ['**/CartTest.spec.ts', '**/CheckoutTest.spec.ts'],
+      /* generated/*.auth.spec.ts are written by the post-merge QA agent */
+      testMatch: ['**/CartTest.spec.ts', '**/CheckoutTest.spec.ts', '**/generated/*.auth.spec.ts'],
       dependencies: ['setup'],
       use: {
         storageState: STORAGE_STATE,
@@ -44,7 +48,7 @@ export default defineConfig({
     },
     {
       name: 'e2e tests without logged in',
-      testMatch: ['**/BrowseItemTest.spec.ts'],
+      testMatch: ['**/BrowseItemTest.spec.ts', '**/generated/*.anon.spec.ts'],
     }
     // {
     //   name: 'chromium',
