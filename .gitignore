@@ -493,3 +493,9 @@ $RECYCLE.BIN/
 /playwright/.auth/
 /user.json
 .azure
+
+# Post-merge QA agent outputs
+/qa-report.md
+/qa-comment.md
+/qa-results/
+/qa-quarantine/
