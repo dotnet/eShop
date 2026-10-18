@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace eShop.Catalog.FunctionalTests;
 
+[Collection(CatalogApiFixture.CollectionName)]
 public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
 {
     private readonly WebApplicationFactory<Program> _webApplicationFactory;

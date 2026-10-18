@@ -3,9 +3,9 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using eShop.Catalog.API.Infrastructure;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Pgvector;
+using eShop.Catalog.API.Infrastructure;
 
 #nullable disable
 
@@ -18,7 +18,7 @@ namespace eShop.Catalog.API.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0-rtm.23512.13")
+                .HasAnnotation("ProductVersion", "10.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "vector");
@@ -114,6 +114,19 @@ namespace eShop.Catalog.API.Infrastructure.Migrations
                     b.ToTable("CatalogType", (string)null);
                 });
 
+            modelBuilder.Entity("eShop.Catalog.API.Model.StockReservation", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("OrderId");
+
+                    b.ToTable("StockReservation", (string)null);
+                });
+
             modelBuilder.Entity("eShop.IntegrationEventLogEF.IntegrationEventLogEntry", b =>
                 {
                     b.Property<Guid>("EventId")
@@ -162,6 +175,34 @@ namespace eShop.Catalog.API.Infrastructure.Migrations
                     b.Navigation("CatalogBrand");
 
                     b.Navigation("CatalogType");
+                });
+
+            modelBuilder.Entity("eShop.Catalog.API.Model.StockReservation", b =>
+                {
+                    b.OwnsMany("eShop.Catalog.API.Model.StockReservationItem", "Items", b1 =>
+                        {
+                            b1.Property<int>("StockReservationOrderId");
+
+                            b1.Property<int>("__synthesizedOrdinal")
+                                .ValueGeneratedOnAdd();
+
+                            b1.Property<int>("ProductId");
+
+                            b1.Property<int>("Units");
+
+                            b1.HasKey("StockReservationOrderId", "__synthesizedOrdinal");
+
+                            b1.ToTable("StockReservation");
+
+                            b1
+                                .ToJson("Items")
+                                .HasColumnType("jsonb");
+
+                            b1.WithOwner()
+                                .HasForeignKey("StockReservationOrderId");
+                        });
+
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

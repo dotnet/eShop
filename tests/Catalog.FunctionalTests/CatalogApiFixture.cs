@@ -9,6 +9,9 @@ namespace eShop.Catalog.FunctionalTests;
 
 public sealed class CatalogApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
+    // Only one fixture can run its app host at a time, so the test classes using it must not run in parallel
+    public const string CollectionName = "Catalog API";
+
     private readonly IHost _app;
 
     public IResourceBuilder<PostgresServerResource> Postgres { get; private set; }
