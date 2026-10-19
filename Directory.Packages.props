@@ -69,7 +69,7 @@
     <PackageVersion Include="Duende.IdentityServer.AspNetIdentity" Version="7.3.2" />
     <PackageVersion Include="Duende.IdentityServer.EntityFramework" Version="7.3.2" />
     <PackageVersion Include="Duende.IdentityServer.EntityFramework.Storage" Version="7.3.2" />
-    <PackageVersion Include="Duende.IdentityServer.Storage" Version="7.3.2" />
+    <PackageVersion Include="Duende.IdentityServer.Storage" Version="8.0.10" />
     <!-- Scaffolding -->
     <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
     <!-- Grpc -->
