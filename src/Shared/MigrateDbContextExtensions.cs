@@ -43,7 +43,8 @@ internal static class MigrateDbContextExtensions
 
             var strategy = context.Database.CreateExecutionStrategy();
 
-            await strategy.ExecuteAsync(() => InvokeSeeder(seeder, context, scopeServices));
+            await strategy.ExecuteAsync((seeder, context, scopeServices),
+                (state => InvokeSeeder(state.seeder, state.context, state.scopeServices)));
         }
         catch (Exception ex)
         {

@@ -31,11 +31,11 @@ public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
 
             var strategy = _dbContext.Database.CreateExecutionStrategy();
 
-            await strategy.ExecuteAsync(async () =>
+            await strategy.ExecuteAsync(_dbContext, async context =>
             {
                 Guid transactionId;
 
-                await using var transaction = await _dbContext.BeginTransactionAsync();
+                await using var transaction = await context.BeginTransactionAsync();
                 using (_logger.BeginScope(new List<KeyValuePair<string, object>> { new("TransactionContext", transaction.TransactionId) }))
                 {
                     _logger.LogInformation("Begin transaction {TransactionId} for {CommandName} ({@Command})", transaction.TransactionId, typeName, request);
