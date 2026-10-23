@@ -46,12 +46,23 @@ public class OrderingContext : DbContext, IUnitOfWork
 
     public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)
     {
-        // Dispatch Domain Events collection. 
-        // Choices:
-        // A) Right BEFORE committing data (EF SaveChanges) into the DB will make a single transaction including  
-        // side effects from the domain event handlers which are using the same DbContext with "InstancePerLifetimeScope" or "scoped" lifetime
-        // B) Right AFTER committing data (EF SaveChanges) into the DB will make multiple transactions. 
-        // You will need to handle eventual consistency and compensatory actions in case of failures in any of the Handlers. 
+        // Dispatch Domain Events collection.
+        // Note: commands are wrapped in an explicit transaction by TransactionBehavior, so both orderings
+        // below result in a single database transaction. The real trade-off is:
+        //
+        // A) Dispatch BEFORE SaveChanges (current approach):
+        //    Domain event handlers run while changes are still pending in the ChangeTracker.
+        //    Handlers may call SaveEntitiesAsync themselves, producing multiple intermediate flushes,
+        //    all within the same explicit transaction. The final SaveChanges below flushes any remaining changes.
+        //    If handlers depend on DB-generated IDs, they must either use client-side ID generation
+        //    (for example, HiLo) or perform an intermediate SaveChanges/SaveEntitiesAsync flush first.
+        //
+        // B) Dispatch AFTER SaveChanges:
+        //    Handlers run after the original changes have been flushed, and because they execute within the
+        //    same explicit transaction they can observe that already-flushed state via SQL queries.
+        //    The transaction is created with ReadCommitted isolation (see BeginTransactionAsync).
+        //    DB-generated IDs are available. Handler side-effects are flushed in their own SaveChanges calls,
+        //    still within the same explicit transaction opened by TransactionBehavior.
         await _mediator.DispatchDomainEventsAsync(this);
 
         // After executing this line all the changes (from the Command Handler and Domain Event Handlers) 
