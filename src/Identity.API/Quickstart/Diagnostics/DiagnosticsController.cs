@@ -4,9 +4,7 @@
 
 namespace IdentityServerHost.Quickstart.UI;
 
-[SecurityHeaders]
-[Authorize]
-public class DiagnosticsController : Controller
+public class DiagnosticsController : BaseApiController
 {
     public async Task<IActionResult> Index()
     {
