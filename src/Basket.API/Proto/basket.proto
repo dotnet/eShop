@@ -8,9 +8,12 @@ service Basket {
     rpc GetBasket(GetBasketRequest) returns (CustomerBasketResponse) {}
     rpc UpdateBasket(UpdateBasketRequest) returns (CustomerBasketResponse) {}
     rpc DeleteBasket(DeleteBasketRequest) returns (DeleteBasketResponse) {}
+    rpc CreateBasket(CreateBasketRequest) returns (CreateBasketResponse) {}
+    rpc ListBaskets(ListBasketRequest) returns (ListBasketResponse) {}
 }
 
 message GetBasketRequest {
+    string basket_id = 1;
 }
 
 message CustomerBasketResponse {
@@ -22,12 +25,27 @@ message BasketItem {
     int32 quantity = 6;
 }
 
+message ListBasketRequest {
+}
+
+message ListBasketResponse {
+    repeated string basket_ids = 1;
+}
+
 message UpdateBasketRequest {
     repeated BasketItem items = 2;
 }
 
 message DeleteBasketRequest {
+    string basket_id = 1;
 }
 
 message DeleteBasketResponse {
+}
+
+message CreateBasketRequest {
+}
+
+message CreateBasketResponse {
+    string basket_id = 1;
 }
