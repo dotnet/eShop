@@ -16,17 +16,7 @@ public class OrderCheckout
 
     public string ZipCode { get; set; }
     [Required]
-    public string CardNumber { get; set; }
-    [Required]
-    public string CardHolderName { get; set; }
-
-    [Required]
-    public DateTime CardExpiration { get; set; }
-
-    [Required]
-    public string CardSecurityNumber { get; set; }
-
-    public int CardTypeId { get; set; }
+    public string PaymentMethodId { get; set; }
 
     public string Buyer { get; set; }
 

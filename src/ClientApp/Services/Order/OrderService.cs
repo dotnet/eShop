@@ -113,11 +113,7 @@ public class OrderService : IOrderService
     {
         return new OrderCheckout
         {
-            CardExpiration = order.CardExpiration,
-            CardHolderName = order.CardHolderName,
-            CardNumber = order.CardNumber,
-            CardSecurityNumber = order.CardSecurityNumber,
-            CardTypeId = order.CardTypeId,
+            PaymentMethodId = order.PaymentMethodId,
             City = order.ShippingCity,
             State = order.ShippingState,
             Country = order.ShippingCountry,

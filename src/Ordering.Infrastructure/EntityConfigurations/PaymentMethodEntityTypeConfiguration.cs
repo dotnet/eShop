@@ -15,32 +15,14 @@ class PaymentMethodEntityTypeConfiguration
         paymentConfiguration.Property<int>("BuyerId");
 
         paymentConfiguration
-            .Property("_cardHolderName")
-            .HasColumnName("CardHolderName")
-            .HasMaxLength(200);
-
-        paymentConfiguration
             .Property("_alias")
             .HasColumnName("Alias")
             .HasMaxLength(200);
 
         paymentConfiguration
-            .Property("_cardNumber")
-            .HasColumnName("CardNumber")
-            .HasMaxLength(25)
+            .Property("_paymentMethodId")
+            .HasColumnName("PaymentMethodId")
+            .HasMaxLength(200)
             .IsRequired();
-
-        paymentConfiguration
-            .Property("_expiration")
-            .HasColumnName("Expiration")
-            .HasMaxLength(25);
-
-        paymentConfiguration
-            .Property("_cardTypeId")
-            .HasColumnName("CardTypeId");
-
-        paymentConfiguration.HasOne(p => p.CardType)
-            .WithMany()
-            .HasForeignKey("_cardTypeId");
     }
 }

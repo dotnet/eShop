@@ -19,7 +19,6 @@ public class ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler
 
     public async Task Handle(OrderStartedDomainEvent domainEvent, CancellationToken cancellationToken)
     {
-        var cardTypeId = domainEvent.CardTypeId != 0 ? domainEvent.CardTypeId : 1;
         var buyer = await _buyerRepository.FindAsync(domainEvent.UserId);
         var buyerExisted = buyer is not null;
 
@@ -31,12 +30,8 @@ public class ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler
         // REVIEW: The event this creates needs to be sent after SaveChanges has propagated the buyer Id. It currently only
         // works by coincidence. If we remove HiLo or if anything decides to yield earlier, it will break.
 
-        buyer.VerifyOrAddPaymentMethod(cardTypeId,
-                                        $"Payment Method on {DateTime.UtcNow}",
-                                        domainEvent.CardNumber,
-                                        domainEvent.CardSecurityNumber,
-                                        domainEvent.CardHolderName,
-                                        domainEvent.CardExpiration,
+        buyer.VerifyOrAddPaymentMethod($"Payment Method on {DateTime.UtcNow}",
+                                        domainEvent.PaymentMethodId,
                                         domainEvent.Order.Id);
 
         if (!buyerExisted)
