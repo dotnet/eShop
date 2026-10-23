@@ -133,7 +133,7 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     }
 
     [Fact]
-    public async Task AddNewOrder()
+    public async Task AddNewOrderWithInvalidDataFails()
     {
         // Act
         var item = new BasketItem
@@ -154,8 +154,32 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         };
         var response = await _httpClient.PostAsync("api/orders", content, TestContext.Current.CancellationToken);
         var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-
         // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task AddNewOrder()
+    {
+        // Act
+        var item = new BasketItem
+        {
+            Id = "1",
+            ProductId = 12,
+            ProductName = "Test",
+            UnitPrice = 10,
+            OldUnitPrice = 9,
+            Quantity = 1,
+            PictureUrl = null
+        };
+        var cardExpirationDate = Convert.ToDateTime("2123-12-22T12:34:24.334Z").ToUniversalTime();
+        var OrderRequest = new CreateOrderRequest("1", "TestUser", "Istanbul", "Kadikoy", "IS", "TR", "34034", "XXXXXXXXXXXX0005", "test buyer", cardExpirationDate, "123", 1, null, new List<BasketItem> { item });
+        var content = new StringContent(JsonSerializer.Serialize(OrderRequest), UTF8Encoding.UTF8, "application/json")
+        {
+            Headers = { { "x-requestid", Guid.NewGuid().ToString() } }
+        };
+        var response = await _httpClient.PostAsync("api/orders", content, TestContext.Current.CancellationToken);
+        var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
