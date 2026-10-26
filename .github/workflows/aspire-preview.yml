@@ -1,0 +1,200 @@
+# Spins up the eShop Aspire AppHost on a GitHub-hosted runner, exposes the web app
+# through the Dev Tunnel declared in src/eShop.AppHost/Program.cs ("demo-tunnel") and
+# keeps the application running until a reviewer approves the
+# "eshop-preview-approval" environment. After approval the pipeline continues.
+#
+# One-time setup (Settings > Environments):
+#   Create an environment named "eshop-preview-approval" and add "Required reviewers".
+name: eShop Aspire preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      devtunnel_account:
+        description: Account type used to sign in to Dev Tunnels (device code is shown in the job log)
+        type: choice
+        options:
+          - github
+          - microsoft
+        default: github
+      max_preview_minutes:
+        description: Maximum minutes to keep the app running while waiting for approval
+        type: number
+        default: 120
+
+permissions:
+  contents: read
+  actions: write # read job status of this run and cancel it if the preview fails or times out
+
+# The AppHost uses a fixed tunnel id, so only one preview can run at a time.
+concurrency:
+  group: eshop-aspire-preview
+  cancel-in-progress: false
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  APPROVAL_JOB_NAME: Approve continuation
+  TUNNEL_ID: my-demo-tunnel
+
+jobs:
+  preview:
+    name: Run eShop preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Install Aspire CLI
+        run: |
+          curl -sSL https://aspire.dev/install.sh | bash
+          echo "$HOME/.aspire/bin" >> "$GITHUB_PATH"
+
+      - name: Install Dev Tunnels CLI
+        run: |
+          curl -sL https://aka.ms/DevTunnelCliInstall | bash
+          echo "$HOME/bin" >> "$GITHUB_PATH"
+
+      - name: Install Dev Proxy
+        uses: dev-proxy-tools/actions/setup@v1
+        with:
+          auto-start: false # the AppHost starts Dev Proxy itself
+
+      - name: Trust development certificates
+        run: |
+          # ASP.NET Core HTTPS development certificate (service-to-service HTTPS calls)
+          dotnet dev-certs https --clean
+          dotnet dev-certs https --trust
+          echo "SSL_CERT_DIR=$HOME/.aspnet/dev-certs/trust:/usr/lib/ssl/certs" >> "$GITHUB_ENV"
+
+          # Dev Proxy root certificate: start Dev Proxy once to generate it, then trust it
+          echo "$GITHUB_WORKSPACE/devproxy" >> "$GITHUB_PATH"
+          export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+          cert="$HOME/.config/dev-proxy/rootCert.pfx"
+          ./devproxy/devproxy > devproxy-init.log 2>&1 &
+          pid=$!
+          for _ in $(seq 1 60); do [ -f "$cert" ] && break; sleep 1; done
+          kill "$pid" || true
+          if [ ! -f "$cert" ]; then
+            cat devproxy-init.log
+            echo "::error::Dev Proxy root certificate was not generated"
+            exit 1
+          fi
+          openssl pkcs12 -in "$cert" -clcerts -nokeys -out dev-proxy-ca.crt -passin pass:""
+          sudo cp dev-proxy-ca.crt /usr/local/share/ca-certificates/
+          sudo update-ca-certificates
+
+      - name: Sign in to Dev Tunnels (device code)
+        timeout-minutes: 16
+        run: |
+          provider_flag="-g"
+          [ "${{ inputs.devtunnel_account }}" = "microsoft" ] && provider_flag="-e"
+          echo "::notice title=Action required::Open the 'Sign in to Dev Tunnels' step log and complete the device code sign-in."
+          devtunnel user login "$provider_flag" -d
+          devtunnel user show
+
+      - name: Start eShop with Aspire
+        run: aspire start --non-interactive --apphost src/eShop.AppHost/eShop.AppHost.csproj
+
+      - name: Wait for eShop web app
+        run: |
+          aspire wait webapp --timeout 900 --non-interactive
+          aspire describe --non-interactive
+
+      - name: Publish Dev Tunnel URL
+        id: tunnel
+        run: |
+          urls=""
+          for _ in $(seq 1 60); do
+            urls=$(aspire describe --include-hidden --format Json --non-interactive \
+              | jq -r '.. | strings | select(test("^https://[^ ]*devtunnels\\.ms") and (test("-inspect\\.") | not))' | sort -u)
+            [ -n "$urls" ] && break
+            sleep 5
+          done
+          if [ -z "$urls" ]; then
+            aspire describe --include-hidden --non-interactive
+            echo "::error::No Dev Tunnel URL was published by the AppHost"
+            exit 1
+          fi
+
+          {
+            echo "## 🚀 eShop preview is running"
+            echo
+            echo "Dev Tunnel URL(s):"
+            echo
+            while read -r url; do echo "- <$url>"; done <<< "$urls"
+            echo
+            echo "Sign in with the same **${{ inputs.devtunnel_account }}** account used for the Dev Tunnels device code login."
+            echo "Approve the **eshop-preview-approval** deployment of job **${APPROVAL_JOB_NAME}** to stop the preview and continue the pipeline."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          while read -r url; do
+            echo "::notice title=eShop Dev Tunnel URL::$url"
+          done <<< "$urls"
+
+      - name: Keep app running until approval
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MAX_MINUTES: ${{ inputs.max_preview_minutes }}
+        run: |
+          deadline=$(( $(date +%s) + MAX_MINUTES * 60 ))
+          jobs_url="repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/attempts/${GITHUB_RUN_ATTEMPT}/jobs"
+          while true; do
+            job=$(gh api "$jobs_url" --paginate --jq ".jobs[] | select(.name == \"${APPROVAL_JOB_NAME}\") | \"\(.status) \(.conclusion)\"")
+            status=${job%% *}; conclusion=${job#* }
+            if [ "$status" = "completed" ]; then
+              echo "Approval job completed with conclusion '$conclusion'."
+              [ "$conclusion" = "success" ] && exit 0
+              exit 1
+            fi
+            if [ "$(date +%s)" -ge "$deadline" ]; then
+              echo "::error::No approval within ${MAX_MINUTES} minutes."
+              exit 1
+            fi
+            echo "$(date -u +%H:%M:%S) approval status: ${status:-unknown} - app still running"
+            sleep 30
+          done
+
+      - name: Collect diagnostics
+        if: failure()
+        run: aspire describe --include-hidden --non-interactive || true
+
+      - name: Stop eShop and remove Dev Tunnel
+        if: always()
+        run: |
+          aspire stop --non-interactive --apphost src/eShop.AppHost/eShop.AppHost.csproj || true
+          devtunnel delete "$TUNNEL_ID" -f || true
+          devtunnel user logout || true
+
+      - name: Cancel run (pending approval is no longer useful)
+        if: failure() || cancelled()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run cancel "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" || true
+
+  approve:
+    # Runs in parallel with the preview job and waits for a reviewer. Approving it ends the preview.
+    name: Approve continuation
+    runs-on: ubuntu-latest
+    environment: eshop-preview-approval
+    steps:
+      - run: echo "Preview approved by a reviewer of the 'eshop-preview-approval' environment."
+
+  continue:
+    name: Continue pipeline
+    needs: [preview, approve]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      # Add the remaining pipeline stages (tests, publish, deploy, ...) here.
+      - name: Build solution
+        run: dotnet build eShop.Web.slnf -c Release
