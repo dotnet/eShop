@@ -1,5 +1,5 @@
 // WARNING: INTENTIONALLY VULNERABLE CODE. Exists only to test PR security scanning.
-// Never merge or deploy. See the PR description.
+// Never merge or deploy. See the PR description for details.
 namespace eShop.Catalog.API;
 
 public static class InjectionTestApi
