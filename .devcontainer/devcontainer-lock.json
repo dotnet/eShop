@@ -1,6 +1,6 @@
 {
   "features": {
-    "ghcr.io/azure/azure-dev/azd:0": {
+    "ghcr.io/azure/azure-dev/azd": {
       "version": "0.2.0",
       "resolved": "ghcr.io/azure/azure-dev/azd@sha256:01bbec064fcb34f7c8730b3e3c2cc210699e213419664524982268b2910c4f73",
       "integrity": "sha256:01bbec064fcb34f7c8730b3e3c2cc210699e213419664524982268b2910c4f73"
@@ -14,11 +14,6 @@
       "version": "2.16.1",
       "resolved": "ghcr.io/devcontainers/features/docker-in-docker@sha256:ce078b7bf7d9ef3bcb9813b32103795d8d72172446890b64772cbe1dec6baafd",
       "integrity": "sha256:ce078b7bf7d9ef3bcb9813b32103795d8d72172446890b64772cbe1dec6baafd"
-    },
-    "ghcr.io/devcontainers/features/kubectl-helm-minikube": {
-      "version": "1.3.1",
-      "resolved": "ghcr.io/devcontainers/features/kubectl-helm-minikube@sha256:bbe8adf6b37fff8c67412ab0a4579f4c2f30bbaba1d9a5cebd9e38bade54025b",
-      "integrity": "sha256:bbe8adf6b37fff8c67412ab0a4579f4c2f30bbaba1d9a5cebd9e38bade54025b"
     }
   }
 }

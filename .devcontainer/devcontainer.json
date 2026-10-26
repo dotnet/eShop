@@ -14,8 +14,8 @@
 			"moby": false
 		},
 		"ghcr.io/devcontainers/features/azure-cli:1": {},
-		"ghcr.io/devcontainers/features/kubectl-helm-minikube": {},
-		"ghcr.io/azure/azure-dev/azd:0": {},
+		// "ghcr.io/devcontainers/features/kubectl-helm-minikube": {},
+		"ghcr.io/azure/azure-dev/azd": {},
 		"./local-features/devproxy": {
 			"version": "3.3.1"
 		}
@@ -64,6 +64,7 @@
 				"ms-graph.kiota"
 			],
 			"settings": {
+				"dotnet.projectsystem.cacheInProjectFolder": true,
 				"dotnet.preferVisualStudioCodeFileSystemWatcher": true,
 				"vs-kubernetes": {
 					"vs-kubernetes.enable-snap-flag": true,

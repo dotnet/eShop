@@ -86,7 +86,11 @@ internal static class OpenApiOptionsExtensions
             var apiVersionParameter = operation.Parameters?.FirstOrDefault(p => p.Name == "api-version");
             if (apiVersionParameter?.Schema is OpenApiSchema targetSchema)
             {
-                targetSchema.Example = targetSchema.Default;
+                if (targetSchema.Default is { } defaultValue)
+                {
+                    targetSchema.Examples = [defaultValue];
+                }
+
                 targetSchema.Default = null;
             }
             return Task.CompletedTask;

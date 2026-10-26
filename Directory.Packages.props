@@ -2,14 +2,14 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    <AspnetVersion>10.0.10</AspnetVersion>
-    <DotnetPackagesVersion>10.0.11</DotnetPackagesVersion>
-    <MicrosoftExtensionsVersion>10.8.0</MicrosoftExtensionsVersion>
-    <AspireVersion>13.5.2</AspireVersion>
-    <AspireUnstablePackagesVersion>13.5.2-preview.1.26421.6</AspireUnstablePackagesVersion>
-    <GrpcVersion>2.83.0</GrpcVersion>
-    <DuendeVersion>7.4.7</DuendeVersion>
-    <ApiVersioningVersion>10.2.0</ApiVersioningVersion>
+    <AspnetVersion>10.0.13</AspnetVersion>
+    <DotnetPackagesVersion>10.0.13</DotnetPackagesVersion>
+    <MicrosoftExtensionsVersion>10.11.0</MicrosoftExtensionsVersion>
+    <AspireVersion>13.6.4</AspireVersion>
+    <AspireUnstablePackagesVersion>13.6.4-preview.1.26523.11</AspireUnstablePackagesVersion>
+    <GrpcVersion>2.84.0</GrpcVersion>
+    <DuendeVersion>7.4.13</DuendeVersion>
+    <ApiVersioningVersion>10.2.1</ApiVersioningVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Version together with Aspire -->
@@ -19,6 +19,7 @@
     <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.Redis" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.Yarp" Version="$(AspireVersion)" />
+    <PackageVersion Include="Aspire.Hosting.DevTunnels" Version="13.6.4" />
     <PackageVersion Include="Aspire.Npgsql" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.RabbitMQ.Client" Version="$(AspireVersion)" />
@@ -32,19 +33,16 @@
     </PackageVersion>
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery.Yarp" Version="$(MicrosoftExtensionsVersion)" />
-
     <!-- Feature management in ASP.NET Core with telemetry -->
     <PackageVersion Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="8.6.0" />
     <PackageVersion Include="Microsoft.FeatureManagement.AspNetCore" Version="4.6.0" />
     <PackageVersion Include="Microsoft.FeatureManagement.Telemetry.ApplicationInsights" Version="4.6.0" />
     <PackageVersion Include="Aspire.Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="$(AspireVersion)" />
-
     <!-- Version together with Asp.Versioning -->
     <PackageVersion Include="Asp.Versioning.Http" Version="$(ApiVersioningVersion)" />
-    <PackageVersion Include="Asp.Versioning.Http.Client" Version="$(ApiVersioningVersion)" />
+    <PackageVersion Include="Asp.Versioning.Http.Client" Version="10.2.0" />
     <PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="$(ApiVersioningVersion)" />
     <PackageVersion Include="Asp.Versioning.OpenApi" Version="$(ApiVersioningVersion)" />
-    
     <!-- Version together with ASP.NET -->
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(AspnetVersion)" />
@@ -59,24 +57,21 @@
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Kiota.Authentication.Azure" Version="2.1.2" />
     <PackageVersion Include="Microsoft.Kiota.Bundle" Version="2.1.2" />
-    <PackageVersion Include="Microsoft.OpenApi" Version="2.11.0" />
+    <PackageVersion Include="Microsoft.OpenApi" Version="2.12.2" />
     <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="1.4.1" />
     <PackageVersion Include="MSTest" Version="4.3.3" />
-    
     <!-- Version together with EF -->
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(DotnetPackagesVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="$(DotnetPackagesVersion)" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
     <PackageVersion Include="Pgvector" Version="0.3.2" />
     <PackageVersion Include="Pgvector.EntityFrameworkCore" Version="0.3.0" />
-    
     <!-- Version together with runtime -->
     <PackageVersion Include="Microsoft.Extensions.Options" Version="$(DotnetPackagesVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="$(DotnetPackagesVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(DotnetPackagesVersion)" />
-
     <!-- Xabaril packages -->
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="9.0.0" />
     <!-- AI -->
@@ -95,28 +90,24 @@
     <PackageVersion Include="Duende.IdentityServer.EntityFramework" Version="$(DuendeVersion)" />
     <PackageVersion Include="Duende.IdentityServer.EntityFramework.Storage" Version="$(DuendeVersion)" />
     <PackageVersion Include="Duende.IdentityServer.Storage" Version="$(DuendeVersion)" />
-    
     <!-- Scaffolding -->
     <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
-    
     <!-- Grpc -->
     <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcVersion)" />
     <PackageVersion Include="Grpc.Net.ClientFactory" Version="$(GrpcVersion)" />
     <PackageVersion Include="Grpc.Tools" Version="$(GrpcVersion)" PrivateAssets="All" />
-
     <!-- Miscellaneous -->
-    <PackageVersion Include="Dapper" Version="2.1.79" />
-    <PackageVersion Include="FluentValidation" Version="12.1.1" />
-    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
-    <PackageVersion Include="Google.Protobuf" Version="3.35.1" />
+    <PackageVersion Include="Dapper" Version="2.1.89" />
+    <PackageVersion Include="FluentValidation" Version="12.2.0" />
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
+    <PackageVersion Include="Google.Protobuf" Version="3.36.2" />
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="3.0.114" />
-    <PackageVersion Include="Scalar.Aspire" Version="0.11.13" />
+    <PackageVersion Include="Scalar.Aspire" Version="0.12.0" />
     <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
-    <PackageVersion Include="xunit.v3.mtp-v2" Version="3.2.2" />
+    <PackageVersion Include="xunit.v3.mtp-v2" Version="4.0.2" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.16.18" />
-    
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.18.0" />
     <!-- Before license change -->
-    <PackageVersion Include="MediatR" Version="13.1.0" />
+    <PackageVersion Include="MediatR" Version="14.2.0" />
   </ItemGroup>
 </Project>

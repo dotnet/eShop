@@ -1,4 +1,5 @@
-﻿using DevProxy.Hosting;
+﻿using Aspire.Hosting.DevTunnels;
+using DevProxy.Hosting;
 using eShop.AppHost;
 using Scalar.Aspire;
 
@@ -87,6 +88,25 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
     .WaitFor(identityApi)
     .WithEnvironment("IdentityUrl", identityEndpoint)
     .WithReference(appConfig);
+
+var tunnel = builder.AddDevTunnel("demo-tunnel", 
+    tunnelId: "my-demo-tunnel", 
+    options: new DevTunnelOptions()
+    {
+        AllowAnonymous = true,
+        Description = "Demo tunnel for website",
+        ExpirationHours = 3,
+        Labels = [ "demo", "webshop" ], 
+        Region = DevTunnelRegion.NorthEurope
+    })
+    .WithReference(webApp, portOptions: new DevTunnelPortOptions() {
+        Protocol = "https",
+        AllowAnonymous = false,
+        Description = "Web App HTTPS port",
+        Labels = [ "webapp" ]
+    })
+
+    .WithReference(webApp);
 
 // DevProxy is a local-only development tool; skip it when publishing to Azure
 if (builder.ExecutionContext.IsRunMode)

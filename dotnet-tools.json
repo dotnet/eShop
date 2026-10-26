@@ -2,24 +2,24 @@
   "version": 1,
   "isRoot": true,
   "tools": {
-    "aspire.cli": {
-      "version": "13.5.2",
-      "commands": [
-        "aspire"
-      ],
-      "rollForward": false
-    },
     "dotnet-outdated-tool": {
-      "version": "4.7.1",
+      "version": "4.8.1",
       "commands": [
         "dotnet-outdated"
       ],
       "rollForward": false
     },
-    "microsoft.openapi.kiota": {
-      "version": "1.35.0",
+    "dotnet-ef": {
+      "version": "10.0.12",
       "commands": [
-        "kiota"
+        "dotnet-ef"
+      ],
+      "rollForward": false
+    },
+    "aspire.cli": {
+      "version": "13.6.4",
+      "commands": [
+        "aspire"
       ],
       "rollForward": false
     }
