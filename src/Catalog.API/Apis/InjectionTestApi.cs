@@ -1,4 +1,4 @@
-// WARNING: INTENTIONALLY VULNERABLE CODE. Exists only to test PR security scanning.
+// WARNING: INTENTIONALLY VULNERABLE CODE. Exists solely to test PR security scanning.
 // Never merge or deploy. See the PR description for details.
 namespace eShop.Catalog.API;
 
