@@ -24,6 +24,10 @@ app.MapDefaultEndpoints();
 app.UseStatusCodePages();
 
 app.MapCatalogApi();
+if (!app.Environment.IsProduction())
+{
+    app.MapInjectionTestApi();
+}
 
 app.UseDefaultOpenApi();
 app.Run();
