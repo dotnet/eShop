@@ -497,3 +497,4 @@ $RECYCLE.BIN/
 # graphify
 graphify-out/cache/
 graphify-out/.graphify_*
+graphify-out/20*/

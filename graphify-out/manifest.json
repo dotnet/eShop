@@ -5896,5 +5896,47 @@
     "seen": 1794243062.161246,
     "ast_hash": "e6f8db11a7e0670265c57a0de9d44309",
     "semantic_hash": ""
+  },
+  ".claude/settings.json": {
+    "mtime": 1794243314.035924,
+    "seen": 1794243322.876747,
+    "ast_hash": "f0b7384c28d5f04196a8610def5fb237",
+    "semantic_hash": ""
+  },
+  ".codex/hooks.json": {
+    "mtime": 1794243314.147536,
+    "seen": 1794243322.876749,
+    "ast_hash": "2767b81e45a2096827e0cd1c9b843e31",
+    "semantic_hash": ""
+  },
+  ".gemini/settings.json": {
+    "mtime": 1794243314.4046009,
+    "seen": 1794243322.8767538,
+    "ast_hash": "9a46f788fd529109c1f74b4127f4ce89",
+    "semantic_hash": ""
+  },
+  ".github/copilot-instructions.md": {
+    "mtime": 1794243317.3981855,
+    "seen": 1794243322.8773062,
+    "ast_hash": "6a47d64fcc136324ca395065a707ef76",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1794243314.1466553,
+    "seen": 1794243322.8773491,
+    "ast_hash": "6a47d64fcc136324ca395065a707ef76",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1794243314.0348833,
+    "seen": 1794243322.8773491,
+    "ast_hash": "82efb97a359f5c7290bf2513d14686be",
+    "semantic_hash": ""
+  },
+  "GEMINI.md": {
+    "mtime": 1794243314.40386,
+    "seen": 1794243322.877352,
+    "ast_hash": "82efb97a359f5c7290bf2513d14686be",
+    "semantic_hash": ""
   }
 }

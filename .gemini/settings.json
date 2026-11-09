@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "BeforeTool": [
+      {
+        "matcher": "read_file|list_directory",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/armando.dollia/.local/bin/graphify hook-guard gemini"
+          }
+        ]
+      }
+    ]
+  }
+}
