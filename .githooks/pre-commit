@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Refresh the graphify knowledge graph and include it in the commit.
+# Never blocks a commit: skips quietly if graphify is missing or fails.
+set -u
+command -v graphify >/dev/null 2>&1 || { echo "[graphify] not installed (pip install graphifyy); skipping graph update"; exit 0; }
+root="$(git rev-parse --show-toplevel)"
+cd "$root" || exit 0
+if graphify update . >/dev/null 2>&1; then
+  git add -f graphify-out/graph.json graphify-out/graph.html graphify-out/GRAPH_REPORT.md graphify-out/manifest.json 2>/dev/null
+  echo "[graphify] graph updated and staged"
+else
+  echo "[graphify] update failed; committing without graph refresh"
+fi
+exit 0

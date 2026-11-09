@@ -493,3 +493,7 @@ $RECYCLE.BIN/
 /playwright/.auth/
 /user.json
 .azure
+
+# graphify
+graphify-out/cache/
+graphify-out/.graphify_*
