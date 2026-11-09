@@ -13,7 +13,7 @@ As a shopper browsing the store, I want to see which products are on sale and wh
 **Outputs:**
 
 | Where | What the shopper sees | Rule |
-|---|---|---|
+| --- | --- | --- |
 | Catalog grid (`CatalogListItem.razor`) | A badge such as `-20%` or `Buy 2 Get 1`, the original price crossed out and the sale price | Only for `PercentOff` and `BuyXGetY` promotions that match the item; the sale price is shown for `PercentOff` only |
 | Item page (`ItemPage.razor`) | A promotion row, e.g. "Fall Hiking Sale: 20% off, ends Sun Nov 16", next to the price | The highest-priority matching promotion |
 | Site banner (under `HeaderBar.razor`) | One line with the promotion's description, a countdown ("2d 4h 12m left") and a "Shop the sale" link to the filtered catalog | The active promotion with the highest priority that targets `All`, `Type` or `Brand`. Hidden if none. |

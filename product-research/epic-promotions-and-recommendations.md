@@ -37,7 +37,7 @@ Read this before you start. Pricing happens in the **WebApp**, not in
 Basket.API.
 
 | Step | What happens | Reference |
-|---|---|---|
+| --- | --- | --- |
 | 1. Add to cart | Basket.API (Redis, gRPC) stores only `product_id` and `quantity`. It has no prices. | `src/Basket.API/Proto/basket.proto` |
 | 2. Price the cart | WebApp `BasketState.FetchBasketItemsAsync()` loads the catalog items and builds `BasketItem { ProductId, ProductName, UnitPrice, Quantity }` | `src/WebApp/Services/BasketState.cs:117` |
 | 3. Checkout | WebApp `BasketState.CheckoutAsync()` sends HTTP `CreateOrderRequest` to Ordering.API and then deletes the basket | `src/WebApp/Services/BasketState.cs:78` |
@@ -60,7 +60,7 @@ Other existing pieces this epic builds on:
 
 ## Target Architecture
 
-```
+```text
                          ┌──────────────────── Promotions.API ───────────────────┐
                          │  POST /api/promotions/evaluate   (price a cart)       │
                          │  CRUD /api/promotions, /api/coupons (admin)           │
@@ -80,14 +80,15 @@ Ordering.API ── re-validates via /evaluate ── Order.AddOrderItem(discoun
 
 ---
 
-# Feature 1: Promotions & Coupon Engine
+## Feature 1: Promotions & Coupon Engine
 
-## PROMO-1: Promotions service scaffold
+### PROMO-1: Promotions service scaffold
 
 **As a** developer **I want** a `Promotions.API` service in the Aspire
 AppHost **so that** promotion data lives in its own bounded context.
 
-**Inputs**
+#### Inputs
+
 - New project `src/Promotions.API` that references `eShop.ServiceDefaults`, `EventBusRabbitMQ` and `IntegrationEventLogEF`
 - AppHost changes:
   ```csharp
@@ -99,26 +100,28 @@ AppHost **so that** promotion data lives in its own bounded context.
   orderingApi.WithReference(promotionsApi);
   ```
 
-**Outputs**
+#### Outputs
+
 - The service appears in the Aspire dashboard and passes health checks (`/health`, `/alive`)
 - An EF Core migration creates the tables `Promotions`, `PromotionTargets`, `Coupons` and `CouponRedemptions`
 - Seed data creates 4 promotions, one of each rule type (see PROMO-2), and the coupons `FALL10` and `WELCOME5`
 
-**Acceptance criteria**
+#### Acceptance criteria
+
 - [ ] `aspire run` starts the service with no manual steps
 - [ ] `GET /api/promotions/active` returns the seeded active promotions
 
 ---
 
-## PROMO-2: Promotion rule model & admin CRUD
+### PROMO-2: Promotion rule model & admin CRUD
 
 **As a** marketer **I want** to define different kinds of discount rules
 **so that** I can run a variety of campaigns.
 
-**Domain model**
+#### Domain model
 
 | Field | Type | Notes |
-|---|---|---|
+| --- | --- | --- |
 | `Id` | int | |
 | `Name` | string | e.g. "Fall Hiking Sale" |
 | `Description` | string | Copy shown on banners |
@@ -149,7 +152,8 @@ AppHost **so that** promotion data lives in its own bounded context.
 }
 ```
 
-**Outputs**
+#### Outputs
+
 - `201 Created` with the promotion and `Location: /api/promotions/{id}`
 - `400 ValidationProblem` when any of these is true:
   - `endsAt <= startsAt`
@@ -158,10 +162,10 @@ AppHost **so that** promotion data lives in its own bounded context.
   - there are no targets
 - `401` or `403` when the caller isn't an admin
 
-**Endpoints**
+#### Endpoints
 
 | Method | Route | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | GET | `/api/promotions?status=Active` | List promotions, filtered by status |
 | GET | `/api/promotions/{id}` | Get one promotion |
 | POST | `/api/promotions` | Create |
@@ -169,18 +173,20 @@ AppHost **so that** promotion data lives in its own bounded context.
 | DELETE | `/api/promotions/{id}` | Soft delete (set to `Expired`) |
 | GET | `/api/promotions/active` | Public; used for storefront banners |
 
-**Acceptance criteria**
+#### Acceptance criteria
+
 - [ ] Each validation rule has a unit test
 - [ ] When a promotion's `StartsAt` passes, the service publishes `PromotionStartedIntegrationEvent` (see PROMO-6)
 
 ---
 
-## PROMO-3: Cart pricing evaluation
+### PROMO-3: Cart pricing evaluation
 
 **As a** shopper **I want** discounts applied to my cart automatically **so
 that** I always get the best deal.
 
-**Inputs: `POST /api/promotions/evaluate`**
+#### Inputs: `POST /api/promotions/evaluate`
+
 ```json
 {
   "buyerId": "a1b2c3",
@@ -192,7 +198,8 @@ that** I always get the best deal.
 }
 ```
 
-**Outputs: `200 OK`**
+#### Outputs: `200 OK`
+
 ```json
 {
   "subtotal": 134.99,
@@ -213,7 +220,8 @@ that** I always get the best deal.
 one of `NotFound`, `Expired`, `UsageLimitReached`, `PerUserLimitReached` or
 `MinOrderNotMet`.
 
-**Evaluation rules**
+#### Evaluation rules
+
 1. Keep only promotions that are `Active` right now. Drop any that have `RequiresCoupon` without a matching valid coupon.
 2. For each line, find the promotions whose targets match the line's product, brand or type.
 3. **Non-stackable:** pick the single promotion that saves the customer the most on that line.
@@ -222,26 +230,28 @@ one of `NotFound`, `Expired`, `UsageLimitReached`, `PerUserLimitReached` or
 6. A line's discount can't exceed its total, matching the domain rule in `OrderItem`.
 7. Round each line's discount to 2 decimals using banker's rounding.
 
-**WebApp integration**
+#### WebApp integration
+
 - `BasketState.FetchBasketItemsAsync()` calls `/evaluate` after it loads the catalog items
 - `WebApp.Services.BasketItem` gains `Discount` and `AppliedPromotionIds`
 - The cart is evaluated again whenever it changes (on the existing basket-changed notifications)
 
-**Acceptance criteria**
+#### Acceptance criteria
+
 - [ ] Unit tests cover each rule type, the stacking logic, the per-line cap and the order-level split
 - [ ] If Promotions.API is unavailable, the cart still loads at full price and logs a warning (prices must never be wrong)
 
 ---
 
-## PROMO-4: Coupon codes
+### PROMO-4: Coupon codes
 
 **As a** shopper **I want** to enter a coupon code at checkout **so that** I
 can redeem offers I've received.
 
-**Coupon model**
+#### Coupon model
 
 | Field | Type | Notes |
-|---|---|---|
+| --- | --- | --- |
 | `Code` | string | Unique, case-insensitive |
 | `PromotionId` | int | The promotion this code unlocks |
 | `MaxRedemptions` | int? | Total limit; null means unlimited |
@@ -249,30 +259,34 @@ can redeem offers I've received.
 | `ExpiresAt` | DateTimeOffset? | |
 | `RedemptionCount` | int | Concurrency token |
 
-**Inputs**
+#### Inputs
+
 - Checkout page (`src/WebApp/Components/Pages/Checkout/Checkout.razor`) gets a "Promo code" input and an **Apply** button
 - Clicking **Apply** calls `/evaluate` with `couponCode`
 - Admin: `POST /api/coupons { "code": "FALL10", "promotionId": 1, "maxRedemptions": 500, "maxPerUser": 1, "expiresAt": "..." }`
 
-**Outputs**
+#### Outputs
+
 - UI: a green "FALL10 applied: you saved $9.00" message, or a red message explaining why it failed (from `coupon.reason`)
 - Paid event handler: `OrderStatusChangedToPaidIntegrationEventHandler` in Promotions.API
   1. Inserts a `CouponRedemption { CouponCode, BuyerId, OrderId, RedeemedAt }`
   2. Increments `RedemptionCount`
   3. Publishes `CouponRedeemedIntegrationEvent { CouponCode, OrderId, BuyerId, DiscountAmount }`
 
-**Acceptance criteria**
+#### Acceptance criteria
+
 - [ ] When two orders race for the last redemption, exactly one succeeds (optimistic concurrency on `RedemptionCount`)
 - [ ] Handling the same paid event twice doesn't count a redemption twice (unique `OrderId` key)
 
 ---
 
-## PROMO-5: Persist discounts on orders (fix the existing gap)
+### PROMO-5: Persist discounts on orders (fix the existing gap)
 
 **As the** business **I want** each order to record its discounts **so
 that** revenue and promotion reporting are accurate.
 
-**Inputs: changes to `CreateOrderRequest`**
+#### Inputs: changes to `CreateOrderRequest`
+
 ```csharp
 // Ordering.API/Application/Models/BasketItem.cs
 public decimal Discount { get; init; }              // NEW
@@ -284,66 +298,73 @@ List<int> AppliedPromotionIds                        // NEW
 - `BasketItemExtensions.ToOrderItemDTO()` sets `Discount = item.Discount`
 - WebApp `BasketState.CheckoutAsync()` sends the discounts, the coupon code and the promotion IDs
 
-**Server-side validation**
+#### Server-side validation
+
 - Before creating the order, Ordering.API calls `/evaluate` again with the same items and coupon
 - If the client's discount for any line differs from the server's by more than $0.01, it uses the server's value and logs a warning
 - Never trust client-supplied discounts
 
-**Outputs**
+#### Outputs
+
 - `OrderItem.Discount` is filled in
 - The `Order` gains `CouponCode` and `AppliedPromotionIds`, which need an EF migration in `Ordering.Infrastructure`
 - `GET /api/orders/{id}` returns `discount` for each item and `totalDiscount` for the order
 - `Order.GetTotal()` subtracts the discounts. Today it is `Sum(Units * UnitPrice)` and ignores `Discount` (`src/Ordering.Domain/AggregatesModel/OrderAggregate/Order.cs:185`)
 - The order detail page shows the savings
 
-**Acceptance criteria**
+#### Acceptance criteria
+
 - [ ] A functional test in `tests/Ordering.FunctionalTests` checks that an order with a $10 discount stores the discount and totals correctly
 - [ ] The existing domain check (discount can't exceed the line total) still holds
 
 ---
 
-## PROMO-6: Storefront promotion display
+### PROMO-6: Storefront promotion display
 
 **As a** shopper **I want** to see active deals **so that** I'm encouraged to
 buy.
 
-**Inputs**
+#### Inputs
+
 - `GET /api/promotions/active`, cached in the WebApp for 60s
 - `PromotionStartedIntegrationEvent { PromotionId, Name, Description, EndsAt, Targets }` and `PromotionEndedIntegrationEvent { PromotionId }`, which clear the WebApp cache
 
-**Outputs**
+#### Outputs
 
 | Where | What the shopper sees |
-|---|---|
+| --- | --- |
 | Catalog grid (`CatalogListItem`) | A "-20%" sale badge, the original price crossed out and the discounted price |
 | Item page (`ItemPage.razor`) | The promotion name and end date: "Fall Hiking Sale, ends Sun" |
 | Cart page (`CartPage.razor`) | A line for each discount, "You saved $X", and the subtotal, discount and total |
 | Header banner | Flash-sale banner with a live countdown to `EndsAt`, for the highest-priority active promotion |
 
-**Acceptance criteria**
+#### Acceptance criteria
+
 - [ ] The banner disappears within 60s of a promotion ending, with no page reload
 - [ ] Prices shown in the grid match what `/evaluate` returns for a single unit
 
 ---
 
-## PROMO-7 (stretch): AI Marketing Copilot
+### PROMO-7 (stretch): AI Marketing Copilot
 
 **As a** marketer **I want** to describe a campaign in plain language **so
 that** AI drafts the promotion, the product list and the copy for me.
 
-**Inputs**
+#### Inputs
+
 - An admin page `/admin/copilot` with a chat box
 - Example prompt: *"Create a fall campaign for hiking gear, 20% off, ends Sunday. Make it feel cozy."*
 - LLM tools (via `AIFunctionFactory.Create`, following the pattern in `ChatState.cs`):
 
 | Tool | Parameters | Returns |
-|---|---|---|
+| --- | --- | --- |
 | `SearchProducts` | `query: string, count: int` | `[{ id, name, typeId, brandId, price }]` (semantic search) |
 | `ListCatalogTypesAndBrands` | – | `{ types: [...], brands: [...] }` |
 | `CreatePromotionDraft` | the PROMO-2 request body | `{ promotionId, status: "Draft" }` |
 | `CreateCoupon` | `code, promotionId, maxRedemptions` | `{ code }` |
 
-**Outputs**
+#### Outputs
+
 - The promotion is saved with `Status = Draft`
 - The Copilot's response:
   ```json
@@ -359,27 +380,30 @@ that** AI drafts the promotion, the product list and the copy for me.
   ```
 - The marketer clicks **Publish**, which sets `Status` to `Active` and publishes `PromotionStartedIntegrationEvent`
 
-**Acceptance criteria**
+#### Acceptance criteria
+
 - [ ] The Copilot never creates an `Active` promotion directly; a person must approve it
 - [ ] Dates like "ends Sunday" are resolved against the current date and shown back to the marketer for confirmation
 - [ ] If AI isn't configured in AppHost, the page shows a clear "AI not configured" message
 
 ---
 
-# Feature 2: Personalized Recommendations
+## Feature 2: Personalized Recommendations
 
-## REC-1: Similar items
+### REC-1: Similar items
 
 **As a** shopper viewing a product **I want** to see similar products **so
 that** I can compare options.
 
-**Inputs: `GET /api/catalog/items/{id}/similar?count=4`**
+#### Inputs: `GET /api/catalog/items/{id}/similar?count=4`
 
-**Logic**
+#### Logic
+
 - If AI is enabled: order other items by `Embedding.CosineDistance(target.Embedding)` using pgvector, excluding the item itself
 - Otherwise: items of the same `CatalogTypeId`, with items of the same `CatalogBrandId` first, then by price closest to the target's
 
-**Outputs: `200 OK`**
+#### Outputs: `200 OK`
+
 ```json
 [
   { "id": 18, "name": "Trail Backpack 30L", "price": 74.99, "pictureUrl": "/api/catalog/items/18/pic", "score": 0.91, "reason": "Similar" }
@@ -389,28 +413,32 @@ that** I can compare options.
 
 **UI:** a "You may also like" carousel on `ItemPage.razor` with 4 cards, each with an **Add to cart** button
 
-**Acceptance criteria**
+#### Acceptance criteria
+
 - [ ] The response never includes the product itself or out-of-stock items (`AvailableStock = 0`)
 - [ ] The fallback path has its own test (AI disabled)
 
 ---
 
-## REC-2: Frequently bought together
+### REC-2: Frequently bought together
 
 **As a** shopper **I want** to see products others bought with this one **so
 that** I discover things that go well together.
 
-**Inputs**
+#### Inputs
+
 - A new handler in Catalog.API for `OrderStatusChangedToPaidIntegrationEvent`, which uses `OrderStockItems`
 - New table `ProductCoPurchase { ProductIdA, ProductIdB, Count, LastPurchasedAt }`, with `A < B` so each pair is stored once
 - `GET /api/catalog/items/{id}/also-bought?count=4`
 
-**Logic**
+#### Logic
+
 - Every pair of distinct products in a paid order adds 1 to that pair's `Count`
 - The endpoint returns the top `count` partners ordered by `Count`, with ties broken by `LastPurchasedAt`
 - With fewer than 2 partners, the rest is filled from REC-1 results
 
-**Outputs**
+#### Outputs
+
 ```json
 [
   { "id": 33, "name": "Wool Hiking Socks", "price": 12.99, "timesBoughtTogether": 27, "reason": "AlsoBought" }
@@ -419,29 +447,33 @@ that** I discover things that go well together.
 
 **UI:** a "Frequently bought together" block on the item page with an **Add both to cart** button
 
-**Acceptance criteria**
+#### Acceptance criteria
+
 - [ ] Handling the same event twice doesn't double-count (log processed `OrderId`s)
 - [ ] A seed script simulates 50 orders so the demo has data
 
 ---
 
-## REC-3: Personalized "For You"
+### REC-3: Personalized "For You"
 
 **As a** returning shopper **I want** recommendations based on my history
 **so that** the store feels tailored to me.
 
-**Inputs**
+#### Inputs
+
 - `GET /api/catalog/recommendations/for-user?count=8` (requires authentication; buyer ID from the token)
 - Signals:
   - purchased product IDs (from paid events, stored as `UserProductSignal { BuyerId, ProductId, Weight=3 }`)
   - recently viewed items (`ProductViewedIntegrationEvent { BuyerId, ProductId }` from the item page, `Weight=1`)
 
-**Logic**
+#### Logic
+
 1. User vector = the weighted average of the embeddings of the 20 most recent signal products
 2. Return the nearest items by cosine distance, excluding products already purchased
 3. Users with no history (and anonymous users) get the 8 most-purchased items from REC-2 data
 
-**Outputs**
+#### Outputs
+
 ```json
 {
   "strategy": "Personalized",
@@ -452,29 +484,33 @@ that** I discover things that go well together.
 
 **UI:** a "Recommended for you" row at the top of the catalog home page
 
-**Acceptance criteria**
+#### Acceptance criteria
+
 - [ ] A user who bought tents sees camping items before unrelated ones (test with a fixed seed)
 - [ ] Anonymous users get `strategy: "Popular"`
 
 ---
 
-## REC-4: Cart cross-sell with promotions
+### REC-4: Cart cross-sell with promotions
 
 **As the** business **I want** the cart to suggest add-ons tied to active
 promotions **so that** average order value goes up.
 
-**Inputs**
+#### Inputs
+
 - The current cart's product IDs
 - REC-1 and REC-2 results for those products
 - Active promotions (PROMO-3)
 - `POST /api/catalog/recommendations/cross-sell { "productIds": [12, 40], "count": 3 }`
 
-**Logic**
+#### Logic
+
 1. Gather the REC-2 partners and REC-1 neighbors of every cart item, excluding items already in the cart
 2. Move items covered by an active promotion to the top
 3. If an `AmountOffOrder` promotion's threshold is close, prefer items that would push the cart over it. Example: the cart is $85 and there's $10 off orders over $100, so suggest items in the $15–40 range.
 
-**Outputs**
+#### Outputs
+
 ```json
 [
   {
@@ -492,20 +528,21 @@ promotions **so that** average order value goes up.
 
 **UI:** a "Complete your order" section on `CartPage.razor`, with one-click add
 
-**Acceptance criteria**
+#### Acceptance criteria
+
 - [ ] Adding a suggested item re-prices the cart immediately with the new discount applied
 
 ---
 
-## REC-5: Chatbot recommendations & deals
+### REC-5: Chatbot recommendations & deals
 
 **As a** shopper chatting with the assistant **I want** it to suggest products
 and mention current deals **so that** I get useful shopping help.
 
-**Inputs: new tools in `src/WebApp/Components/Chatbot/ChatState.cs`**
+#### Inputs: new tools in `src/WebApp/Components/Chatbot/ChatState.cs`
 
 | Tool | Parameters | Calls | Returns to the LLM |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `GetSimilarProducts` | `productId: int` | REC-1 | JSON list of products |
 | `GetRecommendationsForMe` | – | REC-3 | JSON list plus the strategy |
 | `GetActivePromotions` | `category?: string` | `/api/promotions/active` | `[{ name, description, endsAt, appliesTo }]` |
@@ -515,12 +552,14 @@ and mention current deals **so that** I get useful shopping help.
 promotion that applies to them. Never invent discounts. Only quote what
 GetActivePromotions or CheckCartSavings returns."*
 
-**Example conversation**
+#### Example conversation
+
 - User: *"Any deals on tents?"*
 - The assistant calls `GetActivePromotions("tents")`, then `SearchCatalog("tent")`
 - It replies with 3 tents and their discounted prices, and offers to add one to the cart using the existing `AddToCart` tool
 
-**Acceptance criteria**
+#### Acceptance criteria
+
 - [ ] Every discount the bot quotes matches the API output (an LLM-as-judge or scripted eval over 10 prompts)
 - [ ] The bot asks for confirmation before calling `AddToCart`
 
@@ -529,7 +568,7 @@ GetActivePromotions or CheckCartSavings returns."*
 ## New Integration Events
 
 | Event | Payload | Publisher | Subscribers |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `PromotionStartedIntegrationEvent` | `PromotionId, Name, Description, EndsAt, Targets[]` | Promotions.API | WebApp (banner/cache) |
 | `PromotionEndedIntegrationEvent` | `PromotionId` | Promotions.API | WebApp |
 | `CouponRedeemedIntegrationEvent` | `CouponCode, OrderId, BuyerId, DiscountAmount` | Promotions.API | Analytics (optional) |
@@ -539,12 +578,13 @@ GetActivePromotions or CheckCartSavings returns."*
 ## 3-Day Plan
 
 | Day | Focus | Stories |
-|---|---|---|
+| --- | --- | --- |
 | 1 | Promotions core | PROMO-1, PROMO-2, PROMO-3, PROMO-5 |
 | 2 | Coupons, UI and recommendations | PROMO-4, PROMO-6, REC-1, REC-2 |
 | 3 | Personalization, AI and demo | REC-3, REC-4, REC-5, PROMO-7 (stretch), demo polish |
 
-**Team split suggestion:**
+### Team split suggestion
+
 - Team A: Promotions.API (PROMO-1 to 4)
 - Team B: changes to Ordering and the WebApp (PROMO-5, PROMO-6)
 - Team C: recommendations (REC-1 to 5)

@@ -11,7 +11,7 @@ As a marketer, I want to describe a campaign in plain language and have an AI as
 - Tools available to the LLM (registered with `AIFunctionFactory.Create`):
 
 | Tool | Parameters | Calls | Returns to the LLM |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `GetCurrentDate` | – | system clock | `"2026-11-09 (Monday)"` |
 | `SearchProducts` | `query: string`, `count: int = 20` | Catalog `GET /api/catalog/items/withsemanticrelevance?text=…` | `[{ id, name, typeId, type, brandId, brand, price }]` |
 | `ListCatalogTypesAndBrands` | – | Catalog `/api/catalog/catalogtypes` and `/catalogbrands` | `{ types: [{id, type}], brands: [{id, brand}] }` |

@@ -18,7 +18,7 @@ As a shopper, I want the best available discounts worked out for my cart automat
 ```
 
 | Field | Rules |
-|---|---|
+| --- | --- |
 | `items` | 1–100 lines, each with a distinct `productId` |
 | `unitPrice` | ≥ 0. The caller supplies it from the catalog; this service doesn't call Catalog.API. |
 | `quantity` | ≥ 1 |

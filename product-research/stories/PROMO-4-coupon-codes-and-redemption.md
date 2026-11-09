@@ -9,7 +9,7 @@ As a marketer, I want to issue coupon codes with usage limits and have each rede
 Coupon model:
 
 | Field | Type | Rules |
-|---|---|---|
+| --- | --- | --- |
 | `Code` | string | Primary key. Stored upper-case, 3–32 characters, `[A-Z0-9-]` |
 | `PromotionId` | int | Must point to an existing promotion. Usually one with `RequiresCoupon = true`. |
 | `MaxRedemptions` | int? | Null means unlimited |
@@ -22,7 +22,7 @@ Coupon model:
 **Endpoints:**
 
 | Method | Route | Auth | Body / Query |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | POST | `/api/coupons` | admin | `{ "code": "FALL10", "promotionId": 1, "maxRedemptions": 500, "maxPerUser": 1, "expiresAt": "2026-11-16T23:59:59Z" }` |
 | GET | `/api/coupons?promotionId=1` | admin | List coupons with `redemptionCount` |
 | DELETE | `/api/coupons/{code}` | admin | Stop new redemptions; existing ones are kept |

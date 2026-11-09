@@ -128,8 +128,14 @@ Rows are inserted with `json_populate_recordset`, so column names must match the
 | `default` | What the built-in seeders used to produce: 101 catalog items, 13 brands, 8 types, plus users `alice` and `bob` (password `Pass123$`). |
 | `order-history` | `default` plus alice as a buyer, with a Visa payment method, a Shipped order, a Cancelled order and two basket items. |
 | `catalog-edge` | Its own 14-item "Edge" catalog over 2 pages: a zero-stock item, a 50-character name, prices $0.01 and $9,999.99, an empty description, and a brand and a type with no items. Plus alice and bob. |
+| `catalog-pictures` | `catalog-edge` plus item 15 with no picture file, item 16 whose picture file does not exist, and item 17 "Edge 17 100% Wool_Sock" (SQL `LIKE` wildcards in the name). Used by `e2e/teststack/catalog-api.spec.ts`. |
 | `order-lifecycle` | `default` plus bob with a Visa and six orders, one per `OrderStatus`. The past-dated Submitted order is advanced to Paid by the background services within about 30 s of loading. alice has no orders. |
 | `returning-customers` | `default` plus carol (`c0001000-0000-4000-8000-000000000003`, password `Carol#2026`) with a Visa, a Seattle address and a 3-item basket, and a basket for bob whose stored price is stale (the cart shows the catalog price). |
+| `auth-lockout` | `default` plus lockout users (password `Pass123$`): dave locked until 2099, erin one failure from lockout, gina with an expired lockout, frank with lockout disabled. |
+| `basket-edge` | `default` plus baskets: bob with 2 lines, quinn with 120 units (badge shows 99+), oscar with a line for a product no longer in the catalog. |
+| `ordering-two-buyers` | `default` plus alice with orders 1-6 (statuses the pipeline leaves alone) and a basket, and bob with a Paid order 7 and a Shipped order 8. |
+| `ordering-stock` | `default` with low stock plus four past-dated Submitted orders for bob; within about 30 s two reach Paid and two are cancelled by the stock check. |
+| `webhooks-subscriptions` | `default` plus webhook subscriptions for alice (OrderPaid, OrderShipped) and bob (CatalogItemPriceChange), and an alice order that reaches Paid shortly after loading. |
 
 Fixed user IDs:
 
@@ -138,7 +144,9 @@ Fixed user IDs:
 | alice | `a11ce000-0000-4000-8000-000000000001` |
 | bob | `b0b00000-0000-4000-8000-000000000002` |
 
-Each scenario except `_base`, `empty` and `default` has a Playwright spec in `e2e/teststack/<scenario>.spec.ts`. The spec loads its scenario in `beforeAll` with `loadScenario()` from `e2e/teststack/scenario.ts`, and runs in the `scenarios` project of `playwright.teststack.config.ts`, after the standard suite.
+The flows these scenarios exercise, with their positive and negative cases, known app bugs and covering tests, are mapped in `testing/flows/` ([catalog](flows/catalog.md), [identity and basket](flows/identity-basket.md), [ordering and webhooks](flows/ordering.md)). Tests that assert correct behavior the app does not have yet are marked `test.fixme` and listed in those files.
+
+Scenario specs live in `e2e/teststack/`. The spec loads its scenario in `beforeAll` with `loadScenario()` from `e2e/teststack/scenario.ts`, and runs in the `scenarios` project of `playwright.teststack.config.ts`, after the standard suite.
 
 The user ID is also the Redis basket key suffix (`/basket/<id>`) and `ordering.buyers.IdentityGuid`. Passwords are stored pre-hashed; generate new hashes with `testing/teststack hash-password '<pw>'`. Basket JSON matches `CustomerBasket` (`BuyerId`, `Items[]` with `Id`, `ProductId`, `ProductName`, `UnitPrice`, `OldUnitPrice`, `Quantity`, `PictureUrl`).
 

@@ -1,0 +1,111 @@
+description: >
+  Default data plus four lockout test users, all with password Pass123$: dave is locked out
+  until 2099, erin has 4 failed attempts (the next failure locks her out), gina's lockout
+  expired in 2020, and frank has lockout disabled.
+extends: default
+postgres:
+  identitydb:
+    - table: AspNetUsers
+      rows:
+        - Id: d0000000-0000-4000-8000-000000000004
+          UserName: dave
+          NormalizedUserName: DAVE
+          Email: dave@email.com
+          NormalizedEmail: DAVE@EMAIL.COM
+          EmailConfirmed: true
+          PasswordHash: AQAAAAIAAYagAAAAEA8l5zVyTkJ12JxTVsqtD9qlMFT8uoxwjycqv33/PHCbIDfXMczZEJpaTNVfz8CCuA==  # Pass123$
+          SecurityStamp: DAVESECURITYSTAMP000004
+          ConcurrencyStamp: daveconcurrency000004
+          PhoneNumberConfirmed: false
+          TwoFactorEnabled: false
+          LockoutEnabled: true
+          LockoutEnd: "2099-01-01T00:00:00Z"
+          AccessFailedCount: 5
+          CardHolderName: Dave Locked
+          CardNumber: XXXXXXXXXXXX1881
+          CardType: 2
+          SecurityNumber: "321"
+          Expiration: "12/30"
+          Name: Dave
+          LastName: Locked
+          Street: 1 Test Way
+          City: Redmond
+          State: WA
+          Country: U.S.
+          ZipCode: "98052"
+        - Id: e0000000-0000-4000-8000-000000000005
+          UserName: erin
+          NormalizedUserName: ERIN
+          Email: erin@email.com
+          NormalizedEmail: ERIN@EMAIL.COM
+          EmailConfirmed: true
+          PasswordHash: AQAAAAIAAYagAAAAEA8l5zVyTkJ12JxTVsqtD9qlMFT8uoxwjycqv33/PHCbIDfXMczZEJpaTNVfz8CCuA==  # Pass123$
+          SecurityStamp: ERINSECURITYSTAMP000005
+          ConcurrencyStamp: erinconcurrency000005
+          PhoneNumberConfirmed: false
+          TwoFactorEnabled: false
+          LockoutEnabled: true
+          AccessFailedCount: 4
+          CardHolderName: Erin Almost
+          CardNumber: XXXXXXXXXXXX1881
+          CardType: 2
+          SecurityNumber: "321"
+          Expiration: "12/30"
+          Name: Erin
+          LastName: Almost
+          Street: 1 Test Way
+          City: Redmond
+          State: WA
+          Country: U.S.
+          ZipCode: "98052"
+        - Id: 90000000-0000-4000-8000-000000000007
+          UserName: gina
+          NormalizedUserName: GINA
+          Email: gina@email.com
+          NormalizedEmail: GINA@EMAIL.COM
+          EmailConfirmed: true
+          PasswordHash: AQAAAAIAAYagAAAAEA8l5zVyTkJ12JxTVsqtD9qlMFT8uoxwjycqv33/PHCbIDfXMczZEJpaTNVfz8CCuA==  # Pass123$
+          SecurityStamp: GINASECURITYSTAMP000007
+          ConcurrencyStamp: ginaconcurrency000007
+          PhoneNumberConfirmed: false
+          TwoFactorEnabled: false
+          LockoutEnabled: true
+          LockoutEnd: "2020-01-01T00:00:00Z"
+          AccessFailedCount: 0
+          CardHolderName: Gina Expired
+          CardNumber: XXXXXXXXXXXX1881
+          CardType: 2
+          SecurityNumber: "321"
+          Expiration: "12/30"
+          Name: Gina
+          LastName: Expired
+          Street: 1 Test Way
+          City: Redmond
+          State: WA
+          Country: U.S.
+          ZipCode: "98052"
+        - Id: f0000000-0000-4000-8000-000000000006
+          UserName: frank
+          NormalizedUserName: FRANK
+          Email: frank@email.com
+          NormalizedEmail: FRANK@EMAIL.COM
+          EmailConfirmed: true
+          PasswordHash: AQAAAAIAAYagAAAAEA8l5zVyTkJ12JxTVsqtD9qlMFT8uoxwjycqv33/PHCbIDfXMczZEJpaTNVfz8CCuA==  # Pass123$
+          SecurityStamp: FRANKSECURITYSTAMP000006
+          ConcurrencyStamp: frankconcurrency000006
+          PhoneNumberConfirmed: false
+          TwoFactorEnabled: false
+          LockoutEnabled: false
+          AccessFailedCount: 0
+          CardHolderName: Frank Unlockable
+          CardNumber: XXXXXXXXXXXX1881
+          CardType: 2
+          SecurityNumber: "321"
+          Expiration: "12/30"
+          Name: Frank
+          LastName: Unlockable
+          Street: 1 Test Way
+          City: Redmond
+          State: WA
+          Country: U.S.
+          ZipCode: "98052"

@@ -26,7 +26,7 @@ As the business, I want every order to record the discount applied to each line 
 ```
 
 | Field | Type | Where | Notes |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `items[].discount` | decimal | `Ordering.API` `BasketItem` | **New.** The discount for the whole line, not per unit. Defaults to `0`. |
 | `couponCode` | string? | `CreateOrderRequest` | **New.** Optional. |
 | `appliedPromotionIds` | int[] | `CreateOrderRequest` | **New.** Optional; empty list if missing. |

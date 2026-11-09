@@ -9,7 +9,7 @@ As a marketer, I want to create, edit, publish and end promotions of several kin
 Domain model (`Promotion` aggregate):
 
 | Field | Type | Rules |
-|---|---|---|
+| --- | --- | --- |
 | `Id` | int | Identity |
 | `Name` | string | Required, max 100 |
 | `Description` | string | Required, max 500. Shown on banners. |
@@ -44,7 +44,7 @@ Domain model (`Promotion` aggregate):
 **Endpoints:**
 
 | Method | Route | Auth | Purpose |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | GET | `/api/promotions?status=Active&page=0&pageSize=20` | admin | List promotions, paged, filtered by `EffectiveStatus` |
 | GET | `/api/promotions/{id}` | admin | Get one promotion |
 | POST | `/api/promotions` | admin | Create (always as `Draft`) |

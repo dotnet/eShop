@@ -1,0 +1,78 @@
+description: >
+  Default data plus baskets for basket edge cases (all passwords Pass123$). alice has no
+  basket; bob has two items (3 units); quinn has 120 units of one item (badge shows 99+);
+  oscar's basket holds a product that no longer exists in the catalog next to a valid one.
+extends: default
+postgres:
+  identitydb:
+    - table: AspNetUsers
+      rows:
+        - Id: 0c000000-0000-4000-8000-000000000008
+          UserName: oscar
+          NormalizedUserName: OSCAR
+          Email: oscar@email.com
+          NormalizedEmail: OSCAR@EMAIL.COM
+          EmailConfirmed: true
+          PasswordHash: AQAAAAIAAYagAAAAEA8l5zVyTkJ12JxTVsqtD9qlMFT8uoxwjycqv33/PHCbIDfXMczZEJpaTNVfz8CCuA==  # Pass123$
+          SecurityStamp: OSCARSECURITYSTAMP000008
+          ConcurrencyStamp: oscarconcurrency000008
+          PhoneNumberConfirmed: false
+          TwoFactorEnabled: false
+          LockoutEnabled: true
+          AccessFailedCount: 0
+          CardHolderName: Oscar Orphan
+          CardNumber: XXXXXXXXXXXX1881
+          CardType: 2
+          SecurityNumber: "321"
+          Expiration: "12/30"
+          Name: Oscar
+          LastName: Orphan
+          Street: 1 Test Way
+          City: Redmond
+          State: WA
+          Country: U.S.
+          ZipCode: "98052"
+        - Id: 9a000000-0000-4000-8000-000000000009
+          UserName: quinn
+          NormalizedUserName: QUINN
+          Email: quinn@email.com
+          NormalizedEmail: QUINN@EMAIL.COM
+          EmailConfirmed: true
+          PasswordHash: AQAAAAIAAYagAAAAEA8l5zVyTkJ12JxTVsqtD9qlMFT8uoxwjycqv33/PHCbIDfXMczZEJpaTNVfz8CCuA==  # Pass123$
+          SecurityStamp: QUINNSECURITYSTAMP000009
+          ConcurrencyStamp: quinnconcurrency000009
+          PhoneNumberConfirmed: false
+          TwoFactorEnabled: false
+          LockoutEnabled: true
+          AccessFailedCount: 0
+          CardHolderName: Quinn Bulk
+          CardNumber: XXXXXXXXXXXX1881
+          CardType: 2
+          SecurityNumber: "321"
+          Expiration: "12/30"
+          Name: Quinn
+          LastName: Bulk
+          Street: 1 Test Way
+          City: Redmond
+          State: WA
+          Country: U.S.
+          ZipCode: "98052"
+redis:
+  - key: /basket/b0b00000-0000-4000-8000-000000000002
+    json:
+      BuyerId: b0b00000-0000-4000-8000-000000000002
+      Items:
+        - { Id: 0d8a8a3f-9a8e-4d55-9c4f-000000000031, ProductId: 7, ProductName: Explorer 45L Backpack, UnitPrice: 149.99, OldUnitPrice: 0, Quantity: 2, PictureUrl: "" }
+        - { Id: 0d8a8a3f-9a8e-4d55-9c4f-000000000032, ProductId: 6, ProductName: Carbon Fiber Trekking Poles, UnitPrice: 69.99, OldUnitPrice: 0, Quantity: 1, PictureUrl: "" }
+  - key: /basket/9a000000-0000-4000-8000-000000000009
+    json:
+      BuyerId: 9a000000-0000-4000-8000-000000000009
+      Items:
+        - { Id: 0d8a8a3f-9a8e-4d55-9c4f-000000000041, ProductId: 6, ProductName: Carbon Fiber Trekking Poles, UnitPrice: 69.99, OldUnitPrice: 0, Quantity: 120, PictureUrl: "" }
+  # Product 99999 is not in the catalog (deleted after it was added to the basket).
+  - key: /basket/0c000000-0000-4000-8000-000000000008
+    json:
+      BuyerId: 0c000000-0000-4000-8000-000000000008
+      Items:
+        - { Id: 0d8a8a3f-9a8e-4d55-9c4f-000000000051, ProductId: 7, ProductName: Explorer 45L Backpack, UnitPrice: 149.99, OldUnitPrice: 0, Quantity: 1, PictureUrl: "" }
+        - { Id: 0d8a8a3f-9a8e-4d55-9c4f-000000000052, ProductId: 99999, ProductName: Discontinued Widget, UnitPrice: 10.00, OldUnitPrice: 0, Quantity: 1, PictureUrl: "" }
