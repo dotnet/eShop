@@ -1,0 +1,62 @@
+description: >
+  Default data plus a third user, carol (password Carol#2026), with a saved Visa payment method,
+  no orders and a three-item basket; bob has one basket item whose stored UnitPrice is stale
+  (the cart and checkout use the catalog price).
+extends: default
+postgres:
+  identitydb:
+    - table: AspNetUsers
+      rows:
+        - Id: c0001000-0000-4000-8000-000000000003
+          UserName: carol
+          NormalizedUserName: CAROL
+          Email: CarolJones@email.com
+          NormalizedEmail: CAROLJONES@EMAIL.COM
+          EmailConfirmed: true
+          PasswordHash: AQAAAAIAAYagAAAAEGxivcr79XW95furwQ1BYfDU8UMx0NAuvBEvCSar6hR+XmMEWOOd/VoC5pjZOShr1w==  # Carol#2026
+          SecurityStamp: CAROLSECURITYSTAMP000000000003
+          ConcurrencyStamp: carolsecuritystamp000000000003
+          PhoneNumber: "1234567890"
+          PhoneNumberConfirmed: false
+          TwoFactorEnabled: false
+          LockoutEnabled: true
+          AccessFailedCount: 0
+          CardHolderName: Carol Jones
+          CardNumber: XXXXXXXXXXXX1881
+          CardType: 2
+          SecurityNumber: "789"
+          Expiration: "12/30"
+          Name: Carol
+          LastName: Jones
+          Street: 400 Broad St
+          City: Seattle
+          State: WA
+          Country: U.S.
+          ZipCode: "98109"
+  orderingdb:
+    - table: ordering.buyers
+      rows:
+        - { Id: 1, IdentityGuid: c0001000-0000-4000-8000-000000000003, Name: Carol }
+    - table: ordering.paymentmethods
+      rows:
+        - Id: 1
+          BuyerId: 1
+          CardTypeId: 2
+          Alias: Payment Method on 2025-03-10
+          CardHolderName: Carol Jones
+          CardNumber: XXXXXXXXXXXX1881
+          Expiration: 2030-12-31T00:00:00Z
+redis:
+  - key: /basket/c0001000-0000-4000-8000-000000000003
+    json:
+      BuyerId: c0001000-0000-4000-8000-000000000003
+      Items:
+        - { Id: 0d8a8a3f-9a8e-4d55-9c4f-000000000011, ProductId: 6, ProductName: Carbon Fiber Trekking Poles, UnitPrice: 69.99, OldUnitPrice: 0, Quantity: 3, PictureUrl: "" }
+        - { Id: 0d8a8a3f-9a8e-4d55-9c4f-000000000012, ProductId: 8, ProductName: Frostbite Insulated Jacket, UnitPrice: 179.99, OldUnitPrice: 0, Quantity: 1, PictureUrl: "" }
+        - { Id: 0d8a8a3f-9a8e-4d55-9c4f-000000000013, ProductId: 10, ProductName: Trailblazer Bike Helmet, UnitPrice: 59.99, OldUnitPrice: 0, Quantity: 2, PictureUrl: "" }
+  # Catalog price of product 7 is 149.99; the stored 99.99 is deliberately stale.
+  - key: /basket/b0b00000-0000-4000-8000-000000000002
+    json:
+      BuyerId: b0b00000-0000-4000-8000-000000000002
+      Items:
+        - { Id: 0d8a8a3f-9a8e-4d55-9c4f-000000000021, ProductId: 7, ProductName: Explorer 45L Backpack, UnitPrice: 99.99, OldUnitPrice: 0, Quantity: 2, PictureUrl: "" }

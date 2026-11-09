@@ -1,0 +1,497 @@
+name: "eshop-teststack"
+services:
+  teststack-dashboard:
+    image: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:13.6"
+    ports:
+      - "18888:18888"
+    expose:
+      - "18889"
+      - "18890"
+    networks:
+      - "aspire"
+    restart: "always"
+  redis:
+    image: "docker.io/library/redis:8.6"
+    command:
+      - "-c"
+      - "redis-server --requirepass $$REDIS_PASSWORD"
+    entrypoint:
+      - "/bin/sh"
+    environment:
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+    ports:
+      - "18379:6379"
+    expose:
+      - "6379"
+    networks:
+      - "aspire"
+    restart: "unless-stopped"
+    extra_hosts:
+      host.docker.internal: "host-gateway"
+  eventbus:
+    image: "docker.io/library/rabbitmq:4.3"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "${EVENTBUS_PASSWORD}"
+    ports:
+      - "18672:5672"
+    expose:
+      - "5672"
+    networks:
+      - "aspire"
+    restart: "unless-stopped"
+    extra_hosts:
+      host.docker.internal: "host-gateway"
+  postgres:
+    image: "docker.io/ankane/pgvector:latest"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    ports:
+      - "18432:5432"
+    expose:
+      - "5432"
+    networks:
+      - "aspire"
+    restart: "unless-stopped"
+    extra_hosts:
+      host.docker.internal: "host-gateway"
+  identity-api:
+    image: "${IDENTITY_API_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "${IDENTITY_API_PORT}"
+      ConnectionStrings__identitydb: "Host=postgres;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=identitydb"
+      IDENTITYDB_HOST: "postgres"
+      IDENTITYDB_PORT: "5432"
+      IDENTITYDB_USERNAME: "postgres"
+      IDENTITYDB_PASSWORD: "${POSTGRES_PASSWORD}"
+      IDENTITYDB_URI: "postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/identitydb"
+      IDENTITYDB_JDBCCONNECTIONSTRING: "jdbc:postgresql://postgres:5432/identitydb"
+      IDENTITYDB_DATABASENAME: "identitydb"
+      BasketApiClient: "http://basket-api:${BASKET_API_PORT}"
+      OrderingApiClient: "http://ordering-api:${ORDERING_API_PORT}"
+      WebhooksApiClient: "http://webhooks-api:${WEBHOOKS_API_PORT}"
+      WebhooksWebClient: "http://localhost:18086"
+      WebAppClient: "http://localhost:18080"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://teststack-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "identity-api"
+      Seeding__Disabled: "true"
+    ports:
+      - "18081:${IDENTITY_API_PORT}"
+    networks:
+      - "aspire"
+    restart: "unless-stopped"
+    extra_hosts:
+      host.docker.internal: "host-gateway"
+  basket-api:
+    image: "${BASKET_API_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "${BASKET_API_PORT}"
+      ConnectionStrings__redis: "redis:6379,password=${REDIS_PASSWORD}"
+      REDIS_HOST: "redis"
+      REDIS_PORT: "6379"
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+      REDIS_URI: "redis://:${REDIS_PASSWORD}@redis:6379"
+      ConnectionStrings__eventbus: "amqp://guest:${EVENTBUS_PASSWORD}@eventbus:5672"
+      EVENTBUS_HOST: "eventbus"
+      EVENTBUS_PORT: "5672"
+      EVENTBUS_USERNAME: "guest"
+      EVENTBUS_PASSWORD: "${EVENTBUS_PASSWORD}"
+      EVENTBUS_URI: "amqp://guest:${EVENTBUS_PASSWORD}@eventbus:5672"
+      Identity__Url: "http://host.docker.internal:18081"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://teststack-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "basket-api"
+    ports:
+      - "18083:${BASKET_API_PORT}"
+    expose:
+      - "${BASKET_API_PORT}"
+    depends_on:
+      eventbus:
+        condition: "service_started"
+    networks:
+      - "aspire"
+    restart: "unless-stopped"
+    extra_hosts:
+      host.docker.internal: "host-gateway"
+  catalog-api:
+    image: "${CATALOG_API_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "${CATALOG_API_PORT}"
+      ConnectionStrings__eventbus: "amqp://guest:${EVENTBUS_PASSWORD}@eventbus:5672"
+      EVENTBUS_HOST: "eventbus"
+      EVENTBUS_PORT: "5672"
+      EVENTBUS_USERNAME: "guest"
+      EVENTBUS_PASSWORD: "${EVENTBUS_PASSWORD}"
+      EVENTBUS_URI: "amqp://guest:${EVENTBUS_PASSWORD}@eventbus:5672"
+      ConnectionStrings__catalogdb: "Host=postgres;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=catalogdb"
+      CATALOGDB_HOST: "postgres"
+      CATALOGDB_PORT: "5432"
+      CATALOGDB_USERNAME: "postgres"
+      CATALOGDB_PASSWORD: "${POSTGRES_PASSWORD}"
+      CATALOGDB_URI: "postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/catalogdb"
+      CATALOGDB_JDBCCONNECTIONSTRING: "jdbc:postgresql://postgres:5432/catalogdb"
+      CATALOGDB_DATABASENAME: "catalogdb"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://teststack-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "catalog-api"
+      Seeding__Disabled: "true"
+    ports:
+      - "18082:${CATALOG_API_PORT}"
+    expose:
+      - "${CATALOG_API_PORT}"
+    depends_on:
+      eventbus:
+        condition: "service_started"
+    networks:
+      - "aspire"
+    restart: "unless-stopped"
+    extra_hosts:
+      host.docker.internal: "host-gateway"
+  ordering-api:
+    image: "${ORDERING_API_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "${ORDERING_API_PORT}"
+      ConnectionStrings__eventbus: "amqp://guest:${EVENTBUS_PASSWORD}@eventbus:5672"
+      EVENTBUS_HOST: "eventbus"
+      EVENTBUS_PORT: "5672"
+      EVENTBUS_USERNAME: "guest"
+      EVENTBUS_PASSWORD: "${EVENTBUS_PASSWORD}"
+      EVENTBUS_URI: "amqp://guest:${EVENTBUS_PASSWORD}@eventbus:5672"
+      ConnectionStrings__orderingdb: "Host=postgres;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=orderingdb"
+      ORDERINGDB_HOST: "postgres"
+      ORDERINGDB_PORT: "5432"
+      ORDERINGDB_USERNAME: "postgres"
+      ORDERINGDB_PASSWORD: "${POSTGRES_PASSWORD}"
+      ORDERINGDB_URI: "postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/orderingdb"
+      ORDERINGDB_JDBCCONNECTIONSTRING: "jdbc:postgresql://postgres:5432/orderingdb"
+      ORDERINGDB_DATABASENAME: "orderingdb"
+      Identity__Url: "http://host.docker.internal:18081"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://teststack-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "ordering-api"
+      Seeding__Disabled: "true"
+    ports:
+      - "18084:${ORDERING_API_PORT}"
+    expose:
+      - "${ORDERING_API_PORT}"
+    depends_on:
+      eventbus:
+        condition: "service_started"
+      postgres:
+        condition: "service_started"
+    networks:
+      - "aspire"
+    restart: "unless-stopped"
+    extra_hosts:
+      host.docker.internal: "host-gateway"
+  order-processor:
+    image: "${ORDER_PROCESSOR_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "${ORDER_PROCESSOR_PORT}"
+      ConnectionStrings__eventbus: "amqp://guest:${EVENTBUS_PASSWORD}@eventbus:5672"
+      EVENTBUS_HOST: "eventbus"
+      EVENTBUS_PORT: "5672"
+      EVENTBUS_USERNAME: "guest"
+      EVENTBUS_PASSWORD: "${EVENTBUS_PASSWORD}"
+      EVENTBUS_URI: "amqp://guest:${EVENTBUS_PASSWORD}@eventbus:5672"
+      ConnectionStrings__orderingdb: "Host=postgres;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=orderingdb"
+      ORDERINGDB_HOST: "postgres"
+      ORDERINGDB_PORT: "5432"
+      ORDERINGDB_USERNAME: "postgres"
+      ORDERINGDB_PASSWORD: "${POSTGRES_PASSWORD}"
+      ORDERINGDB_URI: "postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/orderingdb"
+      ORDERINGDB_JDBCCONNECTIONSTRING: "jdbc:postgresql://postgres:5432/orderingdb"
+      ORDERINGDB_DATABASENAME: "orderingdb"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://teststack-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "order-processor"
+    expose:
+      - "${ORDER_PROCESSOR_PORT}"
+    depends_on:
+      eventbus:
+        condition: "service_started"
+      ordering-api:
+        condition: "service_started"
+    networks:
+      - "aspire"
+    restart: "unless-stopped"
+    extra_hosts:
+      host.docker.internal: "host-gateway"
+  payment-processor:
+    image: "${PAYMENT_PROCESSOR_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "${PAYMENT_PROCESSOR_PORT}"
+      ConnectionStrings__eventbus: "amqp://guest:${EVENTBUS_PASSWORD}@eventbus:5672"
+      EVENTBUS_HOST: "eventbus"
+      EVENTBUS_PORT: "5672"
+      EVENTBUS_USERNAME: "guest"
+      EVENTBUS_PASSWORD: "${EVENTBUS_PASSWORD}"
+      EVENTBUS_URI: "amqp://guest:${EVENTBUS_PASSWORD}@eventbus:5672"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://teststack-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "payment-processor"
+    expose:
+      - "${PAYMENT_PROCESSOR_PORT}"
+    depends_on:
+      eventbus:
+        condition: "service_started"
+    networks:
+      - "aspire"
+    restart: "unless-stopped"
+    extra_hosts:
+      host.docker.internal: "host-gateway"
+  webhooks-api:
+    image: "${WEBHOOKS_API_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "${WEBHOOKS_API_PORT}"
+      ConnectionStrings__eventbus: "amqp://guest:${EVENTBUS_PASSWORD}@eventbus:5672"
+      EVENTBUS_HOST: "eventbus"
+      EVENTBUS_PORT: "5672"
+      EVENTBUS_USERNAME: "guest"
+      EVENTBUS_PASSWORD: "${EVENTBUS_PASSWORD}"
+      EVENTBUS_URI: "amqp://guest:${EVENTBUS_PASSWORD}@eventbus:5672"
+      ConnectionStrings__webhooksdb: "Host=postgres;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=webhooksdb"
+      WEBHOOKSDB_HOST: "postgres"
+      WEBHOOKSDB_PORT: "5432"
+      WEBHOOKSDB_USERNAME: "postgres"
+      WEBHOOKSDB_PASSWORD: "${POSTGRES_PASSWORD}"
+      WEBHOOKSDB_URI: "postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/webhooksdb"
+      WEBHOOKSDB_JDBCCONNECTIONSTRING: "jdbc:postgresql://postgres:5432/webhooksdb"
+      WEBHOOKSDB_DATABASENAME: "webhooksdb"
+      Identity__Url: "http://host.docker.internal:18081"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://teststack-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "webhooks-api"
+    ports:
+      - "18085:${WEBHOOKS_API_PORT}"
+    expose:
+      - "${WEBHOOKS_API_PORT}"
+    depends_on:
+      eventbus:
+        condition: "service_started"
+    networks:
+      - "aspire"
+    restart: "unless-stopped"
+    extra_hosts:
+      host.docker.internal: "host-gateway"
+  mobile-bff:
+    image: "mcr.microsoft.com/dotnet/nightly/yarp:2.3-preview"
+    command:
+      - "/app/yarp.dll"
+    entrypoint:
+      - "dotnet"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      CATALOG_API_HTTP: "http://catalog-api:${CATALOG_API_PORT}"
+      REVERSEPROXY__ROUTES__route0__MATCH__PATH: "/catalog-api/api/catalog/items"
+      REVERSEPROXY__ROUTES__route0__MATCH__QUERYPARAMETERS__0__NAME: "api-version"
+      REVERSEPROXY__ROUTES__route0__MATCH__QUERYPARAMETERS__0__VALUES__0: "1.0"
+      REVERSEPROXY__ROUTES__route0__MATCH__QUERYPARAMETERS__0__VALUES__1: "1"
+      REVERSEPROXY__ROUTES__route0__MATCH__QUERYPARAMETERS__0__VALUES__2: "2.0"
+      REVERSEPROXY__ROUTES__route0__MATCH__QUERYPARAMETERS__0__MODE: "Exact"
+      REVERSEPROXY__ROUTES__route0__MATCH__QUERYPARAMETERS__0__ISCASESENSITIVE: "False"
+      REVERSEPROXY__ROUTES__route0__CLUSTERID: "cluster_catalog-api"
+      REVERSEPROXY__ROUTES__route0__TRANSFORMS__0__PathRemovePrefix: "/catalog-api"
+      REVERSEPROXY__ROUTES__route1__MATCH__PATH: "/catalog-api/api/catalog/items/by"
+      REVERSEPROXY__ROUTES__route1__MATCH__QUERYPARAMETERS__0__NAME: "api-version"
+      REVERSEPROXY__ROUTES__route1__MATCH__QUERYPARAMETERS__0__VALUES__0: "1.0"
+      REVERSEPROXY__ROUTES__route1__MATCH__QUERYPARAMETERS__0__VALUES__1: "1"
+      REVERSEPROXY__ROUTES__route1__MATCH__QUERYPARAMETERS__0__VALUES__2: "2.0"
+      REVERSEPROXY__ROUTES__route1__MATCH__QUERYPARAMETERS__0__MODE: "Exact"
+      REVERSEPROXY__ROUTES__route1__MATCH__QUERYPARAMETERS__0__ISCASESENSITIVE: "False"
+      REVERSEPROXY__ROUTES__route1__CLUSTERID: "cluster_catalog-api"
+      REVERSEPROXY__ROUTES__route1__TRANSFORMS__0__PathRemovePrefix: "/catalog-api"
+      REVERSEPROXY__ROUTES__route2__MATCH__PATH: "/catalog-api/api/catalog/items/{id}"
+      REVERSEPROXY__ROUTES__route2__MATCH__QUERYPARAMETERS__0__NAME: "api-version"
+      REVERSEPROXY__ROUTES__route2__MATCH__QUERYPARAMETERS__0__VALUES__0: "1.0"
+      REVERSEPROXY__ROUTES__route2__MATCH__QUERYPARAMETERS__0__VALUES__1: "1"
+      REVERSEPROXY__ROUTES__route2__MATCH__QUERYPARAMETERS__0__VALUES__2: "2.0"
+      REVERSEPROXY__ROUTES__route2__MATCH__QUERYPARAMETERS__0__MODE: "Exact"
+      REVERSEPROXY__ROUTES__route2__MATCH__QUERYPARAMETERS__0__ISCASESENSITIVE: "False"
+      REVERSEPROXY__ROUTES__route2__CLUSTERID: "cluster_catalog-api"
+      REVERSEPROXY__ROUTES__route2__TRANSFORMS__0__PathRemovePrefix: "/catalog-api"
+      REVERSEPROXY__ROUTES__route3__MATCH__PATH: "/catalog-api/api/catalog/items/by/{name}"
+      REVERSEPROXY__ROUTES__route3__MATCH__QUERYPARAMETERS__0__NAME: "api-version"
+      REVERSEPROXY__ROUTES__route3__MATCH__QUERYPARAMETERS__0__VALUES__0: "1.0"
+      REVERSEPROXY__ROUTES__route3__MATCH__QUERYPARAMETERS__0__VALUES__1: "1"
+      REVERSEPROXY__ROUTES__route3__MATCH__QUERYPARAMETERS__0__MODE: "Exact"
+      REVERSEPROXY__ROUTES__route3__MATCH__QUERYPARAMETERS__0__ISCASESENSITIVE: "False"
+      REVERSEPROXY__ROUTES__route3__CLUSTERID: "cluster_catalog-api"
+      REVERSEPROXY__ROUTES__route3__TRANSFORMS__0__PathRemovePrefix: "/catalog-api"
+      REVERSEPROXY__ROUTES__route4__MATCH__PATH: "/catalog-api/api/catalog/items/withsemanticrelevance/{text}"
+      REVERSEPROXY__ROUTES__route4__MATCH__QUERYPARAMETERS__0__NAME: "api-version"
+      REVERSEPROXY__ROUTES__route4__MATCH__QUERYPARAMETERS__0__VALUES__0: "1.0"
+      REVERSEPROXY__ROUTES__route4__MATCH__QUERYPARAMETERS__0__VALUES__1: "1"
+      REVERSEPROXY__ROUTES__route4__MATCH__QUERYPARAMETERS__0__MODE: "Exact"
+      REVERSEPROXY__ROUTES__route4__MATCH__QUERYPARAMETERS__0__ISCASESENSITIVE: "False"
+      REVERSEPROXY__ROUTES__route4__CLUSTERID: "cluster_catalog-api"
+      REVERSEPROXY__ROUTES__route4__TRANSFORMS__0__PathRemovePrefix: "/catalog-api"
+      REVERSEPROXY__ROUTES__route5__MATCH__PATH: "/catalog-api/api/catalog/items/withsemanticrelevance"
+      REVERSEPROXY__ROUTES__route5__MATCH__QUERYPARAMETERS__0__NAME: "api-version"
+      REVERSEPROXY__ROUTES__route5__MATCH__QUERYPARAMETERS__0__VALUES__0: "2.0"
+      REVERSEPROXY__ROUTES__route5__MATCH__QUERYPARAMETERS__0__MODE: "Exact"
+      REVERSEPROXY__ROUTES__route5__MATCH__QUERYPARAMETERS__0__ISCASESENSITIVE: "False"
+      REVERSEPROXY__ROUTES__route5__CLUSTERID: "cluster_catalog-api"
+      REVERSEPROXY__ROUTES__route5__TRANSFORMS__0__PathRemovePrefix: "/catalog-api"
+      REVERSEPROXY__ROUTES__route6__MATCH__PATH: "/catalog-api/api/catalog/items/type/{typeId}/brand/{brandId?}"
+      REVERSEPROXY__ROUTES__route6__MATCH__QUERYPARAMETERS__0__NAME: "api-version"
+      REVERSEPROXY__ROUTES__route6__MATCH__QUERYPARAMETERS__0__VALUES__0: "1.0"
+      REVERSEPROXY__ROUTES__route6__MATCH__QUERYPARAMETERS__0__VALUES__1: "1"
+      REVERSEPROXY__ROUTES__route6__MATCH__QUERYPARAMETERS__0__MODE: "Exact"
+      REVERSEPROXY__ROUTES__route6__MATCH__QUERYPARAMETERS__0__ISCASESENSITIVE: "False"
+      REVERSEPROXY__ROUTES__route6__CLUSTERID: "cluster_catalog-api"
+      REVERSEPROXY__ROUTES__route6__TRANSFORMS__0__PathRemovePrefix: "/catalog-api"
+      REVERSEPROXY__ROUTES__route7__MATCH__PATH: "/catalog-api/api/catalog/items/type/all/brand/{brandId?}"
+      REVERSEPROXY__ROUTES__route7__MATCH__QUERYPARAMETERS__0__NAME: "api-version"
+      REVERSEPROXY__ROUTES__route7__MATCH__QUERYPARAMETERS__0__VALUES__0: "1.0"
+      REVERSEPROXY__ROUTES__route7__MATCH__QUERYPARAMETERS__0__VALUES__1: "1"
+      REVERSEPROXY__ROUTES__route7__MATCH__QUERYPARAMETERS__0__MODE: "Exact"
+      REVERSEPROXY__ROUTES__route7__MATCH__QUERYPARAMETERS__0__ISCASESENSITIVE: "False"
+      REVERSEPROXY__ROUTES__route7__CLUSTERID: "cluster_catalog-api"
+      REVERSEPROXY__ROUTES__route7__TRANSFORMS__0__PathRemovePrefix: "/catalog-api"
+      REVERSEPROXY__ROUTES__route8__MATCH__PATH: "/catalog-api/api/catalog/catalogTypes"
+      REVERSEPROXY__ROUTES__route8__MATCH__QUERYPARAMETERS__0__NAME: "api-version"
+      REVERSEPROXY__ROUTES__route8__MATCH__QUERYPARAMETERS__0__VALUES__0: "1.0"
+      REVERSEPROXY__ROUTES__route8__MATCH__QUERYPARAMETERS__0__VALUES__1: "1"
+      REVERSEPROXY__ROUTES__route8__MATCH__QUERYPARAMETERS__0__VALUES__2: "2.0"
+      REVERSEPROXY__ROUTES__route8__MATCH__QUERYPARAMETERS__0__MODE: "Exact"
+      REVERSEPROXY__ROUTES__route8__MATCH__QUERYPARAMETERS__0__ISCASESENSITIVE: "False"
+      REVERSEPROXY__ROUTES__route8__CLUSTERID: "cluster_catalog-api"
+      REVERSEPROXY__ROUTES__route8__TRANSFORMS__0__PathRemovePrefix: "/catalog-api"
+      REVERSEPROXY__ROUTES__route9__MATCH__PATH: "/catalog-api/api/catalog/catalogBrands"
+      REVERSEPROXY__ROUTES__route9__MATCH__QUERYPARAMETERS__0__NAME: "api-version"
+      REVERSEPROXY__ROUTES__route9__MATCH__QUERYPARAMETERS__0__VALUES__0: "1.0"
+      REVERSEPROXY__ROUTES__route9__MATCH__QUERYPARAMETERS__0__VALUES__1: "1"
+      REVERSEPROXY__ROUTES__route9__MATCH__QUERYPARAMETERS__0__VALUES__2: "2.0"
+      REVERSEPROXY__ROUTES__route9__MATCH__QUERYPARAMETERS__0__MODE: "Exact"
+      REVERSEPROXY__ROUTES__route9__MATCH__QUERYPARAMETERS__0__ISCASESENSITIVE: "False"
+      REVERSEPROXY__ROUTES__route9__CLUSTERID: "cluster_catalog-api"
+      REVERSEPROXY__ROUTES__route9__TRANSFORMS__0__PathRemovePrefix: "/catalog-api"
+      REVERSEPROXY__ROUTES__route10__MATCH__PATH: "/catalog-api/api/catalog/items/{id}/pic"
+      REVERSEPROXY__ROUTES__route10__MATCH__QUERYPARAMETERS__0__NAME: "api-version"
+      REVERSEPROXY__ROUTES__route10__MATCH__QUERYPARAMETERS__0__VALUES__0: "1.0"
+      REVERSEPROXY__ROUTES__route10__MATCH__QUERYPARAMETERS__0__VALUES__1: "1"
+      REVERSEPROXY__ROUTES__route10__MATCH__QUERYPARAMETERS__0__VALUES__2: "2.0"
+      REVERSEPROXY__ROUTES__route10__MATCH__QUERYPARAMETERS__0__MODE: "Exact"
+      REVERSEPROXY__ROUTES__route10__MATCH__QUERYPARAMETERS__0__ISCASESENSITIVE: "False"
+      REVERSEPROXY__ROUTES__route10__CLUSTERID: "cluster_catalog-api"
+      REVERSEPROXY__ROUTES__route10__TRANSFORMS__0__PathRemovePrefix: "/catalog-api"
+      REVERSEPROXY__ROUTES__route11__MATCH__PATH: "/api/catalog/{*any}"
+      REVERSEPROXY__ROUTES__route11__MATCH__QUERYPARAMETERS__0__NAME: "api-version"
+      REVERSEPROXY__ROUTES__route11__MATCH__QUERYPARAMETERS__0__VALUES__0: "1.0"
+      REVERSEPROXY__ROUTES__route11__MATCH__QUERYPARAMETERS__0__VALUES__1: "1"
+      REVERSEPROXY__ROUTES__route11__MATCH__QUERYPARAMETERS__0__VALUES__2: "2.0"
+      REVERSEPROXY__ROUTES__route11__MATCH__QUERYPARAMETERS__0__MODE: "Exact"
+      REVERSEPROXY__ROUTES__route11__MATCH__QUERYPARAMETERS__0__ISCASESENSITIVE: "False"
+      REVERSEPROXY__ROUTES__route11__CLUSTERID: "cluster_catalog-api"
+      REVERSEPROXY__ROUTES__route12__MATCH__PATH: "/api/orders/{*any}"
+      REVERSEPROXY__ROUTES__route12__MATCH__QUERYPARAMETERS__0__NAME: "api-version"
+      REVERSEPROXY__ROUTES__route12__MATCH__QUERYPARAMETERS__0__VALUES__0: "1.0"
+      REVERSEPROXY__ROUTES__route12__MATCH__QUERYPARAMETERS__0__VALUES__1: "1"
+      REVERSEPROXY__ROUTES__route12__MATCH__QUERYPARAMETERS__0__MODE: "Exact"
+      REVERSEPROXY__ROUTES__route12__MATCH__QUERYPARAMETERS__0__ISCASESENSITIVE: "False"
+      REVERSEPROXY__ROUTES__route12__CLUSTERID: "cluster_ordering-api"
+      REVERSEPROXY__ROUTES__route13__MATCH__PATH: "/identity/{*any}"
+      REVERSEPROXY__ROUTES__route13__CLUSTERID: "cluster_identity-api"
+      REVERSEPROXY__ROUTES__route13__TRANSFORMS__0__PathRemovePrefix: "/identity"
+      REVERSEPROXY__CLUSTERS__cluster_catalog-api__DESTINATIONS__destination1__ADDRESS: "https+http://catalog-api"
+      REVERSEPROXY__CLUSTERS__cluster_ordering-api__DESTINATIONS__destination1__ADDRESS: "http://ordering-api"
+      REVERSEPROXY__CLUSTERS__cluster_identity-api__DESTINATIONS__destination1__ADDRESS: "http://identity-api"
+      services__catalog-api__http__0: "http://catalog-api:${CATALOG_API_PORT}"
+      CATALOG_API_HTTPS: "https://catalog-api:${CATALOG_API_PORT}"
+      ORDERING_API_HTTP: "http://ordering-api:${ORDERING_API_PORT}"
+      services__ordering-api__http__0: "http://ordering-api:${ORDERING_API_PORT}"
+      IDENTITY_API_HTTP: "http://identity-api:${IDENTITY_API_PORT}"
+      services__identity-api__http__0: "http://identity-api:${IDENTITY_API_PORT}"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://teststack-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "mobile-bff"
+    ports:
+      - "18087:5000"
+    networks:
+      - "aspire"
+    restart: "unless-stopped"
+    extra_hosts:
+      host.docker.internal: "host-gateway"
+  webhooksclient:
+    image: "${WEBHOOKSCLIENT_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "${WEBHOOKSCLIENT_PORT}"
+      WEBHOOKS_API_HTTP: "http://webhooks-api:${WEBHOOKS_API_PORT}"
+      services__webhooks-api__http__0: "http://webhooks-api:${WEBHOOKS_API_PORT}"
+      WEBHOOKS_API_HTTPS: "https://webhooks-api:${WEBHOOKS_API_PORT}"
+      IdentityUrl: "http://host.docker.internal:18081"
+      CallBackUrl: "http://localhost:18086"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://teststack-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "webhooksclient"
+    ports:
+      - "18086:${WEBHOOKSCLIENT_PORT}"
+    expose:
+      - "${WEBHOOKSCLIENT_PORT}"
+    networks:
+      - "aspire"
+    restart: "unless-stopped"
+    extra_hosts:
+      host.docker.internal: "host-gateway"
+  webapp:
+    image: "${WEBAPP_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "${WEBAPP_PORT}"
+      BASKET_API_HTTP: "http://basket-api:${BASKET_API_PORT}"
+      services__basket-api__http__0: "http://basket-api:${BASKET_API_PORT}"
+      BASKET_API_HTTPS: "https://basket-api:${BASKET_API_PORT}"
+      CATALOG_API_HTTP: "http://catalog-api:${CATALOG_API_PORT}"
+      services__catalog-api__http__0: "http://catalog-api:${CATALOG_API_PORT}"
+      CATALOG_API_HTTPS: "https://catalog-api:${CATALOG_API_PORT}"
+      ORDERING_API_HTTP: "http://ordering-api:${ORDERING_API_PORT}"
+      services__ordering-api__http__0: "http://ordering-api:${ORDERING_API_PORT}"
+      ORDERING_API_HTTPS: "https://ordering-api:${ORDERING_API_PORT}"
+      ConnectionStrings__eventbus: "amqp://guest:${EVENTBUS_PASSWORD}@eventbus:5672"
+      EVENTBUS_HOST: "eventbus"
+      EVENTBUS_PORT: "5672"
+      EVENTBUS_USERNAME: "guest"
+      EVENTBUS_PASSWORD: "${EVENTBUS_PASSWORD}"
+      EVENTBUS_URI: "amqp://guest:${EVENTBUS_PASSWORD}@eventbus:5672"
+      IdentityUrl: "http://host.docker.internal:18081"
+      CallBackUrl: "http://localhost:18080"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://teststack-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "webapp"
+    ports:
+      - "18080:${WEBAPP_PORT}"
+    depends_on:
+      eventbus:
+        condition: "service_started"
+      identity-api:
+        condition: "service_started"
+    networks:
+      - "aspire"
+    restart: "unless-stopped"
+    extra_hosts:
+      host.docker.internal: "host-gateway"
+networks:
+  aspire:
+    driver: "bridge"

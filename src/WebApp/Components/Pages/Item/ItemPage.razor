@@ -80,22 +80,11 @@
         </dialog>
     </div>
 }
-else if (notFound)
-{
-    <SectionContent SectionName="page-header-title">Not found</SectionContent>
-    <div class="item-page">
-        <a class="item-back" href="@backHref">
-            <img role="presentation" src="icons/arrow-left.svg" /> Back to catalog
-        </a>
-        <p class="item-notfound">Sorry, we couldn't find any such product.</p>
-    </div>
-}
 
 @code {
     private CatalogItem? item;
     private int numInCart;
     private bool isLoggedIn;
-    private bool notFound;
     private string backHref = "";
 
     [Parameter]
@@ -116,8 +105,7 @@ else if (notFound)
         }
         catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
-            HttpContext!.Response.StatusCode = 404;
-            notFound = true;
+            Nav.NotFound();
         }
     }
 
