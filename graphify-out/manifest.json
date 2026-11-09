@@ -198,14 +198,14 @@
     "semantic_hash": ""
   },
   "src/Catalog.API/Catalog.API.json": {
-    "mtime": 1794242877.4207306,
-    "seen": 1794243047.789865,
+    "mtime": 1794243581.3189902,
+    "seen": 1794243594.21615,
     "ast_hash": "b881d575059e2e5ff627df930a63cc79",
     "semantic_hash": ""
   },
   "src/Catalog.API/Catalog.API_v2.json": {
-    "mtime": 1794242877.420995,
-    "seen": 1794243047.789865,
+    "mtime": 1794243581.325141,
+    "seen": 1794243594.216151,
     "ast_hash": "e12d524cd0ad504392b56fa8898ec7cc",
     "semantic_hash": ""
   },
@@ -4698,9 +4698,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1794242877.408405,
-    "seen": 1794243047.790266,
-    "ast_hash": "60c6a7db1cbae42e64254bf0f5834af2",
+    "mtime": 1794243587.6357286,
+    "seen": 1794243594.216634,
+    "ast_hash": "a7ea145d43b51d7ac91465fb5f18e600",
     "semantic_hash": ""
   },
   "ci.yml": {
@@ -5937,6 +5937,12 @@
     "mtime": 1794243314.40386,
     "seen": 1794243322.877352,
     "ast_hash": "82efb97a359f5c7290bf2513d14686be",
+    "semantic_hash": ""
+  },
+  "scripts/setup.sh": {
+    "mtime": 1794243532.8604865,
+    "seen": 1794243542.701186,
+    "ast_hash": "75f04fe6c7960603ea831247ab22c875",
     "semantic_hash": ""
   }
 }
