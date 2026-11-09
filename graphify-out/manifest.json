@@ -4662,21 +4662,21 @@
     "semantic_hash": ""
   },
   ".github/workflows/playwright.yml": {
-    "mtime": 1794242853.275794,
-    "seen": 1794260393.2971668,
-    "ast_hash": "5af2380e9afc702c13bb3fa278d33815",
+    "mtime": 1794261334.5056248,
+    "seen": 1794261336.682305,
+    "ast_hash": "aa6c118d71fb45d341f7d31b85ebdbc1",
     "semantic_hash": ""
   },
   ".github/workflows/pr-validation-maui.yml": {
-    "mtime": 1794242853.2767959,
-    "seen": 1794260393.2971692,
+    "mtime": 1794261277.4359078,
+    "seen": 1794261298.8248365,
     "ast_hash": "301ee5b7e7f21c9c38ce0a2e145490ea",
-    "semantic_hash": "301ee5b7e7f21c9c38ce0a2e145490ea"
+    "semantic_hash": ""
   },
   ".github/workflows/pr-validation.yml": {
-    "mtime": 1794260262.2088907,
-    "seen": 1794260393.2971714,
-    "ast_hash": "c5eef0c7add9b41513bb3e1ab39f083e",
+    "mtime": 1794261352.9068613,
+    "seen": 1794261411.3609078,
+    "ast_hash": "29bc2e9c7c52c8a543189971dd8c4bec",
     "semantic_hash": ""
   },
   ".spectral.yml": {
@@ -6210,32 +6210,32 @@
     "semantic_hash": ""
   },
   "docs/architecture/README.md": {
-    "mtime": 1794260253.5796304,
-    "seen": 1794260393.2984204,
+    "mtime": 1794260889.422863,
+    "seen": 1794261048.2139468,
     "ast_hash": "b0194d20364158f1b7b1a7e19025633f",
     "semantic_hash": ""
   },
   "docs/architecture/event-flows.md": {
-    "mtime": 1794260253.584087,
-    "seen": 1794260393.298422,
+    "mtime": 1794260889.4266486,
+    "seen": 1794261048.213953,
     "ast_hash": "b360cd3fb82c124972daa90fec58eafd",
     "semantic_hash": ""
   },
   "docs/architecture/infrastructure.md": {
-    "mtime": 1794260253.5878434,
-    "seen": 1794260393.2984233,
+    "mtime": 1794260889.431445,
+    "seen": 1794261048.213957,
     "ast_hash": "fb121825089201b4d138f6fe7f3e9413",
     "semantic_hash": ""
   },
   "docs/architecture/recommendations.md": {
-    "mtime": 1794260253.5917566,
-    "seen": 1794260393.2984254,
+    "mtime": 1794260889.4347808,
+    "seen": 1794261048.2139618,
     "ast_hash": "893f5c44f92b08f751647abac15b68a9",
     "semantic_hash": ""
   },
   "docs/architecture/services.md": {
-    "mtime": 1794260253.594399,
-    "seen": 1794260393.2984273,
+    "mtime": 1794260889.4386022,
+    "seen": 1794261048.2139654,
     "ast_hash": "20b962e21fa63f7347c1a0be409a3b01",
     "semantic_hash": ""
   },

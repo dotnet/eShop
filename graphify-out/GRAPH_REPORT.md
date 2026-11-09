@@ -1,7 +1,7 @@
 # Graph Report - AI-Immersion-eShop  (2026-11-09)
 
 ## Corpus Check
-- 847 files · ~421,655 words
+- 847 files · ~421,679 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 162 file(s) not represented in the graph (top: .woff2 62, .css 31, .ttf 11)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `11644f87`
+- Built from commit: `4afc8fab`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -471,20 +471,20 @@
 6. `CatalogItem` - 34 edges
 7. `UpdateBasketRequest` - 32 edges
 8. `ISettingsService` - 31 edges
-9. `LoginViewModel` - 30 edges
-10. `OrderingContext` - 30 edges
+9. `OrderingContext` - 30 edges
+10. `LoginViewModel` - 30 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Windows` --references--> `Location`  [INFERRED]
-  docs/copilot-setup.md → src/ClientApp/Models/Location/Location.cs
-- `identity-api (`src/Identity.API`)` --references--> `ApplicationUser`  [INFERRED]
-  docs/architecture/services.md → src/Identity.API/Models/ApplicationUser.cs
 - `13. Replace polling grace-period worker` --references--> `GracePeriodManagerService`  [INFERRED]
   docs/architecture/recommendations.md → src/OrderProcessor/Services/GracePeriodManagerService.cs
 - `order-processor (`src/OrderProcessor`)` --references--> `GracePeriodManagerService`  [INFERRED]
   docs/architecture/services.md → src/OrderProcessor/Services/GracePeriodManagerService.cs
-- `14. Payment boundary` --references--> `CreateOrderCommand`  [INFERRED]
-  docs/architecture/recommendations.md → src/Ordering.API/Application/Commands/CreateOrderCommand.cs
+- `identity-api (`src/Identity.API`)` --references--> `ApplicationUser`  [INFERRED]
+  docs/architecture/services.md → src/Identity.API/Models/ApplicationUser.cs
+- `Other ideas` --references--> `OrderQueries`  [INFERRED]
+  docs/architecture/recommendations.md → src/Ordering.API/Application/Queries/OrderQueries.cs
+- `Windows` --references--> `Location`  [INFERRED]
+  docs/copilot-setup.md → src/ClientApp/Models/Location/Location.cs
 
 ## Import Cycles
 - None detected.
@@ -1703,7 +1703,7 @@ Nodes (3): route:/not-found, PageTitle, SectionContent
   .github/dependabot.yml · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **1517 isolated node(s):** `PATH`, `net10.0`, `Aspire.StackExchange.Redis`, `Grpc.AspNetCore`, `Microsoft.NET.Sdk.Web` (+1512 more)
+- **1517 isolated node(s):** `Descriptor`, `Parser`, `ProductId`, `Quantity`, `Descriptor` (+1512 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 2841 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **180 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -1711,12 +1711,12 @@ Nodes (3): route:/not-found, PageTitle, SectionContent
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Order` connect `Order` to `6. Domain events (Ordering, in-process)`, `BasketState.AddAsync`, `PaymentMethod`, `BasketItemExtensions.ToOrderItemDTO`, `OrderingContext`, `Ordering.API/GlobalUsings.cs`, `CreateOrderDraftCommand`, `IMediator`, `eShop.Identity.API.Models.ManageViewModels`, `PaymentMethod`, `OrderAggregateTest`, `ILogger`, `BasketClient`, `StackContext`, `INotification`?**
-  _High betweenness centrality (0.031) - this node is a cross-community bridge._
-- **What connects `PATH`, `net10.0`, `Aspire.StackExchange.Redis` to the rest of the system?**
+  _High betweenness centrality (0.037) - this node is a cross-community bridge._
+- **What connects `Descriptor`, `Parser`, `ProductId` to the rest of the system?**
   _1517 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `GeneratedCode` be split into smaller, more focused modules?**
   _Cohesion score 0.07126207126207126 - nodes in this community are weakly interconnected._
-- **Why does `Included scenarios` connect `package.json` to `PaymentMethod`?**
+- **Why does `OrderStatus` connect `PaymentMethod` to `Order`, `package.json`?**
   _High betweenness centrality (0.029) - this node is a cross-community bridge._
 - **Should `ExternalController` be split into smaller, more focused modules?**
   _Cohesion score 0.11612903225806452 - nodes in this community are weakly interconnected._

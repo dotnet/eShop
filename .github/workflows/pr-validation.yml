@@ -7,6 +7,9 @@ on:
       - 'src/ClientApp/**'
       - 'tests/ClientApp.UnitTests/**'
       - '.github/workflows/pr-validation-maui.yml'
+      - 'docs/**'
+      - 'img/**'
+      - 'product-research/**'
   push:
     branches:
       - main
@@ -15,6 +18,9 @@ on:
       - 'src/ClientApp/**'
       - 'tests/ClientApp.UnitTests/**'
       - '.github/workflows/pr-validation-maui.yml'
+      - 'docs/**'
+      - 'img/**'
+      - 'product-research/**'
 
 jobs:  
   test:
