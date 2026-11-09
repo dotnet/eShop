@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Promotions admin</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#f6f6f4}
+a{color:#141414}a:hover{color:#3d3d3d}
+</style>
+</helmet>
+<div style="min-height: 1040px; background: #f6f6f4; color: #141414; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; display: flex; flex-direction: column;">
+
+  <header style="height: 68px; background: #ffffff; border-bottom: 1px solid #e6e5e1; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; gap: 16px; flex-wrap: wrap;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span style="font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">AdventureWorks</span>
+      <span style="font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: #141414; color: #ffffff;">Admin</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #6b6b6b;">
+      <span style="width: 32px; height: 32px; border-radius: 999px; background: #ededea; color: #141414; display: flex; align-items: center; justify-content: center; font-weight: 600;">A</span>
+      <span>alice@adventureworks.com</span>
+    </div>
+  </header>
+
+  <div style="display: flex; flex-wrap: wrap; flex: 1;">
+    <nav aria-label="Admin" style="flex: 1 1 220px; max-width: 260px; padding: 28px 16px; display: flex; flex-direction: column; gap: 4px; box-sizing: border-box;">
+      <a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: #ffffff; box-shadow: 0 1px 2px rgba(20,20,20,0.06); text-decoration: none; font-weight: 600; font-size: 15px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
+        Promotions
+      </a>
+      <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; text-decoration: none; font-size: 15px; color: #3d3d3d;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9a3 3 0 0 0 0 6v4h18v-4a3 3 0 0 0 0-6V5H3Z"/><path d="M13 5v14" stroke-dasharray="2 2"/></svg>
+        Coupons
+      </a>
+      <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; text-decoration: none; font-size: 15px; color: #3d3d3d;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9Z"/></svg>
+        Marketing Copilot
+      </a>
+    </nav>
+
+    <main style="flex: 999 1 560px; min-width: 0; padding: 28px 32px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px;">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.02em;">Promotions</h1>
+          <p style="margin: 0; font-size: 15px; color: #6b6b6b;">Create, schedule and end campaigns. New promotions start as drafts until you publish them.</p>
+        </div>
+        <a href="Editor.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 999px; background: #141414; color: #ffffff; text-decoration: none; font-weight: 600; font-size: 15px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          New promotion
+        </a>
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+        <div role="tablist" aria-label="Filter by status" style="display: flex; gap: 6px; flex-wrap: wrap; background: #ededea; padding: 4px; border-radius: 999px;">
+          <sc-for list="{{tabs}}" as="tab" hint-placeholder-count="5">
+            <button type="button" role="tab" aria-selected="{{tab.selected}}" onClick="{{tab.pick}}" style="{{tab.style}}">{{tab.label}}<span style="{{tab.countStyle}}">{{tab.count}}</span></button>
+          </sc-for>
+        </div>
+        <label style="display: flex; align-items: center; gap: 8px; background: #ffffff; border: 1px solid #c9c8c3; border-radius: 999px; padding: 0 16px; min-height: 44px; min-width: 260px; font-size: 14px; color: #6b6b6b;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search promotions</span>
+          <input type="search" placeholder="Search by name" style="border: 0; outline: 0; font: inherit; color: #141414; background: transparent; flex: 1; min-width: 0;">
+        </label>
+      </div>
+
+      <div style="background: #ffffff; border: 1px solid #e6e5e1; border-radius: 12px; overflow-x: auto;">
+        <table style="width: 100%; min-width: 1060px; border-collapse: collapse; font-size: 14px;">
+          <thead>
+            <tr style="text-align: left; color: #6b6b6b; font-size: 13px; font-weight: 600;">
+              <th style="padding: 14px 20px; border-bottom: 1px solid #e6e5e1; font-weight: 600;">Promotion</th>
+              <th style="padding: 14px 12px; border-bottom: 1px solid #e6e5e1; font-weight: 600;">Rule</th>
+              <th style="padding: 14px 12px; border-bottom: 1px solid #e6e5e1; font-weight: 600;">Applies to</th>
+              <th style="padding: 14px 12px; border-bottom: 1px solid #e6e5e1; font-weight: 600;">Schedule</th>
+              <th style="padding: 14px 12px; border-bottom: 1px solid #e6e5e1; font-weight: 600;">Priority</th>
+              <th style="padding: 14px 12px; border-bottom: 1px solid #e6e5e1; font-weight: 600;">Options</th>
+              <th style="padding: 14px 12px; border-bottom: 1px solid #e6e5e1; font-weight: 600;">Status</th>
+              <th style="padding: 14px 20px; border-bottom: 1px solid #e6e5e1; font-weight: 600; text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{rows}}" as="row" hint-placeholder-count="6">
+              <tr>
+                <td style="padding: 16px 20px; border-bottom: 1px solid #ededea; vertical-align: top;">
+                  <a href="Detail.dc.html" style="font-weight: 600; text-decoration: none; font-size: 15px;">{{row.name}}</a>
+                  <div style="color: #6b6b6b; margin-top: 4px; font-size: 13px;">{{row.description}}</div>
+                </td>
+                <td style="padding: 16px 12px; border-bottom: 1px solid #ededea; vertical-align: top;">
+                  <span style="display: inline-block; font-weight: 700; font-size: 13px; padding: 3px 8px; border-radius: 8px; background: #141414; color: #ffffff;">{{row.badge}}</span>
+                  <div style="color: #6b6b6b; margin-top: 6px; font-size: 12px;">{{row.type}}</div>
+                </td>
+                <td style="padding: 16px 12px; border-bottom: 1px solid #ededea; vertical-align: top;">{{row.targets}}</td>
+                <td style="padding: 16px 12px; border-bottom: 1px solid #ededea; vertical-align: top; white-space: nowrap;">{{row.schedule}}</td>
+                <td style="padding: 16px 12px; border-bottom: 1px solid #ededea; vertical-align: top;">{{row.priority}}</td>
+                <td style="padding: 16px 12px; border-bottom: 1px solid #ededea; vertical-align: top; color: #3d3d3d; font-size: 13px;">{{row.options}}</td>
+                <td style="padding: 16px 12px; border-bottom: 1px solid #ededea; vertical-align: top;">
+                  <span style="{{row.pillStyle}}">{{row.status}}</span>
+                </td>
+                <td style="padding: 12px 20px; border-bottom: 1px solid #ededea; vertical-align: top; text-align: right; white-space: nowrap;">
+                  <sc-if value="{{row.canPublish}}" hint-placeholder-val="{{false}}">
+                    <button type="button" style="min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid #141414; background: #141414; color: #ffffff; font: inherit; font-weight: 600; font-size: 13px; cursor: pointer;">Publish</button>
+                  </sc-if>
+                  <a href="{{row.manageHref}}" style="display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid #c9c8c3; text-decoration: none; font-weight: 600; font-size: 13px; margin-left: 6px;">Manage</a>
+                </td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+        <sc-if value="{{isEmpty}}" hint-placeholder-val="{{false}}">
+          <p style="margin: 0; padding: 40px 20px; text-align: center; color: #6b6b6b;">No promotions with this status.</p>
+        </sc-if>
+      </div>
+
+      <p style="margin: 0; font-size: 13px; color: #6b6b6b;">Status is calculated from the schedule: published promotions show as Scheduled until they start, Active while running, and Expired after they end. Coupon-only promotions never appear on the storefront.</p>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1040}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { filter: 'All' };
+  }
+  renderVals() {
+    const pill = {
+      Active: 'background:#eaf5ec;color:#1f7a34;',
+      Scheduled: 'background:#e7eefc;color:#1d4ed8;',
+      Draft: 'background:#ededea;color:#3d3d3d;',
+      Expired: 'background:#f6f6f4;color:#6b6b6b;border:1px solid #e6e5e1;'
+    };
+    const base = 'display:inline-block;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;';
+    const all = [
+      { name: 'Winter Jackets Event', description: '15% off every jacket', badge: '-15%', type: 'Percent off', targets: 'Type: Jackets', schedule: 'Nov 1 – Nov 30', priority: 5, options: 'Not stackable', status: 'Active' },
+      { name: 'Buy 2 Get 1 Footwear', description: 'Third pair free on Daybird', badge: 'Buy 2 Get 1', type: 'Buy X get Y', targets: 'Brand: Daybird', schedule: 'Nov 3 – Nov 20', priority: 8, options: 'Not stackable', status: 'Active' },
+      { name: '$10 off orders over $150', description: 'Order-level reward', badge: '$10 off', type: 'Amount off order', targets: 'All products', schedule: 'Nov 1 – Dec 31', priority: 0, options: 'Stackable', status: 'Active' },
+      { name: 'FALL10 coupon offer', description: '10% off with code FALL10', badge: '-10%', type: 'Percent off', targets: 'All products', schedule: 'Nov 1 – Nov 16', priority: 1, options: 'Stackable · Coupon only', status: 'Active' },
+      { name: 'Fall Trekking Sale', description: '20% off all trekking gear', badge: '-20%', type: 'Percent off', targets: 'Type: Trekking', schedule: 'Nov 10 – Nov 16', priority: 10, options: 'Not stackable', status: 'Scheduled' },
+      { name: 'Cyber Week Climbing', description: '25% off climbing essentials', badge: '-25%', type: 'Percent off', targets: 'Type: Climbing', schedule: 'Nov 30 – Dec 6', priority: 10, options: 'Not stackable', status: 'Draft' },
+      { name: 'Back to School Bags', description: '20% off bags and packs', badge: '-20%', type: 'Percent off', targets: 'Type: Bags', schedule: 'Aug 15 – Sep 5', priority: 5, options: 'Not stackable', status: 'Expired' }
+    ];
+    const order = ['All', 'Active', 'Scheduled', 'Draft', 'Expired'];
+    const tabs = order.map((label) => {
+      const selected = this.state.filter === label;
+      return {
+        label,
+        selected,
+        count: label === 'All' ? all.length : all.filter((r) => r.status === label).length,
+        style: 'display:inline-flex;align-items:center;gap:10px;min-height:40px;padding:0 10px 0 16px;border-radius:999px;border:0;font:inherit;font-size:14px;font-weight:600;cursor:pointer;' + (selected ? 'background:#ffffff;color:#141414;box-shadow:0 1px 2px rgba(20,20,20,0.08);' : 'background:transparent;color:#3d3d3d;'),
+        countStyle: 'display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 8px;box-sizing:border-box;border-radius:999px;font-size:13px;font-weight:700;' + (selected ? 'background:#141414;color:#ffffff;' : 'background:#ffffff;color:#141414;'),
+        pick: () => this.setState({ filter: label })
+      };
+    });
+    const rows = all
+      .filter((r) => this.state.filter === 'All' || r.status === this.state.filter)
+      .map((r) => ({
+        ...r,
+        pillStyle: base + pill[r.status],
+        canPublish: r.status === 'Draft',
+        manageHref: r.status === 'Draft' || r.status === 'Scheduled' ? 'Editor.dc.html' : 'Detail.dc.html'
+      }));
+    return { tabs, rows, isEmpty: rows.length === 0 };
+  }
+}
+</script>
+</body>
+</html>
