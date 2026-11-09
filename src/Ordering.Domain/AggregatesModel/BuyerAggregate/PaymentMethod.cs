@@ -2,8 +2,10 @@
 
 namespace eShop.Ordering.Domain.AggregatesModel.BuyerAggregate;
 
-public class PaymentMethod : Entity
+public class PaymentMethod
 {
+    public int Id { get; private set; }
+
     [Required]
     private string _alias;
     [Required]

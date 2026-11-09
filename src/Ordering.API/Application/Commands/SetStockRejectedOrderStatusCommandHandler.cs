@@ -29,7 +29,7 @@ public class SetStockRejectedOrderStatusCommandHandler : IRequestHandler<SetStoc
 
         orderToUpdate.SetCancelledStatusWhenStockIsRejected(command.OrderStockItems);
 
-        return await _orderRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+        return await _orderRepository.SaveEntitiesAsync(cancellationToken);
     }
 }
 

@@ -48,7 +48,7 @@ public class CreateOrderCommandHandler
 
         _orderRepository.Add(order);
 
-        return await _orderRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+        return await _orderRepository.SaveEntitiesAsync(cancellationToken);
     }
 }
 

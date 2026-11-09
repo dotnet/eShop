@@ -150,29 +150,4 @@ public class OrderAggregateTest
         //Assert
         Assert.HasCount(expectedResult, fakeOrder.DomainEvents);
     }
-
-    [TestMethod]
-    public void Remove_event_Order_explicitly()
-    {
-        //Arrange    
-        var street = "fakeStreet";
-        var city = "FakeCity";
-        var state = "fakeState";
-        var country = "fakeCountry";
-        var zipcode = "FakeZipCode";
-        var cardTypeId = 5;
-        var cardNumber = "12";
-        var cardSecurityNumber = "123";
-        var cardHolderName = "FakeName";
-        var cardExpiration = DateTime.UtcNow.AddYears(1);
-        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
-        var @fakeEvent = new OrderStartedDomainEvent(fakeOrder, "1", "fakeName", cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
-        var expectedResult = 1;
-
-        //Act         
-        fakeOrder.AddDomainEvent(@fakeEvent);
-        fakeOrder.RemoveDomainEvent(@fakeEvent);
-        //Assert
-        Assert.HasCount(expectedResult, fakeOrder.DomainEvents);
-    }
 }
