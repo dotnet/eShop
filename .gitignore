@@ -496,8 +496,11 @@ $RECYCLE.BIN/
 /user.json
 .azure
 
-# graphify
-graphify-out/
+# graphify: only the semantic (LLM) cache is shared; everything else is rebuilt locally
+graphify-out/*
+!graphify-out/cache/
+graphify-out/cache/*
+!graphify-out/cache/semantic/
 *.graphify-bak
 
 # Claude Code personal settings

@@ -42,7 +42,7 @@ No separate Aspire workload or Visual Studio component is required; the AppHost 
 
 ### Automated setup
 
-`scripts/setup.sh` (macOS/Linux) installs the pinned .NET SDK, Aspire CLI and [graphify](https://github.com/safishamsi/graphify), builds the local graphify graph (`graphify-out/`, gitignored) and enables git hooks that keep it fresh, builds the solution and starts the app with `aspire start`. Docker (or Podman) must be installed and running. Use `--no-run` or `--skip-build` to skip those steps.
+`scripts/setup.sh` (macOS/Linux) installs the pinned .NET SDK, Aspire CLI and [graphify](https://github.com/safishamsi/graphify), builds the local graphify graph (including the shared semantic extraction in `graphify-out/cache/semantic/`) and enables git hooks that keep it fresh, builds the solution and starts the app with `aspire start`. Docker (or Podman) must be installed and running. Use `--no-run` or `--skip-build` to skip those steps.
 
 ### Running the solution
 
