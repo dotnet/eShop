@@ -1,0 +1,54 @@
+description: >
+  Default data plus alice's order history (one shipped, one cancelled order), a saved Visa
+  payment method and two items in her basket. bob has no orders and an empty basket.
+extends: default
+postgres:
+  orderingdb:
+    - table: ordering.buyers
+      rows:
+        - { Id: 1, IdentityGuid: a11ce000-0000-4000-8000-000000000001, Name: Alice }
+    - table: ordering.paymentmethods
+      rows:
+        - Id: 1
+          BuyerId: 1
+          CardTypeId: 2
+          Alias: Payment Method on 2025-01-15
+          CardHolderName: Alice Smith
+          CardNumber: XXXXXXXXXXXX1881
+          Expiration: 2030-12-31T00:00:00Z
+    - table: ordering.orders
+      rows:
+        - Id: 1
+          BuyerId: 1
+          PaymentMethodId: 1
+          OrderDate: 2025-01-15T10:30:00Z
+          OrderStatus: Shipped
+          Description: null
+          Address_Street: 15703 NE 61st Ct
+          Address_City: Redmond
+          Address_State: WA
+          Address_Country: U.S.
+          Address_ZipCode: "98052"
+        - Id: 2
+          BuyerId: 1
+          PaymentMethodId: 1
+          OrderDate: 2025-02-01T08:00:00Z
+          OrderStatus: Cancelled
+          Description: The order was cancelled.
+          Address_Street: 15703 NE 61st Ct
+          Address_City: Redmond
+          Address_State: WA
+          Address_Country: U.S.
+          Address_ZipCode: "98052"
+    - table: ordering.orderItems
+      rows:
+        - { Id: 1, OrderId: 1, ProductId: 1, ProductName: Wanderer Black Hiking Boots, UnitPrice: 109.99, Discount: 0, Units: 1, PictureUrl: null }
+        - { Id: 2, OrderId: 1, ProductId: 3, ProductName: Alpine Fusion Goggles, UnitPrice: 79.99, Discount: 0, Units: 2, PictureUrl: null }
+        - { Id: 3, OrderId: 2, ProductId: 5, ProductName: Blizzard Rider Snowboard, UnitPrice: 299.99, Discount: 0, Units: 1, PictureUrl: null }
+redis:
+  - key: /basket/a11ce000-0000-4000-8000-000000000001
+    json:
+      BuyerId: a11ce000-0000-4000-8000-000000000001
+      Items:
+        - { Id: 0d8a8a3f-9a8e-4d55-9c4f-000000000001, ProductId: 2, ProductName: Summit Pro Harness, UnitPrice: 89.99, OldUnitPrice: 0, Quantity: 1, PictureUrl: "" }
+        - { Id: 0d8a8a3f-9a8e-4d55-9c4f-000000000002, ProductId: 4, ProductName: Expedition Backpack, UnitPrice: 129.99, OldUnitPrice: 0, Quantity: 2, PictureUrl: "" }

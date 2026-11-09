@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Version together with Aspire -->
+    <PackageVersion Include="Aspire.Hosting.Docker" Version="13.6.0" />
     <PackageVersion Include="Aspire.Hosting.Dotnet" Version="13.6.0-preview.1.26479.8" />
     <PackageVersion Include="Aspire.Hosting.Azure.AppContainers" Version="13.6.0" />
     <PackageVersion Include="Aspire.Hosting.Foundry" Version="13.6.0-preview.1.26479.8" />

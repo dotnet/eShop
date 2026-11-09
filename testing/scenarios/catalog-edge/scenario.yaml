@@ -1,0 +1,62 @@
+description: >
+  Hand-crafted catalog edge cases: 14 "Edge" items (2 pages), a sold-out item, a 50-character name,
+  prices 0.01 and 9999.99, an empty description, an unused brand and an unused type. Plus users
+  alice and bob (password Pass123$), no orders, empty baskets.
+postgres:
+  catalogdb:
+    - sql: catalog.sql
+  identitydb:
+    - table: AspNetUsers
+      rows:
+        - Id: a11ce000-0000-4000-8000-000000000001
+          UserName: alice
+          NormalizedUserName: ALICE
+          Email: AliceSmith@email.com
+          NormalizedEmail: ALICESMITH@EMAIL.COM
+          EmailConfirmed: true
+          PasswordHash: AQAAAAIAAYagAAAAEA8l5zVyTkJ12JxTVsqtD9qlMFT8uoxwjycqv33/PHCbIDfXMczZEJpaTNVfz8CCuA==  # Pass123$
+          SecurityStamp: ALICESECURITYSTAMP0000000000001
+          ConcurrencyStamp: alicesecuritystamp0000000000001
+          PhoneNumber: "1234567890"
+          PhoneNumberConfirmed: false
+          TwoFactorEnabled: false
+          LockoutEnabled: true
+          AccessFailedCount: 0
+          CardHolderName: Alice Smith
+          CardNumber: XXXXXXXXXXXX1881
+          CardType: 1
+          SecurityNumber: "123"
+          Expiration: "12/24"
+          Name: Alice
+          LastName: Smith
+          Street: 15703 NE 61st Ct
+          City: Redmond
+          State: WA
+          Country: U.S.
+          ZipCode: "98052"
+        - Id: b0b00000-0000-4000-8000-000000000002
+          UserName: bob
+          NormalizedUserName: BOB
+          Email: BobSmith@email.com
+          NormalizedEmail: BOBSMITH@EMAIL.COM
+          EmailConfirmed: true
+          PasswordHash: AQAAAAIAAYagAAAAECIdG36ljEtotJesv1d5wlOCquXFsyqdrvG6eGBYV4WucMmxRKqtHLgaLO8lemcjzQ==  # Pass123$
+          SecurityStamp: BOBSECURITYSTAMP00000000000000002
+          ConcurrencyStamp: bobsecuritystamp00000000000000002
+          PhoneNumber: "1234567890"
+          PhoneNumberConfirmed: false
+          TwoFactorEnabled: false
+          LockoutEnabled: true
+          AccessFailedCount: 0
+          CardHolderName: Bob Smith
+          CardNumber: XXXXXXXXXXXX1881
+          CardType: 1
+          SecurityNumber: "456"
+          Expiration: "12/24"
+          Name: Bob
+          LastName: Smith
+          Street: 15703 NE 61st Ct
+          City: Redmond
+          State: WA
+          Country: U.S.
+          ZipCode: "98052"

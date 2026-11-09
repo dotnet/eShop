@@ -1,0 +1,10 @@
+description: >
+  Lookup data every scenario needs, loaded before any scenario. Not seeded by EF migrations
+  (OrderingContextSeed used to insert it), so it lives here.
+postgres:
+  orderingdb:
+    - table: ordering.cardtypes
+      rows:
+        - { Id: 1, Name: Amex }
+        - { Id: 2, Name: Visa }
+        - { Id: 3, Name: MasterCard }

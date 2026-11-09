@@ -38,6 +38,7 @@ No separate Aspire workload or Visual Studio component is required; the AppHost 
 - [Visual Studio](https://visualstudio.microsoft.com/vs/) with the `ASP.NET and web development` workload.
 - [Visual Studio Code with C# Dev Kit](https://code.visualstudio.com/docs/csharp/get-started) and the [Aspire extension](https://aspire.dev/get-started/aspire-vscode-extension/).
 - The [.NET MAUI workload](https://learn.microsoft.com/dotnet/maui/get-started/installation) if you want to run the client apps.
+- GitHub Copilot CLI, T3 Code and graphify: see [docs/copilot-setup.md](./docs/copilot-setup.md) (Windows and macOS).
 
 ### Automated setup
 
@@ -93,6 +94,16 @@ Run the Playwright browser journeys. Playwright starts the AppHost automatically
 npm ci
 npx playwright install chromium
 npm run test:e2e
+```
+
+#### Scenario-seeded test stack
+
+For reproducible runs, `testing/teststack` starts a Docker Compose stack generated from the AppHost (`aspire publish`). It seeds every database and Redis from a scenario file and resets in about a second. See [testing/README.md](testing/README.md).
+
+```bash
+testing/teststack up --scenario order-history
+npx playwright test -c playwright.teststack.config.ts
+testing/teststack load default
 ```
 
 ### Optional: AI Chatbot with Microsoft Foundry
