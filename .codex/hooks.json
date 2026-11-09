@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/armando.dollia/.local/bin/graphify hook-check"
+            "command": "graphify hook-check"
           }
         ]
       }

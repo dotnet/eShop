@@ -498,3 +498,8 @@ $RECYCLE.BIN/
 graphify-out/cache/
 graphify-out/.graphify_*
 graphify-out/20*/
+*.graphify-bak
+
+# Claude Code personal settings
+.claude/settings.local.json
+/settings.local.json

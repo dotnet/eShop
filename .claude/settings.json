@@ -6,7 +6,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/armando.dollia/.local/bin/graphify hook-guard search"
+            "command": "graphify hook-guard search",
+            "timeout": 10
           }
         ]
       },
@@ -15,7 +16,20 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/armando.dollia/.local/bin/graphify hook-guard read"
+            "command": "graphify hook-guard read",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "graphify hook-guard compact",
+            "timeout": 10
           }
         ]
       }
