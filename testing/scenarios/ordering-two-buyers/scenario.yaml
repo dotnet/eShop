@@ -1,0 +1,48 @@
+description: >
+  Default data plus orders for two buyers, used by the Ordering API and checkout specs. alice (buyer 1)
+  owns orders 1-6, one per status she can be in without the background pipeline touching them: two
+  Submitted orders dated 2099 (never past the grace period), StockConfirmed, Paid, Shipped and Cancelled.
+  bob (buyer 2) owns a Paid order 7 and a Shipped order 8. alice has a 2-item basket (2 x 89.99 + 129.99
+  = 309.97); bob's basket is empty.
+extends: default
+postgres:
+  orderingdb:
+    - table: ordering.buyers
+      rows:
+        - { Id: 1, IdentityGuid: a11ce000-0000-4000-8000-000000000001, Name: alice }
+        - { Id: 2, IdentityGuid: b0b00000-0000-4000-8000-000000000002, Name: bob }
+    - table: ordering.paymentmethods
+      rows:
+        - { Id: 1, BuyerId: 1, CardTypeId: 2, Alias: Alice Visa, CardHolderName: Alice Smith, CardNumber: XXXXXXXXXXXX1881, Expiration: 2030-12-31T00:00:00Z }
+        - { Id: 2, BuyerId: 2, CardTypeId: 3, Alias: Bob MasterCard, CardHolderName: Bob Smith, CardNumber: XXXXXXXXXXXX4444, Expiration: 2030-12-31T00:00:00Z }
+    - table: ordering.orders
+      rows:
+        # Dated in the future so OrderProcessor never moves them out of Submitted.
+        - { Id: 1, BuyerId: 1, PaymentMethodId: 1, OrderDate: 2099-01-01T10:00:00Z, OrderStatus: Submitted, Description: null, Address_Street: 1 Alice Way, Address_City: Redmond, Address_State: WA, Address_Country: U.S., Address_ZipCode: "98052" }
+        - { Id: 2, BuyerId: 1, PaymentMethodId: 1, OrderDate: 2099-01-02T10:00:00Z, OrderStatus: Submitted, Description: null, Address_Street: 1 Alice Way, Address_City: Redmond, Address_State: WA, Address_Country: U.S., Address_ZipCode: "98052" }
+        - { Id: 3, BuyerId: 1, PaymentMethodId: 1, OrderDate: 2025-05-03T10:00:00Z, OrderStatus: StockConfirmed, Description: All the items were available in stock., Address_Street: 1 Alice Way, Address_City: Redmond, Address_State: WA, Address_Country: U.S., Address_ZipCode: "98052" }
+        - { Id: 4, BuyerId: 1, PaymentMethodId: 1, OrderDate: 2025-05-04T10:00:00Z, OrderStatus: Paid, Description: Paid., Address_Street: 221 Baker Street, Address_City: Boston, Address_State: MA, Address_Country: U.S., Address_ZipCode: "02108" }
+        - { Id: 5, BuyerId: 1, PaymentMethodId: 1, OrderDate: 2025-05-05T10:00:00Z, OrderStatus: Shipped, Description: null, Address_Street: 1 Alice Way, Address_City: Redmond, Address_State: WA, Address_Country: U.S., Address_ZipCode: "98052" }
+        - { Id: 6, BuyerId: 1, PaymentMethodId: 1, OrderDate: 2025-05-06T10:00:00Z, OrderStatus: Cancelled, Description: The order was cancelled., Address_Street: 1 Alice Way, Address_City: Redmond, Address_State: WA, Address_Country: U.S., Address_ZipCode: "98052" }
+        - { Id: 7, BuyerId: 2, PaymentMethodId: 2, OrderDate: 2025-06-07T10:00:00Z, OrderStatus: Paid, Description: Paid., Address_Street: 2 Bob Road, Address_City: Portland, Address_State: OR, Address_Country: U.S., Address_ZipCode: "97201" }
+        - { Id: 8, BuyerId: 2, PaymentMethodId: 2, OrderDate: 2025-06-08T10:00:00Z, OrderStatus: Shipped, Description: null, Address_Street: 2 Bob Road, Address_City: Portland, Address_State: OR, Address_Country: U.S., Address_ZipCode: "97201" }
+    - table: ordering.orderItems
+      rows:
+        # 1: 109.99   2: 2 x 59.99 = 119.98   3: 149.99   4: 179.99 + 69.99 = 249.98
+        # 5: 299.99   6: 79.99   7 (bob): 3 x 199.99 = 599.97   8 (bob): 129.99
+        - { Id: 1, OrderId: 1, ProductId: 1, ProductName: Wanderer Black Hiking Boots, UnitPrice: 109.99, Discount: 0, Units: 1, PictureUrl: null }
+        - { Id: 2, OrderId: 2, ProductId: 10, ProductName: Trailblazer Bike Helmet, UnitPrice: 59.99, Discount: 0, Units: 2, PictureUrl: null }
+        - { Id: 3, OrderId: 3, ProductId: 7, ProductName: Explorer 45L Backpack, UnitPrice: 149.99, Discount: 0, Units: 1, PictureUrl: null }
+        - { Id: 4, OrderId: 4, ProductId: 8, ProductName: Frostbite Insulated Jacket, UnitPrice: 179.99, Discount: 0, Units: 1, PictureUrl: null }
+        - { Id: 5, OrderId: 4, ProductId: 6, ProductName: Carbon Fiber Trekking Poles, UnitPrice: 69.99, Discount: 0, Units: 1, PictureUrl: null }
+        - { Id: 6, OrderId: 5, ProductId: 5, ProductName: Blizzard Rider Snowboard, UnitPrice: 299.99, Discount: 0, Units: 1, PictureUrl: null }
+        - { Id: 7, OrderId: 6, ProductId: 3, ProductName: Alpine Fusion Goggles, UnitPrice: 79.99, Discount: 0, Units: 1, PictureUrl: null }
+        - { Id: 8, OrderId: 7, ProductId: 9, ProductName: VenturePro GPS Watch, UnitPrice: 199.99, Discount: 0, Units: 3, PictureUrl: null }
+        - { Id: 9, OrderId: 8, ProductId: 4, ProductName: Expedition Backpack, UnitPrice: 129.99, Discount: 0, Units: 1, PictureUrl: null }
+redis:
+  - key: /basket/a11ce000-0000-4000-8000-000000000001
+    json:
+      BuyerId: a11ce000-0000-4000-8000-000000000001
+      Items:
+        - { Id: 0d8a8a3f-9a8e-4d55-9c4f-000000000101, ProductId: 2, ProductName: Summit Pro Harness, UnitPrice: 89.99, OldUnitPrice: 0, Quantity: 2, PictureUrl: "" }
+        - { Id: 0d8a8a3f-9a8e-4d55-9c4f-000000000102, ProductId: 4, ProductName: Expedition Backpack, UnitPrice: 129.99, OldUnitPrice: 0, Quantity: 1, PictureUrl: "" }

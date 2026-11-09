@@ -142,6 +142,9 @@ if (isTestStack)
         ["IdentityUrl"] = TestStack.IdentityUrl,
         ["CallBackUrl"] = TestStack.WebhooksClientUrl,
     });
+    // Webhooks.API calls the client back container-to-container, so it must not advertise the host-only localhost URL.
+    webhooksClient.WithEnvironment("WebhookClientOptions__SelfUrl",
+        ReferenceExpression.Create($"{webhooksClient.GetEndpoint("http")}/"));
 }
 
 builder.Build().Run();

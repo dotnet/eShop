@@ -442,6 +442,7 @@ services:
       WEBHOOKS_API_HTTPS: "https://webhooks-api:${WEBHOOKS_API_PORT}"
       IdentityUrl: "http://host.docker.internal:18081"
       CallBackUrl: "http://localhost:18086"
+      WebhookClientOptions__SelfUrl: "http://webhooksclient:${WEBHOOKSCLIENT_PORT}/"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://teststack-dashboard:18889"
       OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
       OTEL_SERVICE_NAME: "webhooksclient"
