@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Rebuild the local graphify graph in the background. graphify-out/ is gitignored,
+# so nothing is staged or committed. Never blocks git.
+command -v graphify >/dev/null 2>&1 || exit 0
+cd "$(git rev-parse --show-toplevel)" || exit 0
+( graphify update . >/dev/null 2>&1 & ) >/dev/null 2>&1
+exit 0

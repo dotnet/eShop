@@ -497,9 +497,7 @@ $RECYCLE.BIN/
 .azure
 
 # graphify
-graphify-out/cache/
-graphify-out/.graphify_*
-graphify-out/20*/
+graphify-out/
 *.graphify-bak
 
 # Claude Code personal settings

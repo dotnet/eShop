@@ -67,9 +67,9 @@ have graphify || { echo "ERROR: graphify not on PATH after install" >&2; exit 1;
 graphify claude install >/dev/null
 graphify codex install >/dev/null
 git config core.hooksPath .githooks
-chmod +x .githooks/pre-commit
+chmod +x .githooks/*
 graphify update .
-echo "graphify ready; pre-commit hook active (core.hooksPath=.githooks)"
+echo "graphify ready; local graph auto-refreshes after commit/merge/checkout (core.hooksPath=.githooks)"
 
 # --- Build ---
 if [ "$BUILD" = 1 ]; then
