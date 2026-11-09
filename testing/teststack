@@ -1,0 +1,239 @@
+#!/usr/bin/env bash
+# eShop test stack: a reproducible, scenario-seeded Docker Compose deployment generated from the AppHost.
+# See testing/README.md. Machine-readable results go to stdout as one JSON line; logs go to stderr.
+set -euo pipefail
+
+CALLER_CWD="$PWD"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+export PATH="$HOME/.dotnet:$HOME/.aspire/bin:$PATH"
+
+PROJECT="eshop-teststack"
+COMPOSE_DIR="deploy/teststack"
+COMPOSE_FILE="$COMPOSE_DIR/docker-compose.yaml"
+STATE_DIR="artifacts/teststack"
+ENV_FILE="$STATE_DIR/.env.teststack"
+LOADER_PROJECT="testing/eShop.TestStack/eShop.TestStack.csproj"
+LOADER_DLL="artifacts/bin/eShop.TestStack/release/teststack.dll"
+APPHOST="src/eShop.AppHost/eShop.AppHost.csproj"
+DOCKER="${TESTSTACK_DOCKER:-docker}"
+
+# Fixed, test-only credentials. The stack only listens on localhost.
+export Parameters__postgres_password="${TESTSTACK_POSTGRES_PASSWORD:-teststack-postgres}"
+export Parameters__redis_password="${TESTSTACK_REDIS_PASSWORD:-teststack-redis}"
+export Parameters__eventbus_password="${TESTSTACK_EVENTBUS_PASSWORD:-teststack-rabbit}"
+
+log() { printf '[teststack] %s\n' "$*" >&2; }
+fail() { log "error: $1"; printf '{"ok":false,"command":"%s","error":"%s"}\n' "${COMMAND:-}" "${1//\"/\\\"}"; exit "${2:-1}"; }
+
+usage() {
+  cat >&2 <<'EOF'
+Usage: testing/teststack <command> [options]
+
+Lifecycle
+  up [--scenario <name|path>] [--timeout <s>]   Build if needed, start the stack, wait, load the scenario (default: "default")
+  down                                          Stop and remove all containers and data
+  build [--force]                               Build service images (dotnet publish container support) and the loader, only when sources changed
+
+State (all wait for health first)
+  load <name|path> [--hard] [--timeout <s>]     Clear all state and load a scenario (base layer first)
+  reset [--hard] [--timeout <s>]                Clear all state and load only the base layer
+  wait [--timeout <s>]                          Block until every service is ready (migrations done, consumers attached)
+  status                                        One-shot readiness report
+
+Authoring
+  validate [<name|path>...]                     Parse and resolve scenarios without a running stack
+  hash-password <password>                      Produce an ASP.NET Identity V3 hash for AspNetUsers.PasswordHash
+
+Generated compose file
+  publish [--check]                             Regenerate deploy/teststack from the AppHost; --check fails on drift
+
+Other
+  logs [service...]                             docker compose logs (passes through extra args)
+  compose <args...>                             Run docker compose against the stack
+
+Exit codes: 0 ok, 1 error, 2 not ready (timeout), 3 invalid scenario, 64 usage.
+EOF
+}
+
+compose() { "$DOCKER" compose -p "$PROJECT" -f "$COMPOSE_FILE" --env-file "$ENV_FILE" "$@"; }
+
+require_docker() {
+  command -v "$DOCKER" >/dev/null 2>&1 || fail "'$DOCKER' not found. Install Docker (or set TESTSTACK_DOCKER)."
+  "$DOCKER" info >/dev/null 2>&1 || fail "'$DOCKER' is installed but the daemon is not reachable."
+}
+
+# Content hash of everything that affects the given paths (tracked + untracked, honoring .gitignore).
+content_hash() {
+  git ls-files -co --exclude-standard -- "$@" \
+    | grep -Ev '^src/(ClientApp|HybridApp|WebAppComponents/wwwroot/images)/' \
+    | sort | git hash-object --stdin-paths | git hash-object --stdin
+}
+
+images_hash() { content_hash src Directory.Build.props Directory.Build.targets Directory.Packages.props global.json nuget.config; }
+loader_hash() { content_hash testing/eShop.TestStack testing/Directory.Packages.props Directory.Build.props global.json; }
+
+build_loader() {
+  local force="${1:-}" stamp="$STATE_DIR/loader.stamp" hash
+  hash="$(loader_hash)"
+  if [[ -z "$force" && -f "$LOADER_DLL" && -f "$stamp" && "$(cat "$stamp")" == "$hash" ]]; then return; fi
+  log "building loader"
+  mkdir -p "$STATE_DIR"
+  dotnet build "$LOADER_PROJECT" -c Release --nologo -v q -clp:ErrorsOnly >&2 || fail "loader build failed"
+  echo "$hash" > "$stamp"
+}
+
+images_present() {
+  [[ -f "$ENV_FILE" ]] || return 1
+  local image
+  while IFS= read -r image; do
+    [[ -n "$image" ]] || return 1
+    "$DOCKER" image inspect "$image" >/dev/null 2>&1 || return 1
+  done < <(sed -n 's/^[A-Z_]*_IMAGE=//p' "$ENV_FILE")
+}
+
+set_env() { # set_env KEY VALUE: replace or append in $ENV_FILE
+  local key="$1" value="$2" tmp
+  tmp="$(mktemp)"
+  grep -v "^${key}=" "$ENV_FILE" > "$tmp" || true
+  printf '%s=%s\n' "$key" "$value" >> "$tmp"
+  mv "$tmp" "$ENV_FILE"
+}
+
+build_images() {
+  local force="${1:-}" stamp="$STATE_DIR/images.stamp" hash out generated key value
+  hash="$(images_hash)"
+  if [[ -z "$force" && -f "$stamp" && "$(cat "$stamp")" == "$hash" ]] && images_present; then
+    log "images up to date"; return
+  fi
+  require_docker
+  log "building service images via 'aspire do prepare-teststack' (dotnet publish container support)"
+  out="$STATE_DIR/prepare"
+  rm -rf "$out"; mkdir -p "$out"
+  TestStack=true aspire do prepare-teststack --apphost "$APPHOST" -e teststack -o "$out" --non-interactive >&2 \
+    || fail "aspire do prepare-teststack failed"
+
+  generated="$(find "$out" -maxdepth 2 -name '.env.*' -type f | head -n1)"
+  [[ -n "$generated" ]] || generated="$out/.env"
+  [[ -f "$generated" ]] || fail "prepare-teststack did not produce an env file in $out"
+  cp "$generated" "$ENV_FILE"
+
+  # The build step tags images '<name>:latest'; the deploy tag in the env file is only applied by
+  # a push/deploy step. Pin a stable local tag so compose never resolves an unrelated ':latest'.
+  local key image name
+  while IFS='=' read -r key image; do
+    name="${image%%:*}"
+    "$DOCKER" tag "$name:latest" "$name:teststack" || fail "built image $name:latest not found"
+    set_env "$key" "$name:teststack"
+  done < <(grep '^[A-Z_]*_IMAGE=' "$ENV_FILE")
+
+  # Parameters are secret and may be left blank by prepare; fill from the fixed test values.
+  for key in POSTGRES_PASSWORD:postgres_password REDIS_PASSWORD:redis_password EVENTBUS_PASSWORD:eventbus_password; do
+    value="$(sed -n "s/^${key%%:*}=//p" "$ENV_FILE")"
+    if [[ -z "$value" ]]; then
+      local var="Parameters__${key#*:}"
+      set_env "${key%%:*}" "${!var}"
+    fi
+  done
+  while IFS= read -r key; do
+    [[ -n "$(sed -n "s/^${key}=//p" "$ENV_FILE")" ]] || fail "$ENV_FILE has no value for $key after prepare-teststack"
+  done < <(sed -n 's/^\([A-Z_]*\)=.*/\1/p' "$COMPOSE_DIR/.env")
+
+  images_present || fail "images listed in $ENV_FILE are missing after the build"
+  echo "$hash" > "$stamp"
+}
+
+loader() {
+  build_loader
+  dotnet "$LOADER_DLL" "$@" --root "$ROOT"
+}
+
+# Resolve a scenario argument that is a path relative to the caller's cwd; names pass through.
+scenario_arg() {
+  local s="$1"
+  if [[ "$s" == */* || "$s" == .* || -e "$CALLER_CWD/$s" && ! -e "testing/scenarios/$s" ]]; then
+    (cd "$CALLER_CWD" && realpath "$s")
+  else
+    printf '%s' "$s"
+  fi
+}
+
+publish() {
+  local check="${1:-}" target="$COMPOSE_DIR"
+  if [[ "$check" == "--check" ]]; then target="$(mktemp -d)"; fi
+  log "publishing compose stack from the AppHost to $target"
+  TestStack=true aspire publish --apphost "$APPHOST" -o "$target" --non-interactive >&2 || fail "aspire publish failed"
+  if [[ "$check" == "--check" ]]; then
+    if diff -ru "$COMPOSE_DIR" "$target" >&2; then
+      rm -rf "$target"
+      echo '{"ok":true,"command":"publish","check":"clean"}'
+    else
+      rm -rf "$target"
+      fail "deploy/teststack is out of date with the AppHost. Run 'testing/teststack publish' and commit the result."
+    fi
+  else
+    echo '{"ok":true,"command":"publish","output":"'"$target"'"}'
+  fi
+}
+
+COMMAND="${1:-}"
+[[ -n "$COMMAND" ]] || { usage; exit 64; }
+shift
+
+case "$COMMAND" in
+  build)
+    force=""; [[ "${1:-}" == "--force" ]] && force=1
+    build_loader "$force"
+    build_images "$force"
+    echo '{"ok":true,"command":"build"}'
+    ;;
+  up)
+    scenario="default"; extra=()
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --scenario) scenario="$(scenario_arg "${2:?--scenario requires a value}")"; shift 2 ;;
+        *) extra+=("$1"); shift ;;
+      esac
+    done
+    require_docker
+    build_loader
+    build_images
+    log "starting stack"
+    compose up -d --remove-orphans >&2 || fail "docker compose up failed"
+    loader load "$scenario" ${extra[@]+"${extra[@]}"}
+    ;;
+  down)
+    require_docker
+    if [[ -f "$ENV_FILE" ]]; then compose down -v --remove-orphans >&2
+    else "$DOCKER" compose -p "$PROJECT" down -v --remove-orphans >&2; fi
+    echo '{"ok":true,"command":"down"}'
+    ;;
+  load)
+    [[ $# -ge 1 ]] || fail "Usage: load <scenario> [--hard] [--timeout <s>]" 64
+    s="$(scenario_arg "$1")"; shift
+    loader load "$s" "$@"
+    ;;
+  validate)
+    args=(); for a in "$@"; do if [[ "$a" == --* ]]; then args+=("$a"); else args+=("$(scenario_arg "$a")"); fi; done
+    loader validate ${args[@]+"${args[@]}"}
+    ;;
+  reset|wait|status|hash-password)
+    loader "$COMMAND" "$@"
+    ;;
+  publish)
+    publish "${1:-}"
+    ;;
+  logs)
+    require_docker; compose logs "$@"
+    ;;
+  compose)
+    require_docker; compose "$@"
+    ;;
+  -h|--help|help)
+    usage
+    ;;
+  *)
+    usage; exit 64
+    ;;
+esac

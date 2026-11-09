@@ -4,7 +4,18 @@ using eShop.AppHost;
 var builder = DistributedApplication.CreateBuilder(args);
 
 builder.AddForwardedHeaders();
-builder.AddAzureContainerAppEnvironment("aca");
+
+// TestStack=true swaps the Azure Container Apps environment for a Docker Compose environment used for
+// reproducible, scenario-driven test runs (see testing/README.md). Everything else in the model is shared.
+var isTestStack = TestStack.IsEnabled(builder.Configuration);
+if (isTestStack)
+{
+    builder.AddTestStackEnvironment();
+}
+else
+{
+    builder.AddAzureContainerAppEnvironment("aca");
+}
 
 var redis = builder.AddRedis("redis");
 var rabbitMq = builder.AddRabbitMQ("eventbus")
@@ -19,7 +30,7 @@ var identityDb = postgres.AddDatabase("identitydb");
 var orderDb = postgres.AddDatabase("orderingdb");
 var webhooksDb = postgres.AddDatabase("webhooksdb");
 
-var launchProfileName = ShouldUseHttpForEndpoints() ? "http" : "https";
+var launchProfileName = ShouldUseHttpForEndpoints() || isTestStack ? "http" : "https";
 
 // Services
 var identityApi = builder.AddDotnetProject("identity-api", "../Identity.API", o => o.LaunchProfileName = launchProfileName)
@@ -45,12 +56,12 @@ var orderingApi = builder.AddDotnetProject("ordering-api", "../Ordering.API")
     .WithHttpHealthCheck("/health")
     .WithEnvironment("Identity__Url", identityEndpoint);
 
-builder.AddDotnetProject("order-processor", "../OrderProcessor")
+var orderProcessor = builder.AddDotnetProject("order-processor", "../OrderProcessor")
     .WithReference(rabbitMq).WaitFor(rabbitMq)
     .WithReference(orderDb)
     .WaitFor(orderingApi); // wait for the orderingApi to be ready because that contains the EF migrations
     
-builder.AddDotnetProject("payment-processor", "../PaymentProcessor")
+var paymentProcessor = builder.AddDotnetProject("payment-processor", "../PaymentProcessor")
     .WithReference(rabbitMq).WaitFor(rabbitMq);
 
 var webHooksApi = builder.AddDotnetProject("webhooks-api", "../Webhooks.API")
@@ -59,7 +70,7 @@ var webHooksApi = builder.AddDotnetProject("webhooks-api", "../Webhooks.API")
     .WithEnvironment("Identity__Url", identityEndpoint);
 
 // Reverse proxies
-builder.AddYarp("mobile-bff")
+var mobileBff = builder.AddYarp("mobile-bff")
     .WithExternalHttpEndpoints()
     .ConfigureMobileBffRoutes(catalogApi, orderingApi, identityApi);
 
@@ -101,6 +112,37 @@ identityApi.WithEnvironment("BasketApiClient", basketApi.GetEndpoint("http"))
            .WithEnvironment("WebhooksApiClient", webHooksApi.GetEndpoint("http"))
            .WithEnvironment("WebhooksWebClient", webhooksClient.GetEndpoint(launchProfileName))
            .WithEnvironment("WebAppClient", webApp.GetEndpoint(launchProfileName));
+
+if (isTestStack)
+{
+    // Compose-only customizations: fixed host ports, browser-reachable URLs and the seeder-off switch.
+    postgres.WithTestStackService(TestStack.PostgresPort, 5432);
+    redis.WithTestStackService(TestStack.RedisPort, 6379);
+    rabbitMq.WithTestStackService(TestStack.RabbitMqPort, 5672);
+
+    identityApi.WithTestStackService(TestStack.IdentityApiPort, seeded: true, env: new()
+    {
+        ["WebAppClient"] = TestStack.WebAppUrl,
+        ["WebhooksWebClient"] = TestStack.WebhooksClientUrl,
+    });
+    catalogApi.WithTestStackService(TestStack.CatalogApiPort, seeded: true);
+    orderingApi.WithTestStackService(TestStack.OrderingApiPort, seeded: true, env: new() { ["Identity__Url"] = TestStack.IdentityUrl });
+    basketApi.WithTestStackService(TestStack.BasketApiPort, env: new() { ["Identity__Url"] = TestStack.IdentityUrl });
+    webHooksApi.WithTestStackService(TestStack.WebhooksApiPort, env: new() { ["Identity__Url"] = TestStack.IdentityUrl });
+    orderProcessor.WithTestStackService();
+    paymentProcessor.WithTestStackService();
+    mobileBff.WithTestStackService(TestStack.MobileBffPort);
+    webApp.WithTestStackService(TestStack.WebAppPort, env: new()
+    {
+        ["IdentityUrl"] = TestStack.IdentityUrl,
+        ["CallBackUrl"] = TestStack.WebAppUrl,
+    });
+    webhooksClient.WithTestStackService(TestStack.WebhooksClientPort, env: new()
+    {
+        ["IdentityUrl"] = TestStack.IdentityUrl,
+        ["CallBackUrl"] = TestStack.WebhooksClientUrl,
+    });
+}
 
 builder.Build().Run();
 

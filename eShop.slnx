@@ -31,6 +31,10 @@
     <Project Path="tests/eShop.AppHost.UnitTests/eShop.AppHost.UnitTests.csproj" />
     <Project Path="tests/ClientApp.UnitTests/ClientApp.UnitTests.csproj" />
   </Folder>
+  <Folder Name="/testing/">
+    <Project Path="testing/eShop.TestStack/eShop.TestStack.csproj" />
+    <Project Path="testing/eShop.TestStack.Tests/eShop.TestStack.Tests.csproj" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path="Directory.Packages.props" />

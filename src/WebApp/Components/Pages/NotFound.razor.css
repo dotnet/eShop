@@ -1,0 +1,12 @@
+.not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 2rem 0 4rem;
+}
+
+.not-found p {
+    color: var(--color-ink-2);
+    font-size: var(--text-lg);
+}

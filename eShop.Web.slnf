@@ -26,7 +26,9 @@
       "tests\\Ordering.FunctionalTests\\Ordering.FunctionalTests.csproj",
       "tests\\Ordering.UnitTests\\Ordering.UnitTests.csproj",
       "tests\\Webhooks.FunctionalTests\\Webhooks.FunctionalTests.csproj",
-      "tests\\eShop.AppHost.UnitTests\\eShop.AppHost.UnitTests.csproj"
+      "tests\\eShop.AppHost.UnitTests\\eShop.AppHost.UnitTests.csproj",
+      "testing\\eShop.TestStack\\eShop.TestStack.csproj",
+      "testing\\eShop.TestStack.Tests\\eShop.TestStack.Tests.csproj"
     ]
   }
 }
