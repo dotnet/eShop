@@ -103,7 +103,7 @@ Suggestions for what to change or add, grounded in the current code. Each item c
 ### 14. Payment boundary
 
 - **Evidence:** `PaymentProcessor` returns success/failure from a config flag; card data flows into Ordering (`CardNumber`, `CardSecurityNumber` on `CreateOrderCommand`).
-- **Do:** integrate a PSP (Stripe/Adyen) with tokenized payment methods so raw card data never touches eShop (PCI scope reduction), plus refunds as a compensating action for cancel-after-paid.
+- **Do:** integrate a PSP (Stripe/Adyen) with tokenized payment methods so raw card data never touches AI Immersion eShop (PCI scope reduction), plus refunds as a compensating action for cancel-after-paid.
 
 ### 15. Back-office capabilities
 

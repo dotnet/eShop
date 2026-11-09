@@ -1,6 +1,6 @@
-# eShop Architecture
+# AI Immersion eShop Architecture
 
-This folder documents the architecture of the eShop reference application as it exists in this repository today.
+This folder documents the architecture of the AI Immersion eShop reference application as it exists in this repository today.
 
 | Document | Contents |
 | --- | --- |
@@ -12,7 +12,7 @@ This folder documents the architecture of the eShop reference application as it 
 
 ## 1. System context
 
-eShop is a fictional online store selling outdoor gear. Shoppers browse the catalog, use an AI chatbot and semantic search, fill a basket, and check out. Orders move through validation, payment, and shipment asynchronously. Third parties can subscribe to webhooks for order and price events.
+AI Immersion eShop is a fictional online store selling outdoor gear. Shoppers browse the catalog, use an AI chatbot and semantic search, fill a basket, and check out. Orders move through validation, payment, and shipment asynchronously. Third parties can subscribe to webhooks for order and price events.
 
 ```mermaid
 flowchart LR
@@ -22,7 +22,7 @@ flowchart LR
     admin([Operator])
     ai[(Azure AI Foundry / OpenAI<br/>or Ollama)]
 
-    subgraph eShop[eShop system]
+    subgraph eShop[AI Immersion eShop system]
         direction TB
         web[WebApp - Blazor]
         bff[Mobile BFF - YARP]

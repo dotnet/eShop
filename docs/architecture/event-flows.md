@@ -1,6 +1,6 @@
 ﻿# Event Flows
 
-eShop services integrate asynchronously through RabbitMQ. This document lists every integration event and walks through the order-fulfilment saga.
+AI Immersion eShop services integrate asynchronously through RabbitMQ. This document lists every integration event and walks through the order-fulfilment saga.
 
 ## 1. Event bus mechanics
 
