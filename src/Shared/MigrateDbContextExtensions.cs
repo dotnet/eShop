@@ -25,8 +25,21 @@ internal static class MigrateDbContextExtensions
         where TDbSeeder : class, IDbSeeder<TContext>
     {
         services.AddScoped<IDbSeeder<TContext>, TDbSeeder>();
-        return services.AddMigration<TContext>((context, sp) => sp.GetRequiredService<IDbSeeder<TContext>>().SeedAsync(context));
+        return services.AddMigration<TContext>((context, sp) =>
+        {
+            // Seeding:Disabled=true keeps migrations but skips built-in seed data, so an external
+            // scenario loader can own all data (used by the Docker Compose test stack).
+            if (sp.GetRequiredService<IConfiguration>().GetValue<bool>(SeedingDisabledKey))
+            {
+                sp.GetRequiredService<ILogger<TContext>>().LogInformation("Seeding disabled by {Key}; skipping {Seeder}", SeedingDisabledKey, typeof(TDbSeeder).Name);
+                return Task.CompletedTask;
+            }
+
+            return sp.GetRequiredService<IDbSeeder<TContext>>().SeedAsync(context);
+        });
     }
+
+    public const string SeedingDisabledKey = "Seeding:Disabled";
 
     private static async Task MigrateDbContextAsync<TContext>(this IServiceProvider services, Func<TContext, IServiceProvider, Task> seeder) where TContext : DbContext
     {

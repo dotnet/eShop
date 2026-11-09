@@ -1,0 +1,110 @@
+description: >
+  Default data plus bob's order history covering every OrderStatus (Submitted, AwaitingValidation,
+  StockConfirmed, Paid, Shipped, Cancelled), a saved Visa payment method, and a Submitted order
+  dated in the past that OrderProcessor/PaymentProcessor advance to Paid within ~1-2 minutes.
+  alice has no orders.
+extends: default
+postgres:
+  orderingdb:
+    - table: ordering.buyers
+      rows:
+        - { Id: 1, IdentityGuid: b0b00000-0000-4000-8000-000000000002, Name: Bob }
+    - table: ordering.paymentmethods
+      rows:
+        - Id: 1
+          BuyerId: 1
+          CardTypeId: 2
+          Alias: Payment Method on 2025-03-01
+          CardHolderName: Bob Smith
+          CardNumber: XXXXXXXXXXXX1881
+          Expiration: 2030-12-31T00:00:00Z
+    - table: ordering.orders
+      rows:
+        # Order 1 is past the 1 minute grace period, so the next OrderProcessor poll (every 30 s) picks it up.
+        - Id: 1
+          BuyerId: 1
+          PaymentMethodId: 1
+          OrderDate: 2025-03-01T09:00:00Z
+          OrderStatus: Submitted
+          Description: null
+          Address_Street: 15703 NE 61st Ct
+          Address_City: Redmond
+          Address_State: WA
+          Address_Country: U.S.
+          Address_ZipCode: "98052"
+        - Id: 2
+          BuyerId: 1
+          PaymentMethodId: 1
+          OrderDate: 2025-03-05T14:15:00Z
+          OrderStatus: AwaitingValidation
+          Description: Your order is awaiting stock validation.
+          Address_Street: 742 Evergreen Terrace
+          Address_City: Springfield
+          Address_State: OR
+          Address_Country: U.S.
+          Address_ZipCode: "97477"
+        - Id: 3
+          BuyerId: 1
+          PaymentMethodId: 1
+          OrderDate: 2025-03-10T16:45:00Z
+          OrderStatus: StockConfirmed
+          Description: All the items were available in stock.
+          Address_Street: 1600 Pennsylvania Ave NW
+          Address_City: Washington
+          Address_State: DC
+          Address_Country: U.S.
+          Address_ZipCode: "20500"
+        - Id: 4
+          BuyerId: 1
+          PaymentMethodId: 1
+          OrderDate: 2025-03-20T11:30:00Z
+          OrderStatus: Paid
+          Description: The payment was performed at a simulated "American Bank checking bank account ending on XX35071"
+          Address_Street: 221 Baker Street
+          Address_City: Boston
+          Address_State: MA
+          Address_Country: U.S.
+          Address_ZipCode: "02108"
+        - Id: 5
+          BuyerId: 1
+          PaymentMethodId: 1
+          OrderDate: 2025-04-02T08:05:00Z
+          OrderStatus: Shipped
+          Description: null
+          Address_Street: 15703 NE 61st Ct
+          Address_City: Redmond
+          Address_State: WA
+          Address_Country: U.S.
+          Address_ZipCode: "98052"
+        - Id: 6
+          BuyerId: 1
+          PaymentMethodId: 1
+          OrderDate: 2025-04-15T19:20:00Z
+          OrderStatus: Cancelled
+          Description: The order was cancelled.
+          Address_Street: 500 Market St
+          Address_City: San Francisco
+          Address_State: CA
+          Address_Country: U.S.
+          Address_ZipCode: "94105"
+    - table: ordering.orderItems
+      rows:
+        # Order 1: 199.99 + 2 x 59.99 = 319.97
+        - { Id: 1, OrderId: 1, ProductId: 9, ProductName: VenturePro GPS Watch, UnitPrice: 199.99, Discount: 0, Units: 1, PictureUrl: null }
+        - { Id: 2, OrderId: 1, ProductId: 10, ProductName: Trailblazer Bike Helmet, UnitPrice: 59.99, Discount: 0, Units: 2, PictureUrl: null }
+        # Order 2: 2 x 69.99 + 79.99 = 219.97
+        - { Id: 3, OrderId: 2, ProductId: 6, ProductName: Carbon Fiber Trekking Poles, UnitPrice: 69.99, Discount: 0, Units: 2, PictureUrl: null }
+        - { Id: 4, OrderId: 2, ProductId: 3, ProductName: Alpine Fusion Goggles, UnitPrice: 79.99, Discount: 0, Units: 1, PictureUrl: null }
+        # Order 3: 149.99 + 129.99 + 2 x 89.99 = 459.96
+        - { Id: 5, OrderId: 3, ProductId: 7, ProductName: Explorer 45L Backpack, UnitPrice: 149.99, Discount: 0, Units: 1, PictureUrl: null }
+        - { Id: 6, OrderId: 3, ProductId: 4, ProductName: Expedition Backpack, UnitPrice: 129.99, Discount: 0, Units: 1, PictureUrl: null }
+        - { Id: 7, OrderId: 3, ProductId: 2, ProductName: Summit Pro Harness, UnitPrice: 89.99, Discount: 0, Units: 2, PictureUrl: null }
+        # Order 4: 179.99 + 109.99 = 289.98
+        - { Id: 8, OrderId: 4, ProductId: 8, ProductName: Frostbite Insulated Jacket, UnitPrice: 179.99, Discount: 0, Units: 1, PictureUrl: null }
+        - { Id: 9, OrderId: 4, ProductId: 1, ProductName: Wanderer Black Hiking Boots, UnitPrice: 109.99, Discount: 0, Units: 1, PictureUrl: null }
+        # Order 5: 299.99 + 3 x 59.99 = 479.96
+        - { Id: 10, OrderId: 5, ProductId: 5, ProductName: Blizzard Rider Snowboard, UnitPrice: 299.99, Discount: 0, Units: 1, PictureUrl: null }
+        - { Id: 11, OrderId: 5, ProductId: 10, ProductName: Trailblazer Bike Helmet, UnitPrice: 59.99, Discount: 0, Units: 3, PictureUrl: null }
+        # Order 6: 129.99 + 69.99 = 199.98
+        - { Id: 12, OrderId: 6, ProductId: 4, ProductName: Expedition Backpack, UnitPrice: 129.99, Discount: 0, Units: 1, PictureUrl: null }
+        - { Id: 13, OrderId: 6, ProductId: 6, ProductName: Carbon Fiber Trekking Poles, UnitPrice: 69.99, Discount: 0, Units: 1, PictureUrl: null }

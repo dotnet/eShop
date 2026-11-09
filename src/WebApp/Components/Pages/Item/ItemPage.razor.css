@@ -160,11 +160,6 @@
     text-underline-offset: 2px;
 }
 
-.item-notfound {
-    color: var(--color-ink-2);
-    font-size: var(--text-lg);
-}
-
 @media only screen and (max-width: 1024px) {
     .item-details {
         grid-template-columns: 1fr;

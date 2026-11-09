@@ -95,6 +95,16 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
+#### Scenario-seeded test stack
+
+For reproducible runs, `testing/teststack` starts a Docker Compose stack generated from the AppHost (`aspire publish`). It seeds every database and Redis from a scenario file and resets in about a second. See [testing/README.md](testing/README.md).
+
+```bash
+testing/teststack up --scenario order-history
+npx playwright test -c playwright.teststack.config.ts
+testing/teststack load default
+```
+
 ### Optional: AI Chatbot with Microsoft Foundry
 
 This option provisions a Microsoft Foundry resource during local development, so first authenticate to Azure and configure the subscription and location:
