@@ -80,7 +80,7 @@ and target effectively.
 ## What You Actually Get Back
 
 | You send | You get back |
-|---|---|
+| --- | --- |
 | Hashed email/phone + click ID + event data | Attribution: which ad/campaign drove the conversion |
 | Hashed customer lists | Custom Audiences / Lookalike Audiences / Customer Match segments |
 | — | **Not** raw per-user demographic or interest profiles |

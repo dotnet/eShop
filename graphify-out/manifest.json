@@ -5922,22 +5922,22 @@
     "semantic_hash": "6a47d64fcc136324ca395065a707ef76"
   },
   "AGENTS.md": {
-    "mtime": 1794253036.7456563,
-    "seen": 1794253042.910532,
-    "ast_hash": "f36539ecc9af68f33ebd72770ce4a19e",
+    "mtime": 1794253402.4336033,
+    "seen": 1794253413.436088,
+    "ast_hash": "aa65f3e906f9455fc4e245b0fa103aba",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1794253036.746298,
-    "seen": 1794253042.9105332,
-    "ast_hash": "67d88e9d0760c3ba54c75dfd9551c1c5",
+    "mtime": 1794253402.4663854,
+    "seen": 1794253413.436089,
+    "ast_hash": "c10fbfb70838ed5c0aadd1ecfd14ed04",
     "semantic_hash": ""
   },
   "GEMINI.md": {
-    "mtime": 1794243314.40386,
-    "seen": 1794253042.910534,
-    "ast_hash": "82efb97a359f5c7290bf2513d14686be",
-    "semantic_hash": "82efb97a359f5c7290bf2513d14686be"
+    "mtime": 1794253402.4923186,
+    "seen": 1794253413.43611,
+    "ast_hash": "3b79e08fac5b11cb4845c1201de57dd9",
+    "semantic_hash": ""
   },
   "scripts/setup.sh": {
     "mtime": 1794243532.8604865,
@@ -5946,9 +5946,9 @@
     "semantic_hash": "75f04fe6c7960603ea831247ab22c875"
   },
   "product-research/targeted-advertising-profiles.md": {
-    "mtime": 1794248921.4450433,
-    "seen": 1794253042.910537,
-    "ast_hash": "399fe89f8cfffeae62daac9253a7d81f",
+    "mtime": 1794253402.4121172,
+    "seen": 1794253413.4361558,
+    "ast_hash": "e659fec4a3f3dc9e0b19b791c30816ff",
     "semantic_hash": ""
   },
   "e2e/teststack/catalog-edge.spec.ts": {
@@ -6096,9 +6096,9 @@
     "semantic_hash": ""
   },
   "testing/README.md": {
-    "mtime": 1794253036.9484093,
-    "seen": 1794253042.91054,
-    "ast_hash": "5c404e9edf98aa82ef666f9e6dafde8f",
+    "mtime": 1794253402.4110708,
+    "seen": 1794253413.436225,
+    "ast_hash": "aa897ca94ad7a520a5e3f8fbe5698559",
     "semantic_hash": ""
   },
   "testing/scenarios/_base/scenario.yaml": {

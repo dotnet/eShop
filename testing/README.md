@@ -19,7 +19,7 @@ Requires Docker (or a compatible engine via `TESTSTACK_DOCKER`), the .NET SDK, a
 ## How the stack is produced
 
 | Piece | Source |
-|---|---|
+| --- | --- |
 | `deploy/teststack/docker-compose.yaml`, `.env` | **Generated** by `testing/teststack publish` (`TestStack=true aspire publish`). Never edit them by hand. |
 | Compose customizations (ports, HTTP-only, seeder switch, identity URL) | C# in `src/eShop.AppHost/TestStack.cs`, enabled by `TestStack=true` in `AppHost.cs` |
 | Service images | `aspire do prepare-teststack`, which uses the same `dotnet publish` container build as production |
@@ -41,7 +41,7 @@ On macOS without Docker Desktop, [colima](https://github.com/abiosoft/colima) wo
 ## Commands
 
 | Command | Description |
-|---|---|
+| --- | --- |
 | `up [--scenario <name\|path>] [--timeout s]` | Build if needed, `compose up -d`, wait, then load the scenario (default: `default`). |
 | `down` | `compose down -v`: removes containers and all data. |
 | `build [--force]` | Build the images and the loader, only when needed. |
@@ -65,7 +65,7 @@ When `ok` is false, the line also contains `error`. `status` and `wait` failures
 **Exit codes:**
 
 | Code | Meaning |
-|---|---|
+| --- | --- |
 | 0 | OK |
 | 1 | Error |
 | 2 | Not ready (timeout) |
@@ -122,7 +122,7 @@ Rows are inserted with `json_populate_recordset`, so column names must match the
 ### Included scenarios
 
 | Scenario | Contents |
-|---|---|
+| --- | --- |
 | `_base` | Lookup data, always loaded first: `ordering.cardtypes` (1 Amex, 2 Visa, 3 MasterCard). |
 | `empty` | Base only. |
 | `default` | What the built-in seeders used to produce: 101 catalog items, 13 brands, 8 types, plus users `alice` and `bob` (password `Pass123$`). |
@@ -134,7 +134,7 @@ Rows are inserted with `json_populate_recordset`, so column names must match the
 Fixed user IDs:
 
 | User | ID |
-|---|---|
+| --- | --- |
 | alice | `a11ce000-0000-4000-8000-000000000001` |
 | bob | `b0b00000-0000-4000-8000-000000000002` |
 
@@ -147,7 +147,7 @@ AI features (embeddings, chat) are off in this stack, so `Catalog.Embedding` sta
 ## Ports and URLs (HTTP only)
 
 | Service | Port |
-|---|---|
+| --- | --- |
 | WebApp | 18080 |
 | Identity | 18081 |
 | Catalog | 18082 |
