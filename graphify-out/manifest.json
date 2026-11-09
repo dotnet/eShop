@@ -72,10 +72,10 @@
     "semantic_hash": "043b85dceb215d9e37976184cf6727a0"
   },
   "eShop.slnx": {
-    "mtime": 1794242877.4106455,
-    "seen": 1794244256.029498,
-    "ast_hash": "979eed7e4a291c4d2b98f3029c01a232",
-    "semantic_hash": "979eed7e4a291c4d2b98f3029c01a232"
+    "mtime": 1794248300.6008394,
+    "seen": 1794248950.709704,
+    "ast_hash": "35006e8c7f253ab9c201c4f7d0648e8c",
+    "semantic_hash": ""
   },
   "global.json": {
     "mtime": 1794242877.4109113,
@@ -198,14 +198,14 @@
     "semantic_hash": "83c7552b39f563a721ed31e5885b8eb1"
   },
   "src/Catalog.API/Catalog.API.json": {
-    "mtime": 1794243581.3189902,
-    "seen": 1794244256.029512,
+    "mtime": 1794247598.026809,
+    "seen": 1794248950.710016,
     "ast_hash": "b881d575059e2e5ff627df930a63cc79",
     "semantic_hash": "b881d575059e2e5ff627df930a63cc79"
   },
   "src/Catalog.API/Catalog.API_v2.json": {
-    "mtime": 1794243581.325141,
-    "seen": 1794244256.029513,
+    "mtime": 1794247598.0325367,
+    "seen": 1794248950.710016,
     "ast_hash": "e12d524cd0ad504392b56fa8898ec7cc",
     "semantic_hash": "e12d524cd0ad504392b56fa8898ec7cc"
   },
@@ -3156,10 +3156,10 @@
     "semantic_hash": "c0d856e9e48142d607a19799cf4b8da5"
   },
   "src/Shared/MigrateDbContextExtensions.cs": {
-    "mtime": 1794242877.623348,
-    "seen": 1794244256.029802,
-    "ast_hash": "7b4440cae213d11d02a2eefd754607cf",
-    "semantic_hash": "7b4440cae213d11d02a2eefd754607cf"
+    "mtime": 1794247336.8478825,
+    "seen": 1794248950.716961,
+    "ast_hash": "68d20d7f79b772502186b6c2b3d362c2",
+    "semantic_hash": ""
   },
   "src/WebApp/Components/App.razor": {
     "mtime": 1794242877.6237633,
@@ -3924,10 +3924,10 @@
     "semantic_hash": "3d8f49f0d6ee99c704d2abe4d88de422"
   },
   "src/eShop.AppHost/AppHost.cs": {
-    "mtime": 1794242877.6681106,
-    "seen": 1794244256.029878,
-    "ast_hash": "850ddb47743e6990bb6dcc3e9356054e",
-    "semantic_hash": "850ddb47743e6990bb6dcc3e9356054e"
+    "mtime": 1794247229.6472642,
+    "seen": 1794248950.718868,
+    "ast_hash": "ce885a68a028f5cd6e659222c5020de2",
+    "semantic_hash": ""
   },
   "src/eShop.AppHost/Extensions.cs": {
     "mtime": 1794242877.6682658,
@@ -3948,10 +3948,10 @@
     "semantic_hash": "d132f7feb14dfb510b8196e1e143aafc"
   },
   "src/eShop.AppHost/eShop.AppHost.csproj": {
-    "mtime": 1794242877.668996,
-    "seen": 1794244256.02988,
-    "ast_hash": "4286f868fa5d29b739cca62cb8aa1840",
-    "semantic_hash": "4286f868fa5d29b739cca62cb8aa1840"
+    "mtime": 1794247193.7250447,
+    "seen": 1794248950.7189078,
+    "ast_hash": "ff980d574e2f7ac91670ffc4c8aa018b",
+    "semantic_hash": ""
   },
   "src/eShop.ServiceDefaults/AuthenticationExtensions.cs": {
     "mtime": 1794242877.6692593,
@@ -4674,10 +4674,10 @@
     "semantic_hash": "301ee5b7e7f21c9c38ce0a2e145490ea"
   },
   ".github/workflows/pr-validation.yml": {
-    "mtime": 1794242877.4058604,
-    "seen": 1794244256.029953,
-    "ast_hash": "c9c67eb0ac503f8d0b2cb2326a51239a",
-    "semantic_hash": "c9c67eb0ac503f8d0b2cb2326a51239a"
+    "mtime": 1794248323.1140242,
+    "seen": 1794248950.7205582,
+    "ast_hash": "67d4bfc8731a6dabb497bea2683fee9a",
+    "semantic_hash": ""
   },
   ".spectral.yml": {
     "mtime": 1794242877.4067588,
@@ -4698,10 +4698,10 @@
     "semantic_hash": "41140dae959072f07f7b9bd6a97de042"
   },
   "README.md": {
-    "mtime": 1794243587.6357286,
-    "seen": 1794244256.0299578,
-    "ast_hash": "a7ea145d43b51d7ac91465fb5f18e600",
-    "semantic_hash": "a7ea145d43b51d7ac91465fb5f18e600"
+    "mtime": 1794248365.660936,
+    "seen": 1794248950.720622,
+    "ast_hash": "bb6b1320c86eac4ee60be581722c8bf7",
+    "semantic_hash": ""
   },
   "ci.yml": {
     "mtime": 1794242877.4094987,
@@ -5944,5 +5944,155 @@
     "seen": 1794244256.029501,
     "ast_hash": "75f04fe6c7960603ea831247ab22c875",
     "semantic_hash": "75f04fe6c7960603ea831247ab22c875"
+  },
+  "playwright.teststack.config.ts": {
+    "mtime": 1794248322.6535428,
+    "seen": 1794248950.709737,
+    "ast_hash": "079327274d3a03030f45ed524675c936",
+    "semantic_hash": ""
+  },
+  "src/eShop.AppHost/TestStack.cs": {
+    "mtime": 1794247297.6722536,
+    "seen": 1794248950.7188952,
+    "ast_hash": "fdae186451a699175a9c397021ee104f",
+    "semantic_hash": ""
+  },
+  "testing/eShop.TestStack.Tests/GlobalUsings.cs": {
+    "mtime": 1794248308.7214441,
+    "seen": 1794248950.719008,
+    "ast_hash": "e983409d49f189e5084aca38b38c9fb0",
+    "semantic_hash": ""
+  },
+  "testing/eShop.TestStack.Tests/PasswordsTests.cs": {
+    "mtime": 1794248300.0916371,
+    "seen": 1794248950.719009,
+    "ast_hash": "13158f34bba176c384dd8fbfbb3b723c",
+    "semantic_hash": ""
+  },
+  "testing/eShop.TestStack.Tests/ScenarioParserTests.cs": {
+    "mtime": 1794248300.0924945,
+    "seen": 1794248950.71901,
+    "ast_hash": "fbeefa88ab263c5185cf95b199a8a984",
+    "semantic_hash": ""
+  },
+  "testing/eShop.TestStack.Tests/eShop.TestStack.Tests.csproj": {
+    "mtime": 1794248284.444555,
+    "seen": 1794248950.719011,
+    "ast_hash": "dd022daecfd82032f6975b3d4d4e8f45",
+    "semantic_hash": ""
+  },
+  "testing/eShop.TestStack/Commands.cs": {
+    "mtime": 1794248085.4063213,
+    "seen": 1794248950.719011,
+    "ast_hash": "425c82afba14d44f11d35f9b580c38bb",
+    "semantic_hash": ""
+  },
+  "testing/eShop.TestStack/Common.cs": {
+    "mtime": 1794247899.1595325,
+    "seen": 1794248950.719012,
+    "ast_hash": "857984ca0b449b4b68375be3fbb15a7e",
+    "semantic_hash": ""
+  },
+  "testing/eShop.TestStack/MessagingStores.cs": {
+    "mtime": 1794248100.1017733,
+    "seen": 1794248950.719012,
+    "ast_hash": "7e76b4b254003e054a280ccfc0f3b0a8",
+    "semantic_hash": ""
+  },
+  "testing/eShop.TestStack/PostgresStore.cs": {
+    "mtime": 1794247995.0203984,
+    "seen": 1794248950.7190132,
+    "ast_hash": "57c90836c7862806844b7b4b4e20f435",
+    "semantic_hash": ""
+  },
+  "testing/eShop.TestStack/Program.cs": {
+    "mtime": 1794248074.431574,
+    "seen": 1794248950.719014,
+    "ast_hash": "64cd14d1f4c3b85e3ea7b1ec4e3a45c8",
+    "semantic_hash": ""
+  },
+  "testing/eShop.TestStack/Readiness.cs": {
+    "mtime": 1794248033.7374663,
+    "seen": 1794248950.719014,
+    "ast_hash": "6f63038fc7f2586b3a76134f9364d099",
+    "semantic_hash": ""
+  },
+  "testing/eShop.TestStack/Scenario.cs": {
+    "mtime": 1794247959.2341464,
+    "seen": 1794248950.719015,
+    "ast_hash": "8b20ddd98b048de7a09120552ce8e66e",
+    "semantic_hash": ""
+  },
+  "testing/eShop.TestStack/StackConfig.cs": {
+    "mtime": 1794247888.1625166,
+    "seen": 1794248950.719015,
+    "ast_hash": "f5ee105433a8c35c1d7b536ecd328984",
+    "semantic_hash": ""
+  },
+  "testing/eShop.TestStack/StackContext.cs": {
+    "mtime": 1794247919.1849308,
+    "seen": 1794248950.7190158,
+    "ast_hash": "58aa00d51030effe1e083d91eb679ce5",
+    "semantic_hash": ""
+  },
+  "testing/eShop.TestStack/eShop.TestStack.csproj": {
+    "mtime": 1794247867.245686,
+    "seen": 1794248950.7190158,
+    "ast_hash": "14a4605fafdd74be0ec2c833fb398b85",
+    "semantic_hash": ""
+  },
+  "testing/teststack": {
+    "mtime": 1794248237.8573875,
+    "seen": 1794248950.719017,
+    "ast_hash": "750b576191ae6174b11c0b135f5cd4f6",
+    "semantic_hash": ""
+  },
+  "testing/teststack.json": {
+    "mtime": 1794247888.3851244,
+    "seen": 1794248950.719017,
+    "ast_hash": "46dae30ac25f383bde744e22a7248ca8",
+    "semantic_hash": ""
+  },
+  "deploy/teststack/docker-compose.yaml": {
+    "mtime": 1794247659.8791354,
+    "seen": 1794248950.720632,
+    "ast_hash": "189ccbb7d6e4705b58627ffe7100c949",
+    "semantic_hash": ""
+  },
+  "product-research/targeted-advertising-profiles.md": {
+    "mtime": 1794248921.4450433,
+    "seen": 1794248950.720643,
+    "ast_hash": "399fe89f8cfffeae62daac9253a7d81f",
+    "semantic_hash": ""
+  },
+  "testing/README.md": {
+    "mtime": 1794248360.5060453,
+    "seen": 1794248950.720716,
+    "ast_hash": "275202a7194fdb61200cd90e39876bf7",
+    "semantic_hash": ""
+  },
+  "testing/scenarios/_base/scenario.yaml": {
+    "mtime": 1794248174.546689,
+    "seen": 1794248950.720716,
+    "ast_hash": "08efb3b822a27b8b6b5973baed4d5f65",
+    "semantic_hash": ""
+  },
+  "testing/scenarios/default/scenario.yaml": {
+    "mtime": 1794248160.2438443,
+    "seen": 1794248950.720717,
+    "ast_hash": "3eb31d949ffbbeb5786ed65ec61cd4d4",
+    "semantic_hash": ""
+  },
+  "testing/scenarios/empty/scenario.yaml": {
+    "mtime": 1794248174.5671635,
+    "seen": 1794248950.7207181,
+    "ast_hash": "a3add818e6c449be33dbc366144aec40",
+    "semantic_hash": ""
+  },
+  "testing/scenarios/order-history/scenario.yaml": {
+    "mtime": 1794248179.4063153,
+    "seen": 1794248950.7207181,
+    "ast_hash": "120278ccd938db423e2e41f6161ea3f9",
+    "semantic_hash": ""
   }
 }
