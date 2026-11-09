@@ -3,6 +3,9 @@
 ###############################################################################
 * text=auto
 *.sh text eol=lf
+# graphify semantic cache keys hash file content; keep LF everywhere so cache hits on Windows
+*.md text eol=lf
+graphify-out/cache/semantic/** text eol=lf
 
 ###############################################################################
 # Set default behavior for command prompt diff.

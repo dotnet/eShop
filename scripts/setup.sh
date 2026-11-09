@@ -58,9 +58,9 @@ if have npm; then npm ci; else echo "npm not found; skipping (only needed for e2
 # --- graphify ---
 step "graphify"
 if ! have graphify; then
-  if have pipx; then pipx install graphifyy
-  else python3 -m pip install --user --break-system-packages graphifyy 2>/dev/null \
-    || python3 -m pip install --user graphifyy; fi
+  if have pipx; then pipx install "graphifyy==0.9.58"
+  else python3 -m pip install --user --break-system-packages "graphifyy==0.9.58" 2>/dev/null \
+    || python3 -m pip install --user "graphifyy==0.9.58"; fi
 fi
 have graphify || { echo "ERROR: graphify not on PATH after install" >&2; exit 1; }
 # Agent instructions/hooks are committed; these are idempotent refreshes.
@@ -68,7 +68,7 @@ graphify claude install >/dev/null
 graphify codex install >/dev/null
 git config core.hooksPath .githooks
 chmod +x .githooks/*
-graphify update .
+scripts/graphify-build.sh
 echo "graphify ready; local graph auto-refreshes after commit/merge/checkout (core.hooksPath=.githooks)"
 
 # --- Build ---
