@@ -13,7 +13,7 @@ As a shopper, I want my shopping bag to show each discount, how much I'm saving 
 - New fields on `WebApp.Services.BasketItem`:
 
 | Field | Type | Source |
-|---|---|---|
+| --- | --- | --- |
 | `Discount` | decimal | `lines[].discount` |
 | `AppliedPromotionIds` | int[] | `lines[].appliedPromotionIds` |
 | `CatalogTypeId` / `CatalogBrandId` | int | the catalog item (needed to build the request) |
