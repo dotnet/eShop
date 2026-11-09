@@ -98,7 +98,7 @@ Notes:
 
 ## 3. Enable graphify for Copilot
 
-This repository includes a [graphify](https://github.com/safishamsi/graphify) knowledge graph in `graphify-out/`, and the Copilot instructions tell the agent to run `graphify query` before reading source files. For that to work, the `graphify` command must be on your `PATH` and the graphify Copilot skill must be installed.
+This repository uses a [graphify](https://github.com/safishamsi/graphify) knowledge graph in `graphify-out/`. The graph is gitignored and built locally with `graphify update .` (AST-only, no API key). The Copilot instructions tell the agent to run `graphify query` before reading source files. For that to work, the `graphify` command must be on your `PATH` and the graphify Copilot skill must be installed.
 
 ### Windows
 
@@ -124,7 +124,7 @@ If you're unsure of the Scripts folder, run `pip show -f graphifyy`: the `graphi
 
 ### macOS
 
-[`scripts/setup.sh`](../scripts/setup.sh) installs graphify and enables the git hook. To do it manually:
+[`scripts/setup.sh`](../scripts/setup.sh) installs graphify, builds the graph and enables the git hooks. To do it manually:
 
 ```bash
 pipx install graphifyy        # or: python3 -m pip install --user graphifyy
@@ -142,7 +142,8 @@ If `graphify` isn't found after a `pip install --user`, add `$(python3 -m site -
 ### What this does
 
 - `graphify install --platform copilot` copies the graphify skill to `~/.copilot/skills/graphify` (Windows: `%USERPROFILE%\.copilot\skills\graphify`), so `/graphify` works in Copilot.
-- `core.hooksPath .githooks` enables the pre-commit hook that runs `graphify update .` and stages the refreshed graph on every commit. The hook skips quietly if `graphify` isn't on `PATH`.
+- `core.hooksPath .githooks` enables post-commit, post-merge, post-checkout and post-rewrite hooks that run `graphify update .` in the background to keep your local graph fresh. Nothing is staged or committed: `graphify-out/` is gitignored so it never causes merge conflicts. The hooks skip quietly if `graphify` isn't on `PATH`.
+- Build the graph once after cloning with `graphify update .`.
 
 **Restart T3 Code** (and any open terminals) after changing `PATH` so the Copilot agent inherits it.
 

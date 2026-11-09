@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Create promotion</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#f6f6f4}
+a{color:#141414}a:hover{color:#3d3d3d}
+</style>
+</helmet>
+<div style="min-height: 1240px; background: #f6f6f4; color: #141414; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; display: flex; flex-direction: column;">
+
+  <header style="height: 68px; background: #ffffff; border-bottom: 1px solid #e6e5e1; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; gap: 16px; flex-wrap: wrap;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span style="font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">AdventureWorks</span>
+      <span style="font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: #141414; color: #ffffff;">Admin</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #6b6b6b;">
+      <span style="width: 32px; height: 32px; border-radius: 999px; background: #ededea; color: #141414; display: flex; align-items: center; justify-content: center; font-weight: 600;">A</span>
+      <span>alice@adventureworks.com</span>
+    </div>
+  </header>
+
+  <main style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 28px 32px 56px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px;">
+    <a href="Main.dc.html" style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; text-decoration: none; color: #3d3d3d; min-height: 44px; align-self: flex-start;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      All promotions
+    </a>
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.02em;">New promotion</h1>
+        <p style="margin: 0; font-size: 15px; color: #6b6b6b;">Saved as a draft. Shoppers won't see it until you publish it.</p>
+      </div>
+      <span style="font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: #ededea; color: #3d3d3d;">Draft</span>
+    </div>
+
+    <sc-if value="{{showErrors}}" hint-placeholder-val="{{false}}">
+      <div role="alert" style="display: flex; gap: 12px; align-items: flex-start; background: #fdecea; color: #b32121; border-radius: 12px; padding: 16px 20px; font-size: 14px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px;"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+        <div>
+          <strong style="display: block; margin-bottom: 4px;">2 fields need attention before this can be saved</strong>
+          <span style="color: #3d3d3d;">The server returned 400 ValidationProblem. Nothing was saved.</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+
+      <form style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+
+        <section style="background: #ffffff; border: 1px solid #e6e5e1; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 18px;">
+          <h2 style="margin: 0; font-size: 18px; font-weight: 700;">Details</h2>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600;">
+            Name
+            <input type="text" value="Fall Trekking Sale" style="min-height: 44px; border: 1px solid #c9c8c3; border-radius: 8px; padding: 0 14px; font: inherit; font-weight: 400; color: #141414;">
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600;">
+            Description <span style="font-weight: 400; color: #6b6b6b; font-size: 13px;">Shown on storefront banners. Up to 500 characters.</span>
+            <textarea rows="2" style="border: 1px solid #c9c8c3; border-radius: 8px; padding: 12px 14px; font: inherit; font-weight: 400; color: #141414; resize: vertical;">20% off all trekking gear</textarea>
+          </label>
+        </section>
+
+        <section style="background: #ffffff; border: 1px solid #e6e5e1; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 18px;">
+          <h2 style="margin: 0; font-size: 18px; font-weight: 700;">Discount rule</h2>
+          <div role="radiogroup" aria-label="Rule type" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;">
+            <sc-for list="{{types}}" as="t" hint-placeholder-count="3">
+              <button type="button" role="radio" aria-checked="{{t.selected}}" onClick="{{t.pick}}" style="{{t.style}}">
+                <span style="display: block; font-weight: 700; font-size: 15px;">{{t.label}}</span>
+                <span style="display: block; font-size: 13px; color: #6b6b6b; margin-top: 4px; font-weight: 400;">{{t.hint}}</span>
+              </button>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{isPercent}}" hint-placeholder-val="{{true}}">
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; max-width: 240px;">
+              Percent off
+              <span style="display: flex; align-items: center; border: 1px solid {{valueBorder}}; border-radius: 8px; min-height: 44px; padding: 0 14px; gap: 6px;">
+                <input type="number" value="{{percentValue}}" aria-invalid="{{showErrors}}" style="border: 0; outline: 0; font: inherit; font-weight: 400; width: 100%; color: #141414;">
+                <span style="color: #6b6b6b; font-weight: 400;">%</span>
+              </span>
+              <sc-if value="{{showErrors}}" hint-placeholder-val="{{false}}">
+                <span style="color: #b32121; font-weight: 500; font-size: 13px;">Percent off must be more than 0 and no more than 100.</span>
+              </sc-if>
+            </label>
+          </sc-if>
+
+          <sc-if value="{{isAmount}}" hint-placeholder-val="{{false}}">
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600;">
+                Amount off the order
+                <span style="display: flex; align-items: center; border: 1px solid #c9c8c3; border-radius: 8px; min-height: 44px; padding: 0 14px; gap: 6px;">
+                  <span style="color: #6b6b6b; font-weight: 400;">$</span>
+                  <input type="number" value="10" style="border: 0; outline: 0; font: inherit; font-weight: 400; width: 100%; color: #141414;">
+                </span>
+              </label>
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600;">
+                Minimum order total
+                <span style="display: flex; align-items: center; border: 1px solid #c9c8c3; border-radius: 8px; min-height: 44px; padding: 0 14px; gap: 6px;">
+                  <span style="color: #6b6b6b; font-weight: 400;">$</span>
+                  <input type="number" value="150" style="border: 0; outline: 0; font: inherit; font-weight: 400; width: 100%; color: #141414;">
+                </span>
+              </label>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{isBuyGet}}" hint-placeholder-val="{{false}}">
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600;">
+                Customer buys
+                <input type="number" value="2" style="min-height: 44px; border: 1px solid #c9c8c3; border-radius: 8px; padding: 0 14px; font: inherit; font-weight: 400; color: #141414;">
+              </label>
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600;">
+                Customer gets free
+                <input type="number" value="1" style="min-height: 44px; border: 1px solid #c9c8c3; border-radius: 8px; padding: 0 14px; font: inherit; font-weight: 400; color: #141414;">
+              </label>
+            </div>
+          </sc-if>
+        </section>
+
+        <section style="background: #ffffff; border: 1px solid #e6e5e1; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <h2 style="margin: 0; font-size: 18px; font-weight: 700;">Applies to</h2>
+            <p style="margin: 0; font-size: 13px; color: #6b6b6b;">A product matches if any target matches. At least one is required.</p>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <span style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 6px 6px 14px; border-radius: 999px; background: #ededea; font-size: 14px; font-weight: 500;">
+              Type: Trekking
+              <button type="button" aria-label="Remove target Type: Trekking" style="width: 32px; height: 32px; border-radius: 999px; border: 0; background: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+              </button>
+            </span>
+          </div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #3d3d3d;">
+              Scope
+              <select style="min-height: 44px; border: 1px solid #c9c8c3; border-radius: 8px; padding: 0 12px; font: inherit; font-size: 14px; background: #ffffff; min-width: 160px;">
+                <option>Type</option>
+                <option>Brand</option>
+                <option>Product</option>
+                <option>All products</option>
+              </select>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #3d3d3d; flex: 1; min-width: 200px;">
+              Target
+              <select style="min-height: 44px; border: 1px solid #c9c8c3; border-radius: 8px; padding: 0 12px; font: inherit; font-size: 14px; background: #ffffff;">
+                <option>Jackets</option>
+                <option>Climbing</option>
+                <option>Footwear</option>
+                <option>Bags</option>
+              </select>
+            </label>
+            <button type="button" style="min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid #c9c8c3; background: #ffffff; font: inherit; font-weight: 600; font-size: 14px; cursor: pointer;">Add target</button>
+          </div>
+        </section>
+
+        <section style="background: #ffffff; border: 1px solid #e6e5e1; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 18px;">
+          <h2 style="margin: 0; font-size: 18px; font-weight: 700;">Schedule and behavior</h2>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600;">
+              Starts
+              <input type="text" value="Nov 10, 2026 · 12:00 AM UTC" style="min-height: 44px; border: 1px solid #c9c8c3; border-radius: 8px; padding: 0 14px; font: inherit; font-weight: 400; color: #141414;">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600;">
+              Ends
+              <input type="text" value="{{endsValue}}" aria-invalid="{{showErrors}}" style="min-height: 44px; border: 1px solid {{endsBorder}}; border-radius: 8px; padding: 0 14px; font: inherit; font-weight: 400; color: #141414;">
+              <sc-if value="{{showErrors}}" hint-placeholder-val="{{false}}">
+                <span style="color: #b32121; font-weight: 500; font-size: 13px;">The end has to be after the start.</span>
+              </sc-if>
+            </label>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start;">
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600;">
+              Priority <span style="font-weight: 400; color: #6b6b6b; font-size: 13px;">Higher wins a tie</span>
+              <input type="number" value="10" style="min-height: 44px; border: 1px solid #c9c8c3; border-radius: 8px; padding: 0 14px; font: inherit; font-weight: 400; color: #141414;">
+            </label>
+            <label style="display: flex; gap: 12px; align-items: flex-start; font-size: 14px; font-weight: 600; padding-top: 6px; min-height: 44px;">
+              <input type="checkbox" style="width: 20px; height: 20px; margin: 2px 0 0; accent-color: #141414;">
+              <span>Stackable<span style="display: block; font-weight: 400; color: #6b6b6b; font-size: 13px; margin-top: 2px;">Can combine with other promotions</span></span>
+            </label>
+            <label style="display: flex; gap: 12px; align-items: flex-start; font-size: 14px; font-weight: 600; padding-top: 6px; min-height: 44px;">
+              <input type="checkbox" style="width: 20px; height: 20px; margin: 2px 0 0; accent-color: #141414;">
+              <span>Requires a coupon<span style="display: block; font-weight: 400; color: #6b6b6b; font-size: 13px; margin-top: 2px;">Hidden from the storefront</span></span>
+            </label>
+          </div>
+        </section>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap;">
+          <a href="Main.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 999px; border: 1px solid #c9c8c3; background: #ffffff; text-decoration: none; font-weight: 600; font-size: 15px;">Cancel</a>
+          <button type="button" onClick="{{save}}" style="min-height: 44px; padding: 0 22px; border-radius: 999px; border: 1px solid #141414; background: #141414; color: #ffffff; font: inherit; font-weight: 600; font-size: 15px; cursor: pointer;">Save draft</button>
+        </div>
+      </form>
+
+      <aside style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+        <section style="background: #ffffff; border: 1px solid #e6e5e1; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 14px;">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 700;">Storefront preview</h2>
+          <div style="border: 1px solid #ededea; border-radius: 12px; overflow: hidden;">
+            <div style="height: 150px; background: #ededea; position: relative; display: flex; align-items: center; justify-content: center; color: #6b6b6b; font-size: 13px;">
+              Product image
+              <span style="position: absolute; top: 12px; left: 12px; font-weight: 700; font-size: 13px; padding: 4px 10px; border-radius: 8px; background: #141414; color: #ffffff;">{{badge}}</span>
+            </div>
+            <div style="padding: 14px 16px; display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-weight: 600; font-size: 15px;">Trekking product</span>
+              <span style="font-size: 14px;"><s style="color: #6b6b6b;">$89.99</s> <strong>{{salePrice}}</strong></span>
+            </div>
+          </div>
+          <p style="margin: 0; font-size: 13px; color: #6b6b6b;">The badge and sale price show on matching products once the promotion is published and active.</p>
+        </section>
+
+        <section style="background: #ffffff; border: 1px solid #e6e5e1; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 700;">What happens next</h2>
+          <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: #3d3d3d;">
+            <li><strong style="color: #141414;">Save draft</strong> calls POST /api/promotions. No event is sent.</li>
+            <li><strong style="color: #141414;">Publish</strong> sets it to Scheduled until Nov 10.</li>
+            <li>At the start time, PromotionStarted is sent and the storefront shows it.</li>
+            <li>At the end time, or when you click End, PromotionEnded is sent.</li>
+          </ol>
+        </section>
+      </aside>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"showValidation":{"editor":"boolean","default":false,"section":"State"},"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { type: 'PercentOff', submitted: false };
+  }
+  renderVals() {
+    const showErrors = this.state.submitted || (this.props.showValidation ?? false);
+    const defs = [
+      { id: 'PercentOff', label: 'Percent off', hint: 'e.g. 20% off trekking' },
+      { id: 'AmountOffOrder', label: 'Amount off order', hint: 'e.g. $10 off over $150' },
+      { id: 'BuyXGetY', label: 'Buy X get Y', hint: 'e.g. buy 2, get 1 free' }
+    ];
+    const types = defs.map((d) => {
+      const selected = this.state.type === d.id;
+      return {
+        ...d,
+        selected,
+        style: 'text-align:left;min-height:72px;padding:14px 16px;border-radius:12px;font:inherit;cursor:pointer;background:#ffffff;color:#141414;' + (selected ? 'border:2px solid #141414;' : 'border:1px solid #c9c8c3;'),
+        pick: () => this.setState({ type: d.id })
+      };
+    });
+    const t = this.state.type;
+    const badge = t === 'PercentOff' ? (showErrors ? '-120%' : '-20%') : t === 'AmountOffOrder' ? '$10 off' : 'Buy 2 Get 1';
+    const salePrice = t === 'PercentOff' ? (showErrors ? '—' : '$71.99') : '$89.99';
+    return {
+      types,
+      showErrors,
+      isPercent: t === 'PercentOff',
+      isAmount: t === 'AmountOffOrder',
+      isBuyGet: t === 'BuyXGetY',
+      percentValue: showErrors ? '120' : '20',
+      valueBorder: showErrors ? '#b32121' : '#c9c8c3',
+      endsValue: showErrors ? 'Nov 9, 2026 · 11:59 PM UTC' : 'Nov 16, 2026 · 11:59 PM UTC',
+      endsBorder: showErrors ? '#b32121' : '#c9c8c3',
+      badge,
+      salePrice,
+      save: () => this.setState({ submitted: !this.state.submitted })
+    };
+  }
+}
+</script>
+</body>
+</html>

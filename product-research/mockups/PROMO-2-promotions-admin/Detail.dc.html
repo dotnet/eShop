@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Promotion detail</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#f6f6f4}
+a{color:#141414}a:hover{color:#3d3d3d}
+</style>
+</helmet>
+<div style="min-height: 1040px; background: #f6f6f4; color: #141414; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; display: flex; flex-direction: column; position: relative;">
+
+  <header style="height: 68px; background: #ffffff; border-bottom: 1px solid #e6e5e1; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; gap: 16px; flex-wrap: wrap;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span style="font-weight: 700; font-size: 20px; letter-spacing: -0.02em;">AdventureWorks</span>
+      <span style="font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: #141414; color: #ffffff;">Admin</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #6b6b6b;">
+      <span style="width: 32px; height: 32px; border-radius: 999px; background: #ededea; color: #141414; display: flex; align-items: center; justify-content: center; font-weight: 600;">A</span>
+      <span>alice@adventureworks.com</span>
+    </div>
+  </header>
+
+  <main style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 28px 32px 56px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px;">
+    <a href="Main.dc.html" style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; text-decoration: none; color: #3d3d3d; min-height: 44px; align-self: flex-start;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      All promotions
+    </a>
+
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.02em;">Winter Jackets Event</h1>
+          <span style="{{pillStyle}}">{{statusLabel}}</span>
+        </div>
+        <p style="margin: 0; font-size: 15px; color: #6b6b6b;">15% off every jacket · Nov 1 – Nov 30, 2026</p>
+      </div>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button type="button" disabled aria-describedby="locked-note" style="min-height: 44px; padding: 0 20px; border-radius: 999px; border: 1px solid #e6e5e1; background: #f6f6f4; color: #6b6b6b; font: inherit; font-weight: 600; font-size: 15px; cursor: not-allowed;">Edit</button>
+        <sc-if value="{{isActive}}" hint-placeholder-val="{{true}}">
+          <button type="button" onClick="{{openConfirm}}" style="min-height: 44px; padding: 0 20px; border-radius: 999px; border: 1px solid #b32121; background: #ffffff; color: #b32121; font: inherit; font-weight: 600; font-size: 15px; cursor: pointer;">End now</button>
+        </sc-if>
+      </div>
+    </div>
+
+    <div id="locked-note" style="display: flex; gap: 12px; align-items: flex-start; background: #ffffff; border: 1px solid #e6e5e1; border-radius: 12px; padding: 14px 18px; font-size: 14px; color: #3d3d3d;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px;"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <span>{{lockedText}}</span>
+    </div>
+
+    <sc-if value="{{isEnded}}" hint-placeholder-val="{{false}}">
+      <div role="status" style="display: flex; gap: 12px; align-items: center; background: #eaf5ec; color: #1f7a34; border-radius: 12px; padding: 14px 18px; font-size: 14px; font-weight: 600;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>
+        Promotion ended. PromotionEnded was sent, and the storefront stops showing it within 60 seconds.
+      </div>
+    </sc-if>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+        <section style="background: #ffffff; border: 1px solid #e6e5e1; border-radius: 12px; padding: 24px;">
+          <h2 style="margin: 0 0 16px; font-size: 18px; font-weight: 700;">Rule</h2>
+          <dl style="margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 24px; font-size: 14px;">
+            <div><dt style="color: #6b6b6b; font-size: 13px; margin-bottom: 4px;">Type</dt><dd style="margin: 0; font-weight: 600;">Percent off</dd></div>
+            <div><dt style="color: #6b6b6b; font-size: 13px; margin-bottom: 4px;">Value</dt><dd style="margin: 0; font-weight: 600;">15%</dd></div>
+            <div><dt style="color: #6b6b6b; font-size: 13px; margin-bottom: 4px;">Badge</dt><dd style="margin: 0;"><span style="font-weight: 700; font-size: 13px; padding: 3px 8px; border-radius: 8px; background: #141414; color: #ffffff;">-15%</span></dd></div>
+            <div><dt style="color: #6b6b6b; font-size: 13px; margin-bottom: 4px;">Applies to</dt><dd style="margin: 0; font-weight: 600;">Type: Jackets</dd></div>
+            <div><dt style="color: #6b6b6b; font-size: 13px; margin-bottom: 4px;">Priority</dt><dd style="margin: 0; font-weight: 600;">5</dd></div>
+            <div><dt style="color: #6b6b6b; font-size: 13px; margin-bottom: 4px;">Options</dt><dd style="margin: 0; font-weight: 600;">Not stackable · No coupon</dd></div>
+          </dl>
+        </section>
+
+        <section style="background: #ffffff; border: 1px solid #e6e5e1; border-radius: 12px; padding: 24px;">
+          <h2 style="margin: 0 0 16px; font-size: 18px; font-weight: 700;">Lifecycle</h2>
+          <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
+            <sc-for list="{{timeline}}" as="step" hint-placeholder-count="4">
+              <li style="display: flex; gap: 16px; padding-bottom: 18px;">
+                <span style="{{step.dotStyle}}" aria-hidden="true"></span>
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                  <span style="font-weight: 600; font-size: 15px;">{{step.title}}</span>
+                  <span style="font-size: 13px; color: #6b6b6b;">{{step.when}}</span>
+                  <span style="font-size: 13px; color: #3d3d3d;">{{step.detail}}</span>
+                </div>
+              </li>
+            </sc-for>
+          </ol>
+        </section>
+      </div>
+
+      <aside style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+        <section style="background: #ffffff; border: 1px solid #e6e5e1; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 700;">Public storefront feed</h2>
+          <p style="margin: 0; font-size: 13px; color: #6b6b6b;">{{feedText}}</p>
+          <pre style="margin: 0; background: #f6f6f4; border-radius: 8px; padding: 14px; font-size: 12px; line-height: 1.6; overflow-x: auto; color: #3d3d3d;">{{feedJson}}</pre>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <sc-if value="{{confirmOpen}}" hint-placeholder-val="{{false}}">
+    <div style="position: absolute; inset: 0; background: rgba(20,20,20,0.45); display: flex; align-items: center; justify-content: center; padding: 16px;">
+      <div role="dialog" aria-modal="true" aria-labelledby="end-title" style="background: #ffffff; border-radius: 12px; padding: 28px; max-width: 460px; width: 100%; box-sizing: border-box; box-shadow: 0 18px 40px rgba(20,20,20,0.13); display: flex; flex-direction: column; gap: 14px;">
+        <h2 id="end-title" style="margin: 0; font-size: 20px; font-weight: 700;">End Winter Jackets Event now?</h2>
+        <p style="margin: 0; font-size: 15px; color: #3d3d3d;">Shoppers stop getting 15% off jackets right away, and carts are priced again without it. You can't restart an ended promotion; you'd need to create a new one.</p>
+        <div style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; margin-top: 6px;">
+          <button type="button" onClick="{{closeConfirm}}" style="min-height: 44px; padding: 0 20px; border-radius: 999px; border: 1px solid #c9c8c3; background: #ffffff; font: inherit; font-weight: 600; font-size: 15px; cursor: pointer;">Keep running</button>
+          <button type="button" onClick="{{endNow}}" style="min-height: 44px; padding: 0 20px; border-radius: 999px; border: 1px solid #b32121; background: #b32121; color: #ffffff; font: inherit; font-weight: 600; font-size: 15px; cursor: pointer;">End promotion</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1040}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { confirmOpen: false, ended: false };
+  }
+  renderVals() {
+    const ended = this.state.ended;
+    const base = 'display:inline-block;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;';
+    const dot = (color, filled) => 'flex-shrink:0;width:14px;height:14px;margin-top:4px;border-radius:999px;box-sizing:border-box;border:2px solid ' + color + ';background:' + (filled ? color : '#ffffff') + ';';
+    const timeline = [
+      { title: 'Created as draft', when: 'Oct 28, 2026 · alice', detail: 'POST /api/promotions → 201 Created', dotStyle: dot('#141414', true) },
+      { title: 'Published', when: 'Oct 30, 2026 · alice', detail: 'Scheduled to start Nov 1', dotStyle: dot('#141414', true) },
+      { title: 'Started', when: 'Nov 1, 2026 · 12:00 AM UTC', detail: 'PromotionStartedIntegrationEvent sent', dotStyle: dot('#1f7a34', true) },
+      ended
+        ? { title: 'Ended early', when: 'Nov 9, 2026 · alice', detail: 'POST /end → 204 · PromotionEndedIntegrationEvent sent', dotStyle: dot('#b32121', true) }
+        : { title: 'Ends', when: 'Nov 30, 2026 · 11:59 PM UTC', detail: 'PromotionEndedIntegrationEvent will be sent', dotStyle: dot('#c9c8c3', false) }
+    ];
+    const feedJson = ended
+      ? '[ ]\n\n// Winter Jackets Event is no longer\n// in GET /api/promotions/active'
+      : '{\n  "id": 2,\n  "name": "Winter Jackets Event",\n  "type": "PercentOff",\n  "value": 15,\n  "badgeLabel": "-15%",\n  "targets": [\n    { "scope": "Type", "targetId": 6 }\n  ],\n  "endsAt": "2026-11-30T23:59:59Z",\n  "priority": 5,\n  "requiresCoupon": false\n}';
+    return {
+      isActive: !ended,
+      isEnded: ended,
+      statusLabel: ended ? 'Expired' : 'Active',
+      pillStyle: base + (ended ? 'background:#f6f6f4;color:#6b6b6b;border:1px solid #e6e5e1;' : 'background:#eaf5ec;color:#1f7a34;'),
+      lockedText: ended
+        ? 'Expired promotions are read-only.'
+        : 'Active promotions can’t be edited, so carts stay consistent (the API returns 409 Conflict). End it and create a new one to change the rule.',
+      feedText: ended ? 'Nothing is listed for this promotion any more.' : 'This is what GET /api/promotions/active returns for this promotion, which the storefront uses for badges and banners.',
+      feedJson,
+      timeline,
+      confirmOpen: this.state.confirmOpen,
+      openConfirm: () => this.setState({ confirmOpen: true }),
+      closeConfirm: () => this.setState({ confirmOpen: false }),
+      endNow: () => this.setState({ confirmOpen: false, ended: true })
+    };
+  }
+}
+</script>
+</body>
+</html>
