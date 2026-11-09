@@ -31,8 +31,8 @@ public class NewOrderRequestHandlerTest
         _orderRepositoryMock.GetAsync(Arg.Any<int>())
             .Returns(Task.FromResult(FakeOrder()));
 
-        _orderRepositoryMock.UnitOfWork.SaveChangesAsync(default)
-            .Returns(Task.FromResult(1));
+        _orderRepositoryMock.SaveEntitiesAsync(default)
+            .Returns(Task.FromResult(false));
 
         _identityServiceMock.GetUserIdentity().Returns(buyerId);
 

@@ -3,11 +3,13 @@
 //This is just the RepositoryContracts or Interface defined at the Domain Layer
 //as requisite for the Order Aggregate
 
-public interface IOrderRepository : IRepository<Order>
+public interface IOrderRepository
 {
     Order Add(Order order);
 
     void Update(Order order);
 
     Task<Order> GetAsync(int orderId);
+
+    Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default);
 }

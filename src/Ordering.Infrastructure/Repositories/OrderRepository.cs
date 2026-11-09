@@ -5,11 +5,14 @@ public class OrderRepository
 {
     private readonly OrderingContext _context;
 
-    public IUnitOfWork UnitOfWork => _context;
-
     public OrderRepository(OrderingContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
+    }
+
+    public Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)
+    {
+        return _context.SaveEntitiesAsync(cancellationToken);
     }
 
     public Order Add(Order order)
