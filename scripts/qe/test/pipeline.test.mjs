@@ -178,6 +178,7 @@ test('workflow 2: Stop hook gates on review, then automation loops to 10/10 and 
   await waitFor(() => !['starting', 'running'].includes(stateOf('DEMO-1').automation.status));
 
   const state = stateOf('DEMO-1');
+  assert.ok(state.automation.log, 'automation log path is recorded');
   assert.equal(state.automation.status, 'verified', read(state.automation.log));
   assert.deepEqual(calls(), { 'architecture-reviewer': 2, 'qe-automation': 3, 'qe-automation-verifier': 2, 'qe-plan': 1, 'qe-plan-verifier': 1 });
   assert.match(jsonl('precheck-failures.jsonl').at(-1).errors.join('\n'), /TC-DEMO-1-02 has no automated test/);
