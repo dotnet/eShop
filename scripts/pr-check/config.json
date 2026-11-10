@@ -1,0 +1,42 @@
+{
+  "prCheck": {
+    "maxRounds": 6,
+    "debateTurns": 2,
+    "timeoutSec": 1800,
+    "fixTimeoutSec": 3600,
+    "maxDiffChars": 400000,
+    "exclude": [".agent-state", ".agent-metrics", "graphify-out"],
+    "frontendPaths": ["src/WebApp/", "src/WebAppComponents/", ".razor", ".razor.css", ".css"],
+    "conventions": ["AGENTS.md", "CONTRIBUTING.md", ".editorconfig", ".markdownlint.json", "docs/architecture/services.md", "docs/architecture/event-flows.md", "docs/architecture/infrastructure.md", ".github/agents/implementer.agent.md"],
+    "video": {
+      "extensions": [".webm", ".mp4", ".mov", ".mkv"],
+      "defaultDirs": ["test-results"],
+      "maxFrames": 48,
+      "minIntervalSec": 1,
+      "width": 1280
+    },
+    "models": {
+      "claude": {
+        "judge": "opus",
+        "acceptance": "opus",
+        "flow": "opus",
+        "design": "opus",
+        "video": "opus",
+        "style": "sonnet",
+        "defender": "opus",
+        "fixer": "opus"
+      },
+      "copilot": {
+        "judge": "claude-fable-5.2",
+        "acceptance": "claude-opus-5.5",
+        "flow": "claude-opus-5.5",
+        "design": "claude-opus-5.5",
+        "video": "claude-opus-5.5",
+        "style": "claude-sonnet-5.5",
+        "defender": "claude-opus-5",
+        "fixer": "claude-opus-5.5"
+      },
+      "codex": {}
+    }
+  }
+}

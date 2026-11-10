@@ -11,6 +11,7 @@
     "test:e2e:report": "playwright show-report",
     "pipeline": "node scripts/pipeline/pipeline.mjs",
     "review": "node scripts/review/review.mjs",
+    "pr-check": "node scripts/pr-check/pr-check.mjs",
     "qe": "node scripts/qe/qe.mjs",
     "test:pipeline": "node --test scripts/*/test/*.test.mjs",
     "agents:sync": "node scripts/sync-agents.mjs",

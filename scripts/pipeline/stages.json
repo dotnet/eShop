@@ -15,6 +15,14 @@
       "hooks": ["story-start", "stop", "session-start"],
       "gitHooks": ["post-commit", "post-merge", "pre-push"],
       "commands": ["status", "metrics"]
+    },
+    {
+      "name": "pr-check",
+      "description": "Adversarial PR check against the story (acceptance criteria, flow, UI design, style, video), fixing until 10/10; run on demand",
+      "cli": "scripts/pr-check/pr-check.mjs",
+      "hooks": [],
+      "gitHooks": [],
+      "commands": ["status", "metrics"]
     }
   ]
 }

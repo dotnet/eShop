@@ -6,6 +6,7 @@ Agents take a user story from implementation to reviewed code with verified test
 | --- | --- | --- | --- |
 | `review` | `scripts/review/` | Architecture review of the implementation by a fresh reviewer, looping with the implementation agent until approved | [review.md](review.md) |
 | `qe` | `scripts/qe/` | Story to verified test plan (workflow 1); approved implementation to verified automated tests (workflow 2) | [qe.md](qe.md) |
+| `pr-check` | `scripts/pr-check/` | On demand: adversarial critics, defender and judge score a PR against its story (acceptance criteria, flow, UI design, style, video evidence); a fixer loops it to 10/10 | [pr-check.md](pr-check.md) |
 
 Stages run in the order listed in `scripts/pipeline/stages.json`. All of them are Node 20 scripts with no dependencies, and they drive a headless agent CLI: Claude Code by default, or Copilot CLI or Codex (`PIPELINE_AGENT_CLI=copilot|codex`), or any command (`PIPELINE_AGENT_CMD`, prompt on stdin).
 
@@ -102,5 +103,6 @@ node scripts/pipeline/pipeline.mjs stages
 node scripts/pipeline/pipeline.mjs metrics [--json] [--since 2026-01-01]
 node scripts/pipeline/pipeline.mjs hook stop|session-start [--nested]
 node scripts/pipeline/pipeline.mjs git-hook post-commit|post-merge|pre-push
+node scripts/pr-check/pr-check.mjs run --pr 42 [--no-fix]   # adversarial PR check until 10/10
 npm run test:pipeline                     # dispatcher and stage tests (fake agent, no LLM)
 ```

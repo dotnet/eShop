@@ -11,10 +11,22 @@ const prompt = fs.readFileSync(0, 'utf8');
 const agent = process.env.PIPELINE_AGENT_NAME;
 const script = JSON.parse(fs.readFileSync(process.env.PIPELINE_FAKE_SCRIPT, 'utf8'));
 const counterFile = `${process.env.PIPELINE_FAKE_SCRIPT}.calls.json`;
+// Agents can run in parallel (the PR check's critics), so the shared counter update is locked.
+const lock = `${counterFile}.lock`;
+for (let i = 0; ; i++) {
+  try {
+    fs.writeFileSync(lock, String(process.pid), { flag: 'wx' });
+    break;
+  } catch {
+    if (i > 2000) break;
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 5);
+  }
+}
 const calls = fs.existsSync(counterFile) ? JSON.parse(fs.readFileSync(counterFile, 'utf8')) : {};
 const n = calls[agent] ?? 0;
 calls[agent] = n + 1;
 fs.writeFileSync(counterFile, JSON.stringify(calls));
+fs.rmSync(lock, { force: true });
 fs.appendFileSync(`${process.env.PIPELINE_FAKE_SCRIPT}.prompts.log`, `\n=== ${agent} #${n + 1} (child=${process.env.PIPELINE_CHILD}) ===\n${prompt}\n`);
 
 const steps = script[agent] ?? [];

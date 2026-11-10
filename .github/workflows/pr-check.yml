@@ -1,0 +1,71 @@
+name: PR check
+
+# Adversarial AI review of a pull request against its story (acceptance criteria, flow, UI design,
+# code style, video evidence). Opt-in: add the `ai-pr-check` label, or run it by hand. Report only:
+# the scores and findings are posted as a PR comment; fixing runs locally (docs/ai-pipeline/pr-check.md).
+on:
+  pull_request:
+    types: [labeled, synchronize]
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request number
+        type: number
+        required: true
+      story:
+        description: Story key, when the PR doesn't name it (for example PROMO-3)
+        type: string
+        required: false
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: pr-check-${{ github.event.pull_request.number || inputs.pr }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'ai-pr-check')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr }}
+      STORY: ${{ inputs.story }}
+    steps:
+    - name: Skip without an agent API key
+      if: env.ANTHROPIC_API_KEY == ''
+      run: echo "::notice::ANTHROPIC_API_KEY is not set; skipping the PR check." && exit 0
+    - uses: actions/checkout@v4
+      if: env.ANTHROPIC_API_KEY != ''
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-node@v4
+      if: env.ANTHROPIC_API_KEY != ''
+      with:
+        node-version: 20.x
+    - name: Install agent CLI and ffmpeg
+      if: env.ANTHROPIC_API_KEY != ''
+      run: |
+        npm i -g @anthropic-ai/claude-code
+        sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+    - name: Run the PR check
+      if: env.ANTHROPIC_API_KEY != ''
+      run: |
+        args=(run --pr "$PR_NUMBER" --no-fix --comment --json)
+        if [ -n "$STORY" ]; then args+=(--story "$STORY"); fi
+        node scripts/pr-check/pr-check.mjs "${args[@]}" > result.json || status=$?
+        cat result.json
+        report=$(node -e "console.log(require('./result.json').report)")
+        cat "$report" >> "$GITHUB_STEP_SUMMARY"
+        exit "${status:-0}"
+    - name: Upload the run
+      if: always() && env.ANTHROPIC_API_KEY != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: pr-check-${{ env.PR_NUMBER }}
+        path: .agent-state/pr-check/
+        if-no-files-found: ignore

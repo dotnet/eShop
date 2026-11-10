@@ -13,5 +13,46 @@
   "qe-automation-verifier": {
     "tools": "Read, Glob, Grep, Bash",
     "disallowedTools": "Edit, Write, MultiEdit, NotebookEdit, WebFetch, WebSearch"
+  },
+  "pr-check-judge": {
+    "tools": "Read, Glob, Grep, Bash",
+    "disallowedTools": "Edit, Write, MultiEdit, NotebookEdit, WebFetch, WebSearch",
+    "model": "opus"
+  },
+  "pr-check-acceptance": {
+    "tools": "Read, Glob, Grep, Bash",
+    "disallowedTools": "Edit, Write, MultiEdit, NotebookEdit, WebFetch, WebSearch",
+    "model": "opus"
+  },
+  "pr-check-flow": {
+    "tools": "Read, Glob, Grep, Bash",
+    "disallowedTools": "Edit, Write, MultiEdit, NotebookEdit, WebFetch, WebSearch",
+    "model": "opus"
+  },
+  "pr-check-design": {
+    "tools": "Read, Glob, Grep, Bash",
+    "disallowedTools": "Edit, Write, MultiEdit, NotebookEdit, WebFetch, WebSearch",
+    "model": "opus"
+  },
+  "pr-check-video": {
+    "tools": "Read, Glob, Grep, Bash",
+    "disallowedTools": "Edit, Write, MultiEdit, NotebookEdit, WebFetch, WebSearch",
+    "model": "opus"
+  },
+  "pr-check-defender": {
+    "tools": "Read, Glob, Grep, Bash",
+    "disallowedTools": "Edit, Write, MultiEdit, NotebookEdit, WebFetch, WebSearch",
+    "model": "opus"
+  },
+  "pr-check-style": {
+    "tools": "Read, Glob, Grep, Bash",
+    "disallowedTools": "Edit, Write, MultiEdit, NotebookEdit, WebFetch, WebSearch",
+    "model": "sonnet"
+  },
+  "pr-check-fixer": {
+    "model": "opus"
+  },
+  "pr-check": {
+    "model": "opus"
   }
 }
