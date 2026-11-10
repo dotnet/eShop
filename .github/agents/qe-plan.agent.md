@@ -68,4 +68,4 @@ When the task says `update`, edit the existing files in place. Keep ids stable f
 
 Before you finish, re-read the story line by line and confirm each requirement maps to a case. End your final message with one line:
 
-`QE_RESULT: {"status": "done", "cases": <number of case files>}`
+`AGENT_RESULT: {"status": "done", "cases": <number of case files>}`

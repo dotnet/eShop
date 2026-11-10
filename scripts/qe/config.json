@@ -1,18 +1,9 @@
 {
-  "storiesDir": "product-research/stories",
   "plansDir": "tests/plans",
   "scenariosDir": "testing/scenarios",
-  "stateDir": ".agent-state",
-  "metricsDir": ".agent-metrics",
-  "agentsDir": ".github/agents",
-  "lessonsDir": ".github/agents/lessons",
-  "baseRef": "origin/main",
   "agent": {
-    "cli": "claude",
     "models": {
-      "default": null,
       "verifier": null,
-      "reviewer": null,
       "audit": null
     }
   },
@@ -20,15 +11,12 @@
     "requiredScore": 10,
     "consecutivePasses": 1,
     "planMaxRounds": 5,
-    "automationMaxRounds": 5,
-    "reviewMaxRounds": 5,
-    "verifierParseRetries": 1
+    "automationMaxRounds": 5
   },
   "timeoutsSec": {
     "plan": 1800,
     "automation": 3600,
     "verifier": 900,
-    "reviewer": 1200,
     "lessons": 1200,
     "tests": 1800
   },
@@ -40,23 +28,41 @@
     "intervalDays": 7,
     "examplesPerCategory": 5
   },
-  "testRoots": ["e2e", "tests", "testing/scenarios"],
-  "testExtensions": [".ts", ".cs"],
-  "implExclude": [
-    "tests",
+  "testRoots": [
     "e2e",
-    "testing/scenarios",
-    "product-research",
-    ".agent-metrics",
-    ".agent-state",
-    "graphify-out",
-    ".github/agents/lessons"
+    "tests",
+    "testing/scenarios"
+  ],
+  "testExtensions": [
+    ".ts",
+    ".cs"
   ],
   "precheck": {
     "runTests": true,
-    "validateScenario": ["testing/teststack", "validate", "{scenario}"],
-    "playwright": ["npx", "playwright", "test", "-c", "playwright.teststack.config.ts", "--grep", "{casePrefix}", "{files}"],
-    "dotnet": ["dotnet", "test", "--project", "{project}", "--", "--filter-trait", "Story={story}"]
+    "validateScenario": [
+      "testing/teststack",
+      "validate",
+      "{scenario}"
+    ],
+    "playwright": [
+      "npx",
+      "playwright",
+      "test",
+      "-c",
+      "playwright.teststack.config.ts",
+      "--grep",
+      "{casePrefix}",
+      "{files}"
+    ],
+    "dotnet": [
+      "dotnet",
+      "test",
+      "--project",
+      "{project}",
+      "--",
+      "--filter-trait",
+      "Story={story}"
+    ]
   },
   "categories": {
     "plan": [
@@ -80,6 +86,15 @@
       "wrong-layer",
       "other"
     ],
-    "sadPathSubtypes": ["validation", "auth", "ownership", "not-found", "boundary", "concurrency", "conflict", "dependency-failure"]
+    "sadPathSubtypes": [
+      "validation",
+      "auth",
+      "ownership",
+      "not-found",
+      "boundary",
+      "concurrency",
+      "conflict",
+      "dependency-failure"
+    ]
   }
 }

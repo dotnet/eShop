@@ -16,7 +16,7 @@ export function listStories(config, reader = fsReader(config.root)) {
         key: KEY.exec(name)[1],
         slug,
         file: `${config.storiesDir}/${name}`,
-        planDir: `${config.plansDir}/${slug}`,
+        planDir: config.plansDir ? `${config.plansDir}/${slug}` : null,
         scenario: KEY.exec(name)[1].toLowerCase(),
       };
     });

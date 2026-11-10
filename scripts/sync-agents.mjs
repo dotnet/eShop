@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Keeps the Claude Code agents in .claude/agents/ in sync with the shared agents in .github/agents/.
 //
-// .github/agents/<name>.agent.md is the source of truth: GitHub Copilot reads it, and the QE
-// pipeline (scripts/qe) builds its prompts from it. Each one is rendered to .claude/agents/<name>.md
+// .github/agents/<name>.agent.md is the source of truth: GitHub Copilot reads it, and the AI
+// pipeline (scripts/pipeline and its stages) builds its prompts from it. Each one is rendered to .claude/agents/<name>.md
 // so the same agent can be run from Claude Code. Claude-only frontmatter (tools, isolation, ...)
 // comes from scripts/agents-claude.json.
 //

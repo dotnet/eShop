@@ -20,7 +20,7 @@ export function buildPrompt(definition, task) {
   return parts.join('\n\n');
 }
 
-const childEnv = (extra = {}) => ({ ...process.env, QE_PIPELINE_CHILD: '1', ...extra });
+const childEnv = (extra = {}) => ({ ...process.env, PIPELINE_CHILD: '1', ...extra });
 
 function cliInvocation(config, { prompt, mode, model }) {
   const cli = config.agent.cli;
@@ -55,13 +55,13 @@ function cliInvocation(config, { prompt, mode, model }) {
     return { cmd: 'copilot', args };
   }
   if (cli === 'codex') {
-    const outFile = path.join(os.tmpdir(), `qe-codex-${process.pid}-${Date.now()}.txt`);
+    const outFile = path.join(os.tmpdir(), `pipeline-codex-${process.pid}-${Date.now()}.txt`);
     const args = ['exec', '--skip-git-repo-check', '--sandbox', mode === 'write' ? 'workspace-write' : 'read-only', '--output-last-message', outFile];
     if (model) args.push('-m', model);
     args.push('-');
     return { cmd: 'codex', args, input: prompt, outFile };
   }
-  throw new Error(`Unknown agent CLI "${cli}". Use claude, copilot, codex or set QE_AGENT_CMD.`);
+  throw new Error(`Unknown agent CLI "${cli}". Use claude, copilot, codex or set PIPELINE_AGENT_CMD.`);
 }
 
 // Every call is a brand-new headless process, so each agent (and each verifier round) starts with a
@@ -76,7 +76,7 @@ export function runAgent(config, { name, task, mode = 'read', model = null, cwd 
     cwd,
     input: invocation.input,
     timeoutSec,
-    env: childEnv({ QE_AGENT_NAME: name, QE_AGENT_MODE: mode, ...extraEnv }),
+    env: childEnv({ PIPELINE_AGENT_NAME: name, PIPELINE_AGENT_MODE: mode, ...extraEnv }),
   });
   let output = result.stdout;
   if (invocation.outFile) {

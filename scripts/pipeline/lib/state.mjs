@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { readJson, writeJson } from './util.mjs';
+import { log, readJson, writeJson } from './util.mjs';
 
 const emptyState = (key) => ({
   story: key,
@@ -11,6 +11,31 @@ const emptyState = (key) => ({
 });
 
 export const stateDir = (config) => path.join(config.root, config.stateDir);
+export const metricsFile = (config, name) => path.join(config.root, config.metricsDir, name);
+const escalationFile = (config, key, stage) => path.join(stateDir(config), 'escalations', `${key}-${stage}.md`);
+
+// A loop that cannot converge stops and leaves a note for a human; the next agent session is told.
+export function escalate(config, story, stage, title, details) {
+  const file = escalationFile(config, story.key, stage);
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, `# ${story.key} ${stage}: ${title}\n\n${new Date().toISOString()}\n\n${details}\n`);
+  log(`ESCALATED ${story.key} ${stage}: ${title} (see ${path.relative(config.root, file)})`);
+  return file;
+}
+
+export function clearEscalation(config, story, stage) {
+  fs.rmSync(escalationFile(config, story.key, stage), { force: true });
+}
+
+export function listEscalations(config) {
+  const dir = path.join(stateDir(config), 'escalations');
+  return fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith('.md')).map((f) => f.replace(/\.md$/, '')) : [];
+}
+
+export function setActiveStory(config, key) {
+  fs.mkdirSync(stateDir(config), { recursive: true });
+  fs.writeFileSync(path.join(stateDir(config), 'active-story'), `${key}\n`);
+}
 const stateFile = (config, key) => path.join(stateDir(config), 'stories', `${key}.json`);
 
 export function loadState(config, key) {

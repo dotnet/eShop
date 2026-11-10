@@ -1,21 +1,21 @@
 #!/usr/bin/env node
-// Scripted stand-in for an agent CLI, used by the end-to-end tests through QE_AGENT_CMD.
-// Behavior per agent comes from QE_FAKE_SCRIPT (JSON: { "<agent>": [response, response, ...] });
+// Scripted stand-in for an agent CLI, used by the end-to-end tests through PIPELINE_AGENT_CMD.
+// Behavior per agent comes from PIPELINE_FAKE_SCRIPT (JSON: { "<agent>": [response, response, ...] });
 // each call consumes the next response for that agent (the last one repeats).
 import fs from 'node:fs';
 import path from 'node:path';
 
-if (!process.env.QE_FAKE_SCRIPT) process.exit(0); // not a test file; only runs under the e2e tests
+if (!process.env.PIPELINE_FAKE_SCRIPT) process.exit(0); // not a test file; only runs under the e2e tests
 
 const prompt = fs.readFileSync(0, 'utf8');
-const agent = process.env.QE_AGENT_NAME;
-const script = JSON.parse(fs.readFileSync(process.env.QE_FAKE_SCRIPT, 'utf8'));
-const counterFile = `${process.env.QE_FAKE_SCRIPT}.calls.json`;
+const agent = process.env.PIPELINE_AGENT_NAME;
+const script = JSON.parse(fs.readFileSync(process.env.PIPELINE_FAKE_SCRIPT, 'utf8'));
+const counterFile = `${process.env.PIPELINE_FAKE_SCRIPT}.calls.json`;
 const calls = fs.existsSync(counterFile) ? JSON.parse(fs.readFileSync(counterFile, 'utf8')) : {};
 const n = calls[agent] ?? 0;
 calls[agent] = n + 1;
 fs.writeFileSync(counterFile, JSON.stringify(calls));
-fs.appendFileSync(`${process.env.QE_FAKE_SCRIPT}.prompts.log`, `\n=== ${agent} #${n + 1} (child=${process.env.QE_PIPELINE_CHILD}) ===\n${prompt}\n`);
+fs.appendFileSync(`${process.env.PIPELINE_FAKE_SCRIPT}.prompts.log`, `\n=== ${agent} #${n + 1} (child=${process.env.PIPELINE_CHILD}) ===\n${prompt}\n`);
 
 const steps = script[agent] ?? [];
 const step = steps[Math.min(n, steps.length - 1)] ?? {};
@@ -56,5 +56,5 @@ if (step.writeImpl) {
   fs.writeFileSync(step.writeImpl, `// fixed ${n}\n`);
 }
 
-process.stdout.write(`Working...\n${step.result ? `QE_RESULT: ${JSON.stringify(step.result)}\n` : ''}`);
+process.stdout.write(`Working...\n${step.result ? `AGENT_RESULT: ${JSON.stringify(step.result)}\n` : ''}`);
 process.exit(step.exit ?? 0);

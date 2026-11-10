@@ -7,7 +7,7 @@
           {
             "name": "qe-session-context",
             "type": "command",
-            "command": "node \"$GEMINI_PROJECT_DIR/scripts/hooks/gemini-adapter.mjs\" SessionStart -- node scripts/qe/qe.mjs hook session-start",
+            "command": "node \"$GEMINI_PROJECT_DIR/scripts/hooks/gemini-adapter.mjs\" SessionStart -- node scripts/pipeline/pipeline.mjs hook session-start",
             "timeout": 30000
           }
         ]
@@ -19,7 +19,7 @@
           {
             "name": "qe-architecture-review",
             "type": "command",
-            "command": "node \"$GEMINI_PROJECT_DIR/scripts/hooks/gemini-adapter.mjs\" Stop -- node scripts/qe/qe.mjs hook stop",
+            "command": "node \"$GEMINI_PROJECT_DIR/scripts/hooks/gemini-adapter.mjs\" Stop -- node scripts/pipeline/pipeline.mjs hook stop",
             "timeout": 1800000
           }
         ]

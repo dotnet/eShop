@@ -1,11 +1,11 @@
-import path from 'node:path';
-import { runAgent } from './agents.mjs';
-import { appendJsonl, extractResult, log, nowIso } from './util.mjs';
+import { runAgent } from '../../pipeline/lib/agents.mjs';
+import { metricsFile } from '../../pipeline/lib/state.mjs';
+import { appendJsonl, extractResult, log, nowIso } from '../../pipeline/lib/util.mjs';
 
 export const VERIFIER = { plan: 'qe-plan-verifier', automation: 'qe-automation-verifier' };
 export const PRODUCER = { plan: 'qe-plan', automation: 'qe-automation' };
 
-export const metricsFile = (config, name) => path.join(config.root, config.metricsDir, name);
+export { metricsFile };
 
 export function attributedAgent(stage, rootStage) {
   if (stage === 'plan' || rootStage === 'plan') return PRODUCER.plan;
@@ -40,7 +40,7 @@ export function runVerifier(config, { stage, story, round, task, producerVersion
   let attempt = 0;
   let result;
   let verdict = null;
-  while (attempt <= config.loops.verifierParseRetries) {
+  while (attempt <= config.agent.resultParseRetries) {
     result = runAgent(config, {
       name,
       task,
@@ -54,7 +54,7 @@ export function runVerifier(config, { stage, story, round, task, producerVersion
       break;
     }
     attempt++;
-    log(`${name} returned no parsable QE_RESULT (attempt ${attempt}).`);
+    log(`${name} returned no parsable AGENT_RESULT (attempt ${attempt}).`);
   }
   if (!verdict) return { error: 'verifier produced no parsable result', output: result?.output ?? '' };
 

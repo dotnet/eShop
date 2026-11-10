@@ -29,7 +29,7 @@ Only raise findings that matter. Style nits that a formatter would fix are not f
 
 End your final message with one line (valid JSON, no code fence):
 
-`QE_RESULT: {"verdict": "APPROVED|CHANGES_REQUESTED", "summary": "<one or two sentences>", "findings": [{"severity": "blocking|minor", "category": "fit|correctness|security|data|resilience|maintainability", "file": "<path>", "line": <number or null>, "issue": "<what is wrong>", "fix": "<what to change>"}]}`
+`AGENT_RESULT: {"verdict": "APPROVED|CHANGES_REQUESTED", "summary": "<one or two sentences>", "findings": [{"severity": "blocking|minor", "category": "fit|correctness|security|data|resilience|maintainability", "file": "<path>", "line": <number or null>, "issue": "<what is wrong>", "fix": "<what to change>"}]}`
 
 ## Lessons
 
