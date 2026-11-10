@@ -211,3 +211,13 @@ test('workflow 2: the dispatcher runs the review stage first, then automation lo
   assert.equal(metrics.qe.stages.automation.verifierRounds, 2);
   assert.deepEqual([metrics.review.rounds, metrics.review.approvals, metrics.review.findingsByCategory.security], [2, 1, 1]);
 });
+
+test('pipeline start resets the review rounds even when hooks are disabled', () => {
+  const file = `.agent-state/stories/DEMO-1.json`;
+  const state = stateOf('DEMO-1');
+  Object.assign(state.review, { rounds: 4, lastVerdict: 'CHANGES_REQUESTED' });
+  write(file, JSON.stringify(state));
+  const r = pipeline(['start', 'DEMO-1'], { env: { PIPELINE_DISABLE: '1' } });
+  assert.equal(r.status, 0, r.stderr);
+  assert.deepEqual([stateOf('DEMO-1').review.rounds, stateOf('DEMO-1').review.lastVerdict], [0, null]);
+});

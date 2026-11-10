@@ -10,7 +10,7 @@ flowchart LR
   R -.->|5 rounds without approval| E[Escalation for a human]
 ```
 
-- The reviewer sees only the story and the implementation diff against the merge base (tests, plans, scenarios and pipeline files excluded, see `implExclude` in `scripts/pipeline/config.json`), plus the repository conventions (`AGENTS.md`, `CONTRIBUTING.md`). It never sees the implementation agent's reasoning.
+- The reviewer sees only the story and the implementation diff against the merge base (tests, plans and scenarios excluded, see `implExclude` in `scripts/pipeline/config.json`), plus the repository conventions (`AGENTS.md`, `CONTRIBUTING.md`). It never sees the implementation agent's reasoning.
 - Changes requested block the stop and send the findings to the agent as its next instruction. Each correction triggers a new round with a fresh reviewer, up to `review.maxRounds` (5). An approval with blocking findings counts as changes requested.
 - If the agent stops again without changing the code, the hook blocks once more, then lets the turn end with a message so it cannot loop forever.
 - On approval it records the approved implementation hash in `review.approvedHash` in the story state. The `qe` stage starts automation only for that exact hash, so code changed after an approval is reviewed again first.

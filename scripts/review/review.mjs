@@ -56,12 +56,13 @@ async function main() {
     }
 
     case 'hook': {
-      if (isDisabled()) return 0;
       const event = positional[0];
+      // story-start comes from the `pipeline start` command, not an agent hook, so it resets even when hooks are disabled.
       if (event === 'story-start') {
         resetReview(config, requireStory(config, positional[1]));
         return 0;
       }
+      if (isDisabled()) return 0;
       const payload = readPayload();
       const story = activeStory(config);
       if (event === 'stop') {
