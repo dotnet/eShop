@@ -72,3 +72,6 @@ graphify-out/cache/semantic/** text eol=lf
 ###############################################################################
 *.pfx binary
 
+
+# QE pipeline metrics are append-only logs; union merges keep every record
+.agent-metrics/*.jsonl merge=union

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# QE workflow 1/2 gate: stories, plans and story tests being pushed must have verifier-approved (10/10) plans and tests.
+# No LLM calls; bypass once with QE_SKIP=1 git push.
+command -v node >/dev/null 2>&1 || exit 0
+exec node "$(git rev-parse --show-toplevel)/scripts/qe/qe.mjs" check --pre-push

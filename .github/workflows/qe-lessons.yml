@@ -1,0 +1,58 @@
+name: QE lessons
+
+# Turns recurring verifier denials into lessons for the QE agents (and calibration misses into
+# lessons for the verifiers), then opens a pull request with the changes for human review.
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+    inputs:
+      calibrate:
+        description: Re-audit recent 10/10 verdicts before computing lessons
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: qe-lessons
+  cancel-in-progress: false
+
+jobs:
+  lessons:
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      GH_TOKEN: ${{ github.token }}
+      QE_BASE_REF: origin/${{ github.event.repository.default_branch }}
+    steps:
+    - name: Skip without an agent API key
+      if: env.ANTHROPIC_API_KEY == ''
+      run: echo "::notice::ANTHROPIC_API_KEY is not set; skipping QE lessons." && exit 0
+    - uses: actions/checkout@v4
+      if: env.ANTHROPIC_API_KEY != ''
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-node@v4
+      if: env.ANTHROPIC_API_KEY != ''
+      with:
+        node-version: 20.x
+    - name: Install agent CLI
+      if: env.ANTHROPIC_API_KEY != ''
+      run: npm i -g @anthropic-ai/claude-code
+    - name: Configure git
+      if: env.ANTHROPIC_API_KEY != ''
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+    - name: Calibrate verifiers
+      if: env.ANTHROPIC_API_KEY != '' && (github.event_name == 'schedule' || inputs.calibrate)
+      run: node scripts/qe/qe.mjs calibrate --sample 3
+    - name: Metrics
+      if: env.ANTHROPIC_API_KEY != ''
+      run: node scripts/qe/qe.mjs metrics | tee -a "$GITHUB_STEP_SUMMARY"
+    - name: Propose lessons
+      if: env.ANTHROPIC_API_KEY != ''
+      run: node scripts/qe/qe.mjs lessons
