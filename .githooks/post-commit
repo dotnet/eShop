@@ -1,2 +1,4 @@
 #!/usr/bin/env bash
-exec "$(dirname "$0")/graphify-refresh"
+"$(dirname "$0")/graphify-refresh" "$@"
+# QE workflow 1: write/refresh test plans for stories changed by this post-commit (background, never blocks git).
+command -v node >/dev/null 2>&1 && node "$(git rev-parse --show-toplevel)/scripts/qe/qe.mjs" git-hook post-commit || true

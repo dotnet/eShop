@@ -8,7 +8,9 @@
   "scripts": {
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
-    "test:e2e:report": "playwright show-report"
+    "test:e2e:report": "playwright show-report",
+    "qe": "node scripts/qe/qe.mjs",
+    "test:qe": "node --test scripts/qe/test/*.test.mjs"
   },
   "keywords": [],
   "author": "",

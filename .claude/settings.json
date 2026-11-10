@@ -32,6 +32,38 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/qe/qe.mjs hook session-start",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/qe/qe.mjs hook stop",
+            "timeout": 1800
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/qe/qe.mjs hook stop",
+            "timeout": 1800
+          }
+        ]
       }
     ]
   }
