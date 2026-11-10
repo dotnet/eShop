@@ -25,3 +25,6 @@ src/**/wwwroot/*.jpg
 
 # Placeholder code kept as .txt (not compiled)
 src/**/*.cs.txt
+
+# Generated copies of .github/agents (scripts/sync-agents.mjs)
+.claude/agents/

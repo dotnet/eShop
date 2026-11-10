@@ -1,0 +1,17 @@
+{
+  "implementer": {
+    "isolation": "worktree"
+  },
+  "architecture-reviewer": {
+    "tools": "Read, Glob, Grep, Bash",
+    "disallowedTools": "Edit, Write, MultiEdit, NotebookEdit, WebFetch, WebSearch"
+  },
+  "qe-plan-verifier": {
+    "tools": "Read, Glob, Grep, Bash",
+    "disallowedTools": "Edit, Write, MultiEdit, NotebookEdit, WebFetch, WebSearch"
+  },
+  "qe-automation-verifier": {
+    "tools": "Read, Glob, Grep, Bash",
+    "disallowedTools": "Edit, Write, MultiEdit, NotebookEdit, WebFetch, WebSearch"
+  }
+}
