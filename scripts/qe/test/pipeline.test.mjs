@@ -155,6 +155,10 @@ test('workflow 2: Stop hook gates on review, then automation loops to 10/10 and 
   };
 
   assert.equal(qe(['start', 'DEMO-1']).status, 0);
+  const context = JSON.parse(qe(['hook', 'session-start']).stdout);
+  assert.match(context.additionalContext, /active story DEMO-1/, 'Copilot reads only the top-level key');
+  assert.equal(context.hookSpecificOutput.additionalContext, context.additionalContext);
+  assert.deepEqual(Object.keys(JSON.parse(qe(['hook', 'session-start', '--nested']).stdout)), ['hookSpecificOutput'], 'Codex rejects unknown keys');
   write('src/Basket/Coupons.cs', '// coupons v2\n');
   assert.equal(stop(), null, 'no review until the agent declares the work done');
   assert.equal(stop({}, { QE_PIPELINE_CHILD: '1' }), null);

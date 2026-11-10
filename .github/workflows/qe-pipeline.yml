@@ -14,6 +14,7 @@ on:
       - 'e2e/**'
       - 'testing/scenarios/**'
       - 'scripts/qe/**'
+      - 'scripts/hooks/**'
       - '.github/agents/**'
       - '.github/workflows/qe-pipeline.yml'
 
