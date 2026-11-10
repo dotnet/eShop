@@ -68,9 +68,11 @@ if ! have graphify || [ "$(graphify --version 2>/dev/null | awk '{print $NF}')" 
     || python3 -m pip install --user "$GRAPHIFY_PKG"; fi
 fi
 have graphify || { echo "ERROR: graphify not on PATH after install" >&2; exit 1; }
-# Agent instructions/hooks are committed; these are idempotent refreshes.
-graphify claude install >/dev/null
-graphify codex install >/dev/null
+# Agent instructions, hooks (strict graphify guard) and the Copilot skill
+# (.github/skills/graphify) are committed. `graphify <platform> install` in the repo
+# would overwrite them, so only refresh user-level skills, from outside the repo.
+(cd "$(mktemp -d)" && graphify install --platform claude >/dev/null && graphify install --platform codex >/dev/null)
+echo "Copilot CLI only loads this repo's hooks in a trusted folder: accept the trust prompt (remember) or add $PWD to trustedFolders in ~/.copilot/config.json"
 git config core.hooksPath .githooks
 chmod +x .githooks/*
 scripts/graphify-build.sh
