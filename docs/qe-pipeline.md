@@ -46,8 +46,8 @@ flowchart LR
 
 | When | Hook | What runs | Cost |
 | --- | --- | --- | --- |
-| Agent session start/resume | `SessionStart` in `.claude/settings.json`, `.codex/hooks.json` | `qe hook session-start`: active story, stale plans, escalations | none |
-| Agent turn ends | `Stop` and `SubagentStop` (Claude Code and Copilot CLI read `.claude/settings.json`; Codex reads `.codex/hooks.json`) | `qe hook stop`: review state machine, starts automation | LLM, only after `qe done` |
+| Agent session start/resume | `SessionStart` (see [Agent tool coverage](#agent-tool-coverage)) | `qe hook session-start`: active story, stale plans, escalations | none |
+| Agent turn ends | `Stop` and `SubagentStop` (see [Agent tool coverage](#agent-tool-coverage)) | `qe hook stop`: review state machine, starts automation | LLM, only after `qe done` |
 | Commit or merge touching stories | `.githooks/post-commit`, `.githooks/post-merge` | `qe git-hook ...`: plan loop in the background | LLM |
 | Push | `.githooks/pre-push` | `qe check --pre-push`: plans and tests for touched stories are verified and current | none |
 | Pull request | `.github/workflows/qe-pipeline.yml` | pipeline tests and `qe check` | none |
@@ -56,6 +56,23 @@ flowchart LR
 `scripts/setup.sh` already points `core.hooksPath` at `.githooks`. Opt out of automatic planning on commit with `git config qe.autoPlan false`; opt in to lessons runs after merges with `git config qe.autoLessons true`. Bypass the pre-push gate once with `QE_SKIP=1 git push`; CI still enforces it. `QE_DISABLE=1` turns all hooks off.
 
 Agents spawned by the pipeline run with `QE_PIPELINE_CHILD=1`, so their own Stop hooks and git hooks do nothing and cannot recurse.
+
+### Agent tool coverage
+
+`.claude/settings.json` is the single source of truth for agent hooks: the QE `SessionStart`, `Stop` and `SubagentStop` hooks, and the graphify `--strict` guard that denies the first raw grep or file read until `graphify query` has run. Several tools load that file themselves, so they get no file of their own; adding one would run every hook twice.
+
+| Tool | Hook file | Covers | Trust step |
+| --- | --- | --- | --- |
+| Claude Code | `.claude/settings.json` | all | accept the project's hooks when prompted |
+| GitHub Copilot CLI and VS Code agent | `.claude/settings.json` (loaded alongside `.github/hooks/`) | all | add the repo to `trustedFolders` in `~/.copilot/config.json` |
+| Cursor | `.claude/settings.json` (third-party hooks, on by default) | all; Cursor has no `Glob` hook | leave Cursor's third-party (Claude) hooks setting on, the default |
+| Windsurf / Devin | `.claude/settings.json` | QE hooks; the graphify guard matchers don't match its lowercase tool names, so the guard is advisory via `AGENTS.md` | none |
+| OpenAI Codex | `.codex/hooks.json` | all; the graphify check covers `Bash` only, Codex's only search tool | trust the project, then approve the hooks in `/hooks` |
+| Gemini CLI | `.gemini/settings.json` via `scripts/hooks/gemini-adapter.mjs` | all, `AfterAgent` stands in for `Stop` (no subagent hook) | approve the project hooks when prompted |
+
+`gemini-adapter.mjs` translates Gemini's hook payload and output contract to Claude's, so Gemini runs the same commands. Copilot reads `SessionStart` context only from a top-level `additionalContext` key and Codex rejects unknown keys, so `qe hook session-start` emits both shapes by default and `--nested` (used by Codex) emits only the Claude form.
+
+Not covered: the Copilot cloud agent (its sandbox has no `graphify` or agent CLIs, and a `.github/hooks/` file would duplicate every hook in Copilot CLI), and Cline, Kiro and OpenCode (no way for a hook to block a turn from ending). For those, the git hooks and CI above still enforce the plan and test checks.
 
 ## Agent definitions for Copilot and Claude Code
 

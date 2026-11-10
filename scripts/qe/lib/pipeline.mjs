@@ -433,8 +433,7 @@ const formatFindings = (findings) =>
 // Background runs
 // ---------------------------------------------------------------------------------------------
 
-export function spawnBackground(config, key, stage, args) {
-  const file = logFile(config, key, stage);
+export function spawnBackground(config, key, stage, args, file = logFile(config, key, stage)) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   const fd = fs.openSync(file, 'a');
   const env = { ...process.env, QE_BACKGROUND: '1' };
@@ -451,9 +450,12 @@ export function startAutomation(config, story, implHash) {
     updateState(config, story.key, (s) => (s.automation.requestedHash = implHash));
     return { queued: true, pid: holder };
   }
-  const bg = spawnBackground(config, story.key, 'automation', ['automate', story.key, '--impl-hash', implHash]);
-  updateState(config, story.key, (s) => Object.assign(s.automation, { status: 'starting', pid: bg.pid, log: bg.log, requestedHash: null }));
-  return bg;
+  // Saved before spawning: the child updates the same state file (and records its own pid), so a
+  // write after the spawn could race it and drop the log path or reset the status.
+  const file = logFile(config, story.key, 'automation');
+  const log = path.relative(config.root, file);
+  updateState(config, story.key, (s) => Object.assign(s.automation, { status: 'starting', pid: null, log, requestedHash: null }));
+  return spawnBackground(config, story.key, 'automation', ['automate', story.key, '--impl-hash', implHash], file);
 }
 
 // ---------------------------------------------------------------------------------------------

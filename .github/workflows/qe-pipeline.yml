@@ -14,6 +14,7 @@ on:
       - 'e2e/**'
       - 'testing/scenarios/**'
       - 'scripts/qe/**'
+      - 'scripts/hooks/**'
       - '.github/agents/**'
       - '.claude/agents/**'
       - 'scripts/sync-agents.mjs'

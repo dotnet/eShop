@@ -38,7 +38,7 @@ Observability and improvement
   calibrate [--stage plan|automation] [--sample <n>]
 
 Hooks (called by agent and git hooks)
-  hook stop | hook session-start
+  hook stop | hook session-start [--nested]
   git-hook post-commit | git-hook post-merge`;
 
 function parseArgs(argv) {
@@ -267,7 +267,13 @@ async function main() {
       if (event === 'session-start') {
         readStdin();
         const text = sessionContext(config, activeStory(config), listStories(config));
-        if (text) process.stdout.write(`${text}\n`);
+        // Copilot reads only top-level additionalContext and ignores plain text; Claude Code and
+        // Cursor read the nested form and tolerate the extra key. Codex rejects unknown keys, so
+        // its config passes --nested.
+        if (text) {
+          const nested = { hookSpecificOutput: { hookEventName: 'SessionStart', additionalContext: text } };
+          process.stdout.write(JSON.stringify(flags.nested ? nested : { additionalContext: text, ...nested }));
+        }
         return 0;
       }
       console.error(`Unknown hook event "${event}".`);
