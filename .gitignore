@@ -509,3 +509,6 @@ graphify-out/cache/*
 
 # QE agent pipeline runtime state (locks, logs, per-story state, escalations)
 .agent-state/
+
+# Claude Code agent worktrees
+.claude/worktrees/
