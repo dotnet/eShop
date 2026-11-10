@@ -16,6 +16,9 @@ on:
       - 'scripts/qe/**'
       - 'scripts/hooks/**'
       - '.github/agents/**'
+      - '.claude/agents/**'
+      - 'scripts/sync-agents.mjs'
+      - 'scripts/agents-claude.json'
       - '.github/workflows/qe-pipeline.yml'
 
 jobs:
@@ -28,6 +31,8 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: 20.x
+    - name: Claude agents match .github/agents
+      run: node scripts/sync-agents.mjs --check
     - name: Pipeline unit and end-to-end tests
       run: node --test scripts/qe/test/*.test.mjs
     - name: Story plans and tests are verifier-approved
