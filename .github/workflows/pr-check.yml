@@ -67,5 +67,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: pr-check-${{ env.PR_NUMBER }}
-        path: .agent-state/pr-check/
+        path: |
+          .agent-state/pr-check/
+          .agent-metrics/pr-checks.jsonl
         if-no-files-found: ignore

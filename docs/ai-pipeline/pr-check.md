@@ -90,8 +90,20 @@ Each run writes to `.agent-state/pr-check/<id>/` (`<id>` is `pr-<n>`, or the sto
 - `context/pr.md`, `context/frames.json` and `videos/`: what the agents were given.
 - `round-<n>/`: `diff.patch`, every prompt and agent output, `debate.json` (each finding with its full thread), `coverage.json`, and `rulings.json`.
 
-Every round is appended to `.agent-metrics/pr-checks.jsonl`, which `metrics` and `pipeline metrics` summarize.
+Every round is appended to `.agent-metrics/pr-checks.jsonl`, which `metrics` and `pipeline metrics` summarize. Each record keeps the upheld findings (id, lens, severity, title, detail, requirement, evidence, and `repeat` when the finding survived a fix round) and the findings the judge dismissed, with the judge's reason. Commit it with the work it describes, like the other metrics.
+
+## How agents improve
+
+The PR check feeds the shared lessons process (`node scripts/qe/qe.mjs lessons`, weekly in `qe-lessons.yml`, see [qe](qe.md#auto-improvement)). From `pr-checks.jsonl` it learns:
+
+| Lessons file | Learns from | Category |
+| --- | --- | --- |
+| `implementer.md` | findings upheld in round 1, against the code as it was written | `pr-check-<lens>` |
+| `pr-check-fixer.md` | findings upheld again after the fixer had a round to fix them | `not-fixed` (subtype = lens) |
+| `pr-check-<lens>.md` (each critic) | its findings the judge dismissed (false positives) | `dismissed-finding` |
+
+A mistake that recurs in 3 or more stories becomes a rule, proposed in a pull request; rules are strengthened, retired or reverted with the same measurements as every other agent. Each PR check agent gets its own lessons file appended to its prompt, the fixer also follows `implementer.md`, and the implementer reads `implementer.md` before it starts, so the next story avoids what the PR check caught in the last ones.
 
 ## In CI
 
-`.github/workflows/pr-check.yml` runs a report-only check (`--no-fix --comment`) when a PR gets the `ai-pr-check` label, or on demand. It needs the `ANTHROPIC_API_KEY` secret. Fixing stays local, where a person can watch the loop and review its commits.
+`.github/workflows/pr-check.yml` runs a report-only check (`--no-fix --comment`) when a PR gets the `ai-pr-check` label, or on demand. It needs the `ANTHROPIC_API_KEY` secret. Fixing stays local, where a person can watch the loop and review its commits. CI cannot commit to the PR, so its `pr-checks.jsonl` records are uploaded with the run artifact; append them to `.agent-metrics/pr-checks.jsonl` if you want them to count toward lessons.

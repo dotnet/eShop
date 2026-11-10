@@ -302,8 +302,33 @@ export async function runRound(config, ctx, round, previousUpheld) {
     failedLenses,
     findings,
     ...scored,
+    rulings: verdict?.rulings ?? [],
     summary: verdict?.summary ?? (failedLenses.length ? `critics failed: ${failedLenses.join(', ')}` : ''),
     diffHash: sha(ctx.diff.diff),
+  };
+}
+
+// The finding details the lessons process (scripts/qe/lib/lessons.mjs) learns from: upheld findings
+// teach the implementer (round 1) or the fixer (a finding it failed to fix), dismissed ones teach the
+// critic that raised them.
+export function lessonFields(result, previousUpheld = []) {
+  const clip = (v, n = 300) => (v ? String(v).slice(0, n) : '');
+  const earlier = new Set(previousUpheld.map((f) => f.id));
+  const rulings = new Map((result.rulings ?? []).filter((r) => r && r.id).map((r) => [String(r.id), r]));
+  return {
+    upheld: result.upheld.map((f) => ({
+      id: f.id,
+      lens: f.lens,
+      severity: f.severity,
+      title: clip(f.title, 200),
+      detail: clip(f.detail),
+      requirement: clip(f.requirement, 200),
+      evidence: clip(f.evidence, 200),
+      repeat: earlier.has(f.id),
+    })),
+    dismissed: result.findings
+      .filter((f) => rulings.has(f.id) && rulings.get(f.id).ruling !== 'upheld')
+      .map((f) => ({ id: f.id, lens: f.lens, severity: f.severity, title: clip(f.title, 200), reason: clip(rulings.get(f.id).reason) })),
   };
 }
 
@@ -329,7 +354,7 @@ export async function runPrCheck(config, ctx, { fix }) {
       lensScores: result.lensScores,
       raised: result.findings.length,
       withdrawn: result.findings.filter((f) => f.status === 'withdrawn').length,
-      upheld: result.upheld.map((f) => ({ lens: f.lens, severity: f.severity })),
+      ...lessonFields(result, previousUpheld),
     });
     log(`round ${round}: ${result.score}/10 (${Object.entries(result.lensScores).map(([l, s]) => `${l} ${s}`).join(', ')}); ${result.upheld.length} upheld of ${result.findings.length} raised`);
 

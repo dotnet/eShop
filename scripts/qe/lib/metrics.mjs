@@ -8,6 +8,7 @@ export function loadMetrics(config) {
     prechecks: readJsonl(metricsFile(config, 'precheck-failures.jsonl')),
     calibration: readJsonl(metricsFile(config, 'calibration.jsonl')),
     reviews: readJsonl(metricsFile(config, 'arch-reviews.jsonl')),
+    prChecks: readJsonl(metricsFile(config, 'pr-checks.jsonl')),
   };
 }
 

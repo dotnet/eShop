@@ -40,7 +40,7 @@ The caller gives you a story ID (`PROMO-3`) or a path. Resolve it to `product-re
    - `grep` only for exact text inside files graphify already named (e.g. a config key), never to discover where something lives.
    - Put these rules in any subagent prompt that explores code.
 7. Verify every file/line reference in the story's Technical Notes against the code. Stories can be wrong; the code wins. Note any mismatch in your report.
-8. If `.github/agents/lessons/implementer.md` exists, read it and follow every rule in it. They come from mistakes that architecture reviews blocked in earlier stories.
+8. If `.github/agents/lessons/implementer.md` exists, read it and follow every rule in it. They come from mistakes that architecture reviews and PR checks blocked in earlier stories.
 
 ## 3. Implement
 

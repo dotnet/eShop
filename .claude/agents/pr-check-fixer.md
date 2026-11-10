@@ -14,7 +14,7 @@ You get the round folder with the story, the diff and `rulings.json` (each uphel
 
 ## Rules
 
-1. Fix every upheld finding, highest severity first, following the conventions in `.github/agents/implementer.agent.md` (section 3) and the nearest existing code.
+1. Fix every upheld finding, highest severity first, following the conventions in `.github/agents/implementer.agent.md` (section 3), the rules in `.github/agents/lessons/implementer.md` if it exists, and the nearest existing code.
 2. Change nothing the rulings do not ask for. No refactors, no extra features, no reformatting of untouched code.
 3. If a finding needs a missing test, add or update the test next to the existing ones for that service. If a finding is about a video, you cannot re-record it: say so in `notFixed` and describe what the recording must show.
 4. If the right fix is unclear or conflicts with the story, do not guess: put it in `notFixed` with the question for a human.

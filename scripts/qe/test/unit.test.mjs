@@ -118,6 +118,25 @@ test('lessons for the implementer come from blocking architecture review finding
   assert.deepEqual(report.changes[0].examples.at(-1), { story: 'C-1', case: 'review round 1 (architecture-reviewer)', detail: 'SEC-001 No secrets: literal password', location: 'src/A.cs:3' });
 });
 
+test('PR check findings teach the implementer (round 1), the fixer (not fixed) and the critics (dismissed)', () => {
+  const check = (story, round, upheld, dismissed = []) => ({ ts: '2026-01-02', target: `pr-${story}`, story, round, lensScores: { acceptance: 8, style: 10 }, upheld, dismissed });
+  const acc = (id, repeat = false) => ({ id, lens: 'acceptance', severity: 'major', title: 'AC2 not met', detail: 'no 404 path', evidence: 'src/A.cs:9', repeat });
+  const noise = { id: 'STY-1-1', lens: 'style', severity: 'minor', title: 'Naming', reason: 'matches the repo convention' };
+  const data = {
+    denials: [],
+    runs: [],
+    calibration: [],
+    reviews: [],
+    prChecks: ['A-1', 'B-1', 'C-1'].flatMap((s) => [check(s, 1, [acc('ACC-1-1')], [noise]), check(s, 2, [acc('ACC-1-1', true)])]),
+  };
+  const implementer = lessonCandidates(config, data, 'implementer', '');
+  assert.deepEqual(implementer.changes.map((c) => [c.action, c.category, c.stories]), [['add', 'pr-check-acceptance', 3]]);
+  assert.deepEqual(implementer.changes[0].examples.at(-1), { story: 'C-1', case: 'PR check pr-C-1 round 1 (ACC-1-1)', detail: 'AC2 not met: no 404 path', location: 'src/A.cs:9' });
+  assert.deepEqual(lessonCandidates(config, data, 'pr-check-fixer', '').changes.map((c) => [c.category, c.subtype, c.count]), [['not-fixed', 'acceptance', 3]]);
+  assert.deepEqual(lessonCandidates(config, data, 'pr-check-style', '').changes.map((c) => [c.category, c.stories]), [['dismissed-finding', 3]]);
+  assert.equal(lessonCandidates(config, data, 'pr-check-acceptance', '').changes.length, 0);
+});
+
 test('computeMetrics summarizes loops per stage and categories per attributed agent', () => {
   const data = {
     runs: [

@@ -66,7 +66,7 @@ Opt out of automatic planning on commit with `git config qe.autoPlan false`; opt
 
 ## Observability
 
-All results are appended to `.agent-metrics/*.jsonl` (architecture reviews are in `arch-reviews.jsonl`, see [review.md](review.md)), which are committed with the plans and tests they describe (`merge=union` keeps every record across branches):
+All results are appended to `.agent-metrics/*.jsonl` (architecture reviews are in `arch-reviews.jsonl`, see [review.md](review.md); PR checks are in `pr-checks.jsonl`, see [pr-check.md](pr-check.md)), which are committed with the plans and tests they describe (`merge=union` keeps every record across branches):
 
 | File | One record per |
 | --- | --- |
@@ -79,7 +79,7 @@ All results are appended to `.agent-metrics/*.jsonl` (architecture reviews are i
 
 ## Auto-improvement
 
-`node scripts/qe/qe.mjs lessons` reads the metrics and, for each of `qe-plan`, `qe-automation`, `qe-plan-verifier`, `qe-automation-verifier` and `implementer` (whose denials are the blocking findings in `arch-reviews.jsonl`, see [review](review.md#how-the-implementer-improves)):
+`node scripts/qe/qe.mjs lessons` reads the metrics and, for each of `qe-plan`, `qe-automation`, `qe-plan-verifier`, `qe-automation-verifier`, `implementer` (whose denials are the blocking findings in `arch-reviews.jsonl`, see [review](review.md#how-the-implementer-improves), and the findings the PR check upheld in round 1), and the PR check fixer and critics (from `pr-checks.jsonl`, see [pr-check](pr-check.md#how-agents-improve)):
 
 - **adds** a rule when a denial category recurs in 3 or more stories and no rule covers it;
 - **strengthens** a rule when its category keeps recurring in 3 or more stories after the rule was added;

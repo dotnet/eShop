@@ -147,6 +147,12 @@ test('the loop debates, fixes, commits and re-reviews with fresh critics until 1
   assert.match(report, /## Resolved during the loop\n\n- ACC-1-1/);
   const metrics = JSON.parse(spawnSync(process.execPath, ['scripts/pr-check/pr-check.mjs', 'metrics', '--json'], { cwd: repo, encoding: 'utf8' }).stdout);
   assert.equal(metrics.perfect, 1);
+  const [first] = fs.readFileSync(path.join(repo, '.agent-metrics/pr-checks.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+  assert.deepEqual(
+    { ...first.upheld[0], detail: undefined },
+    { id: 'ACC-1-1', lens: 'acceptance', severity: first.upheld[0].severity, title: expiredCoupon.title, detail: undefined, requirement: expiredCoupon.requirement ?? '', evidence: expiredCoupon.evidence ?? '', repeat: false },
+  );
+  assert.deepEqual(first.dismissed, []);
 });
 
 test('the loop escalates when the fixer cannot fix the upheld findings', () => {
