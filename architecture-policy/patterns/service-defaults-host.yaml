@@ -1,0 +1,42 @@
+kind: Pattern
+schema_version: 1
+id: PAT-SERVICE-DEFAULTS-HOST
+name: Aspire ServiceDefaults host
+category: architecture
+summary: Every service host calls AddServiceDefaults() and MapDefaultEndpoints().
+intent: Centralize OpenTelemetry, health checks, service discovery and HTTP resilience for all services.
+rules:
+- ARCH-003
+- OBS-003
+guidance:
+- Call builder.AddServiceDefaults() directly after WebApplication.CreateBuilder.
+- Call app.MapDefaultEndpoints() after Build() to expose /health and /alive.
+- Register custom ActivitySource/Meter names in ServiceDefaults rather than per service.
+exemplars:
+- path: src/eShop.ServiceDefaults/Extensions.cs
+  symbol: AddServiceDefaults
+  description: Shared defaults.
+- path: src/Catalog.API/Program.cs
+  symbol: Program
+  description: Host wiring.
+examples:
+- id: host-wiring
+  title: Host using ServiceDefaults
+  kind: approved
+  language: csharp
+  code: |
+    var builder = WebApplication.CreateBuilder(args);
+    builder.AddServiceDefaults();
+    builder.AddApplicationServices();
+    var app = builder.Build();
+    app.MapDefaultEndpoints();
+    app.Run();
+  explanation: Standard telemetry, health and resilience are applied.
+- id: hand-rolled-otel
+  title: Hand-rolled telemetry in a service
+  kind: anti_pattern
+  language: csharp
+  code: |
+    builder.Services.AddOpenTelemetry().WithTracing(t => t.AddAspNetCoreInstrumentation());
+    // no AddServiceDefaults(), no MapDefaultEndpoints()
+  explanation: Diverges from platform defaults; no health endpoints or resilience handler.

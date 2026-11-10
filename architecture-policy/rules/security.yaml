@@ -1,0 +1,212 @@
+kind: RuleSet
+schema_version: 1
+category: security
+description: Secrets, identity, token validation and sensitive data handling.
+rules:
+
+  - id: SEC-001
+    title: No secrets in source code or committed configuration
+    category: security
+    severity: critical
+    status: active
+    version: 1.0.0
+    owner: security-architecture
+    description: >
+      Credentials, client secrets, private keys, connection-string passwords and API keys must not be
+      committed. Use Aspire parameters, user-secrets, environment variables or Azure Key Vault.
+    rationale: >
+      Secrets in Git are permanently exposed to everyone with repository access and in every clone.
+    applicability:
+      include: ["**/*.cs", "**/*.json", "**/*.yaml", "**/*.yml", "**/*.config", "**/*.xml", "**/*.env", "**/*.ps1", "**/*.sh"]
+      exclude: ["**/appsettings.Development.json", "**/launchSettings.json", "tests/**", "**/*.csproj", "package-lock.json", "**/package-lock.json"]
+      note: Development-only appsettings with local container passwords are excluded; tests use fake values.
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-SECRET-SCAN]
+    patterns: [PAT-SECRETS-CONFIGURATION]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Remove the secret, rotate it, and load it from configuration backed by a secret store.
+      steps:
+        - Rotate the exposed credential immediately; history retains it.
+        - "Read the value from IConfiguration (Aspire AddParameter(secret: true), user-secrets or Key Vault)."
+        - If the secret already reached a shared branch, purge history per the incident process.
+      references: [docs/architecture/recommendations.md]
+    human_review_required: false
+    tags: [secrets, owasp-a07]
+
+  - id: SEC-002
+    title: JWT bearer tokens are fully validated
+    category: security
+    severity: critical
+    status: active
+    version: 1.0.0
+    owner: security-architecture
+    description: >
+      TokenValidationParameters must not disable issuer, audience, lifetime or signature validation
+      (ValidateAudience/ValidateIssuer/ValidateLifetime/ValidateIssuerSigningKey = false,
+      RequireSignedTokens = false, SignatureValidator overrides).
+    rationale: >
+      docs/architecture/recommendations.md #1: ValidateAudience = false lets a token issued for one API be
+      replayed against every other API.
+    applicability:
+      include: ["src/**/*.cs"]
+      project_types: [api, web, worker, library]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-TOKEN-VALIDATION]
+    patterns: [PAT-ENDPOINT-AUTHORIZATION]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Keep default (true) validation flags and configure the audience per API.
+      steps:
+        - Remove the '= false' override.
+        - Set options.Audience from Identity:Audience configuration for each API.
+      references: [src/eShop.ServiceDefaults/AuthenticationExtensions.cs]
+    human_review_required: false
+    tags: [authentication, jwt]
+
+  - id: SEC-003
+    title: Sensitive data is never logged
+    category: security
+    severity: high
+    status: active
+    version: 1.0.0
+    owner: security-architecture
+    description: >
+      Passwords, tokens, secrets, card numbers/CVV and full payment details must not be written to logs or
+      telemetry. Deterministic scanning catches obvious cases; reviewers judge new log/telemetry payloads.
+    rationale: >
+      Logs are widely accessible and retained; leaking credentials or PAN data violates PCI DSS and GDPR.
+    applicability:
+      include: ["src/**/*.cs"]
+      project_types: [api, web, worker, library, infrastructure, domain]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: changed }
+    validation:
+      mode: hybrid
+      validators: [VAL-SENSITIVE-LOGGING, VAL-SEMANTIC-REVIEW]
+      semantic:
+        rubric: >
+          Inspect new/changed logging, tracing tags, metrics dimensions and exception messages. Fail if any
+          could contain credentials, tokens, card data (number, CVV, expiry), or unmasked personal data.
+        questions:
+          - Do any new log statements or Activity tags include objects that contain PII or payment data?
+          - Are whole request/command objects logged that may include sensitive fields?
+        pass_criteria: No sensitive values reach logs or telemetry.
+    patterns: [PAT-STRUCTURED-LOGGING]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Remove the sensitive value from the log/telemetry payload or log a masked identifier instead.
+      steps:
+        - Log identifiers (OrderId, masked card last 4) instead of full objects.
+        - Mark sensitive properties so they are excluded from serialization in logs.
+      references: [src/Ordering.API/Application/Behaviors/LoggingBehavior.cs]
+    human_review_required: false
+    tags: [pii, pci, logging]
+
+  - id: SEC-004
+    title: Development-only credentials are not used outside development
+    category: security
+    severity: high
+    status: active
+    version: 1.0.0
+    owner: identity-team
+    description: >
+      Developer signing credentials, ephemeral keys and disabled certificate validation must not be present
+      in production code paths unless guarded by environment checks and tracked via an exception.
+    rationale: >
+      docs/architecture/recommendations.md #6: AddDeveloperSigningCredential creates keys on disk that are
+      not rotated or protected, and certificate-validation bypasses enable MITM attacks.
+    applicability:
+      include: ["src/**/*.cs"]
+      project_types: [api, web, worker, library]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-DEV-ONLY-CREDENTIALS]
+    patterns: [PAT-SECRETS-CONFIGURATION]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Use managed signing keys from a protected key store and keep certificate validation enabled.
+      steps:
+        - Replace AddDeveloperSigningCredential with Duende automatic key management backed by Key Vault/Data Protection.
+        - Remove ServerCertificateCustomValidationCallback overrides returning true.
+      references: [docs/architecture/recommendations.md]
+    human_review_required: false
+    tags: [identity, keys]
+
+  - id: SEC-005
+    title: Payment and personal data flows are threat-reviewed
+    category: security
+    severity: high
+    status: active
+    version: 1.0.0
+    owner: security-architecture
+    description: >
+      Changes that touch payment data, buyer identity, addresses, or authorization logic must be reviewed
+      against the threat model: data minimization, encryption in transit/at rest, authorization checks on
+      resource ownership (no IDOR), and retention.
+    rationale: >
+      Ordering stores card data and buyer PII; authorization bugs and over-collection are the highest-impact
+      risks in the system and need human security judgment.
+    applicability:
+      include:
+        - "src/Ordering.Domain/AggregatesModel/BuyerAggregate/**"
+        - "src/Ordering.API/Apis/**"
+        - "src/Ordering.API/Application/Commands/**"
+        - "src/PaymentProcessor/**/*.cs"
+        - "src/Identity.API/**/*.cs"
+        - "src/eShop.ServiceDefaults/AuthenticationExtensions.cs"
+    checkpoints:
+      pre_commit:  { enabled: false, note: Semantic rules are not evaluated pre-commit. }
+      code_review: { enabled: true, enforcement: warn, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: warn, scope: changed }
+    validation:
+      mode: semantic
+      validators: [VAL-SEMANTIC-REVIEW]
+      semantic:
+        rubric: >
+          Evaluate the change against the threat model for payment and identity data. Fail if it collects or
+          stores more sensitive data than needed, exposes it in responses, skips resource-ownership checks
+          (e.g. order lookup without matching the caller's user id), or weakens authentication.
+        questions:
+          - Does every query/command scope data to the authenticated user?
+          - Is sensitive data minimized, masked in responses and encrypted at rest?
+          - Does the change weaken any authentication or authorization path?
+        pass_criteria: No new IDOR, over-collection or authentication weakening; security reviewer approves.
+    patterns: [PAT-ENDPOINT-AUTHORIZATION, PAT-SECRETS-CONFIGURATION]
+    required_evidence:
+      - { type: validator_output, checkpoints: [code_review, ci], on_missing: warn }
+      - { type: human_approval, checkpoints: [code_review], on_missing: warn, description: Security reviewer sign-off. }
+    remediation:
+      summary: Scope data access to the caller, minimize/mask sensitive fields, and obtain security review.
+      steps:
+        - Filter queries by the identity service user id.
+        - Remove unnecessary sensitive fields from DTOs and logs.
+        - Request a security review and attach the approval.
+      references: [docs/architecture/recommendations.md]
+    human_review_required: true
+    tags: [threat-model, pii, pci]

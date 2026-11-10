@@ -1,0 +1,47 @@
+# Evidence types a rule can require. The engine records collected evidence for every
+# rule in the run's evidence bundle (evidence/runs/<run_id>.json).
+#   collected_by: engine    -> produced by the engine itself during validate()
+#                 caller    -> supplied by the caller in artifacts[artifact_key]
+#                 discovery -> supplied in artifacts[artifact_key] or discovered on disk via discovery_globs
+kind: EvidenceTypes
+schema_version: 1
+evidence_types:
+  - id: validator_output
+    description: Output of every validator executed for the rule (findings, files evaluated, validator IDs).
+    collected_by: engine
+    artifact_key: null
+  - id: change_set
+    description: The set of changed files (path -> A/M/D/R) the decision was based on.
+    collected_by: engine
+    artifact_key: null
+  - id: exception_record
+    description: Exception register entries that apply to the rule.
+    collected_by: engine
+    artifact_key: null
+  - id: review_judgment
+    description: A semantic judgment (verdict, rationale, reviewer) recorded by the Review Agent, Test Agent, or a human.
+    collected_by: caller
+    artifact_key: semantic_judgments
+    format: "[{rule_id, verdict: pass|fail|not_applicable, rationale, reviewer: {type: agent|human, id}, findings: [{file, line, message}]}]"
+  - id: human_approval
+    description: Named human sign-off for rules that require human architectural review.
+    collected_by: caller
+    artifact_key: approvals
+    format: "[{rule_id, approver, role, date, reference}]"
+  - id: test_results
+    description: Machine-readable test results (TRX or JUnit XML).
+    collected_by: discovery
+    artifact_key: test_results
+    discovery_globs: ["TestResults/**/*.trx", "tests/*/TestResults/**/*.trx", "artifacts/test-results/**/*.trx", "artifacts/test-results/**/*.xml"]
+    format: TRX / JUnit XML
+  - id: coverage_report
+    description: Code coverage report in Cobertura format.
+    collected_by: discovery
+    artifact_key: coverage_reports
+    discovery_globs: ["TestResults/**/coverage.cobertura.xml", "tests/*/TestResults/**/coverage.cobertura.xml", "artifacts/coverage/**/*.cobertura.xml"]
+    format: Cobertura XML
+  - id: adr_reference
+    description: Reference to an Architecture Decision Record justifying a design choice.
+    collected_by: caller
+    artifact_key: adr_refs
+    format: "{rule_id: 'docs/adr/NNNN-title.md'}"

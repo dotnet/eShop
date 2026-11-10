@@ -1,0 +1,56 @@
+kind: Pattern
+schema_version: 1
+id: PAT-LAYERED-DDD-SERVICE
+name: Layered DDD microservice
+category: architecture
+summary: Split complex bounded contexts into Domain, Infrastructure and API/Application projects with dependencies
+  pointing inward.
+intent: Keep business invariants in a persistence-ignorant domain model; application handlers orchestrate; infrastructure
+  implements domain abstractions.
+rules:
+- ARCH-001
+- ARCH-005
+- DATA-005
+- ERR-002
+guidance:
+- Domain project has no EF Core, ASP.NET Core, or messaging references.
+- Aggregates expose behavior methods; collections are read-only; other aggregates referenced by Id.
+- Repository interfaces live in the domain; implementations in infrastructure.
+- Commands are handled by MediatR handlers with pipeline behaviors for logging, validation and transactions.
+- Domain events are dispatched before SaveEntitiesAsync commits.
+exemplars:
+- path: src/Ordering.Domain/AggregatesModel/OrderAggregate/Order.cs
+  symbol: Order
+  description: Aggregate root enforcing status transitions via methods.
+- path: src/Ordering.Domain/SeedWork/Entity.cs
+  symbol: Entity
+  description: Base entity with domain event collection.
+- path: src/Ordering.API/Application/Commands/CreateOrderCommandHandler.cs
+  symbol: CreateOrderCommandHandler
+  description: Application handler orchestrating one aggregate.
+- path: src/Ordering.API/Application/Behaviors/TransactionBehavior.cs
+  symbol: TransactionBehavior
+  description: Pipeline behavior owning the transaction boundary.
+examples:
+- id: aggregate-behavior
+  title: Aggregate enforces invariant through behavior
+  kind: approved
+  language: csharp
+  code: |
+    public void SetPaidStatus()
+    {
+        if (OrderStatus == OrderStatus.StockConfirmed)
+        {
+            AddDomainEvent(new OrderStatusChangedToPaidDomainEvent(Id, OrderItems));
+            OrderStatus = OrderStatus.Paid;
+        }
+    }
+  explanation: State transitions are guarded inside the aggregate and raise domain events.
+- id: domain-references-efcore
+  title: Domain project referencing EF Core
+  kind: anti_pattern
+  language: xml
+  code: |
+    <!-- Ordering.Domain.csproj -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+  explanation: Couples the domain to persistence; violates ARCH-001.

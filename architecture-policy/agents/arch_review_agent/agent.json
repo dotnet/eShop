@@ -1,0 +1,141 @@
+{
+  "id": "arch-review-agent",
+  "name": "Arch_review_Agent",
+  "version": "1.0.0",
+  "description": "Architecture review agent callable by any code agent. Reviews proposed or committed changes against the Architecture Policy Pack, returns a PASS/WARN/BLOCK decision with actionable, pattern-backed fixes, resolves semantic rules via an LLM reviewer (or hands the rubric back to the caller), tracks iterations, and surfaces historic failures. It owns no architecture logic: every decision comes from architecture.validate and the pack's rules/validators.",
+  "result_schema": "arch-review-result/v1",
+  "guarantees": [
+    "Stateless per call; iteration state is persisted in the failure history store (agent_reviews table).",
+    "Deterministic validators always run first; LLM judgment is used only for semantic/hybrid rules that request it.",
+    "A requester may not supply semantic judgments for its own change (self-certification is rejected).",
+    "Rules marked human_review_required still need a recorded human approval; the agent never grants it.",
+    "Only the final validation pass of a review is written to evidence and history."
+  ],
+  "invocation": {
+    "python": "import sys; sys.path.insert(0, 'architecture-policy/agents'); from arch_review_agent import ArchReviewAgent; ArchReviewAgent().review({...})",
+    "cli": "python architecture-policy/agents/arch_review.py <operation> '<request-json>' | <file> | -",
+    "mcp": "python architecture-policy/agents/arch_review.py mcp   (stdio MCP server; tools are named arch_<operation>)",
+    "agent_definitions": [".github/agents/arch-review.agent.md", ".claude/agents/arch-review.md"]
+  },
+  "semantic_reviewer": {
+    "default": "defer: pending semantic rules are returned as pending_judgments for the calling agent/LLM host to answer in a follow-up review call",
+    "command": "Set ARCH_REVIEW_LLM_CMD to a command that reads the judgment request JSON on stdin and prints {\"judgments\": [...]} (ARCH_REVIEW_LLM_TIMEOUT seconds, default 180)",
+    "python": "ArchReviewAgent(reviewer=callable_or_Reviewer)"
+  },
+  "exit_codes": {"PASS": 0, "WARN": 0, "BLOCK": 1, "ERROR": 2},
+  "operations": [
+    {
+      "name": "review",
+      "description": "Review a change. Returns decision, can_proceed, prioritized action_items with fixes and approved patterns, pending semantic judgments, human-review needs, iteration delta and historic recurrence.",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "requester": {
+            "type": "object",
+            "description": "Who is calling. agent is required for self-certification checks and history.",
+            "properties": {"agent": {"type": "string"}, "task_id": {"type": "string"}, "iteration": {"type": "integer"}},
+            "required": ["agent"]
+          },
+          "checkpoint": {"enum": ["code_review", "pre_commit", "testing", "ci"], "default": "code_review"},
+          "intent": {"type": "string", "description": "What the change is meant to do (given to the semantic reviewer)."},
+          "changed_files": {"description": "Paths (list) or {path: A|M|D|R}. Defaults to keys of files, else git diff vs base.", "type": ["array", "object"]},
+          "files": {"type": "object", "additionalProperties": {"type": "string"}, "description": "Proposed file contents {path: content}; reviewed in memory without touching disk."},
+          "base": {"type": "string", "description": "Git base ref for change detection."},
+          "scope": {"enum": ["changed", "all"]},
+          "rule_ids": {"type": "array", "items": {"type": "string"}},
+          "categories": {"type": "array", "items": {"type": "string"}},
+          "semantic_judgments": {"type": "array", "items": {"type": "object"}, "description": "Answers to pending_judgments from a previous call (shape in pending_judgments[].respond_with)."},
+          "approvals": {"type": "array", "items": {"type": "object"}},
+          "test_results": {"type": "array", "items": {"type": "string"}},
+          "coverage_reports": {"type": "array", "items": {"type": "string"}},
+          "adr_refs": {"type": "object", "additionalProperties": {"type": "string"}},
+          "previous_review_id": {"type": "string", "description": "Earlier review of the same task; enables resolved/persisting/introduced delta."},
+          "options": {
+            "type": "object",
+            "properties": {
+              "semantic": {"enum": ["auto", "defer"], "default": "auto"},
+              "strict": {"type": "boolean"},
+              "max_action_items": {"type": "integer", "minimum": 1},
+              "write_evidence": {"type": "boolean"},
+              "record_history": {"type": "boolean"}
+            }
+          },
+          "context": {"type": "object", "description": "Advanced pass-through to architecture.validate context (e.g. today, history_db, evidence_dir, memory_files)."}
+        },
+        "required": ["requester"]
+      }
+    },
+    {
+      "name": "advise",
+      "description": "Before writing code: applicable rules, approved patterns with examples, human-review and semantic rules, historic failure hotspots, and (when requester.agent is given) that agent's own lessons from past denials.",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "requester": {"type": "object", "properties": {"agent": {"type": "string"}, "task_id": {"type": "string"}}},
+          "max_lessons": {"type": "integer", "minimum": 0, "default": 5},
+          "files": {"description": "Planned paths (list) or {path: content}.", "type": ["array", "object"]},
+          "checkpoint": {"enum": ["code_review", "pre_commit", "testing", "ci"], "default": "code_review"},
+          "intent": {"type": "string"},
+          "categories": {"type": "array", "items": {"type": "string"}},
+          "max_examples_per_pattern": {"type": "integer", "minimum": 0, "default": 1},
+          "context": {"type": "object"}
+        },
+        "required": ["files"]
+      }
+    },
+    {
+      "name": "explain_finding",
+      "description": "Why a finding matters, how to fix it, approved patterns, exception process and its recurrence history.",
+      "input_schema": {
+        "type": "object",
+        "properties": {"finding_id": {"type": "string"}, "context": {"type": "object"}},
+        "required": ["finding_id"]
+      }
+    },
+    {
+      "name": "get_failure_history",
+      "description": "Historic architecture failures across pre-commit, agents and CI: trend, top rules, hotspot files, recurring findings.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "since_days": {"type": "integer", "minimum": 1}, "checkpoint": {"type": "string"}, "caller": {"type": "string"},
+          "branch": {"type": "string"}, "rule_id": {"type": "string"}, "category": {"type": "string"}, "file": {"type": "string"},
+          "outcomes": {"type": "array", "items": {"enum": ["BLOCK", "WARN", "WAIVED"]}}, "limit": {"type": "integer", "minimum": 1},
+          "min_occurrences": {"type": "integer", "minimum": 1}, "history_db": {"type": "string"},
+          "include_pending_review": {"type": "boolean", "default": false}
+        }
+      }
+    },
+    {
+      "name": "get_lessons",
+      "description": "Learning loop for one agent (e.g. the Test Agent): how often the verifier denied it and why, denial-rate trend, repeat mistakes, review iterations, and a prompt-ready `prompt` to inject into that agent's instructions.",
+      "input_schema": {
+        "type": "object",
+        "required": ["agent"],
+        "properties": {
+          "agent": {"type": "string", "description": "Caller name, e.g. test-agent"},
+          "checkpoint": {"type": "string"}, "since_days": {"type": "integer", "minimum": 1},
+          "limit": {"type": "integer", "minimum": 1}, "min_occurrences": {"type": "integer", "minimum": 1},
+          "history_db": {"type": "string"}
+        }
+      }
+    },
+    {
+      "name": "get_rule",
+      "description": "Full rule definition with validators, patterns and exceptions (architecture.get_rule).",
+      "input_schema": {"type": "object", "properties": {"rule_id": {"type": "string"}}, "required": ["rule_id"]}
+    },
+    {
+      "name": "get_pattern",
+      "description": "Approved pattern definition (architecture.get_pattern).",
+      "input_schema": {"type": "object", "properties": {"pattern_id": {"type": "string"}}, "required": ["pattern_id"]}
+    },
+    {
+      "name": "get_examples",
+      "description": "Approved and anti-pattern examples plus in-repo exemplars (architecture.get_examples).",
+      "input_schema": {"type": "object", "properties": {"pattern_id": {"type": "string"}, "kind": {"enum": ["approved", "anti_pattern"]}}, "required": ["pattern_id"]}
+    }
+  ]
+}

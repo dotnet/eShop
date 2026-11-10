@@ -1,0 +1,35 @@
+kind: Pattern
+schema_version: 1
+id: PAT-COOPERATIVE-CANCELLATION
+name: Cooperative cancellation and async all the way
+category: resiliency
+summary: Async I/O accepts and forwards CancellationToken; code never blocks on async work.
+intent: Free resources promptly on client abort and shutdown, and avoid thread-pool starvation.
+rules:
+- RES-002
+- RES-003
+guidance:
+- Add CancellationToken parameters to async methods and pass them to EF/HTTP/Redis calls.
+- Background services loop on !stoppingToken.IsCancellationRequested and use Task.Delay(…, stoppingToken).
+- Never use .Result, .Wait(), GetAwaiter().GetResult() or Thread.Sleep on server paths.
+exemplars:
+- path: src/OrderProcessor/Services/GracePeriodManagerService.cs
+  symbol: GracePeriodManagerService
+  description: Background loop honoring stoppingToken.
+examples:
+- id: forward-token
+  title: Forwarding CancellationToken
+  kind: approved
+  language: csharp
+  code: |
+    public async Task<Order?> GetAsync(int id, CancellationToken cancellationToken = default)
+        => await _context.Orders.FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
+  explanation: Query is cancelled with the request.
+- id: blocking
+  title: Blocking on async
+  kind: anti_pattern
+  language: csharp
+  code: |
+    var basket = _repository.GetBasketAsync(id).GetAwaiter().GetResult();
+    Thread.Sleep(1000);
+  explanation: Blocks thread-pool threads (RES-002).

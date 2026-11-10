@@ -1,0 +1,147 @@
+kind: RuleSet
+schema_version: 1
+category: error_handling
+description: Exception handling and error contract rules.
+rules:
+
+  - id: ERR-001
+    title: Exceptions are never silently swallowed
+    category: error_handling
+    severity: high
+    status: active
+    version: 1.0.0
+    owner: platform-team
+    description: Catch blocks must not be empty; they must log, translate, compensate or rethrow.
+    rationale: Empty catches hide failures, break retries and leave sagas in inconsistent states.
+    applicability:
+      include: ["src/**/*.cs"]
+      project_types: [api, web, worker, library, infrastructure, domain]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-EMPTY-CATCH]
+    patterns: [PAT-PROBLEM-DETAILS]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Log the exception with context and rethrow, translate it to a domain/HTTP error, or remove the try/catch.
+      steps:
+        - logger.LogError(ex, "... {Id}", id); throw;
+        - Catch only exceptions you can handle.
+      references: []
+    human_review_required: false
+    tags: [exceptions]
+
+  - id: ERR-002
+    title: Errors are handled at the right layer with meaningful types
+    category: error_handling
+    severity: medium
+    status: active
+    version: 1.0.0
+    owner: platform-team
+    description: >
+      Domain invariant violations throw domain exceptions (e.g. OrderingDomainException); application code
+      catches only what it can handle; generic catch(Exception) is limited to process boundaries (middleware,
+      background loops, event bus consumers) and always logs.
+    rationale: >
+      Catching broadly in the middle of the stack masks bugs and turns them into wrong results instead of failures.
+    applicability:
+      include: ["src/**/*.cs"]
+      project_types: [api, web, worker, library, infrastructure, domain]
+    checkpoints:
+      pre_commit:  { enabled: false, note: Semantic rules are not evaluated pre-commit. }
+      code_review: { enabled: true, enforcement: warn, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: advisory, scope: changed }
+    validation:
+      mode: semantic
+      validators: [VAL-SEMANTIC-REVIEW]
+      semantic:
+        rubric: >
+          Check new try/catch blocks and throw sites. Pass when domain errors use domain exception types,
+          broad catches occur only at process boundaries and log with context, and no error is converted
+          into a misleading success value.
+        questions:
+          - Are broad catch(Exception) blocks only at process boundaries?
+          - Do domain invariants throw domain-specific exceptions?
+          - Is any failure converted into a default/null/false result that callers treat as success?
+        pass_criteria: Errors are typed, handled at the right layer, and never masked.
+    patterns: [PAT-PROBLEM-DETAILS, PAT-LAYERED-DDD-SERVICE]
+    required_evidence:
+      - { type: validator_output, checkpoints: [code_review, ci], on_missing: warn }
+    remediation:
+      summary: Throw domain exceptions for invariant violations and move broad catches to boundaries.
+      steps:
+        - Introduce/reuse <Context>DomainException.
+        - Let exceptions propagate to the exception handler / ProblemDetails middleware.
+      references: [src/Ordering.Domain/Exceptions/OrderingDomainException.cs]
+    human_review_required: false
+    tags: [exceptions, ddd]
+
+  - id: ERR-003
+    title: APIs return RFC 9457 ProblemDetails for errors
+    category: error_handling
+    severity: medium
+    status: active
+    version: 1.0.0
+    owner: api-guild
+    description: >
+      HTTP API services register AddProblemDetails() so errors are returned as application/problem+json
+      without leaking stack traces.
+    rationale: Consistent machine-readable errors for all clients and no internal detail disclosure.
+    applicability:
+      include: ["src/**/Apis/**/*.cs", "src/**/Program.cs", "src/**/Extensions/**/*.cs"]
+      project_types: [api]
+      note: gRPC-only services (Basket.API) are expected to map errors to RpcException status codes instead.
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: warn, scope: changed }
+      code_review: { enabled: true, enforcement: warn, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: warn, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-PROBLEM-DETAILS]
+    patterns: [PAT-PROBLEM-DETAILS]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: warn }
+    remediation:
+      summary: Call builder.Services.AddProblemDetails() in the service's Extensions/Program.cs.
+      steps:
+        - Add AddProblemDetails() during service registration.
+        - Return TypedResults.Problem/ValidationProblem from endpoints.
+      references: [src/Catalog.API/Extensions/Extensions.cs]
+    human_review_required: false
+    tags: [http, errors]
+
+  - id: ERR-004
+    title: Rethrows preserve the original stack trace
+    category: error_handling
+    severity: medium
+    status: active
+    version: 1.0.0
+    owner: platform-team
+    description: Use 'throw;' (or wrap with innerException) instead of 'throw ex;'.
+    rationale: "'throw ex;' resets the stack trace and destroys diagnostic information."
+    applicability:
+      include: ["src/**/*.cs"]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-PRESERVE-STACK]
+    patterns: [PAT-PROBLEM-DETAILS]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Replace 'throw ex;' with 'throw;' or 'throw new XException("...", ex);'.
+      steps: ["Use 'throw;' to rethrow, or wrap the exception as InnerException."]
+      references: []
+    human_review_required: false
+    tags: [exceptions]

@@ -1,0 +1,41 @@
+kind: Pattern
+schema_version: 1
+id: PAT-ENDPOINT-AUTHORIZATION
+name: Authorized endpoints with validated tokens
+category: security
+summary: Write endpoints require authorization; JWTs are validated for issuer, audience, lifetime and signature.
+intent: Prevent anonymous state changes and token replay across APIs.
+rules:
+- API-002
+- SEC-002
+- SEC-005
+guidance:
+- Call builder.AddDefaultAuthentication() and apply RequireAuthorization() to route groups.
+- Split anonymous read groups from authorized write groups when reads must be public.
+- Never set Validate* = false on TokenValidationParameters.
+- Scope data access to the caller's identity (user id claim).
+exemplars:
+- path: src/eShop.ServiceDefaults/AuthenticationExtensions.cs
+  symbol: AddDefaultAuthentication
+  description: Shared JWT bearer setup.
+- path: src/Ordering.API/Program.cs
+  symbol: Program
+  description: Group-level RequireAuthorization.
+examples:
+- id: group-authorization
+  title: Authorized write group
+  kind: approved
+  language: csharp
+  code: |
+    var orders = app.NewVersionedApi("Orders")
+        .MapGroup("api/orders").HasApiVersion(1.0)
+        .RequireAuthorization();
+    orders.MapPost("/", CreateOrderAsync);
+  explanation: All routes require an authenticated caller.
+- id: audience-disabled
+  title: Audience validation disabled
+  kind: anti_pattern
+  language: csharp
+  code: |
+    options.TokenValidationParameters.ValidateAudience = false;
+  explanation: Tokens for any API are accepted (SEC-002).

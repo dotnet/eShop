@@ -1,0 +1,218 @@
+kind: RuleSet
+schema_version: 1
+category: testing
+description: Test coverage, results evidence and test quality.
+rules:
+
+  - id: TEST-001
+    title: Production changes are accompanied by tests
+    category: testing
+    severity: medium
+    status: active
+    version: 1.0.0
+    owner: quality-engineering
+    description: >
+      Changes to production code in a project that has a mapped test project (profile test_mapping) must
+      include changes to at least one of its test projects.
+    rationale: Untested changes are the leading source of regressions in the order saga.
+    applicability:
+      include: ["src/**/*.cs"]
+      project_types: [api, web, worker, domain, infrastructure, library]
+    checkpoints:
+      pre_commit:  { enabled: false, note: Partial commits are allowed; enforced at review. }
+      code_review: { enabled: true, enforcement: warn, scope: changed }
+      testing:     { enabled: true, enforcement: warn, scope: changed }
+      ci:          { enabled: true, enforcement: warn, scope: changed }
+    validation:
+      mode: deterministic
+      validators: [VAL-TESTS-ACCOMPANY-CHANGES]
+    patterns: [PAT-TEST-PYRAMID]
+    required_evidence:
+      - { type: validator_output, checkpoints: [code_review, testing, ci], on_missing: warn }
+      - { type: change_set, checkpoints: [code_review, testing, ci], on_missing: warn }
+    remediation:
+      summary: Add or update tests in the mapped test project (see profile test_mapping).
+      steps:
+        - Unit-test domain/application logic in <Service>.UnitTests.
+        - Add functional tests for endpoint changes in <Service>.FunctionalTests.
+      references: [tests/Ordering.UnitTests]
+    human_review_required: false
+    tags: [tests]
+
+  - id: TEST-002
+    title: Test execution results are recorded and green
+    category: testing
+    severity: critical
+    status: active
+    version: 1.0.0
+    owner: quality-engineering
+    description: >
+      At the testing and ci checkpoints, machine-readable test results (TRX/JUnit) must be provided and contain
+      no failed tests.
+    rationale: Decisions must be based on evidence of executed tests, not on claims.
+    applicability:
+      include: ["src/**/*", "tests/**/*", "testing/**/*"]
+    checkpoints:
+      pre_commit:  { enabled: false }
+      code_review: { enabled: false, note: Evidence is produced by the Test Agent / CI. }
+      testing:     { enabled: true, enforcement: block, scope: changed }
+      ci:          { enabled: true, enforcement: block, scope: changed }
+    validation:
+      mode: deterministic
+      validators: [VAL-TEST-RESULTS]
+    patterns: [PAT-TEST-PYRAMID]
+    required_evidence:
+      - { type: test_results, checkpoints: [testing, ci], on_missing: block, description: "dotnet test --logger trx output." }
+    remediation:
+      summary: Run 'dotnet test --logger trx' and pass the results; fix failing tests.
+      steps:
+        - dotnet test eShop.Web.slnf --logger trx --results-directory TestResults
+        - Pass --test-results TestResults/**/*.trx (or artifacts.test_results) to architecture.validate.
+      references: [.github/workflows/pr-validation.yml]
+    human_review_required: false
+    tags: [evidence, tests]
+
+  - id: TEST-003
+    title: Changed projects meet the line-coverage threshold
+    category: testing
+    severity: medium
+    status: active
+    version: 1.0.0
+    owner: quality-engineering
+    description: Line coverage for changed production projects must meet the threshold (default 70%).
+    rationale: Coverage floors catch untested new code paths; measured per changed project to avoid dilution.
+    applicability:
+      include: ["src/**/*.cs"]
+      project_types: [api, web, worker, domain, infrastructure, library]
+    checkpoints:
+      pre_commit:  { enabled: false }
+      code_review: { enabled: false }
+      testing:     { enabled: true, enforcement: warn, scope: changed }
+      ci:          { enabled: true, enforcement: warn, scope: changed }
+    validation:
+      mode: deterministic
+      validators: [VAL-COVERAGE-THRESHOLD]
+    patterns: [PAT-TEST-PYRAMID]
+    required_evidence:
+      - { type: coverage_report, checkpoints: [testing, ci], on_missing: warn, description: "Cobertura from 'dotnet test --collect \"XPlat Code Coverage\"'." }
+    remediation:
+      summary: Add tests for uncovered branches of the changed project.
+      steps:
+        - dotnet test --collect "XPlat Code Coverage"
+        - Inspect coverage.cobertura.xml for uncovered lines in changed files.
+      references: []
+    human_review_required: false
+    tags: [coverage]
+
+  - id: TEST-004
+    title: Tests are not skipped without justification
+    category: testing
+    severity: low
+    status: active
+    version: 1.0.0
+    owner: quality-engineering
+    description: '[Ignore] / [Fact(Skip=...)] / Assert.Inconclusive require a linked issue in the reason.'
+    rationale: Silently skipped tests rot and hide regressions.
+    applicability:
+      include: ["tests/**/*.cs", "testing/**/*.cs"]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: warn, scope: changed }
+      code_review: { enabled: true, enforcement: warn, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: warn, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-NO-UNJUSTIFIED-SKIP]
+    patterns: [PAT-TEST-PYRAMID]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: warn }
+    remediation:
+      summary: Fix the test or reference a tracking issue in the skip reason.
+      steps: ['[Ignore("Flaky, tracked in #123")]']
+      references: []
+    human_review_required: false
+    tags: [tests]
+
+  - id: TEST-005
+    title: Tests meaningfully verify the changed behavior
+    category: testing
+    severity: medium
+    status: active
+    version: 1.0.0
+    owner: quality-engineering
+    description: >
+      Added/changed tests assert observable behavior (not implementation details), cover failure paths and
+      edge cases of the change, and are deterministic (no sleeps, real clocks or shared state).
+    rationale: Line coverage alone does not prove tests can detect regressions.
+    applicability:
+      include: ["tests/**/*.cs", "src/**/*.cs"]
+      project_types: [test, api, web, worker, domain, infrastructure, library]
+    checkpoints:
+      pre_commit:  { enabled: false, note: Semantic rules are not evaluated pre-commit. }
+      code_review: { enabled: true, enforcement: advisory, scope: changed }
+      testing:     { enabled: true, enforcement: warn, scope: changed }
+      ci:          { enabled: true, enforcement: advisory, scope: changed }
+    validation:
+      mode: semantic
+      validators: [VAL-SEMANTIC-REVIEW]
+      semantic:
+        rubric: >
+          Judge whether the tests would fail if the changed behavior regressed. Check asserts on outcomes,
+          negative/edge cases, and determinism.
+        questions:
+          - Would these tests fail if the new logic were removed or inverted?
+          - Are failure paths and boundary values covered?
+          - Are tests deterministic and isolated?
+        pass_criteria: Tests detect regressions in the changed behavior.
+    patterns: [PAT-TEST-PYRAMID]
+    required_evidence:
+      - { type: validator_output, checkpoints: [code_review, testing, ci], on_missing: info }
+    remediation:
+      summary: Add assertions on outcomes and cases for error paths/boundaries; remove nondeterminism.
+      steps:
+        - Assert on returned values, persisted state or published events.
+        - Use fakes/TimeProvider instead of real time and sleeps.
+      references: [tests/Basket.UnitTests/BasketServiceTests.cs]
+    human_review_required: false
+    tags: [tests, quality]
+
+  - id: TEST-006
+    title: Saga and event-handler changes include failure and compensation tests
+    category: testing
+    severity: high
+    status: active
+    version: 1.0.0
+    owner: quality-engineering
+    description: >
+      Changes to integration event handlers or saga state transitions include tests for the rejection /
+      compensation path (e.g. OrderStockRejected, OrderPaymentFailed -> Cancelled) and duplicate delivery.
+    rationale: Saga failures surface only in rarely exercised compensation paths.
+    applicability:
+      include: ["src/**/IntegrationEvents/EventHandling/**/*.cs", "src/Ordering.Domain/AggregatesModel/OrderAggregate/**"]
+    checkpoints:
+      pre_commit:  { enabled: false, note: Semantic rules are not evaluated pre-commit. }
+      code_review: { enabled: true, enforcement: warn, scope: changed }
+      testing:     { enabled: true, enforcement: warn, scope: changed }
+      ci:          { enabled: true, enforcement: warn, scope: changed }
+    validation:
+      mode: semantic
+      validators: [VAL-SEMANTIC-REVIEW]
+      semantic:
+        rubric: >
+          For changed handlers/state transitions, confirm tests exist for success, rejection/compensation and
+          duplicate delivery paths.
+        questions:
+          - Is the compensation (cancel/rollback) path tested?
+          - Is duplicate delivery of the triggering event tested?
+        pass_criteria: Success, compensation and duplicate-delivery paths are tested.
+    patterns: [PAT-IDEMPOTENT-EVENT-HANDLER, PAT-TEST-PYRAMID]
+    required_evidence:
+      - { type: validator_output, checkpoints: [code_review, testing, ci], on_missing: warn }
+    remediation:
+      summary: Add tests for compensation and duplicate delivery of the changed handler.
+      steps:
+        - Unit-test the handler with the same event twice.
+        - Test the state machine for the failure transition.
+      references: [tests/Ordering.UnitTests]
+    human_review_required: false
+    tags: [saga, tests]

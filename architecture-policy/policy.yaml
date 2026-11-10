@@ -1,0 +1,84 @@
+# Architecture Policy Pack manifest.
+# Single source of truth for architecture governance. Every consumer (Git pre-commit,
+# Review Agent, Test Agent, CI/CD) calls the same engine in hooks/architecture via
+# architecture.validate(checkpoint, context, artifacts). No consumer may re-implement rules.
+kind: PolicyManifest
+schema_version: 1
+name: eshop-architecture-policy
+version: 1.0.0
+owner: enterprise-architecture
+default_profile: dotnet
+
+categories:
+  - { id: architecture,   prefix: ARCH, file: rules/architecture.yaml }
+  - { id: api,            prefix: API,  file: rules/api.yaml }
+  - { id: security,       prefix: SEC,  file: rules/security.yaml }
+  - { id: data,           prefix: DATA, file: rules/data.yaml }
+  - { id: observability,  prefix: OBS,  file: rules/observability.yaml }
+  - { id: resiliency,     prefix: RES,  file: rules/resiliency.yaml }
+  - { id: error_handling, prefix: ERR,  file: rules/error-handling.yaml }
+  - { id: testing,        prefix: TEST, file: rules/testing.yaml }
+
+checkpoints:
+  pre_commit:
+    description: Fast, deterministic-only gate on staged files. Semantic rules are skipped.
+    allow_semantic: false
+    default_scope: changed
+  code_review:
+    description: Pull-request review. Deterministic validators plus semantic review requests for the Review Agent / humans.
+    allow_semantic: true
+    default_scope: changed
+  testing:
+    description: Test Agent / test stage. Consumes test-result and coverage evidence.
+    allow_semantic: true
+    default_scope: changed
+  ci:
+    description: CI/CD gate. Deterministic validators over the full repository; semantic results come from recorded judgments.
+    allow_semantic: true
+    default_scope: all
+
+decision:
+  # The run decision is the highest finding outcome present (BLOCK > WARN > PASS).
+  precedence: [BLOCK, WARN, PASS]
+  # Validator crashes fail closed: the outcome equals the rule's enforcement at that checkpoint.
+  validator_error: fail_closed
+  # Outcome for a semantic rule that has no recorded judgment (capped by the rule's enforcement).
+  unresolved_semantic_outcome: WARN
+  exit_codes: { PASS: 0, WARN: 0, BLOCK: 1, ERROR: 2, WARN_STRICT: 3 }
+
+exceptions:
+  file: exceptions/exceptions.yaml
+  max_duration_days: 90
+  expiry_warning_days: 14
+  # Who may approve an exception, by rule severity.
+  approver_roles_by_severity:
+    critical: [architecture-board, ciso]
+    high: [architecture-board, ciso, principal-architect]
+    medium: [architecture-board, principal-architect, tech-lead]
+    low: [architecture-board, principal-architect, tech-lead]
+
+evidence:
+  types_file: evidence/evidence-types.yaml
+  output_dir: evidence/runs
+  retain_runs: 50
+
+# Observability of historic failures. Every architecture.validate call (pre-commit, Arch_review_Agent, Test Agent, CI)
+# records its run + BLOCK/WARN/WAIVED findings here; query with architecture.get_failure_history / arch.py history.
+history:
+  enabled: true
+  store: sqlite
+  # Local system of record (gitignored). Override with $ARCH_HISTORY_DB, e.g. a persistent CI cache volume.
+  path: evidence/history/architecture-history.sqlite
+  retention_days: 365
+  record_outcomes: [BLOCK, WARN, WAIVED]
+  # Team-wide export: OTLP/HTTP JSON logs to an OpenTelemetry Collector when $ARCH_OTLP_ENDPOINT
+  # (or $OTEL_EXPORTER_OTLP_ENDPOINT) is set. Best effort; never changes a decision.
+  otlp:
+    enabled: true
+    use_otel_env: true
+    service_name: architecture-policy
+    timeout_seconds: 2
+
+validators:
+  registry: validators/registry.yaml
+  implementation_dir: validators

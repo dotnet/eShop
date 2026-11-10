@@ -1,0 +1,179 @@
+kind: RuleSet
+schema_version: 1
+category: api
+description: Contract, versioning and authorization rules for HTTP APIs.
+rules:
+
+  - id: API-001
+    title: HTTP endpoints are versioned
+    category: api
+    severity: high
+    status: active
+    version: 1.0.0
+    owner: api-guild
+    description: >
+      Minimal API endpoint files (Apis/*.cs) that map routes must belong to a versioned route group
+      (NewVersionedApi / HasApiVersion / MapToApiVersion) using Asp.Versioning.
+    rationale: >
+      Consumers (WebApp, ClientApp, HybridApp, webhooks subscribers) deploy independently. Versioned
+      endpoints let services evolve contracts without breaking existing clients.
+    applicability:
+      include: ["src/**/Apis/**/*.cs"]
+      project_types: [api]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-API-VERSIONED]
+    patterns: [PAT-VERSIONED-MINIMAL-API]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Map endpoints on a group created with app.NewVersionedApi(...).MapGroup(...).HasApiVersion(x.y).
+      steps:
+        - Create the group with NewVersionedApi("Name") and HasApiVersion for each supported version.
+        - Map routes on the group, using MapToApiVersion for version-specific handlers.
+        - Register AddApiVersioning() in the service's Extensions.
+      references: [src/Catalog.API/Apis/CatalogApi.cs]
+    human_review_required: false
+    tags: [versioning, contracts]
+
+  - id: API-002
+    title: State-changing endpoints require authorization
+    category: api
+    severity: critical
+    status: active
+    version: 1.0.0
+    owner: security-architecture
+    description: >
+      Projects that map POST/PUT/PATCH/DELETE endpoints must apply RequireAuthorization (group- or
+      route-level) or [Authorize]; anonymous access must be explicit and justified via the exception register.
+    rationale: >
+      docs/architecture/recommendations.md #1: Catalog write endpoints are anonymous, allowing anyone to
+      change prices and trigger price-change events across the platform.
+    applicability:
+      include: ["src/**/Apis/**/*.cs", "src/**/Program.cs"]
+      project_types: [api]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-API-WRITE-AUTH]
+    patterns: [PAT-ENDPOINT-AUTHORIZATION]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Apply RequireAuthorization() with a scope/role policy to the route group or write routes.
+      steps:
+        - Call builder.AddDefaultAuthentication() in the service.
+        - Add .RequireAuthorization() (or a named policy) to the versioned group or the write routes.
+        - If reads must stay anonymous, split read and write groups and use AllowAnonymous on reads only.
+      references: [docs/architecture/recommendations.md, src/Ordering.API/Program.cs]
+    human_review_required: false
+    tags: [authorization, owasp-api1]
+
+  - id: API-003
+    title: Published API contracts change only in backward-compatible ways
+    category: api
+    severity: high
+    status: active
+    version: 1.0.0
+    owner: api-guild
+    description: >
+      Changes to request/response models, routes, and integration event payloads must be additive within a
+      version. Removing/renaming fields or routes, tightening validation, or changing semantics requires a new
+      API version (or new event type) and a deprecation plan.
+    rationale: >
+      Breaking contract changes in a microservice estate break independently deployed consumers at runtime,
+      which compile-time checks cannot catch.
+    applicability:
+      include:
+        - "src/**/Apis/**/*.cs"
+        - "src/**/Model/**/*.cs"
+        - "src/**/Models/**/*.cs"
+        - "src/**/IntegrationEvents/Events/**/*.cs"
+        - "src/**/Proto/**/*.proto"
+      project_types: [api, worker]
+    checkpoints:
+      pre_commit:  { enabled: false, note: Semantic rules are not evaluated pre-commit. }
+      code_review: { enabled: true, enforcement: warn, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: warn, scope: changed }
+    validation:
+      mode: semantic
+      validators: [VAL-SEMANTIC-REVIEW]
+      semantic:
+        rubric: >
+          Compare the changed contract with the previous version. Pass when changes are additive (new optional
+          fields, new routes, new versions). Fail when an existing route, field, enum value or event property is
+          removed/renamed/retyped, required-ness is tightened, or semantics change within the same version.
+        questions:
+          - Is any existing route, request/response field, or event property removed, renamed or retyped?
+          - Are new fields optional with safe defaults for old clients?
+          - If breaking, is there a new API version or event type and a deprecation plan?
+        pass_criteria: All contract changes are additive or introduced under a new version, approved by the API owner.
+    patterns: [PAT-VERSIONED-MINIMAL-API, PAT-INTEGRATION-EVENT-CONTRACT]
+    required_evidence:
+      - { type: validator_output, checkpoints: [code_review, ci], on_missing: warn }
+      - { type: human_approval, checkpoints: [code_review], on_missing: warn, description: API owner sign-off on contract change. }
+    remediation:
+      summary: Make the change additive or introduce it under a new API version / event type.
+      steps:
+        - Keep existing fields and routes; add new optional fields.
+        - For breaking changes, add a new version with HasApiVersion and MapToApiVersion.
+        - Announce deprecation and keep the old version until consumers migrate.
+      references: [src/Catalog.API/Apis/CatalogApi.cs]
+    human_review_required: true
+    tags: [contracts, compatibility]
+
+  - id: API-004
+    title: Non-idempotent operations are made idempotent
+    category: api
+    severity: medium
+    status: active
+    version: 1.0.0
+    owner: api-guild
+    description: >
+      Commands that create resources or trigger side effects (orders, payments, webhooks) accept a client
+      request ID (x-requestid) and are deduplicated (e.g. IdentifiedCommand + RequestManager).
+    rationale: >
+      Clients and gateways retry. Without idempotency, retries create duplicate orders and charges.
+    applicability:
+      include: ["src/**/Apis/**/*.cs", "src/**/Application/Commands/**/*.cs"]
+      project_types: [api]
+    checkpoints:
+      pre_commit:  { enabled: false, note: Semantic rules are not evaluated pre-commit. }
+      code_review: { enabled: true, enforcement: warn, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: advisory, scope: changed }
+    validation:
+      mode: semantic
+      validators: [VAL-SEMANTIC-REVIEW]
+      semantic:
+        rubric: >
+          For each new or changed POST/PUT/PATCH/DELETE operation, determine whether a retried request could
+          cause a duplicate side effect. Pass when the operation is naturally idempotent or uses a request ID
+          with deduplication (IdentifiedCommand/RequestManager or equivalent).
+        questions:
+          - Can a retry of this request create a duplicate resource or side effect?
+          - Is a request ID required and validated (x-requestid)?
+          - Is deduplication persisted transactionally with the change?
+        pass_criteria: Every side-effecting operation is idempotent under retry.
+    patterns: [PAT-IDEMPOTENT-COMMAND]
+    required_evidence:
+      - { type: validator_output, checkpoints: [code_review, ci], on_missing: warn }
+    remediation:
+      summary: Require an x-requestid header and wrap the command in IdentifiedCommand handled through RequestManager.
+      steps:
+        - Accept [FromHeader(Name = "x-requestid")] Guid requestId and reject Guid.Empty.
+        - Send new IdentifiedCommand<TCommand, TResult>(command, requestId).
+        - Ensure the request record is stored in the same transaction as the change.
+      references: [src/Ordering.API/Application/Commands/IdentifiedCommandHandler.cs]
+    human_review_required: false
+    tags: [idempotency, retries]

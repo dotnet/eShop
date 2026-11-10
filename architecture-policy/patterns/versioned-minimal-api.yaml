@@ -1,0 +1,40 @@
+kind: Pattern
+schema_version: 1
+id: PAT-VERSIONED-MINIMAL-API
+name: Versioned minimal API group
+category: api
+summary: Endpoints are mapped on a NewVersionedApi route group with explicit API versions.
+intent: Allow contracts to evolve without breaking independently deployed clients.
+rules:
+- API-001
+- API-003
+guidance:
+- One static <Name>Api class with Map<Name>Api(this IEndpointRouteBuilder) per resource.
+- Use HasApiVersion for each supported version and MapToApiVersion for version-specific handlers.
+- Return TypedResults for accurate OpenAPI metadata.
+- Breaking changes introduce a new version; existing versions remain until deprecated.
+exemplars:
+- path: src/Catalog.API/Apis/CatalogApi.cs
+  symbol: CatalogApi.MapCatalogApi
+  description: Versioned group with v1/v2 handlers.
+- path: src/Ordering.API/Apis/OrdersApi.cs
+  symbol: OrdersApi
+  description: Versioned and authorized group.
+examples:
+- id: versioned-group
+  title: Versioned route group
+  kind: approved
+  language: csharp
+  code: |
+    var vApi = app.NewVersionedApi("Catalog");
+    var api = vApi.MapGroup("api/catalog").HasApiVersion(1, 0).HasApiVersion(2, 0);
+    api.MapGet("/items", GetAllItemsV1).MapToApiVersion(1, 0);
+    api.MapGet("/items", GetAllItems).MapToApiVersion(2, 0);
+  explanation: Both versions are served side by side.
+- id: unversioned-route
+  title: Unversioned route
+  kind: anti_pattern
+  language: csharp
+  code: |
+    app.MapGet("/api/items", GetItems);
+  explanation: Any change to the response breaks all clients.

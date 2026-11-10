@@ -1,0 +1,37 @@
+kind: Pattern
+schema_version: 1
+id: PAT-TYPED-HTTP-CLIENT
+name: Typed HttpClient with standard resilience
+category: resiliency
+summary: Outbound HTTP uses typed clients registered with AddHttpClient and service discovery.
+intent: Pool handlers, honor DNS changes and apply central retries, timeouts and circuit breakers.
+rules:
+- RES-001
+guidance:
+- Create a typed client class that receives HttpClient via constructor.
+- Register with AddHttpClient<T>(o => o.BaseAddress = new("https+http://catalog-api")).
+- ServiceDefaults adds AddStandardResilienceHandler to every client.
+exemplars:
+- path: src/WebAppComponents/Services/CatalogService.cs
+  symbol: CatalogService
+  description: Typed client.
+- path: src/WebApp/Services/BasketService.cs
+  symbol: BasketService
+  description: gRPC client wrapper.
+examples:
+- id: typed-client
+  title: Typed client registration
+  kind: approved
+  language: csharp
+  code: |
+    builder.Services.AddHttpClient<CatalogService>(o => o.BaseAddress = new("https+http://catalog-api"))
+        .AddApiVersion(2.0);
+  explanation: Factory-managed handlers with resilience.
+- id: new-httpclient
+  title: new HttpClient()
+  kind: anti_pattern
+  language: csharp
+  code: |
+    using var client = new HttpClient();
+    var json = await client.GetStringAsync("http://catalog-api/api/catalog/items");
+  explanation: Socket exhaustion and no resilience (RES-001).
