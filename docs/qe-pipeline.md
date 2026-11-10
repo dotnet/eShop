@@ -57,6 +57,14 @@ flowchart LR
 
 Agents spawned by the pipeline run with `QE_PIPELINE_CHILD=1`, so their own Stop hooks and git hooks do nothing and cannot recurse.
 
+## Agent definitions for Copilot and Claude Code
+
+`.github/agents/<name>.agent.md` is the single source for every agent, including `implementer`. Copilot reads it directly, and the pipeline builds its prompts from it. `scripts/sync-agents.mjs` renders each one to `.claude/agents/<name>.md`, so you can run the same agent from Claude Code. The generated copies add Claude-only settings from `scripts/agents-claude.json` (read-only tools for the reviewer and the verifiers, `isolation: worktree` for the implementer) and tell the agent to read its lessons file.
+
+- Edit only `.github/agents/`, then run `npm run agents:sync`.
+- If you write a new agent in `.claude/agents/`, `npm run agents:sync` moves it into `.github/agents/` and moves its Claude-only frontmatter to `scripts/agents-claude.json`.
+- CI (`npm run agents:check`) fails when the two folders differ.
+
 ## Verifier loops
 
 - Each round starts a new verifier process whose prompt holds only what it needs: the story and plan for plans; the case files, the tests and the scenario for automation. It cannot see the producer's reasoning or earlier verdicts.
