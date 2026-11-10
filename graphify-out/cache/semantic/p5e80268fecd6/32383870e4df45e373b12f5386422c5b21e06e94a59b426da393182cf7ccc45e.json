@@ -1,1 +1,0 @@
-{"nodes": [{"id": "github_workflows_markdownlint", "label": "Markdownlint Workflow", "file_type": "code", "source_file": ".github/workflows/markdownlint.yml", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Runs even without markdown changes so it can be a required PR check"}], "edges": [], "hyperedges": []}
