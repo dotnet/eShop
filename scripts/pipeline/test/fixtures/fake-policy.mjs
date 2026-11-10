@@ -5,6 +5,11 @@ import fs from 'node:fs';
 
 const file = process.env.PIPELINE_FAKE_POLICY;
 const request = JSON.parse(fs.readFileSync(0, 'utf8'));
+if (process.argv.includes('get_lessons')) {
+  fs.appendFileSync(`${file}.lessons.jsonl`, `${JSON.stringify(request)}\n`);
+  process.stdout.write(JSON.stringify({ agent: request.agent, prompt: process.env.PIPELINE_FAKE_LESSONS ?? '' }));
+  process.exit(0);
+}
 const log = `${file}.requests.jsonl`;
 const n = fs.existsSync(log) ? fs.readFileSync(log, 'utf8').trim().split('\n').filter(Boolean).length : 0;
 fs.appendFileSync(log, `${JSON.stringify(request)}\n`);

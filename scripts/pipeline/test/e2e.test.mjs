@@ -223,13 +223,14 @@ test('the Architecture Policy Pack gates each review round for code agents and l
   const config = JSON.parse(read('scripts/review/config.json'));
   config.review.policy.agent = 'scripts/review/review.mjs';
   config.review.policy.command = [process.execPath, fakePolicy];
+  config.review.policy.lessonsCommand = [process.execPath, fakePolicy, 'get_lessons'];
   write('scripts/review/config.json', JSON.stringify(config, null, 2));
   agentScript({
     'architecture-reviewer': [{ result: { verdict: 'APPROVED', summary: 'ok', findings: [] } }],
     'qe-automation': [{ writeTests: [1, 2, 3], result: { status: 'done' } }],
     'qe-automation-verifier': [{ result: { score: 10, gaps: [] } }],
   });
-  const env = { PIPELINE_FAKE_POLICY: policyFile };
+  const env = { PIPELINE_FAKE_POLICY: policyFile, PIPELINE_FAKE_LESSONS: 'L1: read secrets from configuration (PAT-X).' };
   const stop = (payload = {}) => {
     const r = pipeline(['hook', 'stop'], { input: JSON.stringify(payload), env });
     assert.equal(r.status, 0, r.stderr);
@@ -247,6 +248,9 @@ test('the Architecture Policy Pack gates each review round for code agents and l
     const first = stop({ hook_event_name: 'SubagentStop', agent_type: 'implementer' });
     assert.equal(first.decision, 'block');
     assert.match(first.reason, /round 1\/5 [\s\S]*Architecture Policy Pack: BLOCK[\s\S]*SEC-001 Rule title: violation \(repeat mistake[\s\S]*Approved pattern\(s\): PAT-X/);
+    assert.match(first.reason, /denied for these rules before[\s\S]*L1: read secrets from configuration \(PAT-X\)\./, 'a repeat mistake hands the agent its lessons');
+    assert.deepEqual(JSON.parse(fs.readFileSync(`${policyFile}.lessons.jsonl`, 'utf8')), { agent: 'implementer', limit: 5 });
+    assert.deepEqual(jsonl('arch-reviews.jsonl').at(-1).findings, [{ severity: 'blocking', category: 'security', rule: 'SEC-001', file: 'src/Basket/Coupons.cs', line: 1, issue: 'SEC-001 Rule title: violation (repeat mistake: this agent was denied for this rule before)' }]);
     assert.equal(calls()['architecture-reviewer'], undefined, 'a policy BLOCK ends the round without an LLM review');
     assert.deepEqual([requests()[0].requester, requests()[0].checkpoint], [{ agent: 'implementer', task_id: 'DEMO-1', iteration: 1 }, 'code_review']);
     assert.ok(requests()[0].changed_files.includes('src/Basket/Coupons.cs'));
@@ -258,8 +262,12 @@ test('the Architecture Policy Pack gates each review round for code agents and l
     assert.equal(calls()['architecture-reviewer'], 1);
     assert.deepEqual(jsonl('arch-reviews.jsonl').slice(-2).map((r) => [r.reviewer ?? 'architecture-reviewer', r.verdict]), [['arch-review-agent', 'CHANGES_REQUESTED'], ['architecture-reviewer', 'APPROVED']]);
     await waitFor(() => !['starting', 'running'].includes(stateOf('DEMO-1').automation.status));
+
+    write('.github/agents/lessons/implementer.md', '## L1: Read secrets from configuration\n');
+    assert.match(JSON.parse(pipeline(['hook', 'session-start']).stdout).additionalContext, /Architecture lessons from earlier review denials[\s\S]*L1: Read secrets from configuration/, 'the main session gets the implementer lessons');
   } finally {
-    for (const suffix of ['', '.requests.jsonl']) fs.rmSync(policyFile + suffix, { force: true });
+    for (const suffix of ['', '.requests.jsonl', '.lessons.jsonl']) fs.rmSync(policyFile + suffix, { force: true });
+    fs.rmSync(path.join(repo, '.github/agents/lessons/implementer.md'), { force: true });
   }
 });
 
