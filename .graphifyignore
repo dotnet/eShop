@@ -1,0 +1,27 @@
+# Files graphify skips. Keep the graph to code plus docs that answer code and product
+# questions; everything here is noise for that, and costly to LLM-extract (images).
+# gitignore syntax. .gitignore is also applied.
+
+# Vendored agent skill references (Aspire, Playwright docs)
+.github/skills/
+
+# Generated or test data
+deploy/
+artifacts/
+testing/scenarios/
+
+# Design canvas sources (need the canvas runtime; the README beside them is enough)
+product-research/mockups/**/*.html
+product-research/mockups/**/*.json
+
+# App images, icons and fonts (product photos, UI assets)
+src/Catalog.API/Pics/
+src/**/wwwroot/images/
+src/**/wwwroot/icons/
+src/**/wwwroot/fonts/
+src/**/wwwroot/*.png
+src/ClientApp/Resources/
+src/**/wwwroot/*.jpg
+
+# Placeholder code kept as .txt (not compiled)
+src/**/*.cs.txt

@@ -5,14 +5,18 @@ description: "**REQUIRED WORKFLOW SKILL** - Every e2e test is recorded on video;
 
 # Feature videos from e2e tests
 
-All Playwright e2e tests record video (`use.video` in `playwright.config.ts`, inherited by `playwright.teststack.config.ts`). Videos show the clicked actions (top-right) and the current spec, test and `test.step` (top-left). After each run, `e2e/video-reporter.ts` copies them to:
+All Playwright e2e tests record video (`use.video` in `playwright.config.ts`, inherited by `playwright.teststack.config.ts`). Videos show the clicked actions (top-right) and the current spec, test and `test.step` (top-left). **By default only failed tests keep their video and keyframes.** Set `E2E_KEEP_VIDEOS=1` to keep them for passing tests too, which you need for a demo video (`$env:E2E_KEEP_VIDEOS=1` in PowerShell). After each run, `e2e/video-reporter.ts` copies them to:
 
 ```text
-artifacts/e2e-videos/<project>/<spec>--<test>.webm          # passed
+artifacts/e2e-videos/<project>/<spec>--<test>.webm          # passed (only with E2E_KEEP_VIDEOS=1)
 artifacts/e2e-videos/<project>/<spec>--<test>.failed.webm   # failed: use it to debug, never as proof
 ```
 
-The folder is cleared at the start of each run and is git-ignored. Videos are also attached to the HTML report, and CI uploads them as the `e2e-videos` artifact.
+The folder is moved to `artifacts/e2e-videos-previous/` at the start of each run (so the last run stays available for comparison) and is git-ignored. Videos are also attached to the HTML report, and CI uploads them as the `e2e-videos` artifact.
+
+### Keyframes for agents
+
+Agents can't watch a video, so each recorded test also captures **keyframes**: labeled screenshots at the end of every `test.step` (`step failed: …` if it threw), at each `demo.highlight` and chapter end, and of every open page when the test ends (`final`, or `failure`). They are copied next to the video as `<spec>--<test>[.failed].keyframes/NN-<label>.png`, and `artifacts/e2e-videos/manifest.json` lists every test with its status, error, video and keyframes in order. The QE pipeline feeds them to the automation agent when a test fails and to the automation verifier, which checks that the screen matches each case. When you debug a failing test yourself, read the manifest and open the `failure` and `step failed` frames before changing code. Use `captureKeyframe(label)` from `e2e/fixtures.ts` for a moment that isn't a step.
 
 ## When this is required
 
@@ -40,10 +44,10 @@ Whenever your change affects anything a shopper or admin can see or do in a brow
 4. **Run it:**
 
    ```bash
-   npx playwright test -c playwright.teststack.config.ts <feature>   # or the whole suite: npm run test:e2e:teststack
+   E2E_KEEP_VIDEOS=1 npx playwright test -c playwright.teststack.config.ts <feature>   # or the whole suite: E2E_KEEP_VIDEOS=1 npm run test:e2e:teststack
    ```
 
-   It must pass. If it fails, watch the `.failed.webm` and the trace, fix the feature or the test, and run again.
+   It must pass. If it fails, open the failing test's keyframes (listed in `artifacts/e2e-videos/manifest.json`) and, if needed, the `.failed.webm` and the trace. Fix the feature or the test, and run again.
 
 5. **Report it.** In your final summary to the user:
    - Embed each relevant video with Markdown using its absolute path, for example `![Add to cart](C:\path\to\repo\artifacts\e2e-videos\scenarios\add-to-cart--alice-adds-a-product-to-her-shopping-bag.webm)`.

@@ -1,4 +1,4 @@
-import { test as base, expect, Browser, BrowserContext, BrowserContextOptions, TestInfo, Video } from '@playwright/test';
+import { test as base, expect, Browser, BrowserContext, BrowserContextOptions, Page, TestInfo, TestType, Video } from '@playwright/test';
 
 /**
  * `test` for every e2e spec. Playwright only records video for the built-in `page`/`context` fixtures;
@@ -8,11 +8,59 @@ import { test as base, expect, Browser, BrowserContext, BrowserContextOptions, T
  *   import { test, expect } from '../fixtures';
  *
  * Contexts opened in `beforeAll`/`afterAll` are not recorded: they are setup, not part of a test's flow.
+ *
+ * Agents can't watch a video, so every recorded test also gets keyframes: labelled screenshots taken at
+ * the end of each `test.step`, at each `demo` checkpoint (e2e/demo.ts), and of every open page when the
+ * test ends (`final`, or `failure` when it failed). They are attached as `keyframe: <label>`, and
+ * e2e/video-reporter.ts lists them next to the videos in artifacts/e2e-videos/manifest.json.
  */
 
 type VideoOption = { mode?: string; size?: { width: number; height: number }; show?: { actions?: object } };
 
-let current: { testInfo: TestInfo; contexts: BrowserContext[]; videos: (Video | null)[] } | undefined;
+let current:
+  | { testInfo: TestInfo; contexts: BrowserContext[]; videos: (Video | null)[]; pages: Page[]; manualPages: Set<Page>; frames: number }
+  | undefined;
+
+function keyframeSlug(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'frame';
+}
+
+/** Screenshot `pages` (default: every open page of the current test) and attach them as keyframes. Never throws. */
+export async function captureKeyframe(label: string, pages?: Page[]) {
+  const recording = current;
+  if (!recording || !videoSettings(recording.testInfo)) return;
+  const open = (pages ?? recording.pages).filter(page => !page.isClosed());
+  for (const [i, page] of open.entries()) {
+    const name = open.length > 1 ? `${label} [page ${i + 1}]` : label;
+    const file = recording.testInfo.outputPath('keyframes', `${String(++recording.frames).padStart(2, '0')}-${keyframeSlug(name)}.png`);
+    try {
+      await page.screenshot({ path: file, timeout: 5000, animations: 'disabled', caret: 'initial' });
+      await recording.testInfo.attach(`keyframe: ${name}`, { path: file, contentType: 'image/png' });
+    } catch {
+      // A page that is navigating or crashed is not worth failing the test over.
+    }
+  }
+}
+
+/** Makes `test.step` capture a keyframe when each step ends (labelled `failed` if it threw). */
+export function withStepKeyframes<T extends TestType<any, any>>(testType: T): T {
+  const original = testType.step;
+  const step = original.bind(testType);
+  const wrapped = ((title: string, body: (...args: any[]) => any, options?: any) =>
+    step(title, async (...args: any[]) => {
+      try {
+        const result = await body(...args);
+        await captureKeyframe(`step: ${title}`);
+        return result;
+      } catch (error) {
+        await captureKeyframe(`step failed: ${title}`);
+        throw error;
+      }
+    }, options)) as T['step'];
+  Object.assign(wrapped, original);
+  testType.step = wrapped;
+  return testType;
+}
 
 function videoSettings(testInfo: TestInfo): VideoOption | undefined {
   const video = (testInfo.project.use as { video?: string | VideoOption }).video;
@@ -22,7 +70,13 @@ function videoSettings(testInfo: TestInfo): VideoOption | undefined {
   return settings;
 }
 
-export const test = base.extend<{ _recordManualContexts: void }, { browser: Browser }>({
+export const test = withStepKeyframes(base.extend<{ _recordManualContexts: void }, { browser: Browser }>({
+  page: async ({ page }, use, testInfo) => {
+    current?.pages.push(page);
+    await use(page);
+    await captureKeyframe(testInfo.status === testInfo.expectedStatus ? 'final' : 'failure', [page]);
+  },
+
   browser: [
     async ({ browser }, use) => {
       const newContext = browser.newContext.bind(browser);
@@ -39,7 +93,11 @@ export const test = base.extend<{ _recordManualContexts: void }, { browser: Brow
         });
         const recording = current;
         recording.contexts.push(context);
-        context.on('page', page => recording.videos.push(page.video()));
+        context.on('page', page => {
+          recording.videos.push(page.video());
+          recording.pages.push(page);
+          recording.manualPages.add(page);
+        });
         return context;
       };
       await use(browser);
@@ -52,8 +110,9 @@ export const test = base.extend<{ _recordManualContexts: void }, { browser: Brow
     async ({}, use, testInfo) => {
       const contexts: BrowserContext[] = [];
       const videos: (Video | null)[] = [];
-      current = { testInfo, contexts, videos };
+      current = { testInfo, contexts, videos, pages: [], manualPages: new Set(), frames: 0 };
       await use();
+      await captureKeyframe(testInfo.status === testInfo.expectedStatus ? 'final' : 'failure', [...current.manualPages]);
       current = undefined;
 
       // Videos are only written once their context closes.
@@ -68,6 +127,6 @@ export const test = base.extend<{ _recordManualContexts: void }, { browser: Brow
     },
     { auto: true },
   ],
-});
+}));
 
 export { expect };

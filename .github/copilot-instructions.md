@@ -6,7 +6,7 @@ When the user types `/graphify`, use the installed graphify skill or instruction
 
 Rules:
 - graphify-out/ is built locally (gitignored except the semantic cache). If graphify-out/graph.json is missing, run `scripts/graphify-build.sh` first (no API cost, a few seconds; replays the shared semantic cache), then follow the rules below.
-- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- Always search the codebase with graphify. When graphify-out/graph.json exists, run `graphify query "<question>"` before your first grep, glob, search or source-file read for a codebase question, and put this rule in every subagent prompt that explores code. Read raw files only for lines the graph or an earlier read already located. The `graphify` skill in `.github/skills/graphify/` has the full command reference, and a strict PreToolUse hook in `.claude/settings.json` (which Copilot CLI also loads in trusted folders) blocks the first raw search until you do. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
 - A stale graph is not a reason to skip graphify; refresh it with `graphify update .`. Only skip graphify if the task is about stale or incorrect graph output, or the user explicitly says not to use it.
 - If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
 - Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
@@ -15,10 +15,10 @@ Rules:
 
 ## Feature videos (definition of done)
 
-Every e2e test is recorded on video (`video` in `playwright.config.ts`), and `e2e/video-reporter.ts` copies each one to `artifacts/e2e-videos/<project>/<spec>--<test>.webm` (`.failed.webm` when the test failed). When you implement or change anything a user can see or do in the browser, you are not done until a passing e2e test covers the flow and you have its video. Follow the `feature-demo-video` skill (`.github/skills/feature-demo-video/SKILL.md`):
+Every e2e test is recorded on video (`video` in `playwright.config.ts`). By default only failed tests keep theirs (`artifacts/e2e-videos/<project>/<spec>--<test>.failed.webm`, plus keyframes for agents); set `E2E_KEEP_VIDEOS=1` to keep passing tests' videos (`<spec>--<test>.webm`) too. When you implement or change anything a user can see or do in the browser, you are not done until a passing e2e test covers the flow and you have its video. Follow the `feature-demo-video` skill (`.github/skills/feature-demo-video/SKILL.md`):
 
 1. Add or extend an e2e test for the flow. Prefer a teststack spec (`e2e/teststack/<feature>.spec.ts`, template `e2e/teststack/add-to-cart.spec.ts`) and narrate it with the `demo` fixture from `e2e/demo.ts`. Specs import `test` from `e2e/fixtures.ts` (or `e2e/demo.ts`), never `@playwright/test`, so contexts opened with `browser.newContext()` are recorded too.
-2. Run it: `testing/teststack up`, then `npx playwright test -c playwright.teststack.config.ts <feature>`. It must pass.
+2. Run it: `testing/teststack up`, then `E2E_KEEP_VIDEOS=1 npx playwright test -c playwright.teststack.config.ts <feature>` (PowerShell: `$env:E2E_KEEP_VIDEOS=1` first). It must pass.
 3. Embed the resulting `artifacts/e2e-videos/**/*.webm` (absolute path) in your final summary, and describe what it shows in the PR description. Never commit the videos.
 
 Skip this only for backend-only, docs-only or no-behavior-change work, and say so in your summary.

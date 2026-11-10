@@ -1,5 +1,5 @@
 import { Locator, Page } from '@playwright/test';
-import { test as base, expect } from './fixtures';
+import { captureKeyframe, test as base, expect, withStepKeyframes } from './fixtures';
 
 /**
  * Optional narration for e2e tests. Every e2e test is already recorded on video (see `video` in
@@ -27,14 +27,19 @@ function escapeHtml(value: string) {
 
 export function createDemo(page: Page): Demo & { dispose(): Promise<void> } {
   let currentCaption: { dispose(): Promise<void> | void } | undefined;
+  let currentChapter = '';
   const clearCaption = async () => {
     await currentCaption?.dispose();
     currentCaption = undefined;
   };
 
   return {
-    chapter: (title, description, durationMs = 2500) =>
-      page.screencast.showChapter(title, { description, duration: durationMs }),
+    chapter: async (title, description, durationMs = 2500) => {
+      // Keyframe for agents: how the previous chapter ended, before the title card covers it.
+      if (currentChapter) await captureKeyframe(`end of: ${currentChapter}`, [page]);
+      currentChapter = title;
+      await page.screencast.showChapter(title, { description, duration: durationMs });
+    },
     caption: async text => {
       await clearCaption();
       if (!text) return;
@@ -48,6 +53,8 @@ export function createDemo(page: Page): Demo & { dispose(): Promise<void> } {
       await locator.scrollIntoViewIfNeeded();
       const box = await locator.boundingBox();
       if (!box) throw new Error(`demo.highlight: ${locator} is not visible`);
+      // Keyframe for agents: the element this step proves, before the overlay is drawn.
+      await captureKeyframe(`${currentChapter ? `${currentChapter} - ` : ''}highlight: ${label ?? String(locator)}`, [page]);
       const labelHtml = label
         ? `<div style="position:absolute; top:${box.y + box.height + 8}px; left:${box.x + box.width / 2}px;
             transform:translateX(-50%); padding:6px 12px; border-radius:8px; background:#16a34a; color:#fff;
@@ -68,7 +75,7 @@ export function createDemo(page: Page): Demo & { dispose(): Promise<void> } {
 }
 
 /** `test` with a `demo` fixture that narrates the test's video. */
-export const test = base.extend<{ demo: Demo }>({
+export const test = withStepKeyframes(base.extend<{ demo: Demo }>({
   demo: async ({ page }, use) => {
     const demo = createDemo(page);
     await use(demo);
@@ -76,6 +83,6 @@ export const test = base.extend<{ demo: Demo }>({
     await page.waitForTimeout(500).catch(() => {});
     await demo.dispose().catch(() => {});
   },
-});
+}));
 
 export { expect };

@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "graphify hook-guard search",
+            "command": "graphify hook-guard search --strict",
             "timeout": 10
           }
         ]
@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "graphify hook-guard read",
+            "command": "graphify hook-guard read --strict",
             "timeout": 10
           }
         ]
@@ -30,6 +30,38 @@
             "type": "command",
             "command": "graphify hook-guard compact",
             "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/qe/qe.mjs hook session-start",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/qe/qe.mjs hook stop",
+            "timeout": 1800
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/qe/qe.mjs hook stop",
+            "timeout": 1800
           }
         ]
       }

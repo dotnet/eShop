@@ -57,15 +57,22 @@ if have npm; then npm ci; else echo "npm not found; skipping (only needed for e2
 
 # --- graphify ---
 step "graphify"
-if ! have graphify; then
-  if have pipx; then pipx install "graphifyy==0.9.58"
-  else python3 -m pip install --user --break-system-packages "graphifyy==0.9.58" 2>/dev/null \
-    || python3 -m pip install --user "graphifyy==0.9.58"; fi
+# Pinned: the shared semantic cache folder is keyed by graphify's extraction prompt,
+# which changes between versions. Keep this in sync with scripts/graphify-build.sh.
+GRAPHIFY_VERSION="0.9.105"
+GRAPHIFY_PKG="graphifyy[sql]==$GRAPHIFY_VERSION"
+if ! have graphify || [ "$(graphify --version 2>/dev/null | awk '{print $NF}')" != "$GRAPHIFY_VERSION" ]; then
+  if have uv; then uv tool install --force "$GRAPHIFY_PKG"
+  elif have pipx; then pipx install --force "$GRAPHIFY_PKG"
+  else python3 -m pip install --user --break-system-packages "$GRAPHIFY_PKG" 2>/dev/null \
+    || python3 -m pip install --user "$GRAPHIFY_PKG"; fi
 fi
 have graphify || { echo "ERROR: graphify not on PATH after install" >&2; exit 1; }
-# Agent instructions/hooks are committed; these are idempotent refreshes.
-graphify claude install >/dev/null
-graphify codex install >/dev/null
+# Agent instructions, hooks (strict graphify guard) and the Copilot skill
+# (.github/skills/graphify) are committed. `graphify <platform> install` in the repo
+# would overwrite them, so only refresh user-level skills, from outside the repo.
+(cd "$(mktemp -d)" && graphify install --platform claude >/dev/null && graphify install --platform codex >/dev/null)
+echo "Copilot CLI only loads this repo's hooks in a trusted folder: accept the trust prompt (remember) or add $PWD to trustedFolders in ~/.copilot/config.json"
 git config core.hooksPath .githooks
 chmod +x .githooks/*
 scripts/graphify-build.sh

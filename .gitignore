@@ -506,3 +506,9 @@ graphify-out/cache/*
 # Claude Code personal settings
 .claude/settings.local.json
 /settings.local.json
+
+# QE agent pipeline runtime state (locks, logs, per-story state, escalations)
+.agent-state/
+
+# Claude Code agent worktrees
+.claude/worktrees/

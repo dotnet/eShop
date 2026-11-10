@@ -4,6 +4,9 @@ import path from 'path';
 
 export const STORAGE_STATE = path.join(__dirname, 'playwright/.auth/user.json');
 
+/** Videos and keyframes are kept only for failed tests unless E2E_KEEP_VIDEOS=1 (or true) is set. */
+export const KEEP_VIDEOS = /^(1|true|yes)$/i.test(process.env.E2E_KEEP_VIDEOS ?? '');
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -27,9 +30,9 @@ export default defineConfig({
     trace: 'on-first-retry',
     ...devices['Desktop Chrome'],
 
-    /* Record every test so changes can be verified and demoed. e2e/video-reporter.ts copies the videos to artifacts/e2e-videos/. */
+    /* Record every test so changes can be verified and demoed; passing tests' videos are dropped unless E2E_KEEP_VIDEOS=1. e2e/video-reporter.ts copies the kept videos to artifacts/e2e-videos/. */
     video: {
-      mode: 'on',
+      mode: KEEP_VIDEOS ? 'on' : 'retain-on-failure',
       size: { width: 1280, height: 720 },
       show: {
         actions: { position: 'top-right' },

@@ -9,7 +9,9 @@
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report",
-    "test:e2e:teststack": "playwright test -c playwright.teststack.config.ts"
+    "test:e2e:teststack": "playwright test -c playwright.teststack.config.ts",
+    "qe": "node scripts/qe/qe.mjs",
+    "test:qe": "node --test scripts/qe/test/*.test.mjs"
   },
   "keywords": [],
   "author": "",

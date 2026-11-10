@@ -1,0 +1,89 @@
+{
+  "storiesDir": "product-research/stories",
+  "plansDir": "tests/plans",
+  "scenariosDir": "testing/scenarios",
+  "stateDir": ".agent-state",
+  "metricsDir": ".agent-metrics",
+  "agentsDir": ".github/agents",
+  "lessonsDir": ".github/agents/lessons",
+  "baseRef": "origin/main",
+  "agent": {
+    "cli": "claude",
+    "models": {
+      "default": null,
+      "verifier": null,
+      "reviewer": null,
+      "audit": null
+    }
+  },
+  "loops": {
+    "requiredScore": 10,
+    "consecutivePasses": 1,
+    "planMaxRounds": 5,
+    "automationMaxRounds": 5,
+    "reviewMaxRounds": 5,
+    "verifierParseRetries": 1
+  },
+  "timeoutsSec": {
+    "plan": 1800,
+    "automation": 3600,
+    "verifier": 900,
+    "reviewer": 1200,
+    "lessons": 1200,
+    "tests": 1800
+  },
+  "lessons": {
+    "storyThreshold": 3,
+    "maxRules": 15,
+    "retireAfterStories": 10,
+    "revertMinRounds": 6,
+    "intervalDays": 7,
+    "examplesPerCategory": 5
+  },
+  "testRoots": ["e2e", "tests", "testing/scenarios"],
+  "testExtensions": [".ts", ".cs"],
+  "implExclude": [
+    "tests",
+    "e2e",
+    "testing/scenarios",
+    "product-research",
+    ".agent-metrics",
+    ".agent-state",
+    "graphify-out",
+    ".github/agents/lessons"
+  ],
+  "evidence": {
+    "manifest": "artifacts/e2e-videos/manifest.json"
+  },
+  "precheck": {
+    "runTests": true,
+    "validateScenario": ["testing/teststack", "validate", "{scenario}"],
+    "playwright": ["npx", "playwright", "test", "-c", "playwright.teststack.config.ts", "--grep", "{casePrefix}", "{files}"],
+    "dotnet": ["dotnet", "test", "--project", "{project}", "--", "--filter-trait", "Story={story}"]
+  },
+  "categories": {
+    "plan": [
+      "ac-not-covered",
+      "missing-sad-path",
+      "untestable-expectation",
+      "invented-requirement",
+      "vague-steps",
+      "duplicate-case",
+      "stale-vs-story",
+      "other"
+    ],
+    "automation": [
+      "case-not-covered",
+      "tests-different-path",
+      "wrong-assertion",
+      "missing-assertion",
+      "missing-setup",
+      "over-mocked",
+      "flaky-wait",
+      "wrong-layer",
+      "visual-mismatch",
+      "other"
+    ],
+    "sadPathSubtypes": ["validation", "auth", "ownership", "not-found", "boundary", "concurrency", "conflict", "dependency-failure"]
+  }
+}
