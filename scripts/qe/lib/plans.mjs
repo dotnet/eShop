@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fsReader } from './git.mjs';
-import { caseIdsIn, storySha } from './stories.mjs';
-import { parseFrontMatter, sha, stringifyFrontMatter } from './util.mjs';
+import { fsReader } from '../../pipeline/lib/git.mjs';
+import { caseIdsIn, storySha } from '../../pipeline/lib/stories.mjs';
+import { parseFrontMatter, sha, stringifyFrontMatter } from '../../pipeline/lib/util.mjs';
 
 export const INDEX = '_index.md';
 const SECTIONS = ['Preconditions', 'Steps', 'Expected result'];

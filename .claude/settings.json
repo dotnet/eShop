@@ -38,7 +38,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node scripts/qe/qe.mjs hook session-start",
+            "command": "node scripts/pipeline/pipeline.mjs hook session-start",
             "timeout": 30
           }
         ]
@@ -49,7 +49,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node scripts/qe/qe.mjs hook stop",
+            "command": "node scripts/pipeline/pipeline.mjs hook stop",
             "timeout": 1800
           }
         ]
@@ -60,7 +60,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node scripts/qe/qe.mjs hook stop",
+            "command": "node scripts/pipeline/pipeline.mjs hook stop",
             "timeout": 1800
           }
         ]

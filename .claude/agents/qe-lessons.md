@@ -34,7 +34,7 @@ When a case expects a validation error, assert the status code **and** the `erro
 
 Edit only the lessons files named in the task. Do not run git. End your final message with:
 
-`QE_RESULT: {"status": "done"}`
+`AGENT_RESULT: {"status": "done"}`
 
 ## Lessons
 

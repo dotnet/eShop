@@ -1,0 +1,20 @@
+{
+  "stages": [
+    {
+      "name": "review",
+      "description": "Architecture review of the implementation, looping with the implementation agent until approved",
+      "cli": "scripts/review/review.mjs",
+      "hooks": ["story-start", "stop", "session-start"],
+      "gitHooks": [],
+      "commands": ["status", "metrics"]
+    },
+    {
+      "name": "qe",
+      "description": "Verified test plans from stories and verified automated tests once the review approves",
+      "cli": "scripts/qe/qe.mjs",
+      "hooks": ["story-start", "stop", "session-start"],
+      "gitHooks": ["post-commit", "post-merge", "pre-push"],
+      "commands": ["status", "metrics"]
+    }
+  ]
+}

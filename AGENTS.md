@@ -15,10 +15,10 @@ Rules:
 - After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
 - graphify-out/cache/semantic/ is committed and shared, so everyone gets the LLM-extracted doc/image nodes without an API key. After adding or changing docs or images (.md, .pdf, diagrams), run `scripts/graphify-build.sh --extract` and commit only the new files under graphify-out/cache/semantic/. Never commit anything else in graphify-out/.
 
-## QE pipeline
+## AI development pipeline
 
-Stories are tested through the agent pipeline described in `docs/qe-pipeline.md`.
+Stories go through the agent pipeline described in `docs/ai-pipeline/README.md` (architecture review, then QE test plans and automated tests).
 
-- When you start implementing a story, run `node scripts/qe/qe.mjs start <KEY>` (for example `PROMO-3`).
-- When your line of work for that story is complete, run `node scripts/qe/qe.mjs done` before you finish. The Stop hook then runs an architecture review. If it blocks with findings, fix them and finish again; tests are written automatically after approval.
+- When you start implementing a story, run `node scripts/pipeline/pipeline.mjs start <KEY>` (for example `PROMO-3`).
+- When your line of work for that story is complete, run `node scripts/pipeline/pipeline.mjs done` before you finish. The Stop hook then runs an architecture review. If it blocks with findings, fix them and finish again; tests are written automatically after approval.
 - Do not edit `tests/plans/`, `.agent-metrics/` or `.github/agents/lessons/` by hand; the pipeline owns them. Commit them together with the work they describe.

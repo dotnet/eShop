@@ -1,0 +1,25 @@
+{
+  "storiesDir": "product-research/stories",
+  "stateDir": ".agent-state",
+  "metricsDir": ".agent-metrics",
+  "agentsDir": ".github/agents",
+  "lessonsDir": ".github/agents/lessons",
+  "baseRef": "origin/main",
+  "agent": {
+    "cli": "claude",
+    "models": {
+      "default": null
+    },
+    "resultParseRetries": 1
+  },
+  "implExclude": [
+    "tests",
+    "e2e",
+    "testing/scenarios",
+    "product-research",
+    ".agent-metrics",
+    ".agent-state",
+    "graphify-out",
+    ".github/agents/lessons"
+  ]
+}

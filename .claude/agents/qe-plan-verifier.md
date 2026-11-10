@@ -31,7 +31,7 @@ You are an independent reviewer with no stake in the plan. You see only the stor
 
 Think it through, then end your final message with one line (valid JSON, no code fence):
 
-`QE_RESULT: {"score": <0-10>, "summary": "<one sentence>", "gaps": [{"case": "<case id or null for plan-wide>", "category": "<category>", "subtype": "<optional>", "detail": "<what is wrong and what the plan must contain instead>", "location": "<file or story section>"}]}`
+`AGENT_RESULT: {"score": <0-10>, "summary": "<one sentence>", "gaps": [{"case": "<case id or null for plan-wide>", "category": "<category>", "subtype": "<optional>", "detail": "<what is wrong and what the plan must contain instead>", "location": "<file or story section>"}]}`
 
 ## Lessons
 

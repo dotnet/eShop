@@ -32,7 +32,7 @@ If the case itself is ambiguous, contradictory or untestable, report it with `"r
 
 Think it through, then end your final message with one line (valid JSON, no code fence):
 
-`QE_RESULT: {"score": <0-10>, "summary": "<one sentence>", "gaps": [{"case": "<case id>", "category": "<category>", "subtype": "<optional>", "detail": "<what the test does, what the case requires>", "location": "<file:line>", "root_stage": "plan (only when the case is at fault)"}]}`
+`AGENT_RESULT: {"score": <0-10>, "summary": "<one sentence>", "gaps": [{"case": "<case id>", "category": "<category>", "subtype": "<optional>", "detail": "<what the test does, what the case requires>", "location": "<file:line>", "root_stage": "plan (only when the case is at fault)"}]}`
 
 ## Lessons
 

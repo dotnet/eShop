@@ -7,8 +7,11 @@ export const sha = (text, length = 12) => createHash('sha256').update(text).dige
 
 export const nowIso = () => new Date().toISOString();
 
+let logTag = 'pipeline';
+export const setLogTag = (tag) => (logTag = tag);
+
 export function log(...args) {
-  process.stderr.write(`[qe] ${args.join(' ')}\n`);
+  process.stderr.write(`[${logTag}] ${args.join(' ')}\n`);
 }
 
 export function run(cmd, args, { cwd, input, env, timeoutSec, allowFail = true } = {}) {
@@ -118,9 +121,9 @@ function formatScalar(value) {
   return String(value);
 }
 
-// Agents end their final message with `QE_RESULT: {json}`. Take the last marker and parse the
+// Agents end their final message with `AGENT_RESULT: {json}`. Take the last marker and parse the
 // balanced JSON object that follows it (it may span several lines or sit in a code fence).
-export function extractResult(text, marker = 'QE_RESULT') {
+export function extractResult(text, marker = 'AGENT_RESULT') {
   const index = text.lastIndexOf(`${marker}:`);
   if (index < 0) return null;
   const start = text.indexOf('{', index);

@@ -1,5 +1,5 @@
-// End-to-end runs of both workflows in a throwaway git repo, with a scripted fake agent CLI
-// standing in for Claude/Copilot/Codex (QE_AGENT_CMD).
+// End-to-end runs of the pipeline (dispatcher, review and QE stages) in a throwaway git repo, with a
+// scripted fake agent CLI standing in for Claude/Copilot/Codex (PIPELINE_AGENT_CMD).
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -38,17 +38,19 @@ function agentScript(script) {
 const calls = () => (fs.existsSync(`${scriptFile}.calls.json`) ? JSON.parse(fs.readFileSync(`${scriptFile}.calls.json`, 'utf8')) : {});
 const prompts = () => fs.readFileSync(`${scriptFile}.prompts.log`, 'utf8');
 
-function qe(args, { input = '', env = {} } = {}) {
+function cli(script, args, { input = '', env = {} } = {}) {
   const base = { ...process.env };
-  delete base.QE_PIPELINE_CHILD;
-  delete base.QE_DISABLE;
-  return spawnSync(process.execPath, ['scripts/qe/qe.mjs', ...args], {
+  delete base.PIPELINE_CHILD;
+  delete base.PIPELINE_DISABLE;
+  return spawnSync(process.execPath, [script, ...args], {
     cwd: repo,
     input,
     encoding: 'utf8',
-    env: { ...base, QE_AGENT_CMD: `"${process.execPath}" "${fakeAgent}"`, QE_FAKE_SCRIPT: scriptFile, QE_BASE_REF: 'main', ...env },
+    env: { ...base, PIPELINE_AGENT_CMD: `"${process.execPath}" "${fakeAgent}"`, PIPELINE_FAKE_SCRIPT: scriptFile, PIPELINE_BASE_REF: 'main', ...env },
   });
 }
+const qe = (args, opts) => cli('scripts/qe/qe.mjs', args, opts);
+const pipeline = (args, opts) => cli('scripts/pipeline/pipeline.mjs', args, opts);
 
 async function waitFor(predicate, timeoutMs = 30_000) {
   const start = Date.now();
@@ -66,7 +68,9 @@ const happySad = [{ title: 'Valid coupon applies', type: 'happy' }, { title: 'Ex
 before(() => {
   repo = fs.mkdtempSync(path.join(os.tmpdir(), 'qe-e2e-'));
   scriptFile = path.join(repo, '..', `${path.basename(repo)}-agent.json`);
-  fs.cpSync(path.join(source, 'scripts/qe'), path.join(repo, 'scripts/qe'), { recursive: true, filter: (p) => !p.startsWith(path.join(source, 'scripts/qe/test')) });
+  for (const dir of ['scripts/pipeline', 'scripts/review', 'scripts/qe']) {
+    fs.cpSync(path.join(source, dir), path.join(repo, dir), { recursive: true, filter: (p) => !p.startsWith(path.join(source, dir, 'test')) });
+  }
   fs.cpSync(path.join(source, '.github/agents'), path.join(repo, '.github/agents'), { recursive: true });
   const config = JSON.parse(read('scripts/qe/config.json'));
   config.precheck.runTests = false;
@@ -122,9 +126,9 @@ test('workflow 1: plan loops with a fresh verifier until 10/10, logs denials, an
   const check = qe(['check', '--changed-from', 'main']);
   assert.equal(check.status, 1);
   assert.match(check.stdout, /FAIL DEMO-1 +plan=stale/);
-  const prePush = qe(['check', '--pre-push'], { input: `refs/heads/feature/DEMO-1 ${gitc('rev-parse', 'HEAD').stdout.trim()} refs/heads/feature/DEMO-1 0000000000000000000000000000000000000000\n` });
+  const prePush = pipeline(['git-hook', 'pre-push'], { input: `refs/heads/feature/DEMO-1 ${gitc('rev-parse', 'HEAD').stdout.trim()} refs/heads/feature/DEMO-1 0000000000000000000000000000000000000000\n` });
   assert.equal(prePush.status, 1);
-  assert.equal(qe(['check', '--pre-push'], { input: 'x', env: { QE_SKIP: '1' } }).status, 0);
+  assert.equal(pipeline(['git-hook', 'pre-push'], { input: 'x', env: { QE_SKIP: '1' } }).status, 0);
 
   // Update in place: the agent gets the story diff.
   agentScript({ 'qe-plan': [{ writePlan: [...happySad, { title: 'Combined coupons rejected', type: 'sad' }] }], 'qe-plan-verifier': [{ result: { score: 10, gaps: [] } }] });
@@ -136,7 +140,7 @@ test('workflow 1: plan loops with a fresh verifier until 10/10, logs denials, an
   assert.equal(qe(['check', '--changed-from', 'main']).status, 0);
 });
 
-test('workflow 2: Stop hook gates on review, then automation loops to 10/10 and routes plan-level gaps back to the plan agent', async () => {
+test('workflow 2: the dispatcher runs the review stage first, then automation loops to 10/10 and routes plan-level gaps back to the plan agent', async () => {
   const blocking = { verdict: 'CHANGES_REQUESTED', summary: 'bypasses ownership check', findings: [{ severity: 'blocking', category: 'security', file: 'src/Basket/Coupons.cs', line: 1, issue: 'no owner check', fix: 'check buyer id' }] };
   agentScript({
     'architecture-reviewer': [{ result: blocking }, { result: { verdict: 'APPROVED', summary: 'ok', findings: [] } }],
@@ -149,24 +153,27 @@ test('workflow 2: Stop hook gates on review, then automation loops to 10/10 and 
     'qe-plan-verifier': [{ result: { score: 10, gaps: [] } }],
   });
   const stop = (payload = {}, env) => {
-    const r = qe(['hook', 'stop'], { input: JSON.stringify(payload), env });
+    const r = pipeline(['hook', 'stop'], { input: JSON.stringify(payload), env });
     assert.equal(r.status, 0, r.stderr);
     return r.stdout ? JSON.parse(r.stdout) : null;
   };
 
-  assert.equal(qe(['start', 'DEMO-1']).status, 0);
-  const context = JSON.parse(qe(['hook', 'session-start']).stdout);
-  assert.match(context.additionalContext, /active story DEMO-1/, 'Copilot reads only the top-level key');
+  const start = pipeline(['start', 'DEMO-1']);
+  assert.equal(start.status, 0, start.stderr);
+  assert.match(start.stdout, /Active story: DEMO-1\.\nTest plan for DEMO-1: verified/, 'stages report on story-start');
+  const context = JSON.parse(pipeline(['hook', 'session-start']).stdout);
+  assert.match(context.additionalContext, /active story DEMO-1[\s\S]*Architecture review for DEMO-1: not run[\s\S]*QE for DEMO-1: plan verified/, 'Copilot reads only the top-level key; every stage contributes');
   assert.equal(context.hookSpecificOutput.additionalContext, context.additionalContext);
-  assert.deepEqual(Object.keys(JSON.parse(qe(['hook', 'session-start', '--nested']).stdout)), ['hookSpecificOutput'], 'Codex rejects unknown keys');
+  assert.deepEqual(Object.keys(JSON.parse(pipeline(['hook', 'session-start', '--nested']).stdout)), ['hookSpecificOutput'], 'Codex rejects unknown keys');
   write('src/Basket/Coupons.cs', '// coupons v2\n');
   assert.equal(stop(), null, 'no review until the agent declares the work done');
-  assert.equal(stop({}, { QE_PIPELINE_CHILD: '1' }), null);
-  assert.equal(qe(['done']).status, 0);
-  assert.equal(stop({}, { QE_PIPELINE_CHILD: '1' }), null, 'pipeline child agents never trigger the hook');
+  assert.equal(stop({}, { PIPELINE_CHILD: '1' }), null);
+  assert.equal(pipeline(['done']).status, 0);
+  assert.equal(stop({}, { PIPELINE_CHILD: '1' }), null, 'pipeline child agents never trigger the hook');
 
   const first = stop();
   assert.equal(first.decision, 'block');
+  assert.equal(stateOf('DEMO-1').automation.status, 'idle', 'a blocking review stops the dispatcher before the QE stage');
   assert.match(first.reason, /round 1\/5 .*requested changes[\s\S]*no owner check[\s\S]*Fix: check buyer id/);
   assert.equal(stop().decision, 'block', 'blocks once more if nothing changed');
   assert.match(stop().systemMessage, /still has unresolved architecture findings/);
@@ -174,7 +181,7 @@ test('workflow 2: Stop hook gates on review, then automation loops to 10/10 and 
 
   write('src/Basket/Coupons.cs', '// coupons v3 with owner check\n');
   const approved = stop({ stop_hook_active: true });
-  assert.match(approved.systemMessage, /approved DEMO-1 \(round 2\)\. Test automation started/);
+  assert.match(approved.systemMessage, /approved DEMO-1 \(round 2\)\.\nQE: test automation for DEMO-1 started in the background/);
   await waitFor(() => !['starting', 'running'].includes(stateOf('DEMO-1').automation.status));
 
   const state = stateOf('DEMO-1');
@@ -192,14 +199,15 @@ test('workflow 2: Stop hook gates on review, then automation loops to 10/10 and 
   assert.deepEqual(jsonl('arch-reviews.jsonl').map((r) => r.verdict), ['CHANGES_REQUESTED', 'APPROVED']);
 
   assert.match(read(`${PLAN}/_index.md`), /automation-score: 10/);
-  assert.match(qe(['status', 'DEMO-1']).stdout, /plan=verified .*tests=1 +automation=verified\/verified review=APPROVED/);
+  assert.match(pipeline(['status', 'DEMO-1']).stdout, /\[review\]\nDEMO-1 +review=APPROVED[\s\S]*\[qe\]\nDEMO-1 +plan=verified .*tests=1 +automation=verified\/verified/);
   assert.equal(stop(), null, 'approved and verified: nothing left to do');
 
   // Editing a verified test invalidates the stamp so CI and pre-push catch it.
   write('e2e/teststack/demo-1.spec.ts', `${read('e2e/teststack/demo-1.spec.ts')}// tweak\n`);
   assert.match(qe(['check', '--all']).stdout, /FAIL DEMO-1 .*tests or scenario edited after verification/);
 
-  const metrics = JSON.parse(qe(['metrics', '--json']).stdout);
-  assert.equal(metrics.crossStage.automationDenialsCausedByPlan, 1);
-  assert.equal(metrics.stages.automation.verifierRounds, 2);
+  const metrics = JSON.parse(pipeline(['metrics', '--json']).stdout);
+  assert.equal(metrics.qe.crossStage.automationDenialsCausedByPlan, 1);
+  assert.equal(metrics.qe.stages.automation.verifierRounds, 2);
+  assert.deepEqual([metrics.review.rounds, metrics.review.approvals, metrics.review.findingsByCategory.security], [2, 1, 1]);
 });
