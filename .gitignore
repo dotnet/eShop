@@ -512,3 +512,4 @@ graphify-out/cache/*
 
 # Claude Code agent worktrees
 .claude/worktrees/
+src/eShop.AppHost/NUL
