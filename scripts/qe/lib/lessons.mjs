@@ -1,13 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { runAgent } from './agents.mjs';
-import { git, revExists } from './git.mjs';
+import { runAgent } from '../../pipeline/lib/agents.mjs';
+import { git, revExists } from '../../pipeline/lib/git.mjs';
 import { AGENT_STAGE, categoryStats, loadMetrics } from './metrics.mjs';
 import { automationStatus, planStatus } from './plans.mjs';
-import { automationVerifierTaskFor, planVerifierTaskFor } from './pipeline.mjs';
-import { stateDir } from './state.mjs';
-import { listStories } from './stories.mjs';
-import { appendJsonl, log, nowIso, readJson, run, writeJson } from './util.mjs';
+import { automationVerifierTaskFor, planVerifierTaskFor } from './workflows.mjs';
+import { stateDir } from '../../pipeline/lib/state.mjs';
+import { listStories } from '../../pipeline/lib/stories.mjs';
+import { appendJsonl, log, nowIso, readJson, run, writeJson } from '../../pipeline/lib/util.mjs';
 import { VERIFIER, metricsFile, runVerifier } from './verify.mjs';
 
 const RULE = /^##\s+(L\d+)[:.]?\s*(.*)$/;

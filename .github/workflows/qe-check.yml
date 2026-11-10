@@ -1,21 +1,18 @@
-name: QE pipeline
+name: QE check
 
 permissions:
   contents: read
 
-# Enforces the QE agent pipeline without calling any LLM:
+# QE stage gate, called by ai-pipeline.yml:
 # - stories changed in the PR have a test plan that passed the plan verifier (10/10) for the current story text
 # - automated tests and scenarios for those stories passed the automation verifier and were not edited afterwards
 on:
-  pull_request:
-    paths:
-      - 'product-research/stories/**'
-      - 'tests/**'
-      - 'e2e/**'
-      - 'testing/scenarios/**'
-      - 'scripts/qe/**'
-      - '.github/agents/**'
-      - '.github/workflows/qe-pipeline.yml'
+  workflow_call:
+    inputs:
+      base-ref:
+        description: Ref to diff against, for example origin/main
+        type: string
+        required: true
 
 jobs:
   check:
@@ -27,7 +24,7 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: 20.x
-    - name: Pipeline unit and end-to-end tests
-      run: node --test scripts/qe/test/*.test.mjs
     - name: Story plans and tests are verifier-approved
-      run: node scripts/qe/qe.mjs check --changed-from origin/${{ github.base_ref }}
+      env:
+        BASE_REF: ${{ inputs.base-ref }}
+      run: node scripts/qe/qe.mjs check --changed-from "$BASE_REF"

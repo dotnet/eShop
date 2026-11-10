@@ -25,10 +25,10 @@ Every e2e test is recorded on video (`video` in `playwright.config.ts`). By defa
 
 Skip this only for backend-only, docs-only or no-behavior-change work, and say so in your summary.
 
-## QE pipeline
+## AI development pipeline
 
-Stories are tested through the agent pipeline described in `docs/qe-pipeline.md`.
+Stories go through the agent pipeline described in `docs/ai-pipeline/README.md` (architecture review, then QE test plans and automated tests).
 
-- When you start implementing a story, run `node scripts/qe/qe.mjs start <KEY>` (for example `PROMO-3`).
-- When your line of work for that story is complete, run `node scripts/qe/qe.mjs done` before you finish. The Stop hook then runs an architecture review. If it blocks with findings, fix them and finish again; tests are written automatically after approval.
+- When you start implementing a story, run `node scripts/pipeline/pipeline.mjs start <KEY>` (for example `PROMO-3`).
+- When your line of work for that story is complete, run `node scripts/pipeline/pipeline.mjs done` before you finish. The Stop hook then runs an architecture review. If it blocks with findings, fix them and finish again; tests are written automatically after approval.
 - Do not edit `tests/plans/`, `.agent-metrics/` or `.github/agents/lessons/` by hand; the pipeline owns them. Commit them together with the work they describe.

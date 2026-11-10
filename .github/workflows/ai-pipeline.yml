@@ -1,0 +1,47 @@
+name: AI pipeline
+
+permissions:
+  contents: read
+
+# Checks the AI development pipeline without calling any LLM: the dispatcher and every stage pass their
+# tests, the Claude agent copies match .github/agents, then each stage's own pull request gate runs.
+on:
+  pull_request:
+    paths:
+      - 'product-research/stories/**'
+      - 'tests/**'
+      - 'e2e/**'
+      - 'testing/scenarios/**'
+      - 'scripts/pipeline/**'
+      - 'scripts/review/**'
+      - 'scripts/qe/**'
+      - 'scripts/hooks/**'
+      - '.github/agents/**'
+      - '.claude/agents/**'
+      - '.claude/settings.json'
+      - '.codex/**'
+      - '.gemini/**'
+      - '.githooks/**'
+      - 'scripts/sync-agents.mjs'
+      - 'scripts/agents-claude.json'
+      - '.github/workflows/ai-pipeline.yml'
+      - '.github/workflows/qe-check.yml'
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+    - name: Claude agents match .github/agents
+      run: node scripts/sync-agents.mjs --check
+    - name: Dispatcher and stage tests (fake agent, no LLM)
+      run: node --test scripts/*/test/*.test.mjs
+
+  qe:
+    needs: pipeline
+    uses: ./.github/workflows/qe-check.yml
+    with:
+      base-ref: origin/${{ github.base_ref }}

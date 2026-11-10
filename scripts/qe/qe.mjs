@@ -1,23 +1,17 @@
 #!/usr/bin/env node
-// QE agent pipeline. See docs/qe-pipeline.md.
-import fs from 'node:fs';
-import path from 'node:path';
-import { isDisabled, loadConfig } from './lib/config.mjs';
-import { changedFiles, fsReader, git, gitReader, mergeBase, implChanges, revExists } from './lib/git.mjs';
+// QE stage of the AI pipeline: verified test plans and automated tests. See docs/ai-pipeline/qe.md.
+import { parseArgs as parse, readPayload, readStdin, requireStory, runMain } from '../pipeline/lib/cli.mjs';
+import { isDisabled, loadConfig } from '../pipeline/lib/config.mjs';
+import { changedFiles, fsReader, git, gitReader, mergeBase, revExists } from '../pipeline/lib/git.mjs';
+import { loadState } from '../pipeline/lib/state.mjs';
+import { CASE_ID, activeStory, listStories, storiesFromPaths } from '../pipeline/lib/stories.mjs';
+import { log, setLogTag } from '../pipeline/lib/util.mjs';
 import { calibrateCommand, lessonsCommand } from './lib/lessons.mjs';
 import { computeMetrics, formatMetrics } from './lib/metrics.mjs';
-import {
-  architectureReview,
-  automationLoop,
-  hookStop,
-  planLoop,
-  sessionContext,
-  spawnBackground,
-} from './lib/pipeline.mjs';
 import { automationFiles, automationStatus, planStatus } from './lib/plans.mjs';
-import { loadState, stateDir, updateState } from './lib/state.mjs';
-import { CASE_ID, activeStory, listStories, resolveStory, storiesFromPaths } from './lib/stories.mjs';
-import { log, nowIso } from './lib/util.mjs';
+import { automationLoop, hookStop, planLoop, sessionContext, spawnQe } from './lib/workflows.mjs';
+
+setLogTag('qe');
 
 const USAGE = `Usage: node scripts/qe/qe.mjs <command> [options]
 
@@ -25,10 +19,7 @@ Workflow 1 (story -> verified test plan)
   plan <story...> | --stale | --all [--force] [--background]
   check [--changed-from <ref>] [--rev <rev>] [--all] [--pre-push]
 
-Workflow 2 (implementation -> architecture review -> verified automated tests)
-  start <story>                 set the story the implementation agent is working on
-  done [story]                  mark the line of work complete (the Stop hook then reviews it)
-  review [story]                run one architecture review now and print the verdict
+Workflow 2 (review-approved implementation -> verified automated tests)
   automate <story> [--impl-hash <h>] [--skip-tests] [--background]
   status [story]
 
@@ -37,46 +28,12 @@ Observability and improvement
   lessons [--dry-run] [--local] [--if-due] [--no-push]
   calibrate [--stage plan|automation] [--sample <n>]
 
-Hooks (called by agent and git hooks)
-  hook stop | hook session-start
-  git-hook post-commit | git-hook post-merge`;
-
-function parseArgs(argv) {
-  const positional = [];
-  const flags = {};
-  for (let i = 0; i < argv.length; i++) {
-    const arg = argv[i];
-    if (!arg.startsWith('--')) {
-      positional.push(arg);
-      continue;
-    }
-    const [key, inline] = arg.slice(2).split('=', 2);
-    if (inline !== undefined) flags[key] = inline;
-    else if (argv[i + 1] && !argv[i + 1].startsWith('--') && VALUE_FLAGS.has(key)) flags[key] = argv[++i];
-    else flags[key] = true;
-  }
-  return { positional, flags };
-}
+Hooks (called by scripts/pipeline/pipeline.mjs)
+  hook stop | hook session-start | hook story-start <story>
+  git-hook post-commit | post-merge | pre-push`;
 
 const VALUE_FLAGS = new Set(['changed-from', 'rev', 'impl-hash', 'since', 'stage', 'sample']);
-
-function readStdin() {
-  if (process.stdin.isTTY) return '';
-  try {
-    return fs.readFileSync(0, 'utf8');
-  } catch {
-    return '';
-  }
-}
-
-function requireStory(config, arg, { fallbackActive = false } = {}) {
-  const story = arg ? resolveStory(config, arg) : fallbackActive ? activeStory(config) : null;
-  if (!story) {
-    console.error(arg ? `Unknown story "${arg}".` : 'No story given and no active story (run `qe start <story>` or use a branch named after the story).');
-    process.exit(2);
-  }
-  return story;
-}
+const parseArgs = (argv) => parse(argv, VALUE_FLAGS);
 
 // Stories touched by a set of changed paths: the story file, its plan, or tests carrying its case ids.
 function touchedStories(config, paths, reader) {
@@ -105,6 +62,21 @@ function checkStories(config, stories, reader, { allowMissing = false } = {}) {
   return failed;
 }
 
+// Plans and tests for every story touched by the pushed commits must be verified and current.
+function prePush(config, input) {
+  if (process.env.QE_SKIP === '1') return 0;
+  let failed = 0;
+  for (const line of input.split('\n').filter(Boolean)) {
+    const [, localSha, , remoteSha] = line.split(' ');
+    if (!localSha || /^0+$/.test(localSha)) continue;
+    const from = /^0+$/.test(remoteSha ?? '') || !revExists(config.root, remoteSha) ? mergeBase(config.root, config.baseRef) : remoteSha;
+    const reader = gitReader(config.root, localSha);
+    failed += checkStories(config, touchedStories(config, changedFiles(config.root, from, localSha), reader), reader);
+  }
+  if (failed) console.error('\nQE: push blocked. Run `node scripts/qe/qe.mjs plan <story>` (and commit the plan) or re-run `automate`. Bypass once with QE_SKIP=1.');
+  return failed ? 1 : 0;
+}
+
 async function main() {
   const [command, ...rest] = process.argv.slice(2);
   const { positional, flags } = parseArgs(rest);
@@ -112,13 +84,14 @@ async function main() {
     console.log(USAGE);
     return 0;
   }
-  const config = loadConfig();
+  const config = loadConfig('qe');
+  if (process.env.QE_REQUIRED_SCORE) config.loops.requiredScore = Number(process.env.QE_REQUIRED_SCORE);
 
   switch (command) {
     case 'plan': {
       if (flags.background) {
         const args = ['plan', ...positional, ...Object.keys(flags).filter((f) => f !== 'background').map((f) => `--${f}`)];
-        const bg = spawnBackground(config, positional[0] ?? 'batch', 'plan', args);
+        const bg = spawnQe(config, positional[0] ?? 'batch', 'plan', args);
         console.log(`Plan run started in the background (pid ${bg.pid}, log ${bg.log}).`);
         return 0;
       }
@@ -145,20 +118,7 @@ async function main() {
     case 'check': {
       let reader = fsReader(config.root);
       let stories;
-      if (flags['pre-push']) {
-        if (process.env.QE_SKIP === '1') return 0;
-        let failed = 0;
-        for (const line of readStdin().split('\n').filter(Boolean)) {
-          const [, localSha, , remoteSha] = line.split(' ');
-          if (!localSha || /^0+$/.test(localSha)) continue;
-          const from = /^0+$/.test(remoteSha ?? '') || !revExists(config.root, remoteSha) ? mergeBase(config.root, config.baseRef) : remoteSha;
-          reader = gitReader(config.root, localSha);
-          stories = touchedStories(config, changedFiles(config.root, from, localSha), reader);
-          failed += checkStories(config, stories, reader);
-        }
-        if (failed) console.error('\nQE: push blocked. Run `node scripts/qe/qe.mjs plan <story>` (and commit the plan) or re-run `automate`. Bypass once with QE_SKIP=1.');
-        return failed ? 1 : 0;
-      }
+      if (flags['pre-push']) return prePush(config, readStdin());
       if (flags.rev) reader = gitReader(config.root, flags.rev);
       if (flags.all) {
         stories = listStories(config, reader);
@@ -174,39 +134,11 @@ async function main() {
       return checkStories(config, stories, reader) ? 1 : 0;
     }
 
-    case 'start': {
-      const story = requireStory(config, positional[0]);
-      fs.mkdirSync(stateDir(config), { recursive: true });
-      fs.writeFileSync(path.join(stateDir(config), 'active-story'), `${story.key}\n`);
-      updateState(config, story.key, (s) => {
-        s.done = null;
-        Object.assign(s.review, { rounds: 0, lastHash: null, lastVerdict: null, lastReason: null, unchangedBlocks: 0 });
-      });
-      const plan = planStatus(config, story);
-      console.log(`Active story: ${story.key}. Plan: ${plan.state}. Run \`node scripts/qe/qe.mjs done\` when the line of work is complete.`);
-      return 0;
-    }
-
-    case 'done': {
-      const story = requireStory(config, positional[0], { fallbackActive: true });
-      const { hash, files } = implChanges(config);
-      updateState(config, story.key, (s) => (s.done = { at: nowIso(), hash }));
-      console.log(`${story.key} marked complete (${files.length} implementation file(s) changed). The architecture review runs when this agent turn ends.`);
-      return 0;
-    }
-
-    case 'review': {
-      const story = requireStory(config, positional[0], { fallbackActive: true });
-      const state = loadState(config, story.key);
-      console.log(JSON.stringify(architectureReview(config, story, state.review.rounds + 1), null, 2));
-      return 0;
-    }
-
     case 'automate': {
       const story = requireStory(config, positional[0], { fallbackActive: true });
       if (flags.background) {
         const args = ['automate', story.key, ...(flags['impl-hash'] ? ['--impl-hash', flags['impl-hash']] : []), ...(flags['skip-tests'] ? ['--skip-tests'] : [])];
-        const bg = spawnBackground(config, story.key, 'automation', args);
+        const bg = spawnQe(config, story.key, 'automation', args);
         console.log(`Automation started in the background (pid ${bg.pid}, log ${bg.log}).`);
         return 0;
       }
@@ -223,8 +155,7 @@ async function main() {
         const automation = automationStatus(config, story);
         const state = loadState(config, story.key);
         const tests = automationFiles(config, story).tests.size;
-        console.log(`${story.key.padEnd(10)} plan=${plan.state.padEnd(10)} cases=${String(plan.plan.cases.length).padEnd(3)} tests=${String(tests).padEnd(3)} automation=${automation.state}/${state.automation.status} review=${state.review.lastVerdict ?? '-'}${state.review.rounds ? ` (round ${state.review.rounds})` : ''}`);
-        if (stories.length && state.review.lastReason) console.log(`\nLast review:\n${state.review.lastReason}\n`);
+        console.log(`${story.key.padEnd(10)} plan=${plan.state.padEnd(10)} cases=${String(plan.plan.cases.length).padEnd(3)} tests=${String(tests).padEnd(3)} automation=${automation.state}/${state.automation.status}`);
         if (stories.length && state.automation.log) console.log(`Automation log: ${state.automation.log}`);
       }
       return 0;
@@ -251,23 +182,20 @@ async function main() {
     case 'hook': {
       if (isDisabled()) return 0;
       const event = positional[0];
+      if (event === 'story-start') {
+        const story = requireStory(config, positional[1]);
+        console.log(`Test plan for ${story.key}: ${planStatus(config, story).state}.`);
+        return 0;
+      }
+      const payload = readPayload();
+      const story = activeStory(config);
       if (event === 'stop') {
-        let payload = {};
-        try {
-          payload = JSON.parse(readStdin() || '{}');
-        } catch {
-          // no payload
-        }
-        const story = activeStory(config);
-        if (!story) return 0;
-        const output = hookStop(config, story, payload);
+        const output = story ? hookStop(config, story, payload) : null;
         if (output) process.stdout.write(JSON.stringify(output));
         return 0;
       }
       if (event === 'session-start') {
-        readStdin();
-        const text = sessionContext(config, activeStory(config), listStories(config));
-        if (text) process.stdout.write(`${text}\n`);
+        process.stdout.write(sessionContext(config, story, listStories(config)));
         return 0;
       }
       console.error(`Unknown hook event "${event}".`);
@@ -275,8 +203,9 @@ async function main() {
     }
 
     case 'git-hook': {
-      if (isDisabled() || git(config.root, ['config', '--bool', 'qe.autoPlan']).stdout.trim() === 'false') return 0;
       const event = positional[0];
+      if (event === 'pre-push') return prePush(config, readStdin());
+      if (isDisabled() || git(config.root, ['config', '--bool', 'qe.autoPlan']).stdout.trim() === 'false') return 0;
       let paths = [];
       if (event === 'post-commit') {
         paths = revExists(config.root, 'HEAD~1')
@@ -287,11 +216,11 @@ async function main() {
       }
       const stories = storiesFromPaths(config, paths).filter((s) => planStatus(config, s).state !== 'verified');
       if (stories.length) {
-        const bg = spawnBackground(config, stories[0].key, 'plan', ['plan', ...stories.map((s) => s.key)]);
+        const bg = spawnQe(config, stories[0].key, 'plan', ['plan', ...stories.map((s) => s.key)]);
         log(`stories changed (${stories.map((s) => s.key).join(', ')}); writing test plans in the background (log ${bg.log}).`);
       }
       if (event === 'post-merge' && git(config.root, ['config', '--bool', 'qe.autoLessons']).stdout.trim() === 'true') {
-        spawnBackground(config, 'lessons', 'lessons', ['lessons', '--if-due']);
+        spawnQe(config, 'lessons', 'lessons', ['lessons', '--if-due']);
       }
       return 0;
     }
@@ -302,16 +231,4 @@ async function main() {
   }
 }
 
-main().then(
-  (code) => process.exit(code ?? 0),
-  (error) => {
-    if (process.argv[2] === 'hook' || process.argv[2] === 'git-hook') {
-      // Hooks must never break the agent or git; surface the problem and let the turn finish.
-      if (process.argv[3] === 'stop') process.stdout.write(JSON.stringify({ systemMessage: `QE hook error: ${error.message}` }));
-      else console.error(`[qe] hook error: ${error.message}`);
-      process.exit(0);
-    }
-    console.error(error.stack ?? error.message);
-    process.exit(1);
-  },
-);
+runMain(main, 'qe');

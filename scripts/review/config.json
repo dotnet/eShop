@@ -1,0 +1,11 @@
+{
+  "agent": {
+    "models": {
+      "reviewer": null
+    }
+  },
+  "review": {
+    "maxRounds": 5,
+    "timeoutSec": 1200
+  }
+}

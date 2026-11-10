@@ -6,7 +6,7 @@ import { test } from 'node:test';
 import { formatEvidence, readEvidence } from '../lib/evidence.mjs';
 import { lessonCandidates, parseRules } from '../lib/lessons.mjs';
 import { computeMetrics } from '../lib/metrics.mjs';
-import { extractResult, parseFrontMatter, stringifyFrontMatter } from '../lib/util.mjs';
+import { extractResult, parseFrontMatter, stringifyFrontMatter } from '../../pipeline/lib/util.mjs';
 import { attributedAgent, normalizeVerdict } from '../lib/verify.mjs';
 
 const config = {
@@ -15,11 +15,11 @@ const config = {
   lessons: { storyThreshold: 3, retireAfterStories: 3, revertMinRounds: 4, examplesPerCategory: 2 },
 };
 
-test('extractResult takes the last balanced QE_RESULT object, even with braces in strings', () => {
-  const text = 'QE_RESULT: {"score": 1}\nthinking...\nQE_RESULT: {"score": 9, "gaps": [{"detail": "use } and { \\" carefully"}]}\ntrailing';
+test('extractResult takes the last balanced AGENT_RESULT object, even with braces in strings', () => {
+  const text = 'AGENT_RESULT: {"score": 1}\nthinking...\nAGENT_RESULT: {"score": 9, "gaps": [{"detail": "use } and { \\" carefully"}]}\ntrailing';
   assert.deepEqual(extractResult(text), { score: 9, gaps: [{ detail: 'use } and { " carefully' }] });
   assert.equal(extractResult('no marker'), null);
-  assert.equal(extractResult('QE_RESULT: {"broken": '), null);
+  assert.equal(extractResult('AGENT_RESULT: {"broken": '), null);
 });
 
 test('front matter round-trips lists with commas and drops undefined fields', () => {
@@ -107,7 +107,6 @@ test('computeMetrics summarizes loops per stage and categories per attributed ag
     ],
     denials: [{ ts: '1', stage: 'plan', story: 'A-1', category: 'missing-sad-path', subtype: 'auth', attributed_agent: 'qe-plan' }],
     prechecks: [],
-    reviews: [],
     calibration: [],
   };
   const m = computeMetrics(config, { data });

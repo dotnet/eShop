@@ -44,5 +44,5 @@ When the task says `update`, change existing tests in place to match the current
 
 End your final message with exactly one line:
 
-- All tests written and passing: `QE_RESULT: {"status": "done", "tests": <count>}`
-- The implementation contradicts the plan: `QE_RESULT: {"status": "product-bug", "bugs": ["<case id>: expected …, got …"]}`
+- All tests written and passing: `AGENT_RESULT: {"status": "done", "tests": <count>}`
+- The implementation contradicts the plan: `AGENT_RESULT: {"status": "product-bug", "bugs": ["<case id>: expected …, got …"]}`

@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node scripts/qe/qe.mjs hook stop",
+            "command": "node scripts/pipeline/pipeline.mjs hook stop",
             "timeout": 1800
           }
         ]
@@ -28,8 +28,19 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node scripts/qe/qe.mjs hook session-start",
+            "command": "node scripts/pipeline/pipeline.mjs hook session-start --nested",
             "timeout": 30
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/pipeline/pipeline.mjs hook stop",
+            "timeout": 1800
           }
         ]
       }

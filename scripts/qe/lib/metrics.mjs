@@ -1,4 +1,4 @@
-import { readJsonl } from './util.mjs';
+import { readJsonl } from '../../pipeline/lib/util.mjs';
 import { PRODUCER, VERIFIER, metricsFile } from './verify.mjs';
 
 export function loadMetrics(config) {
@@ -6,7 +6,6 @@ export function loadMetrics(config) {
     runs: readJsonl(metricsFile(config, 'verifier-runs.jsonl')),
     denials: readJsonl(metricsFile(config, 'verifier-denials.jsonl')),
     prechecks: readJsonl(metricsFile(config, 'precheck-failures.jsonl')),
-    reviews: readJsonl(metricsFile(config, 'arch-reviews.jsonl')),
     calibration: readJsonl(metricsFile(config, 'calibration.jsonl')),
   };
 }
@@ -67,21 +66,12 @@ export function computeMetrics(config, { since, data = loadMetrics(config) } = {
   }
 
   const crossStage = denials.filter((d) => d.stage === 'automation' && d.root_stage === 'plan').length;
-  const reviews = data.reviews.filter(keep);
   return {
     stages,
     categories: categoryStats(denials),
     byVersion,
     crossStage: { automationDenialsCausedByPlan: crossStage, automationDenials: denials.filter((d) => d.stage === 'automation').length },
     prechecks: Object.fromEntries(Object.entries(groupBy(data.prechecks.filter(keep), 'stage')).map(([s, l]) => [s, l.length])),
-    reviews: {
-      rounds: reviews.length,
-      approvals: reviews.filter((r) => r.verdict === 'APPROVED').length,
-      firstRoundApprovalRate: (() => {
-        const first = reviews.filter((r) => r.round === 1);
-        return first.length ? round2(first.filter((r) => r.verdict === 'APPROVED').length / first.length) : 0;
-      })(),
-    },
     calibration: categoryStats(data.calibration.filter((c) => keep(c) && c.category !== 'agreed')),
   };
 }
@@ -107,7 +97,6 @@ export function formatMetrics(m) {
   }
   out.push('', `Automation denials traced back to the plan: ${m.crossStage.automationDenialsCausedByPlan}/${m.crossStage.automationDenials}`);
   out.push(`Deterministic precheck failures: ${Object.entries(m.prechecks).map(([s, n]) => `${s}=${n}`).join(' ') || 'none'}`);
-  out.push(`Architecture reviews: ${m.reviews.rounds} rounds, ${m.reviews.approvals} approvals, first-round approval rate ${m.reviews.firstRoundApprovalRate}`);
   if (m.calibration.length) {
     out.push('', 'Calibration misses (10/10 results an auditor rejected)');
     for (const c of m.calibration) out.push(`${c.agent.padEnd(25)} ${c.category.padEnd(30)} ${String(c.count).padStart(5)}  stories=${c.stories}`);

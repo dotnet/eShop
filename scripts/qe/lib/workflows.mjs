@@ -1,10 +1,10 @@
-import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { agentDefinition, runAgent } from './agents.mjs';
-import { QE_SCRIPT } from './config.mjs';
+import { fileURLToPath } from 'node:url';
+import { agentDefinition, runAgent } from '../../pipeline/lib/agents.mjs';
+import { spawnBackground } from '../../pipeline/lib/background.mjs';
+import { git, implChanges, implDiff } from '../../pipeline/lib/git.mjs';
 import { readEvidence, formatEvidence } from './evidence.mjs';
-import { git, implChanges, implDiff } from './git.mjs';
 import {
   INDEX,
   automationFiles,
@@ -15,10 +15,12 @@ import {
   readPlan,
   stampIndex,
 } from './plans.mjs';
-import { lockFile, logFile, loadState, stateDir, updateState } from './state.mjs';
-import { casePrefix, storySha } from './stories.mjs';
-import { acquireLock, appendJsonl, extractResult, lockHolder, log, nowIso, releaseLock, run, tail } from './util.mjs';
-import { PRODUCER, formatGaps, metricsFile, runVerifier } from './verify.mjs';
+import { clearEscalation, escalate, lockFile, logFile, loadState, metricsFile, updateState } from '../../pipeline/lib/state.mjs';
+import { casePrefix, storySha } from '../../pipeline/lib/stories.mjs';
+import { acquireLock, appendJsonl, extractResult, lockHolder, log, nowIso, releaseLock, run, tail } from '../../pipeline/lib/util.mjs';
+import { PRODUCER, formatGaps, runVerifier } from './verify.mjs';
+
+const QE_SCRIPT = fileURLToPath(new URL('../qe.mjs', import.meta.url));
 
 const fence = (text, lang = '') => `\`\`\`\`${lang}\n${text.replace(/\r\n/g, '\n').trimEnd()}\n\`\`\`\``;
 const readRel = (config, rel) => fs.readFileSync(path.join(config.root, rel), 'utf8');
@@ -40,18 +42,6 @@ function logPrecheck(config, stage, story, round, errors) {
     agent_prompt_ver: agentDefinition(config, PRODUCER[stage]).version,
     errors,
   });
-}
-
-export function escalate(config, story, stage, title, details) {
-  const file = path.join(stateDir(config), 'escalations', `${story.key}-${stage}.md`);
-  fs.mkdirSync(path.dirname(file), { recursive: true });
-  fs.writeFileSync(file, `# ${story.key} ${stage}: ${title}\n\n${nowIso()}\n\n${details}\n`);
-  log(`ESCALATED ${story.key} ${stage}: ${title} (see ${path.relative(config.root, file)})`);
-  return file;
-}
-
-function clearEscalation(config, story, stage) {
-  fs.rmSync(path.join(stateDir(config), 'escalations', `${story.key}-${stage}.md`), { force: true });
 }
 
 // Finds the committed version of the story the plan was written against and diffs it with the
@@ -405,73 +395,10 @@ async function automationPass(config, story, { skipTests, maxRounds }) {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Architecture review of the implementation (fresh reviewer per round)
-// ---------------------------------------------------------------------------------------------
-
-function reviewTask(config, story, round) {
-  const conventions = ['AGENTS.md', 'CONTRIBUTING.md'].filter((f) => fs.existsSync(path.join(config.root, f)));
-  return [
-    `Story: ${story.key} (${story.file})`,
-    `Review round: ${round} of at most ${config.loops.reviewMaxRounds}`,
-    `Repository conventions to apply: ${conventions.join(', ') || '(none)'}; graphify-out/ may be queried with \`graphify query\`.`,
-    '',
-    '### Story',
-    '',
-    fence(readRel(config, story.file), 'markdown'),
-    '',
-    '### Implementation diff (tests and plans excluded)',
-    '',
-    fence(implDiff(config), 'diff'),
-  ].join('\n');
-}
-
-export function architectureReview(config, story, round) {
-  for (let attempt = 0; attempt <= config.loops.verifierParseRetries; attempt++) {
-    const result = runAgent(config, {
-      name: 'architecture-reviewer',
-      mode: 'read',
-      model: config.agent.models.reviewer,
-      timeoutSec: config.timeoutsSec.reviewer,
-      task: reviewTask(config, story, round),
-    });
-    const raw = extractResult(result.output);
-    if (raw && ['APPROVED', 'CHANGES_REQUESTED'].includes(raw.verdict)) {
-      const findings = Array.isArray(raw.findings) ? raw.findings : [];
-      const verdict = raw.verdict === 'APPROVED' && findings.some((f) => f.severity === 'blocking') ? 'CHANGES_REQUESTED' : raw.verdict;
-      appendJsonl(metricsFile(config, 'arch-reviews.jsonl'), {
-        ts: nowIso(),
-        story: story.key,
-        round,
-        verdict,
-        reviewer_ver: result.version,
-        findings: findings.map((f) => ({ severity: f.severity, category: f.category, file: f.file })),
-      });
-      return { verdict, findings, summary: String(raw.summary ?? '') };
-    }
-  }
-  return { verdict: 'ERROR', findings: [], summary: 'architecture reviewer produced no parsable result' };
-}
-
-const formatFindings = (findings) =>
-  findings
-    .map((f, i) => `${i + 1}. [${f.severity ?? 'blocking'}] ${f.file ?? ''}${f.line ? `:${f.line}` : ''} ${f.issue ?? ''}${f.fix ? `\n   Fix: ${f.fix}` : ''}`)
-    .join('\n');
-
-// ---------------------------------------------------------------------------------------------
 // Background runs
 // ---------------------------------------------------------------------------------------------
 
-export function spawnBackground(config, key, stage, args) {
-  const file = logFile(config, key, stage);
-  fs.mkdirSync(path.dirname(file), { recursive: true });
-  const fd = fs.openSync(file, 'a');
-  const env = { ...process.env, QE_BACKGROUND: '1' };
-  delete env.QE_PIPELINE_CHILD;
-  const child = spawn(process.execPath, [QE_SCRIPT, ...args], { cwd: config.root, detached: true, stdio: ['ignore', fd, fd], env });
-  child.unref();
-  fs.closeSync(fd);
-  return { pid: child.pid, log: path.relative(config.root, file) };
-}
+export const spawnQe = (config, key, stage, args, file) => spawnBackground(config, { script: QE_SCRIPT, key, stage, args, file });
 
 export function startAutomation(config, story, implHash) {
   const holder = lockHolder(lockFile(config, story.key, 'automation'));
@@ -479,81 +406,38 @@ export function startAutomation(config, story, implHash) {
     updateState(config, story.key, (s) => (s.automation.requestedHash = implHash));
     return { queued: true, pid: holder };
   }
-  const bg = spawnBackground(config, story.key, 'automation', ['automate', story.key, '--impl-hash', implHash]);
-  updateState(config, story.key, (s) => Object.assign(s.automation, { status: 'starting', pid: bg.pid, log: bg.log, requestedHash: null }));
-  return bg;
+  // Saved before spawning: the child updates the same state file (and records its own pid), so a
+  // write after the spawn could race it and drop the log path or reset the status.
+  const file = logFile(config, story.key, 'automation');
+  const log = path.relative(config.root, file);
+  updateState(config, story.key, (s) => Object.assign(s.automation, { status: 'starting', pid: null, log, requestedHash: null }));
+  return spawnQe(config, story.key, 'automation', ['automate', story.key, '--impl-hash', implHash], file);
 }
 
 // ---------------------------------------------------------------------------------------------
 // Agent lifecycle hook: implementation agent Stop / SubagentStop
 // ---------------------------------------------------------------------------------------------
 
-const block = (reason) => ({ decision: 'block', reason });
-const notice = (message) => ({ systemMessage: message });
-
-export function hookStop(config, story, payload = {}) {
+// Runs after the review stage in the dispatcher. Its gate is the review's approval of the exact
+// implementation now on disk; automation then runs in the background so the agent can finish.
+export function hookStop(config, story) {
   const state = loadState(config, story.key);
   if (!state.done) return null;
   const { hash } = implChanges(config);
-  if (!hash) return null;
-  const review = state.review;
-  const cmd = 'node scripts/qe/qe.mjs';
-
-  if (review.lastHash === hash) {
-    if (review.lastVerdict === 'APPROVED') {
-      if (state.automation.verifiedHash !== hash && !['running', 'starting'].includes(state.automation.status) && state.automation.workingHash !== hash) {
-        const bg = startAutomation(config, story, hash);
-        return notice(`QE: architecture approved ${story.key}; test automation ${bg.queued ? 'queued' : `started (log: ${bg.log})`}.`);
-      }
-      return null;
-    }
-    if (review.lastVerdict === 'CHANGES_REQUESTED') {
-      if (payload.stop_hook_active || review.unchangedBlocks >= 1) {
-        return notice(`QE: ${story.key} still has unresolved architecture findings and the code has not changed. Run \`${cmd} status ${story.key}\` for details.`);
-      }
-      updateState(config, story.key, (s) => (s.review.unchangedBlocks += 1));
-      return block(`The architecture review findings for ${story.key} are still open and nothing has changed since the review. Address them:\n\n${review.lastReason}`);
-    }
-    if (review.lastVerdict === 'ESCALATED') return null;
-  }
-
-  if (review.rounds >= config.loops.reviewMaxRounds) {
-    updateState(config, story.key, (s) => Object.assign(s.review, { lastHash: hash, lastVerdict: 'ESCALATED' }));
-    escalate(config, story, 'review', `no approval after ${review.rounds} review rounds`, review.lastReason ?? '');
-    return notice(`QE: ${story.key} was not approved after ${review.rounds} architecture review rounds. A human needs to decide; see .agent-state/escalations/${story.key}-review.md.`);
-  }
-
-  const round = review.rounds + 1;
-  const result = architectureReview(config, story, round);
-  if (result.verdict === 'ERROR') {
-    return notice(`QE: the architecture review for ${story.key} failed to produce a verdict; it will run again next time the agent stops.`);
-  }
-  if (result.verdict === 'CHANGES_REQUESTED') {
-    const reason = `Architecture review round ${round}/${config.loops.reviewMaxRounds} for ${story.key} requested changes. ${result.summary}\n\n${formatFindings(result.findings)}\n\nMake these corrections, then finish your turn; the review runs again automatically.`;
-    updateState(config, story.key, (s) => Object.assign(s.review, { rounds: round, lastHash: hash, lastVerdict: 'CHANGES_REQUESTED', lastReason: reason, unchangedBlocks: 0 }));
-    return block(reason);
-  }
-  updateState(config, story.key, (s) => Object.assign(s.review, { rounds: 0, lastHash: hash, lastVerdict: 'APPROVED', lastReason: result.summary, approvedHash: hash, unchangedBlocks: 0 }));
-  clearEscalation(config, story, 'review');
+  if (!hash || state.review.lastVerdict !== 'APPROVED' || state.review.approvedHash !== hash) return null;
+  const automation = state.automation;
+  if (automation.verifiedHash === hash || automation.workingHash === hash || ['running', 'starting'].includes(automation.status)) return null;
   const bg = startAutomation(config, story, hash);
-  const extra = result.findings.length ? `\nNon-blocking notes:\n${formatFindings(result.findings)}` : '';
-  return notice(`QE: architecture review approved ${story.key} (round ${round}). Test automation ${bg.queued ? 'queued behind the running job' : `started in the background (log: ${bg.log})`}.${extra}`);
+  return { systemMessage: `QE: test automation for ${story.key} ${bg.queued ? 'queued behind the running job' : `started in the background (log: ${bg.log})`}.` };
 }
 
-// Context injected at session start so agents see pipeline state without asking.
+// Context injected at session start so agents see QE state without asking.
 export function sessionContext(config, story, stories) {
   const lines = [];
   if (story) {
-    const plan = planStatus(config, story);
     const state = loadState(config, story.key);
-    lines.push(`QE pipeline: active story ${story.key}. Plan: ${plan.state}. Architecture review: ${state.review.lastVerdict ?? 'not run'}. Test automation: ${state.automation.status}.`);
-    if (!state.done) lines.push(`When your line of work for ${story.key} is complete, run \`node scripts/qe/qe.mjs done\` before finishing so the architecture review and test automation run.`);
+    lines.push(`QE for ${story.key}: plan ${planStatus(config, story).state}, test automation ${state.automation.status}.`);
     if (state.automation.bugs?.length) lines.push(`QE found implementation bugs:\n${state.automation.bugs.map((b) => `- ${typeof b === 'string' ? b : JSON.stringify(b)}`).join('\n')}`);
-  }
-  const escalations = path.join(stateDir(config), 'escalations');
-  if (fs.existsSync(escalations)) {
-    const files = fs.readdirSync(escalations).filter((f) => f.endsWith('.md'));
-    if (files.length) lines.push(`QE escalations needing a human: ${files.map((f) => f.replace(/\.md$/, '')).join(', ')} (.agent-state/escalations/).`);
   }
   const stale = stories.filter((s) => planStatus(config, s).state === 'stale').map((s) => s.key);
   if (stale.length) lines.push(`Stories whose test plans are stale: ${stale.join(', ')} (\`node scripts/qe/qe.mjs plan --stale\`).`);
