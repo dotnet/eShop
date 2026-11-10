@@ -8,7 +8,7 @@ A clickable mockup of an admin console built on the API in [PROMO-2](../../PROMO
 ## Screens
 
 | File | Screen | What it shows |
-|---|---|---|
+| --- | --- | --- |
 | `Main.dc.html` | 1 · Promotions list | Status tabs with counts, a promotions table, Publish on drafts, and Manage on every row |
 | `Editor.dc.html` | 2 · Create promotion | Rule-type switcher with conditional fields, targets, schedule, priority and options, a storefront badge preview, and the validation-error state shown after **Save draft** |
 | `Detail.dc.html` | 3 · Active promotion detail | Edit locked (409), lifecycle timeline with integration events, public feed preview, and the **End now** confirmation leading to the Expired state |

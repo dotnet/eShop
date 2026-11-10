@@ -1,0 +1,12 @@
+description: >
+  catalog-edge plus three "awkward" items for the picture and name-search endpoints: one with no
+  picture file name, one whose picture file does not exist, and one whose name contains the SQL
+  LIKE wildcards % and _. 17 items over 2 pages. Plus alice and bob (password Pass123$).
+extends: catalog-edge
+postgres:
+  catalogdb:
+    - table: Catalog
+      rows:
+        - { Id: 15, Name: Edge 15 No Picture, Description: PictureFileName is null., Price: 5, PictureFileName: null, CatalogTypeId: 3, CatalogBrandId: 1, AvailableStock: 10, RestockThreshold: 5, MaxStockThreshold: 100, OnReorder: false }
+        - { Id: 16, Name: Edge 16 Missing Picture, Description: The picture file does not exist., Price: 6, PictureFileName: missing.webp, CatalogTypeId: 3, CatalogBrandId: 1, AvailableStock: 10, RestockThreshold: 5, MaxStockThreshold: 100, OnReorder: false }
+        - { Id: 17, Name: Edge 17 100% Wool_Sock, Description: Name contains LIKE wildcards., Price: 7, PictureFileName: 1.webp, CatalogTypeId: 1, CatalogBrandId: 1, AvailableStock: 10, RestockThreshold: 5, MaxStockThreshold: 100, OnReorder: false }

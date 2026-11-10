@@ -1,0 +1,30 @@
+description: >
+  Default data with low stock (item 11 has 2 units, item 12 has none) plus four past-dated Submitted
+  orders for bob that the background pipeline processes within about 30 s of loading. Order 1 (2 x item 9)
+  and order 4 (exactly the 2 units of item 11 in stock) reach Paid and decrement stock; order 2 (5 x item 11)
+  and order 3 (item 10 plus the out-of-stock item 12) are cancelled by the stock check. alice has no orders.
+extends: default
+postgres:
+  catalogdb:
+    - sql: catalog-stock.sql
+  orderingdb:
+    - table: ordering.buyers
+      rows:
+        - { Id: 1, IdentityGuid: b0b00000-0000-4000-8000-000000000002, Name: bob }
+    - table: ordering.paymentmethods
+      rows:
+        - { Id: 1, BuyerId: 1, CardTypeId: 2, Alias: Bob Visa, CardHolderName: Bob Smith, CardNumber: XXXXXXXXXXXX1881, Expiration: 2030-12-31T00:00:00Z }
+    - table: ordering.orders
+      rows:
+        - { Id: 1, BuyerId: 1, PaymentMethodId: 1, OrderDate: 2025-07-01T09:00:00Z, OrderStatus: Submitted, Description: null, Address_Street: 2 Bob Road, Address_City: Portland, Address_State: OR, Address_Country: U.S., Address_ZipCode: "97201" }
+        - { Id: 2, BuyerId: 1, PaymentMethodId: 1, OrderDate: 2025-07-02T09:00:00Z, OrderStatus: Submitted, Description: null, Address_Street: 2 Bob Road, Address_City: Portland, Address_State: OR, Address_Country: U.S., Address_ZipCode: "97201" }
+        - { Id: 3, BuyerId: 1, PaymentMethodId: 1, OrderDate: 2025-07-03T09:00:00Z, OrderStatus: Submitted, Description: null, Address_Street: 2 Bob Road, Address_City: Portland, Address_State: OR, Address_Country: U.S., Address_ZipCode: "97201" }
+        - { Id: 4, BuyerId: 1, PaymentMethodId: 1, OrderDate: 2025-07-04T09:00:00Z, OrderStatus: Submitted, Description: null, Address_Street: 2 Bob Road, Address_City: Portland, Address_State: OR, Address_Country: U.S., Address_ZipCode: "97201" }
+    - table: ordering.orderItems
+      rows:
+        # 1: 2 x 199.99 = 399.98   2: 5 x 129.99 = 649.95   3: 59.99 + 399.00 = 458.99   4: 2 x 129.99 = 259.98
+        - { Id: 1, OrderId: 1, ProductId: 9, ProductName: VenturePro GPS Watch, UnitPrice: 199.99, Discount: 0, Units: 2, PictureUrl: null }
+        - { Id: 2, OrderId: 2, ProductId: 11, ProductName: Vertical Journey Climbing Shoes, UnitPrice: 129.99, Discount: 0, Units: 5, PictureUrl: null }
+        - { Id: 3, OrderId: 3, ProductId: 10, ProductName: Trailblazer Bike Helmet, UnitPrice: 59.99, Discount: 0, Units: 1, PictureUrl: null }
+        - { Id: 4, OrderId: 3, ProductId: 12, ProductName: Powder Pro Snowboard, UnitPrice: 399.00, Discount: 0, Units: 1, PictureUrl: null }
+        - { Id: 5, OrderId: 4, ProductId: 11, ProductName: Vertical Journey Climbing Shoes, UnitPrice: 129.99, Discount: 0, Units: 2, PictureUrl: null }

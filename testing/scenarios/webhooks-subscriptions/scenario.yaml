@@ -1,0 +1,21 @@
+description: >
+  Default data plus webhook subscriptions: alice has an OrderPaid (id 1) and an OrderShipped (id 2)
+  subscription pointing at the WebhooksClient container, bob has a CatalogItemPriceChange subscription (id 3).
+  alice (buyer 1) has a Paid order 1 that a test can ship, and a Submitted order 2 dated 45 s before load
+  that reaches Paid 15-50 s after loading.
+extends: default
+postgres:
+  webhooksdb:
+    - table: Subscriptions
+      rows:
+        - { Id: 1, Type: 3, Date: 2025-08-01T10:00:00Z, DestUrl: "http://webhooksclient:8080/webhook-received", Token: alice-paid-token, UserId: a11ce000-0000-4000-8000-000000000001 }
+        - { Id: 2, Type: 2, Date: 2025-08-02T10:00:00Z, DestUrl: "http://webhooksclient:8080/webhook-received", Token: alice-shipped-token, UserId: a11ce000-0000-4000-8000-000000000001 }
+        - { Id: 3, Type: 1, Date: 2025-08-03T10:00:00Z, DestUrl: "http://webhooksclient:8080/webhook-received", Token: bob-price-token, UserId: b0b00000-0000-4000-8000-000000000002 }
+  orderingdb:
+    - table: ordering.buyers
+      rows:
+        - { Id: 1, IdentityGuid: a11ce000-0000-4000-8000-000000000001, Name: alice }
+    - table: ordering.paymentmethods
+      rows:
+        - { Id: 1, BuyerId: 1, CardTypeId: 2, Alias: Alice Visa, CardHolderName: Alice Smith, CardNumber: XXXXXXXXXXXX1881, Expiration: 2030-12-31T00:00:00Z }
+    - sql: orders.sql

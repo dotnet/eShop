@@ -15,7 +15,7 @@ As a shopper, I want to enter a promo code and see straight away whether it work
 **Outputs:**
 
 | Coupon result (`coupon.status` / `reason`) | What the shopper sees |
-|---|---|
+| --- | --- |
 | `Applied` | Green: "FALL10 applied: you save $9.00", with a summary line "Coupon FALL10 −$9.00" and a **Remove** link |
 | `Invalid` / `NotFound` | Red: "We don't recognize that code." |
 | `Invalid` / `Expired` | Red: "That code has expired." |
@@ -29,7 +29,7 @@ As a shopper, I want to enter a promo code and see straight away whether it work
 **Acceptance Criteria:**
 
 * **Given** a signed-in shopper with a type-3 item in the cart and a valid coupon `FALL10`
-* **When** they enter `fall10 ` (lower case, trailing space) and click **Apply**
+* **When** they enter `fall10` (lower case, trailing space) and click **Apply**
     * **Then** the green message and the coupon line appear, and the Total drops by the coupon amount
     * **When** they go to `/checkout`
         * **Then** the applied code and the discounted total are shown
