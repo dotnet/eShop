@@ -79,7 +79,7 @@ All results are appended to `.agent-metrics/*.jsonl` (architecture reviews are i
 
 ## Auto-improvement
 
-`node scripts/qe/qe.mjs lessons` reads the metrics and, for each of `qe-plan`, `qe-automation`, `qe-plan-verifier` and `qe-automation-verifier`:
+`node scripts/qe/qe.mjs lessons` reads the metrics and, for each of `qe-plan`, `qe-automation`, `qe-plan-verifier`, `qe-automation-verifier` and `implementer` (whose denials are the blocking findings in `arch-reviews.jsonl`, see [review](review.md#how-the-implementer-improves)):
 
 - **adds** a rule when a denial category recurs in 3 or more stories and no rule covers it;
 - **strengthens** a rule when its category keeps recurring in 3 or more stories after the rule was added;

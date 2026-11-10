@@ -98,6 +98,26 @@ test('lessons for verifiers come from calibration misses, not from producer deni
   assert.equal(lessonCandidates(config, data, 'qe-plan-verifier', '').changes[0].category, 'missing-sad-path');
 });
 
+test('lessons for the implementer come from blocking architecture review findings, grouped by policy rule', () => {
+  const review = (story, findings, extra = {}) => ({ ts: '2026-01-01', story, round: 1, verdict: 'CHANGES_REQUESTED', findings, ...extra });
+  const sec = { severity: 'blocking', category: 'security', rule: 'SEC-001', file: 'src/A.cs', line: 3, issue: 'SEC-001 No secrets: literal password' };
+  const data = {
+    denials: ['A-1', 'B-1', 'C-1'].map((s) => denial(s, '2026-01-01')),
+    runs: [],
+    calibration: [],
+    reviews: [
+      review('A-1', [sec, { severity: 'minor', category: 'fit', file: 'src/A.cs' }]),
+      review('B-1', [sec], { reviewer: 'arch-review-agent' }),
+      review('C-1', [sec]),
+      review('D-1', [sec], { verdict: 'APPROVED' }),
+      review('E-1', [{ severity: 'blocking', category: 'fit', file: 'src/E.cs' }]),
+    ],
+  };
+  const report = lessonCandidates(config, data, 'implementer', '');
+  assert.deepEqual(report.changes.map((c) => [c.action, c.category, c.subtype, c.stories]), [['add', 'security', 'SEC-001', 3]]);
+  assert.deepEqual(report.changes[0].examples.at(-1), { story: 'C-1', case: 'review round 1 (architecture-reviewer)', detail: 'SEC-001 No secrets: literal password', location: 'src/A.cs:3' });
+});
+
 test('computeMetrics summarizes loops per stage and categories per attributed agent', () => {
   const data = {
     runs: [

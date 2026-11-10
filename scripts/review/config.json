@@ -12,6 +12,8 @@
       "enabled": true,
       "agent": "architecture-policy/agents/arch_review.py",
       "command": ["python", "{agent}", "review", "-"],
+      "lessonsCommand": ["python", "{agent}", "get_lessons", "-"],
+      "maxLessons": 5,
       "requester": "implementer",
       "semantic": "auto",
       "timeoutSec": 600

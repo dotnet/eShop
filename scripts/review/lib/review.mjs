@@ -10,6 +10,16 @@ const block = (reason) => ({ decision: 'block', reason });
 const notice = (message) => ({ systemMessage: message });
 export const REVIEWS_FILE = 'arch-reviews.jsonl';
 
+// What each finding contributes to arch-reviews.jsonl; `qe lessons` turns recurring ones into implementer lessons.
+const loggedFinding = (f) => ({
+  severity: f.severity,
+  category: f.category,
+  ...(f.rule ? { rule: f.rule } : {}),
+  file: f.file ?? null,
+  line: f.line ?? null,
+  issue: f.issue ? String(f.issue).slice(0, 300) : null,
+});
+
 function reviewTask(config, story, round) {
   const conventions = ['AGENTS.md', 'CONTRIBUTING.md'].filter((f) => fs.existsSync(path.join(config.root, f)));
   return [
@@ -47,7 +57,7 @@ export function architectureReview(config, story, round) {
         round,
         verdict,
         reviewer_ver: result.version,
-        findings: findings.map((f) => ({ severity: f.severity, category: f.category, file: f.file })),
+        findings: findings.map(loggedFinding),
       });
       return { verdict, findings, summary: String(raw.summary ?? '') };
     }
@@ -58,10 +68,25 @@ export function architectureReview(config, story, round) {
 // Policy-pack gate: the Arch_review_Agent (architecture-policy/agents) evaluates the deterministic
 // rules of the Architecture Policy Pack before the LLM reviewer. Its history store records every
 // denial per requesting agent, which feeds the agent's lessons (arch_review.py get_lessons).
-function policyCommand(config) {
+function runPolicy(config, template, input) {
   const p = config.review.policy;
   const agent = config.abs(p.agent);
-  return p.command.map((a) => a.replaceAll('{agent}', agent));
+  let [cmd, ...args] = template.map((a) => a.replaceAll('{agent}', agent));
+  let result = run(cmd, args, { cwd: config.root, input, timeoutSec: p.timeoutSec });
+  if (result.status === 127 && cmd === 'python') result = run((cmd = 'python3'), args, { cwd: config.root, input, timeoutSec: p.timeoutSec });
+  return result;
+}
+
+// The requester's recurring denials from the policy history, as prompt-ready guidance (empty when none).
+function policyLessons(config) {
+  const p = config.review.policy;
+  if (!p.lessonsCommand) return '';
+  const result = runPolicy(config, p.lessonsCommand, JSON.stringify({ agent: p.requester, limit: p.maxLessons ?? 5 }));
+  try {
+    return String(JSON.parse(result.stdout).prompt ?? '').trim();
+  } catch {
+    return '';
+  }
 }
 
 const POLICY_CATEGORY = { security: 'security', data: 'data', resiliency: 'resilience', observability: 'resilience', error_handling: 'correctness', api: 'fit', architecture: 'fit', testing: 'maintainability' };
@@ -72,6 +97,8 @@ function policyFinding(item) {
   return {
     severity: item.outcome === 'BLOCK' ? 'blocking' : 'minor',
     category: POLICY_CATEGORY[item.category] ?? 'fit',
+    rule: item.rule_id,
+    repeat: Boolean(item.repeat_mistake),
     file: item.file ?? null,
     line: item.line ?? null,
     issue: `${item.rule_id} ${item.rule_title}: ${item.message}${repeat}`,
@@ -92,9 +119,7 @@ export function policyReview(config, story, round, { files, base, previousReview
     ...(previousReviewId ? { previous_review_id: previousReviewId } : {}),
     options: { semantic: p.semantic ?? 'auto' },
   });
-  let [cmd, ...args] = policyCommand(config);
-  let result = run(cmd, args, { cwd: config.root, input, timeoutSec: p.timeoutSec });
-  if (result.status === 127 && cmd === 'python') result = run((cmd = 'python3'), args, { cwd: config.root, input, timeoutSec: p.timeoutSec });
+  const result = runPolicy(config, p.command, input);
   let response;
   try {
     response = JSON.parse(result.stdout);
@@ -118,10 +143,12 @@ export function policyReview(config, story, round, { files, base, previousReview
       reviewer: 'arch-review-agent',
       reviewer_ver: response.agent_version ?? null,
       review_id: response.review_id,
-      findings: findings.map((f) => ({ severity: f.severity, category: f.category, file: f.file, rule: f.issue.split(' ')[0] })),
+      findings: findings.map(loggedFinding),
     });
   }
-  return { verdict, findings, summary: String(response.summary ?? ''), reviewId: response.review_id, decision: response.decision };
+  // A repeated mistake means the findings alone did not stick; hand the agent its lessons from the history.
+  const lessons = verdict === 'CHANGES_REQUESTED' && findings.some((f) => f.repeat) ? policyLessons(config) : '';
+  return { verdict, findings, summary: String(response.summary ?? ''), reviewId: response.review_id, decision: response.decision, lessons };
 }
 
 // One review round: the policy gate first, then (unless it blocked) the LLM architecture-reviewer.
@@ -150,7 +177,7 @@ const formatFindings = (findings) =>
     .join('\n');
 
 export function resetReview(config, story) {
-  updateState(config, story.key, (s) => Object.assign(s.review, { rounds: 0, lastHash: null, lastVerdict: null,   lastReason: null, unchangedBlocks: 0, policyReviewId: null }));
+  updateState(config, story.key, (s) => Object.assign(s.review, { rounds: 0, lastHash: null, lastVerdict: null, lastReason: null, unchangedBlocks: 0, policyReviewId: null }));
 }
 
 // Stop hook: review the implementation once the agent has declared the work done. Changes requested
@@ -187,7 +214,8 @@ export function hookStop(config, story, payload = {}) {
     return notice(`Review: the architecture review for ${story.key} failed to produce a verdict; it will run again next time the agent stops.`);
   }
   if (result.verdict === 'CHANGES_REQUESTED') {
-    const reason = `Architecture review round ${round}/${config.review.maxRounds} for ${story.key} requested changes. ${result.summary}\n\n${formatFindings(result.findings)}\n\nMake these corrections, then finish your turn; the review runs again automatically.`;
+    const lessons = result.lessons ? `\n\nYou have been denied for these rules before. Lessons from your review history (follow them for the rest of this story):\n\n${result.lessons}` : '';
+    const reason = `Architecture review round ${round}/${config.review.maxRounds} for ${story.key} requested changes. ${result.summary}\n\n${formatFindings(result.findings)}${lessons}\n\nMake these corrections, then finish your turn; the review runs again automatically.`;
     updateState(config, story.key, (s) => Object.assign(s.review, { rounds: round, lastHash: hash, lastVerdict: 'CHANGES_REQUESTED', lastReason: reason, unchangedBlocks: 0 }));
     return block(reason);
   }
@@ -199,7 +227,11 @@ export function hookStop(config, story, payload = {}) {
 
 export function sessionContext(config, story) {
   if (!story) return '';
-  return `Architecture review for ${story.key}: ${loadState(config, story.key).review.lastVerdict ?? 'not run'}.`;
+  const status = `Architecture review for ${story.key}: ${loadState(config, story.key).review.lastVerdict ?? 'not run'}.`;
+  // The main session can be the code agent; give it the same lessons the implementer agent reads.
+  const file = path.join(config.root, config.lessonsDir, 'implementer.md');
+  const lessons = fs.existsSync(file) ? fs.readFileSync(file, 'utf8').trim() : '';
+  return lessons ? `${status}\n\nArchitecture lessons from earlier review denials (follow these when changing code; from ${config.lessonsDir}/implementer.md):\n\n${lessons}` : status;
 }
 
 export function reviewMetrics(config, { since } = {}) {
