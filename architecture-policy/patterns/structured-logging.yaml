@@ -1,0 +1,36 @@
+kind: Pattern
+schema_version: 1
+id: PAT-STRUCTURED-LOGGING
+name: Structured logging
+category: observability
+summary: Log through ILogger<T> with constant message templates and named placeholders; never log sensitive data.
+intent: Produce queryable, correlated, safe logs in the OpenTelemetry pipeline.
+rules:
+- OBS-001
+- OBS-002
+- OBS-003
+- SEC-003
+guidance:
+- 'Use PascalCase placeholders: "Order {OrderId} status {Status}".'
+- Prefer [LoggerMessage] source-generated methods on hot paths.
+- Log identifiers, not whole objects containing PII or card data.
+- Never use Console.WriteLine in server code.
+exemplars:
+- path: src/Ordering.API/Application/Behaviors/LoggingBehavior.cs
+  symbol: LoggingBehavior
+  description: Template-based command logging.
+examples:
+- id: template
+  title: Message template
+  kind: approved
+  language: csharp
+  code: |
+    logger.LogInformation("Order {OrderId} paid by {BuyerId}", order.Id, order.BuyerId);
+  explanation: Properties are captured as structured fields.
+- id: interpolated
+  title: Interpolated log message
+  kind: anti_pattern
+  language: csharp
+  code: |
+    logger.LogInformation($"Order {order.Id} paid with card {order.CardNumber}");
+  explanation: Loses structure (OBS-001) and leaks card data (SEC-003).

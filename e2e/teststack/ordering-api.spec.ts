@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { loadScenario } from './scenario';
 import {
   ALICE_ID, ORDERING_URL, V1, bearer, changeStatus, getOrder, listOrders, tokenFor,

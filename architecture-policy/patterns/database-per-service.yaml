@@ -1,0 +1,38 @@
+kind: Pattern
+schema_version: 1
+id: PAT-DATABASE-PER-SERVICE
+name: Database per service
+category: data
+summary: Each service owns its datastores; other services access data only through APIs or events.
+intent: Keep schemas private so services evolve and scale independently.
+rules:
+- ARCH-002
+- DATA-002
+- DATA-004
+guidance:
+- Declare owned datastores in profiles/dotnet/profile.yaml (owns_datastores).
+- Use Aspire AddNpgsqlDbContext<T>("<owneddb>") only for owned databases.
+- Use LINQ or parameterized FromSql/SqlQuery; never concatenate SQL.
+- Build local read models from integration events instead of cross-database joins.
+exemplars:
+- path: src/Catalog.API/Extensions/Extensions.cs
+  symbol: AddApplicationServices
+  description: Catalog owns catalogdb.
+- path: docs/architecture/services.md
+  description: Service ownership map.
+examples:
+- id: owned-db
+  title: Service registers only its own database
+  kind: approved
+  language: csharp
+  code: |
+    builder.AddNpgsqlDbContext<CatalogContext>("catalogdb");
+  explanation: Catalog only touches catalogdb.
+- id: foreign-db
+  title: Worker reads another service's database
+  kind: anti_pattern
+  language: csharp
+  code: |
+    // OrderProcessor
+    builder.AddNpgsqlDataSource("orderingdb");
+  explanation: Hidden coupling to Ordering's schema (DATA-002).

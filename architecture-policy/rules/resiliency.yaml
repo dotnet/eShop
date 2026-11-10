@@ -1,0 +1,168 @@
+kind: RuleSet
+schema_version: 1
+category: resiliency
+description: Resilient service-to-service communication and async correctness.
+rules:
+
+  - id: RES-001
+    title: Outbound HTTP uses IHttpClientFactory with standard resilience
+    category: resiliency
+    severity: high
+    status: active
+    version: 1.0.0
+    owner: platform-team
+    description: >
+      Server code must not instantiate HttpClient directly. Use typed clients registered with AddHttpClient
+      (ServiceDefaults applies AddStandardResilienceHandler and service discovery to all clients).
+    rationale: >
+      new HttpClient() causes socket exhaustion and stale DNS, and bypasses retries, timeouts and circuit
+      breakers configured centrally.
+    applicability:
+      include: ["src/**/*.cs"]
+      project_types: [api, web, worker, library, infrastructure]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-HTTPCLIENT-FACTORY]
+    patterns: [PAT-TYPED-HTTP-CLIENT]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Register a typed client with builder.Services.AddHttpClient<TClient>(...) and inject it.
+      steps:
+        - Create a typed client class taking HttpClient in its constructor.
+        - Register it with AddHttpClient<T>(o => o.BaseAddress = new("https+http://service")).
+      references: [src/WebAppComponents/Services/CatalogService.cs]
+    human_review_required: false
+    tags: [http, resilience]
+
+  - id: RES-002
+    title: No sync-over-async blocking
+    category: resiliency
+    severity: high
+    status: active
+    version: 1.0.0
+    owner: platform-team
+    description: >
+      Server code must not block on async work (.GetAwaiter().GetResult(), .Wait(), Thread.Sleep).
+    rationale: >
+      Blocking thread-pool threads under load causes starvation, timeouts and cascading failures.
+    applicability:
+      include: ["src/**/*.cs"]
+      project_types: [api, web, worker, library, infrastructure, domain]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-SYNC-OVER-ASYNC]
+    patterns: [PAT-COOPERATIVE-CANCELLATION]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Make the call chain async and await; use Task.Delay(…, cancellationToken) instead of Thread.Sleep.
+      steps:
+        - Propagate async/await to the caller.
+        - Pass CancellationToken through.
+      references: []
+    human_review_required: false
+    tags: [async, threadpool]
+
+  - id: RES-003
+    title: I/O honors cancellation and bounded timeouts
+    category: resiliency
+    severity: medium
+    status: active
+    version: 1.0.0
+    owner: platform-team
+    description: >
+      Async I/O paths accept and pass CancellationToken; background workers honor stoppingToken; no
+      unbounded waits or blocking on Task.Result.
+    rationale: >
+      Without cancellation, aborted requests and shutdowns keep consuming resources; unbounded waits turn slow
+      dependencies into outages.
+    applicability:
+      include: ["src/**/*.cs"]
+      project_types: [api, web, worker, library, infrastructure]
+    checkpoints:
+      pre_commit:  { enabled: false, note: Semantic rules are not evaluated pre-commit. }
+      code_review: { enabled: true, enforcement: warn, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: advisory, scope: changed }
+    validation:
+      mode: semantic
+      validators: [VAL-SEMANTIC-REVIEW]
+      semantic:
+        rubric: >
+          For new/changed async I/O (EF, HTTP, Redis, RabbitMQ, gRPC), check CancellationToken is accepted and
+          forwarded, background loops observe stoppingToken, and there is no blocking .Result access on tasks.
+        questions:
+          - Is CancellationToken forwarded to every awaited I/O call?
+          - Do loops in BackgroundService exit on stoppingToken?
+          - Is Task.Result used anywhere on the request path?
+        pass_criteria: Cancellation flows end-to-end; no blocking waits.
+    patterns: [PAT-COOPERATIVE-CANCELLATION]
+    required_evidence:
+      - { type: validator_output, checkpoints: [code_review, ci], on_missing: warn }
+    remediation:
+      summary: Add CancellationToken parameters and forward them; await instead of .Result.
+      steps:
+        - Add 'CancellationToken cancellationToken = default' to async methods and pass it down.
+        - In minimal APIs, bind CancellationToken as a handler parameter.
+      references: [src/OrderProcessor/Services/GracePeriodManagerService.cs]
+    human_review_required: false
+    tags: [cancellation, async]
+
+  - id: RES-004
+    title: Integration event handlers are idempotent and retry-safe
+    category: resiliency
+    severity: high
+    status: active
+    version: 1.0.0
+    owner: enterprise-architecture
+    description: >
+      Event handlers must tolerate duplicate and out-of-order delivery (at-least-once via RabbitMQ and outbox
+      re-publication): deduplicate by event Id, or make the state transition idempotent; poison messages must
+      not be lost silently.
+    rationale: >
+      recommendations.md: consumers are not idempotent; a redelivered OrderStatusChangedToPaid could debit stock
+      twice. This requires judgment about business semantics.
+    applicability:
+      include: ["src/**/IntegrationEvents/EventHandling/**/*.cs"]
+    checkpoints:
+      pre_commit:  { enabled: false, note: Semantic rules are not evaluated pre-commit. }
+      code_review: { enabled: true, enforcement: warn, scope: changed }
+      testing:     { enabled: true, enforcement: warn, scope: changed }
+      ci:          { enabled: true, enforcement: warn, scope: changed }
+    validation:
+      mode: semantic
+      validators: [VAL-SEMANTIC-REVIEW]
+      semantic:
+        rubric: >
+          Determine whether processing the same event twice, or events out of order, yields the same final state.
+          Pass when the handler deduplicates by IntegrationEvent.Id or the operation is naturally idempotent
+          (state-guarded transitions), and failures are surfaced for retry/dead-lettering.
+        questions:
+          - What happens if this event is delivered twice? Out of order?
+          - Is there an inbox/processed-event record or a state guard?
+          - Are exceptions surfaced (not swallowed) so the message is retried or dead-lettered?
+        pass_criteria: Duplicate/out-of-order delivery is safe; architect approves the idempotency strategy.
+    patterns: [PAT-IDEMPOTENT-EVENT-HANDLER]
+    required_evidence:
+      - { type: validator_output, checkpoints: [code_review, testing, ci], on_missing: warn }
+      - { type: human_approval, checkpoints: [code_review], on_missing: warn, description: Architect sign-off on idempotency strategy. }
+    remediation:
+      summary: Add deduplication by event Id (inbox table) or guard the state transition, and let failures propagate.
+      steps:
+        - Record processed event Ids in the consumer's database within the handling transaction.
+        - Or check current aggregate state before applying the transition.
+        - Add a test that delivers the same event twice.
+      references: [docs/architecture/recommendations.md]
+    human_review_required: true
+    tags: [events, idempotency, saga]

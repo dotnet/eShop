@@ -1,0 +1,33 @@
+kind: Pattern
+schema_version: 1
+id: PAT-EF-MIGRATIONS
+name: Forward-only EF Core migrations
+category: data
+summary: Schema changes are new migrations; applied migrations are never edited.
+intent: Keep every environment's schema reproducible from migration history.
+rules:
+- DATA-001
+guidance:
+- Create migrations with dotnet ef migrations add <Name> per DbContext.
+- Never edit or delete committed migrations; only the ModelSnapshot changes with new migrations.
+- Make destructive changes in multiple deployable steps (expand/contract).
+exemplars:
+- path: src/Ordering.Infrastructure/Migrations/20230925222426_Initial.cs
+  symbol: Initial
+  description: Committed initial migration.
+examples:
+- id: add-migration
+  title: Add a new migration
+  kind: approved
+  language: bash
+  code: |
+    dotnet ef migrations add AddOrderDescription -p src/Ordering.Infrastructure -s src/Ordering.API
+  explanation: Forward-only schema change.
+- id: edit-migration
+  title: Editing an applied migration
+  kind: anti_pattern
+  language: csharp
+  code: |
+    // 20230925222426_Initial.cs (modified)
+    migrationBuilder.AddColumn<string>("Description", "orders", nullable: true);
+  explanation: Environments that already applied Initial will never get the column (DATA-001).

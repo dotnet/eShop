@@ -1,0 +1,103 @@
+# Exception register: the ONLY way to waive an architecture finding.
+# Inline suppressions in source are not supported.
+#
+# Every exception is explicit and time-bounded:
+#   - scoped to one rule and specific path globs (optionally a message regex / checkpoints)
+#   - max duration: policy.yaml exceptions.max_duration_days (90) from `created`
+#   - approved by a role allowed for the rule's severity (policy.yaml approver_roles_by_severity)
+#   - active  : created <= today <= expires  -> matching findings become WAIVED
+#   - expired : today > expires              -> findings are enforced again + WARN "exception expired"
+#
+# The entries below record pre-existing debt documented in docs/architecture/recommendations.md
+# so the policy can be enforced on all new work immediately.
+kind: ExceptionRegister
+schema_version: 1
+exceptions:
+
+  - id: EXC-0001
+    rule_id: API-002
+    scope:
+      paths: ["src/Catalog.API/**"]
+    justification: Catalog write endpoints (POST/PUT/DELETE /api/catalog/items) are anonymous in the reference implementation. Securing them requires an Admin/catalog.write policy and client changes.
+    risk: critical
+    compensating_controls:
+      - Catalog.API is not exposed publicly outside the Aspire environment in this workshop deployment.
+      - Price-change webhooks are only delivered to authenticated subscribers.
+    requested_by: platform-team
+    approved_by: architecture-board
+    approver_role: architecture-board
+    ticket: docs/architecture/recommendations.md#1-secure-catalog-writes-and-validate-token-audience
+    created: "2026-11-09"
+    expires: "2027-01-31"
+    remediation_plan: Add AddDefaultAuthentication to Catalog.API and RequireAuthorization("catalog.write") on write routes; keep reads anonymous.
+
+  - id: EXC-0002
+    rule_id: SEC-002
+    scope:
+      paths: ["src/eShop.ServiceDefaults/AuthenticationExtensions.cs"]
+      match: "ValidateAudience"
+    justification: Shared JWT setup disables audience validation, so a token issued for one API is accepted by others.
+    risk: critical
+    compensating_controls:
+      - Single trusted issuer (Identity.API) and short token lifetimes.
+    requested_by: platform-team
+    approved_by: architecture-board
+    approver_role: architecture-board
+    ticket: docs/architecture/recommendations.md#1-secure-catalog-writes-and-validate-token-audience
+    created: "2026-11-09"
+    expires: "2027-01-31"
+    remediation_plan: Set ValidateAudience = true using each API's Identity:Audience configuration; add scope policies.
+
+  - id: EXC-0003
+    rule_id: SEC-004
+    scope:
+      paths: ["src/Identity.API/Program.cs"]
+    justification: Identity.API uses AddDeveloperSigningCredential() for local/workshop environments.
+    risk: high
+    compensating_controls:
+      - Identity.API runs only in non-production Aspire environments.
+    requested_by: identity-team
+    approved_by: architecture-board
+    approver_role: architecture-board
+    ticket: docs/architecture/recommendations.md#6-identity-hardening
+    created: "2026-11-09"
+    expires: "2027-02-05"
+    remediation_plan: Load signing keys from Azure Key Vault via Duende automatic key management with a persisted store.
+
+  - id: EXC-0004
+    rule_id: SEC-001
+    scope:
+      paths:
+        - "src/WebApp/Extensions/Extensions.cs"
+        - "src/WebhookClient/Extensions/Extensions.cs"
+        - "src/ClientApp/Services/Settings/SettingsService.cs"
+        - "src/Identity.API/Configuration/Config.cs"
+      match: '(?i)secret'
+    justification: Demo OIDC client secrets ("secret") are hard-coded for the sample clients and the matching in-memory IdentityServer client configuration.
+    risk: critical
+    compensating_controls:
+      - Secrets only grant access to the local demo identity server; not valid in any shared environment.
+    requested_by: identity-team
+    approved_by: architecture-board
+    approver_role: architecture-board
+    ticket: docs/architecture/recommendations.md#6-identity-hardening
+    created: "2026-11-09"
+    expires: "2027-02-05"
+    remediation_plan: Move client secrets to Aspire parameters / user-secrets locally and Key Vault in deployed environments; move clients to the EF configuration store.
+
+  - id: EXC-0005
+    rule_id: DATA-002
+    scope:
+      paths: ["src/OrderProcessor/**"]
+      match: "orderingdb"
+    justification: OrderProcessor's grace-period worker polls Ordering's database directly (documented shared-database coupling).
+    risk: medium
+    compensating_controls:
+      - Read-only query of Submitted orders; all state changes flow through integration events.
+    requested_by: ordering-team
+    approved_by: principal-architect
+    approver_role: principal-architect
+    ticket: docs/architecture/recommendations.md#13-replace-polling-grace-period-worker
+    created: "2026-11-09"
+    expires: "2027-02-05"
+    remediation_plan: Publish the grace-period confirmation as a scheduled/delayed message from Ordering or move the worker inside the Ordering bounded context.

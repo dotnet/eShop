@@ -34,6 +34,8 @@ You turn a verified test plan into a scenario and automated tests. The plan is t
 
 - Bring the stack up with `testing/teststack up` if it is not running, then run your specs with `npx playwright test -c playwright.teststack.config.ts --grep TC-<KEY>-`.
 - Run functional tests with `dotnet test --project tests/<Project> -- --filter-trait "Story=<KEY>"`.
+- When a Playwright test fails, look at what the browser showed before you change code. `artifacts/e2e-videos/manifest.json` lists each test's error and its keyframes (screenshots at each `test.step`, each `demo` checkpoint and the `failure` state). Open the `failure` and `step failed` frames with your image/file read tool. The task feedback already lists them when the pipeline ran the tests. The run before the last one is kept in `artifacts/e2e-videos-previous/` for comparison.
+- Wrap each step of a case in `test.step('<what the case step says>', …)` (or use `demo.chapter`/`demo.highlight`). Each step then gets its own keyframe, which the verifier compares against the case.
 - Finish only when every test for the story passes.
 
 ## Updating

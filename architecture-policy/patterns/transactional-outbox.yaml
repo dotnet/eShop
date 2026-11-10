@@ -1,0 +1,45 @@
+kind: Pattern
+schema_version: 1
+id: PAT-TRANSACTIONAL-OUTBOX
+name: Transactional outbox for integration events
+category: data
+summary: Integration events are saved to the IntegrationEventLog in the business transaction and published after
+  commit.
+intent: Guarantee at-least-once publication consistent with the database state.
+rules:
+- ARCH-004
+- DATA-003
+- DATA-005
+guidance:
+- Inject I<Service>IntegrationEventService, not IEventBus, in handlers and APIs.
+- Save events with the DbContext changes in one transaction (ResilientTransaction).
+- Publish pending events for the transaction id after commit and mark them published/failed.
+- Plan a background relay for events left in NotPublished/Failed state.
+exemplars:
+- path: src/IntegrationEventLogEF/Services/IntegrationEventLogService.cs
+  symbol: IntegrationEventLogService
+  description: Outbox store.
+- path: src/Ordering.API/Application/IntegrationEvents/OrderingIntegrationEventService.cs
+  symbol: OrderingIntegrationEventService
+  description: Outbox publishing service.
+- path: src/Ordering.API/Application/Behaviors/TransactionBehavior.cs
+  symbol: TransactionBehavior
+  description: Publishes after commit.
+examples:
+- id: outbox-save-publish
+  title: Save then publish through the outbox
+  kind: approved
+  language: csharp
+  code: |
+    await _orderingIntegrationEventService.AddAndSaveEventAsync(orderStartedEvent);
+    // TransactionBehavior commits, then:
+    await _orderingIntegrationEventService.PublishEventsThroughEventBusAsync(transactionId);
+  explanation: Event and state commit atomically.
+- id: direct-publish
+  title: Publishing directly after SaveChanges
+  kind: anti_pattern
+  language: csharp
+  code: |
+    await _context.SaveChangesAsync();
+    await _eventBus.PublishAsync(new PriceChangedIntegrationEvent(id, newPrice, oldPrice));
+  explanation: A crash between the two calls loses the event (DATA-003).

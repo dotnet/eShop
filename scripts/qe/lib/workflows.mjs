@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { agentDefinition, runAgent } from '../../pipeline/lib/agents.mjs';
 import { spawnBackground } from '../../pipeline/lib/background.mjs';
 import { git, implChanges, implDiff } from '../../pipeline/lib/git.mjs';
+import { readEvidence, formatEvidence } from './evidence.mjs';
 import {
   INDEX,
   automationFiles,
@@ -219,14 +220,29 @@ export function precheckAutomation(config, story, { skipTests = false } = {}) {
   const specFiles = [...tests.keys()].filter((f) => f.endsWith('.ts'));
   const projects = [...new Set([...tests.keys()].filter((f) => f.endsWith('.cs')).map((f) => f.split('/').slice(0, 2).join('/')))];
   const commands = [];
-  if (specFiles.length) commands.push(expand(config.precheck.playwright, { files: specFiles, casePrefix: casePrefix(story.key), story: story.key }));
-  for (const project of projects) commands.push(expand(config.precheck.dotnet, { project, story: story.key }));
-  for (const [cmd, ...args] of commands) {
+  if (specFiles.length) commands.push({ e2e: true, argv: expand(config.precheck.playwright, { files: specFiles, casePrefix: casePrefix(story.key), story: story.key }) });
+  for (const project of projects) commands.push({ e2e: false, argv: expand(config.precheck.dotnet, { project, story: story.key }) });
+  let evidence = [];
+  for (const { e2e, argv: [cmd, ...args] } of commands) {
     log(`${story.key}: running ${cmd} ${args.join(' ')}`);
-    const result = run(cmd, args, { cwd: config.root, timeoutSec: config.timeoutsSec.tests });
-    if (result.status !== 0) errors.push(`\`${cmd} ${args.join(' ')}\` failed:\n${tail(result.stdout + result.stderr, 4000)}`);
+    const since = nowIso();
+    const result = run(cmd, args, {
+      cwd: config.root,
+      timeoutSec: config.timeoutsSec.tests,
+      // The verifier needs keyframes from passing tests too, so keep them for every e2e run.
+      env: e2e ? { ...process.env, E2E_KEEP_VIDEOS: '1' } : undefined,
+    });
+    if (e2e) evidence = readEvidence(config, { casePrefix: casePrefix(story.key), since });
+    if (result.status === 0) continue;
+    let error = `\`${cmd} ${args.join(' ')}\` failed:\n${tail(result.stdout + result.stderr, 4000)}`;
+    const failed = evidence.filter((t) => !t.ok);
+    if (failed.length) {
+      error += '\n\nWhat the browser showed (from the recorded run). Open the keyframes with your image/file read tool, '
+        + 'starting with the `failure` and `step failed` frames, before you change any code:\n\n' + formatEvidence(failed);
+    }
+    errors.push(error);
   }
-  return { errors, tests };
+  return { errors, tests, evidence };
 }
 
 function automationTask(config, story, { mode, feedback, implFiles }) {
@@ -249,7 +265,7 @@ function automationTask(config, story, { mode, feedback, implFiles }) {
   return lines.join('\n');
 }
 
-function automationVerifierTask(config, story, tests) {
+function automationVerifierTask(config, story, tests, evidence = []) {
   const plan = readPlan(config, story);
   const { scenario } = automationFiles(config, story);
   const lines = [
@@ -266,6 +282,18 @@ function automationVerifierTask(config, story, tests) {
   lines.push('', `### Scenario data (${config.scenariosDir}/${story.scenario})`);
   for (const file of scenario) lines.push('', `#### ${file}`, '', fence(readRel(config, file), langFor(file)));
   lines.push('', 'Helper modules imported by the tests may be opened with your read tools if you need them.');
+  if (evidence.some((t) => t.keyframes.length)) {
+    lines.push(
+      '',
+      '### Visual evidence (keyframes from the recorded run of these tests)',
+      '',
+      'Open the keyframes with your image/file read tool and check, case by case, that the screen shows what the case expects '
+        + 'at that point (right page, user, data and outcome; no error page or empty state where content is expected). '
+        + 'A test that passes while the screen contradicts its case is a `visual-mismatch` gap.',
+      '',
+      formatEvidence(evidence),
+    );
+  }
   return lines.join('\n');
 }
 
@@ -337,7 +365,7 @@ async function automationPass(config, story, { skipTests, maxRounds }) {
     let verdict;
     let consecutive = 0;
     do {
-      verdict = runVerifier(config, { stage: 'automation', story, round, producerVersion: producer.version, task: automationVerifierTask(config, story, pre.tests) });
+      verdict = runVerifier(config, { stage: 'automation', story, round, producerVersion: producer.version, task: automationVerifierTask(config, story, pre.tests, pre.evidence) });
       if (verdict.error) break;
       consecutive = verdict.passed ? consecutive + 1 : 0;
     } while (verdict.passed && consecutive < config.loops.consecutivePasses);

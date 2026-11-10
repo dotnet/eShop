@@ -38,6 +38,7 @@ flowchart LR
 1. The implementation agent runs `node scripts/pipeline/pipeline.mjs start <KEY>` and, when the line of work is complete, `node scripts/pipeline/pipeline.mjs done`.
 2. When its turn ends, the dispatcher runs the review stage first. The QE stage runs only once the review has approved the current implementation (`review.approvedHash` matches), then starts the automation loop in the background and lets the agent finish. If the implementation changes again, the next approval re-runs automation in update mode, so the tests follow the corrected code.
 3. The automation loop writes `testing/scenarios/<key>/scenario.yaml` and tests whose names carry their case ids, runs them, and loops with the automation verifier until it scores 10/10. If the tests show that the implementation contradicts the plan, the run stops with a `product-bug` escalation instead of weakening the tests.
+4. Every recorded Playwright test also captures labeled keyframes (screenshots at each step, demo checkpoint and the final or failure state; see the `feature-demo-video` skill), listed in `artifacts/e2e-videos/manifest.json`. They are generated in the automation loop's deterministic checks (`precheckAutomation` in `scripts/qe/lib/workflows.mjs`), which run the story's Playwright tests with `E2E_KEEP_VIDEOS=1` because passing tests otherwise keep no video or keyframes. When that run fails, the feedback to the automation agent includes each failed test's error and keyframe paths. When the tests pass, the verifier gets every test's keyframes and checks that the screen matches each case (`visual-mismatch`). Only a manifest written by that run is used.
 
 ## Where it hooks in
 
@@ -78,7 +79,7 @@ All results are appended to `.agent-metrics/*.jsonl` (architecture reviews are i
 
 ## Auto-improvement
 
-`node scripts/qe/qe.mjs lessons` reads the metrics and, for each of `qe-plan`, `qe-automation`, `qe-plan-verifier` and `qe-automation-verifier`:
+`node scripts/qe/qe.mjs lessons` reads the metrics and, for each of `qe-plan`, `qe-automation`, `qe-plan-verifier`, `qe-automation-verifier` and `implementer` (whose denials are the blocking findings in `arch-reviews.jsonl`, see [review](review.md#how-the-implementer-improves)):
 
 - **adds** a rule when a denial category recurs in 3 or more stories and no rule covers it;
 - **strengthens** a rule when its category keeps recurring in 3 or more stories after the rule was added;

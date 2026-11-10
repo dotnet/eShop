@@ -9,6 +9,7 @@
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report",
+    "test:e2e:teststack": "playwright test -c playwright.teststack.config.ts",
     "pipeline": "node scripts/pipeline/pipeline.mjs",
     "review": "node scripts/review/review.mjs",
     "pr-check": "node scripts/pr-check/pr-check.mjs",

@@ -1,0 +1,444 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eshop.example/architecture-policy/architecture-rule.schema.json",
+  "title": "Architecture Policy Pack schema",
+  "description": "Root schema validates a rule file (kind: RuleSet). $defs hold the schema for every other policy document kind; the loader selects the definition by the document's 'kind'.",
+  "$ref": "#/$defs/RuleSet",
+  "$defs": {
+    "ruleId": { "type": "string", "pattern": "^(ARCH|API|SEC|DATA|OBS|RES|ERR|TEST)-[0-9]{3}$" },
+    "patternId": { "type": "string", "pattern": "^PAT-[A-Z0-9]+(-[A-Z0-9]+)*$" },
+    "validatorId": { "type": "string", "pattern": "^VAL-[A-Z0-9]+(-[A-Z0-9]+)*$" },
+    "exceptionId": { "type": "string", "pattern": "^EXC-[0-9]{4}$" },
+    "evidenceTypeId": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "checkpoint": { "enum": ["pre_commit", "code_review", "testing", "ci"] },
+    "severity": { "enum": ["critical", "high", "medium", "low"] },
+    "category": { "enum": ["architecture", "api", "security", "data", "observability", "resiliency", "error_handling", "testing"] },
+    "projectType": { "enum": ["api", "web", "worker", "domain", "infrastructure", "library", "apphost", "client", "test", "test_tooling"] },
+    "isoDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "semver": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "globList": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "nonEmptyText": { "type": "string", "minLength": 3 },
+
+    "CheckpointBehavior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "enforcement": { "enum": ["block", "warn", "advisory"] },
+        "scope": { "enum": ["changed", "all"] },
+        "note": { "type": "string" }
+      },
+      "if": { "properties": { "enabled": { "const": true } } },
+      "then": { "required": ["enabled", "enforcement"] }
+    },
+
+    "Rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "category", "severity", "status", "version", "owner", "description", "rationale",
+                   "applicability", "checkpoints", "validation", "patterns", "required_evidence", "remediation", "human_review_required"],
+      "properties": {
+        "id": { "$ref": "#/$defs/ruleId" },
+        "title": { "$ref": "#/$defs/nonEmptyText" },
+        "category": { "$ref": "#/$defs/category" },
+        "severity": { "$ref": "#/$defs/severity" },
+        "status": { "enum": ["active", "draft", "deprecated"] },
+        "version": { "$ref": "#/$defs/semver" },
+        "owner": { "type": "string" },
+        "description": { "$ref": "#/$defs/nonEmptyText" },
+        "rationale": { "$ref": "#/$defs/nonEmptyText" },
+        "applicability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["include"],
+          "properties": {
+            "include": { "$ref": "#/$defs/globList", "minItems": 1 },
+            "exclude": { "$ref": "#/$defs/globList" },
+            "project_types": { "type": "array", "items": { "$ref": "#/$defs/projectType" }, "uniqueItems": true },
+            "service_traits": { "type": "array", "items": { "enum": ["owns_database", "publishes_events", "consumes_events", "exposes_http_api"] }, "uniqueItems": true },
+            "note": { "type": "string" }
+          }
+        },
+        "checkpoints": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["pre_commit", "code_review", "testing", "ci"],
+          "properties": {
+            "pre_commit": { "$ref": "#/$defs/CheckpointBehavior" },
+            "code_review": { "$ref": "#/$defs/CheckpointBehavior" },
+            "testing": { "$ref": "#/$defs/CheckpointBehavior" },
+            "ci": { "$ref": "#/$defs/CheckpointBehavior" }
+          }
+        },
+        "validation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "validators"],
+          "properties": {
+            "mode": { "enum": ["deterministic", "semantic", "hybrid"] },
+            "validators": { "type": "array", "items": { "$ref": "#/$defs/validatorId" }, "minItems": 1, "uniqueItems": true },
+            "semantic": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["rubric", "questions"],
+              "properties": {
+                "rubric": { "$ref": "#/$defs/nonEmptyText" },
+                "questions": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+                "pass_criteria": { "type": "string" }
+              }
+            }
+          },
+          "allOf": [
+            { "if": { "properties": { "mode": { "enum": ["semantic", "hybrid"] } } }, "then": { "required": ["mode", "validators", "semantic"] } }
+          ]
+        },
+        "patterns": { "type": "array", "items": { "$ref": "#/$defs/patternId" }, "uniqueItems": true },
+        "required_evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "checkpoints", "on_missing"],
+            "properties": {
+              "type": { "$ref": "#/$defs/evidenceTypeId" },
+              "checkpoints": { "type": "array", "items": { "$ref": "#/$defs/checkpoint" }, "minItems": 1, "uniqueItems": true },
+              "on_missing": { "enum": ["block", "warn", "info"] },
+              "description": { "type": "string" }
+            }
+          },
+          "minItems": 1
+        },
+        "remediation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["summary", "steps"],
+          "properties": {
+            "summary": { "$ref": "#/$defs/nonEmptyText" },
+            "steps": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+            "references": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "human_review_required": { "type": "boolean" },
+        "tags": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
+
+    "RuleSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "schema_version", "category", "rules"],
+      "properties": {
+        "kind": { "const": "RuleSet" },
+        "schema_version": { "const": 1 },
+        "category": { "$ref": "#/$defs/category" },
+        "description": { "type": "string" },
+        "rules": { "type": "array", "items": { "$ref": "#/$defs/Rule" }, "minItems": 1 }
+      }
+    },
+
+    "Pattern": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "schema_version", "id", "name", "category", "summary", "intent", "rules", "guidance", "exemplars", "examples"],
+      "properties": {
+        "kind": { "const": "Pattern" },
+        "schema_version": { "const": 1 },
+        "id": { "$ref": "#/$defs/patternId" },
+        "name": { "$ref": "#/$defs/nonEmptyText" },
+        "category": { "$ref": "#/$defs/category" },
+        "summary": { "$ref": "#/$defs/nonEmptyText" },
+        "intent": { "$ref": "#/$defs/nonEmptyText" },
+        "rules": { "type": "array", "items": { "$ref": "#/$defs/ruleId" }, "minItems": 1, "uniqueItems": true },
+        "guidance": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "exemplars": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "description"],
+            "properties": {
+              "path": { "type": "string" },
+              "symbol": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "examples": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "title", "kind", "language", "code"],
+            "properties": {
+              "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+              "title": { "type": "string" },
+              "kind": { "enum": ["approved", "anti_pattern"] },
+              "language": { "enum": ["csharp", "xml", "json", "yaml", "bash"] },
+              "code": { "type": "string", "minLength": 1 },
+              "explanation": { "type": "string" }
+            }
+          }
+        },
+        "references": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "SelfTest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "expect"],
+      "properties": {
+        "name": { "type": "string" },
+        "files": { "type": "object", "additionalProperties": { "type": "string" } },
+        "changed": { "type": "object", "additionalProperties": { "enum": ["A", "M", "D", "R"] } },
+        "artifacts": { "type": "object" },
+        "rule_id": { "$ref": "#/$defs/ruleId" },
+        "expect": { "enum": ["pass", "fail", "needs_review"] },
+        "expect_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+
+    "Validator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "type", "implementation", "description", "checkpoints"],
+      "properties": {
+        "id": { "$ref": "#/$defs/validatorId" },
+        "name": { "type": "string" },
+        "type": { "enum": ["deterministic", "semantic"] },
+        "implementation": { "type": "string", "pattern": "^[a-z_]+:[a-z_]+$" },
+        "description": { "$ref": "#/$defs/nonEmptyText" },
+        "checkpoints": { "type": "array", "items": { "$ref": "#/$defs/checkpoint" }, "minItems": 1, "uniqueItems": true },
+        "params": { "type": "object" },
+        "self_tests": { "type": "array", "items": { "$ref": "#/$defs/SelfTest" } }
+      },
+      "if": { "properties": { "type": { "const": "deterministic" } } },
+      "then": { "required": ["self_tests"], "properties": { "self_tests": { "minItems": 2 } } }
+    },
+
+    "ValidatorRegistry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "schema_version", "validators"],
+      "properties": {
+        "kind": { "const": "ValidatorRegistry" },
+        "schema_version": { "const": 1 },
+        "validators": { "type": "array", "items": { "$ref": "#/$defs/Validator" }, "minItems": 1 }
+      }
+    },
+
+    "PolicyException": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "rule_id", "scope", "justification", "risk", "compensating_controls", "requested_by", "approved_by", "approver_role", "ticket", "created", "expires"],
+      "properties": {
+        "id": { "$ref": "#/$defs/exceptionId" },
+        "rule_id": { "$ref": "#/$defs/ruleId" },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["paths"],
+          "properties": {
+            "paths": { "$ref": "#/$defs/globList", "minItems": 1 },
+            "match": { "type": "string", "description": "Optional regex the finding message or snippet must match." },
+            "checkpoints": { "type": "array", "items": { "$ref": "#/$defs/checkpoint" }, "uniqueItems": true }
+          }
+        },
+        "justification": { "$ref": "#/$defs/nonEmptyText" },
+        "risk": { "enum": ["low", "medium", "high", "critical"] },
+        "compensating_controls": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "requested_by": { "type": "string" },
+        "approved_by": { "type": "string" },
+        "approver_role": { "type": "string" },
+        "ticket": { "type": "string" },
+        "created": { "$ref": "#/$defs/isoDate" },
+        "expires": { "$ref": "#/$defs/isoDate" },
+        "remediation_plan": { "type": "string" }
+      }
+    },
+
+    "ExceptionRegister": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "schema_version", "exceptions"],
+      "properties": {
+        "kind": { "const": "ExceptionRegister" },
+        "schema_version": { "const": 1 },
+        "exceptions": { "type": "array", "items": { "$ref": "#/$defs/PolicyException" } }
+      }
+    },
+
+    "EvidenceTypes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "schema_version", "evidence_types"],
+      "properties": {
+        "kind": { "const": "EvidenceTypes" },
+        "schema_version": { "const": 1 },
+        "evidence_types": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "description", "collected_by", "artifact_key"],
+            "properties": {
+              "id": { "$ref": "#/$defs/evidenceTypeId" },
+              "description": { "type": "string" },
+              "collected_by": { "enum": ["engine", "caller", "discovery"] },
+              "artifact_key": { "type": ["string", "null"] },
+              "discovery_globs": { "$ref": "#/$defs/globList" },
+              "format": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+
+    "Profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "schema_version", "id", "language", "source_extensions", "global_exclude", "projects", "services", "layer_dependencies", "test_mapping"],
+      "properties": {
+        "kind": { "const": "Profile" },
+        "schema_version": { "const": 1 },
+        "id": { "type": "string" },
+        "language": { "type": "string" },
+        "description": { "type": "string" },
+        "source_extensions": { "type": "array", "items": { "type": "string" } },
+        "global_exclude": { "$ref": "#/$defs/globList" },
+        "projects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "path", "type"],
+            "properties": {
+              "name": { "type": "string" },
+              "path": { "type": "string" },
+              "type": { "$ref": "#/$defs/projectType" },
+              "service": { "type": "string" },
+              "layer": { "enum": ["presentation", "application", "domain", "infrastructure", "shared", "host", "test"] },
+              "note": { "type": "string" }
+            }
+          }
+        },
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "owns_datastores", "traits"],
+            "properties": {
+              "id": { "type": "string" },
+              "description": { "type": "string" },
+              "owns_datastores": { "type": "array", "items": { "type": "string" } },
+              "traits": { "type": "array", "items": { "enum": ["owns_database", "publishes_events", "consumes_events", "exposes_http_api"] } }
+            }
+          }
+        },
+        "shared_datastore_names": { "type": "array", "items": { "type": "string" } },
+        "layer_dependencies": {
+          "type": "object",
+          "additionalProperties": { "type": "array", "items": { "type": "string" } }
+        },
+        "forbidden_packages_by_layer": {
+          "type": "object",
+          "additionalProperties": { "type": "array", "items": { "type": "string" } }
+        },
+        "test_mapping": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["source", "tests"],
+            "properties": {
+              "source": { "type": "string" },
+              "tests": { "$ref": "#/$defs/globList" }
+            }
+          }
+        }
+      }
+    },
+
+    "PolicyManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "schema_version", "name", "version", "owner", "default_profile", "categories", "checkpoints", "decision", "exceptions", "evidence", "validators"],
+      "properties": {
+        "kind": { "const": "PolicyManifest" },
+        "schema_version": { "const": 1 },
+        "name": { "type": "string" },
+        "version": { "$ref": "#/$defs/semver" },
+        "owner": { "type": "string" },
+        "default_profile": { "type": "string" },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "prefix", "file"],
+            "properties": {
+              "id": { "$ref": "#/$defs/category" },
+              "prefix": { "type": "string", "pattern": "^[A-Z]+$" },
+              "file": { "type": "string" }
+            }
+          }
+        },
+        "checkpoints": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["pre_commit", "code_review", "testing", "ci"],
+          "patternProperties": {
+            "^(pre_commit|code_review|testing|ci)$": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["description", "allow_semantic", "default_scope"],
+              "properties": {
+                "description": { "type": "string" },
+                "allow_semantic": { "type": "boolean" },
+                "default_scope": { "enum": ["changed", "all"] }
+              }
+            }
+          }
+        },
+        "decision": { "type": "object" },
+        "exceptions": {
+          "type": "object",
+          "required": ["file", "max_duration_days", "expiry_warning_days", "approver_roles_by_severity"],
+          "properties": {
+            "file": { "type": "string" },
+            "max_duration_days": { "type": "integer", "minimum": 1, "maximum": 180 },
+            "expiry_warning_days": { "type": "integer", "minimum": 0 },
+            "approver_roles_by_severity": { "type": "object" }
+          }
+        },
+        "evidence": { "type": "object", "required": ["types_file", "output_dir"] },
+        "history": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "store": { "enum": ["sqlite"] },
+            "path": { "type": "string" },
+            "retention_days": { "type": "integer", "minimum": 0 },
+            "record_outcomes": { "type": "array", "items": { "enum": ["BLOCK", "WARN", "WAIVED", "INFO"] }, "uniqueItems": true },
+            "otlp": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": { "type": "boolean" },
+                "use_otel_env": { "type": "boolean" },
+                "service_name": { "type": "string" },
+                "timeout_seconds": { "type": "number", "exclusiveMinimum": 0, "maximum": 30 }
+              }
+            }
+          }
+        },
+        "validators": { "type": "object", "required": ["registry", "implementation_dir"] }
+      }
+    }
+  }
+}

@@ -1,0 +1,109 @@
+# .NET profile for the eShop repository.
+# Maps physical projects to architectural roles so rules can target project types,
+# services, layers, and owned datastores without hard-coding paths in validators.
+kind: Profile
+schema_version: 1
+id: dotnet
+language: csharp
+description: >
+  .NET 10 / Aspire services-based architecture. Each bounded context (service) owns its
+  datastore; cross-context communication uses integration events over IEventBus with an
+  EF transactional outbox (IntegrationEventLogEF).
+source_extensions: [".cs", ".csproj", ".razor", ".json", ".props", ".targets"]
+global_exclude:
+  - "**/bin/**"
+  - "**/obj/**"
+  - "**/node_modules/**"
+  - "graphify-out/**"
+  - "architecture-policy/**"
+  - "**/*.Designer.cs"
+  - "**/wwwroot/lib/**"
+
+projects:
+  # --- services -----------------------------------------------------------
+  - { name: Identity.API,           path: src/Identity.API,           type: api,            service: identity,          layer: presentation }
+  - { name: Catalog.API,            path: src/Catalog.API,            type: api,            service: catalog,           layer: presentation }
+  - { name: Basket.API,             path: src/Basket.API,             type: api,            service: basket,            layer: presentation }
+  - { name: Ordering.API,           path: src/Ordering.API,           type: api,            service: ordering,          layer: application }
+  - { name: Ordering.Domain,        path: src/Ordering.Domain,        type: domain,         service: ordering,          layer: domain }
+  - { name: Ordering.Infrastructure, path: src/Ordering.Infrastructure, type: infrastructure, service: ordering,         layer: infrastructure }
+  - { name: OrderProcessor,         path: src/OrderProcessor,         type: worker,         service: order-processor,   layer: application }
+  - { name: PaymentProcessor,       path: src/PaymentProcessor,       type: worker,         service: payment-processor, layer: application, note: "Web SDK host but behaves as an event-driven worker." }
+  - { name: Webhooks.API,           path: src/Webhooks.API,           type: api,            service: webhooks,          layer: presentation }
+  - { name: WebApp,                 path: src/WebApp,                 type: web,            service: webapp,            layer: presentation }
+  - { name: WebhookClient,          path: src/WebhookClient,          type: web,            service: webhooksclient,    layer: presentation }
+  # --- shared libraries ----------------------------------------------------
+  - { name: eShop.ServiceDefaults,  path: src/eShop.ServiceDefaults,  type: library, layer: shared }
+  - { name: EventBus,               path: src/EventBus,               type: library, layer: shared }
+  - { name: EventBusRabbitMQ,       path: src/EventBusRabbitMQ,       type: library, layer: shared }
+  - { name: IntegrationEventLogEF,  path: src/IntegrationEventLogEF,  type: library, layer: shared }
+  - { name: WebAppComponents,       path: src/WebAppComponents,       type: library, layer: shared, note: "Razor component library shared by WebApp and HybridApp." }
+  - { name: Shared,                 path: src/Shared,                 type: library, layer: shared, note: "Linked source files (no csproj)." }
+  # --- hosts / clients -------------------------------------------------------
+  - { name: eShop.AppHost,          path: src/eShop.AppHost,          type: apphost, layer: host }
+  - { name: ClientApp,              path: src/ClientApp,              type: client,  layer: presentation, note: ".NET MAUI client; outside server-side rules." }
+  - { name: HybridApp,              path: src/HybridApp,              type: client,  layer: presentation, note: ".NET MAUI Blazor Hybrid client." }
+  # --- tests -----------------------------------------------------------------
+  - { name: Application.UnitTests,       path: tests/Application.UnitTests,       type: test, layer: test }
+  - { name: Basket.FunctionalTests,      path: tests/Basket.FunctionalTests,      type: test, layer: test }
+  - { name: Basket.UnitTests,            path: tests/Basket.UnitTests,            type: test, layer: test }
+  - { name: Catalog.FunctionalTests,     path: tests/Catalog.FunctionalTests,     type: test, layer: test }
+  - { name: ClientApp.UnitTests,         path: tests/ClientApp.UnitTests,         type: test, layer: test }
+  - { name: eShop.AppHost.UnitTests,     path: tests/eShop.AppHost.UnitTests,     type: test, layer: test }
+  - { name: Ordering.FunctionalTests,    path: tests/Ordering.FunctionalTests,    type: test, layer: test }
+  - { name: Ordering.UnitTests,          path: tests/Ordering.UnitTests,          type: test, layer: test }
+  - { name: Webhooks.FunctionalTests,    path: tests/Webhooks.FunctionalTests,    type: test, layer: test }
+  - { name: eShop.TestStack,             path: testing/eShop.TestStack,           type: test_tooling, layer: test }
+  - { name: eShop.TestStack.Tests,       path: testing/eShop.TestStack.Tests,     type: test, layer: test }
+
+services:
+  - { id: identity,          owns_datastores: [identitydb],  traits: [owns_database, exposes_http_api] }
+  - { id: catalog,           owns_datastores: [catalogdb],   traits: [owns_database, publishes_events, consumes_events, exposes_http_api] }
+  - { id: basket,            owns_datastores: [redis],       traits: [consumes_events, exposes_http_api] }
+  - { id: ordering,          owns_datastores: [orderingdb],  traits: [owns_database, publishes_events, consumes_events, exposes_http_api] }
+  - { id: order-processor,   owns_datastores: [],            traits: [publishes_events] }
+  - { id: payment-processor, owns_datastores: [],            traits: [publishes_events, consumes_events] }
+  - { id: webhooks,          owns_datastores: [webhooksdb],  traits: [owns_database, consumes_events, exposes_http_api] }
+  - { id: webapp,            owns_datastores: [],            traits: [consumes_events] }
+  - { id: webhooksclient,    owns_datastores: [],            traits: [] }
+
+# Connection names that are not service-owned databases (AI models, brokers, caches used via abstractions).
+shared_datastore_names: [eventbus, textEmbeddingModel, chatModel, postgres]
+
+# Allowed project-reference targets per layer. "same_service:<layer>" allows a layer of the same service;
+# "shared" allows shared libraries; "*" allows anything.
+layer_dependencies:
+  domain: []
+  infrastructure: ["same_service:domain", "shared"]
+  application: ["same_service:domain", "same_service:infrastructure", "shared"]
+  presentation: ["shared"]
+  shared: ["shared"]
+  host: ["*"]
+  test: ["*"]
+
+# Package-ID prefixes forbidden per layer (domain must stay persistence- and transport-agnostic).
+forbidden_packages_by_layer:
+  domain:
+    - Microsoft.EntityFrameworkCore
+    - Npgsql
+    - Microsoft.AspNetCore
+    - Aspire.
+    - RabbitMQ.
+    - StackExchange.Redis
+    - Dapper
+
+# Where tests for a source project are expected to live.
+test_mapping:
+  - { source: src/Catalog.API,           tests: ["tests/Catalog.FunctionalTests/**", "tests/Application.UnitTests/**"] }
+  - { source: src/Basket.API,            tests: ["tests/Basket.UnitTests/**", "tests/Basket.FunctionalTests/**"] }
+  - { source: src/Ordering.API,          tests: ["tests/Ordering.UnitTests/**", "tests/Ordering.FunctionalTests/**"] }
+  - { source: src/Ordering.Domain,       tests: ["tests/Ordering.UnitTests/**"] }
+  - { source: src/Ordering.Infrastructure, tests: ["tests/Ordering.UnitTests/**", "tests/Ordering.FunctionalTests/**"] }
+  - { source: src/Webhooks.API,          tests: ["tests/Webhooks.FunctionalTests/**", "tests/Application.UnitTests/**"] }
+  - { source: src/Identity.API,          tests: ["tests/Application.UnitTests/**", "tests/Ordering.FunctionalTests/**"] }
+  - { source: src/OrderProcessor,        tests: ["tests/Application.UnitTests/**"] }
+  - { source: src/PaymentProcessor,      tests: ["tests/Application.UnitTests/**"] }
+  - { source: src/WebhookClient,         tests: ["tests/Application.UnitTests/**"] }
+  - { source: src/eShop.AppHost,         tests: ["tests/eShop.AppHost.UnitTests/**"] }
+  - { source: src/ClientApp,             tests: ["tests/ClientApp.UnitTests/**"] }
+  - { source: testing/eShop.TestStack,   tests: ["testing/eShop.TestStack.Tests/**"] }

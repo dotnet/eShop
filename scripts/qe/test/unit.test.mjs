@@ -1,5 +1,9 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { test } from 'node:test';
+import { formatEvidence, readEvidence } from '../lib/evidence.mjs';
 import { lessonCandidates, parseRules } from '../lib/lessons.mjs';
 import { computeMetrics } from '../lib/metrics.mjs';
 import { extractResult, parseFrontMatter, stringifyFrontMatter } from '../../pipeline/lib/util.mjs';
@@ -94,6 +98,26 @@ test('lessons for verifiers come from calibration misses, not from producer deni
   assert.equal(lessonCandidates(config, data, 'qe-plan-verifier', '').changes[0].category, 'missing-sad-path');
 });
 
+test('lessons for the implementer come from blocking architecture review findings, grouped by policy rule', () => {
+  const review = (story, findings, extra = {}) => ({ ts: '2026-01-01', story, round: 1, verdict: 'CHANGES_REQUESTED', findings, ...extra });
+  const sec = { severity: 'blocking', category: 'security', rule: 'SEC-001', file: 'src/A.cs', line: 3, issue: 'SEC-001 No secrets: literal password' };
+  const data = {
+    denials: ['A-1', 'B-1', 'C-1'].map((s) => denial(s, '2026-01-01')),
+    runs: [],
+    calibration: [],
+    reviews: [
+      review('A-1', [sec, { severity: 'minor', category: 'fit', file: 'src/A.cs' }]),
+      review('B-1', [sec], { reviewer: 'arch-review-agent' }),
+      review('C-1', [sec]),
+      review('D-1', [sec], { verdict: 'APPROVED' }),
+      review('E-1', [{ severity: 'blocking', category: 'fit', file: 'src/E.cs' }]),
+    ],
+  };
+  const report = lessonCandidates(config, data, 'implementer', '');
+  assert.deepEqual(report.changes.map((c) => [c.action, c.category, c.subtype, c.stories]), [['add', 'security', 'SEC-001', 3]]);
+  assert.deepEqual(report.changes[0].examples.at(-1), { story: 'C-1', case: 'review round 1 (architecture-reviewer)', detail: 'SEC-001 No secrets: literal password', location: 'src/A.cs:3' });
+});
+
 test('computeMetrics summarizes loops per stage and categories per attributed agent', () => {
   const data = {
     runs: [
@@ -112,4 +136,31 @@ test('computeMetrics summarizes loops per stage and categories per attributed ag
   assert.equal(plan.denials, 1);
   assert.equal(plan.stories, 2);
   assert.equal(m.categories[0].category, 'missing-sad-path');
+});
+
+test('readEvidence ignores manifests from older runs and formats failed tests with absolute keyframe paths', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'qe-evidence-'));
+  const cfg = { root, evidence: { manifest: 'out/manifest.json' } };
+  fs.mkdirSync(path.join(root, 'out'));
+  const startedAt = '2026-01-01T10:00:00.000Z';
+  fs.writeFileSync(path.join(root, 'out/manifest.json'), JSON.stringify({
+    startedAt,
+    tests: [
+      { title: 'TC-DEMO-1-01 adds', file: 'e2e/a.spec.ts', line: 3, ok: false, status: 'failed', errors: ['expected 1 got 0'],
+        videos: ['p/a.failed.webm'], keyframes: [{ label: 'step failed: add', path: 'p/a.failed.keyframes/01-add.png' }] },
+      { title: 'TC-OTHER-1-01 unrelated', file: 'e2e/b.spec.ts', line: 1, ok: true, status: 'passed', videos: [], keyframes: [] },
+    ],
+  }));
+
+  assert.deepEqual(readEvidence(cfg, { casePrefix: 'TC-DEMO-1-', since: '2026-01-01T10:00:01.000Z' }), []);
+  const tests = readEvidence(cfg, { casePrefix: 'TC-DEMO-1-', since: '2026-01-01T09:59:59.000Z' });
+  assert.equal(tests.length, 1);
+  const frame = path.join(root, 'out', 'p/a.failed.keyframes/01-add.png');
+  assert.equal(tests[0].keyframes[0].path, frame);
+
+  const text = formatEvidence(tests);
+  assert.match(text, /FAILED: failed/);
+  assert.match(text, /expected 1 got 0/);
+  assert.ok(text.includes(`1. step failed: add: \`${frame}\``));
+  fs.rmSync(root, { recursive: true, force: true });
 });

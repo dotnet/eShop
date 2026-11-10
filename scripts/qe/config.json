@@ -37,6 +37,9 @@
     ".ts",
     ".cs"
   ],
+  "evidence": {
+    "manifest": "artifacts/e2e-videos/manifest.json"
+  },
   "precheck": {
     "runTests": true,
     "validateScenario": [
@@ -84,6 +87,7 @@
       "over-mocked",
       "flaky-wait",
       "wrong-layer",
+      "visual-mismatch",
       "other"
     ],
     "sadPathSubtypes": [

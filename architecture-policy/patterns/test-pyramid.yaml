@@ -1,0 +1,61 @@
+kind: Pattern
+schema_version: 1
+id: PAT-TEST-PYRAMID
+name: Test pyramid with recorded evidence
+category: testing
+summary: Unit tests for domain/application logic, functional tests for APIs, E2E for critical journeys - executed
+  with machine-readable results.
+intent: Detect regressions early and base release decisions on evidence.
+rules:
+- TEST-001
+- TEST-002
+- TEST-003
+- TEST-004
+- TEST-005
+- TEST-006
+guidance:
+- Unit-test aggregates and handlers in <Service>.UnitTests (MSTest/NSubstitute).
+- Functional-test endpoints with Aspire/WebApplicationFactory in <Service>.FunctionalTests.
+- Run dotnet test --logger trx --collect "XPlat Code Coverage" and pass results to architecture.validate.
+- Cover failure, compensation and duplicate-delivery paths for saga changes.
+- Skipped tests must reference a tracking issue.
+exemplars:
+- path: tests/Ordering.UnitTests
+  description: Domain and application unit tests.
+- path: tests/Catalog.FunctionalTests/CatalogApiTests.cs
+  symbol: CatalogApiTests
+  description: API functional tests.
+- path: tests/Basket.UnitTests/BasketServiceTests.cs
+  symbol: BasketServiceTests
+  description: Service unit tests.
+examples:
+- id: behavior-test
+  title: Behavior-focused unit test
+  kind: approved
+  language: csharp
+  code: |
+    [TestMethod]
+    public void SetPaidStatus_WhenNotStockConfirmed_DoesNotChangeStatus()
+    {
+        var order = OrderBuilder.Submitted();
+        order.SetPaidStatus();
+        Assert.AreEqual(OrderStatus.Submitted, order.OrderStatus);
+    }
+  explanation: Asserts observable outcome on an edge case.
+- id: run-with-evidence
+  title: Produce evidence
+  kind: approved
+  language: bash
+  code: |
+    dotnet test eShop.Web.slnf --logger trx --results-directory TestResults --collect "XPlat Code Coverage"
+    python architecture-policy/hooks/arch.py validate --checkpoint testing --test-results "TestResults/**/*.trx" --coverage "TestResults/**/coverage.cobertura.xml"
+  explanation: Test Agent / CI feed evidence into the same engine.
+- id: unjustified-skip
+  title: Unjustified skip
+  kind: anti_pattern
+  language: csharp
+  code: |
+    [Ignore]
+    [TestMethod]
+    public void CreateOrder_Works() { }
+  explanation: Silently disabled test (TEST-004).

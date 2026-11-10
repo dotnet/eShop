@@ -1,0 +1,119 @@
+kind: RuleSet
+schema_version: 1
+category: observability
+description: Logging, tracing and metrics standards.
+rules:
+
+  - id: OBS-001
+    title: Logs use structured message templates
+    category: observability
+    severity: medium
+    status: active
+    version: 1.0.0
+    owner: platform-team
+    description: >
+      ILogger calls must use constant message templates with named placeholders, not string interpolation or
+      concatenation.
+    rationale: >
+      Interpolated messages lose structured properties in OpenTelemetry/Aspire dashboard queries, defeat log
+      message caching, and allocate even when the level is disabled.
+    applicability:
+      include: ["src/**/*.cs"]
+      project_types: [api, web, worker, library, infrastructure, domain]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: warn, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-STRUCTURED-LOGGING]
+    patterns: [PAT-STRUCTURED-LOGGING]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Replace interpolation with a template and arguments, e.g. LogInformation("Order {OrderId} paid", orderId).
+      steps:
+        - Use PascalCase named placeholders.
+        - Prefer LoggerMessage source generators for hot paths.
+      references: [src/Ordering.API/Application/Behaviors/LoggingBehavior.cs]
+    human_review_required: false
+    tags: [logging, opentelemetry]
+
+  - id: OBS-002
+    title: Server code does not write to the console
+    category: observability
+    severity: low
+    status: active
+    version: 1.0.0
+    owner: platform-team
+    description: Console.Write*/Debug.Write*/Trace.Write* are not used in server-side code; use ILogger.
+    rationale: Console output bypasses log levels, correlation and the OpenTelemetry exporter.
+    applicability:
+      include: ["src/**/*.cs"]
+      project_types: [api, web, worker, library, infrastructure, domain]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: warn, scope: changed }
+      code_review: { enabled: true, enforcement: warn, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: warn, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-NO-CONSOLE-OUTPUT]
+    patterns: [PAT-STRUCTURED-LOGGING]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: warn }
+    remediation:
+      summary: Inject ILogger<T> and log at the appropriate level.
+      steps:
+        - Replace Console.WriteLine with logger.LogInformation/LogDebug using a template.
+      references: []
+    human_review_required: false
+    tags: [logging]
+
+  - id: OBS-003
+    title: Business-critical flows emit traces and metrics
+    category: observability
+    severity: low
+    status: active
+    version: 1.0.0
+    owner: platform-team
+    description: >
+      New business flows (checkout, payment, stock confirmation, webhooks) propagate trace context across
+      HTTP and the event bus, and emit meaningful spans/metrics with low-cardinality tags.
+    rationale: >
+      Distributed sagas are only diagnosable with end-to-end traces; missing spans hide where orders stall.
+    applicability:
+      include:
+        - "src/**/IntegrationEvents/**/*.cs"
+        - "src/**/Application/**/*.cs"
+        - "src/**/Services/**/*.cs"
+        - "src/EventBusRabbitMQ/**/*.cs"
+      project_types: [api, web, worker, library]
+    checkpoints:
+      pre_commit:  { enabled: false, note: Semantic rules are not evaluated pre-commit. }
+      code_review: { enabled: true, enforcement: advisory, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: advisory, scope: changed }
+    validation:
+      mode: semantic
+      validators: [VAL-SEMANTIC-REVIEW]
+      semantic:
+        rubric: >
+          Judge whether new business flows are observable: trace context propagated through events (as
+          RabbitMQEventBus does), spans or meters for key steps, and tags that are low-cardinality and free of PII.
+        questions:
+          - Can an operator follow this flow end-to-end in the Aspire dashboard?
+          - Are new metrics/tags bounded in cardinality and PII-free?
+        pass_criteria: The flow is traceable end-to-end with safe telemetry.
+    patterns: [PAT-SERVICE-DEFAULTS-HOST, PAT-STRUCTURED-LOGGING]
+    required_evidence:
+      - { type: validator_output, checkpoints: [code_review, ci], on_missing: info }
+    remediation:
+      summary: Add ActivitySource spans / Meter instruments for key steps and propagate context through messages.
+      steps:
+        - Register the ActivitySource/Meter name in ServiceDefaults OpenTelemetry configuration.
+        - Use low-cardinality tags (status, type) - never user ids or emails.
+      references: [src/eShop.ServiceDefaults/Extensions.cs, src/EventBusRabbitMQ/RabbitMQEventBus.cs]
+    human_review_required: false
+    tags: [tracing, metrics]

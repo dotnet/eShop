@@ -48,3 +48,9 @@ jobs:
         name: playwright-report
         path: playwright-report/
         retention-days: 30
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: e2e-videos
+        path: artifacts/e2e-videos/
+        retention-days: 5

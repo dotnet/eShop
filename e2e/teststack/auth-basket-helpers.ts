@@ -1,6 +1,7 @@
 import http from 'http';
 import http2 from 'http2';
 import { execFileSync } from 'child_process';
+import { DOCKER } from './scenario';
 
 /** The issuer the containers trust; the host does not resolve it, so requests are pinned to 127.0.0.1. */
 export const IDENTITY_URL = 'http://host.docker.internal:18081';
@@ -191,11 +192,11 @@ export function basketCall(method: 'GetBasket' | 'UpdateBasket' | 'DeleteBasket'
 
 /** Read a basket straight from Redis (null when the key does not exist). */
 export function redisBasket(userId: string): { BuyerId: string; Items: { ProductId: number; Quantity: number }[] } | null {
-  const out = execFileSync('docker', ['exec', 'eshop-teststack-redis-1', 'redis-cli', '-a', 'teststack-redis', '--no-auth-warning', 'GET', `/basket/${userId}`], { encoding: 'utf8' }).trim();
+  const out = execFileSync(DOCKER, ['exec', 'eshop-teststack-redis-1', 'redis-cli', '-a', 'teststack-redis', '--no-auth-warning', 'GET', `/basket/${userId}`], { encoding: 'utf8' }).trim();
   return out ? JSON.parse(out) : null;
 }
 
 /** Run a SQL query against identitydb and return the raw psql (-At) output. */
 export function identitySql(sql: string): string {
-  return execFileSync('docker', ['exec', '-e', 'PGPASSWORD=teststack-postgres', 'eshop-teststack-postgres-1', 'psql', '-U', 'postgres', '-d', 'identitydb', '-At', '-c', sql], { encoding: 'utf8' }).trim();
+  return execFileSync(DOCKER, ['exec', '-e', 'PGPASSWORD=teststack-postgres', 'eshop-teststack-postgres-1', 'psql', '-U', 'postgres', '-d', 'identitydb', '-At', '-c', sql], { encoding: 'utf8' }).trim();
 }

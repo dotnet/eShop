@@ -1,4 +1,5 @@
-import { test, expect, APIRequestContext } from '@playwright/test';
+import { APIRequestContext } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { loadScenario, login } from './scenario';
 import { CATALOG_URL, V1, changeStatus, getOrder, listOrders, tokenFor } from './ordering-helpers';
 

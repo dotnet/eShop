@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const source = path.resolve(here, '..', '..', '..');
 const fakeAgent = path.join(here, 'fixtures', 'fake-agent.mjs');
+const fakePolicy = path.join(here, 'fixtures', 'fake-policy.mjs');
 let repo;
 let scriptFile;
 
@@ -210,6 +211,64 @@ test('workflow 2: the dispatcher runs the review stage first, then automation lo
   assert.equal(metrics.qe.crossStage.automationDenialsCausedByPlan, 1);
   assert.equal(metrics.qe.stages.automation.verifierRounds, 2);
   assert.deepEqual([metrics.review.rounds, metrics.review.approvals, metrics.review.findingsByCategory.security], [2, 1, 1]);
+});
+
+test('the Architecture Policy Pack gates each review round for code agents and loops until satisfied', async () => {
+  const policyFile = path.join(repo, '..', `${path.basename(repo)}-policy.json`);
+  const item = (outcome, rule) => ({ finding_id: `${rule}-abc`, rule_id: rule, rule_title: 'Rule title', category: 'security', outcome, file: 'src/Basket/Coupons.cs', line: 1, message: 'violation', fix: 'apply the pattern', patterns: ['PAT-X'], repeat_mistake: outcome === 'BLOCK' });
+  fs.writeFileSync(policyFile, JSON.stringify([
+    { decision: 'BLOCK', review_id: 'r1', summary: 'BLOCK: 1 blocking', action_items: [item('BLOCK', 'SEC-001')] },
+    { decision: 'WARN', review_id: 'r2', summary: 'WARN: 1 warning', action_items: [item('WARN', 'OBS-001')] },
+  ]));
+  const config = JSON.parse(read('scripts/review/config.json'));
+  config.review.policy.agent = 'scripts/review/review.mjs';
+  config.review.policy.command = [process.execPath, fakePolicy];
+  config.review.policy.lessonsCommand = [process.execPath, fakePolicy, 'get_lessons'];
+  write('scripts/review/config.json', JSON.stringify(config, null, 2));
+  agentScript({
+    'architecture-reviewer': [{ result: { verdict: 'APPROVED', summary: 'ok', findings: [] } }],
+    'qe-automation': [{ writeTests: [1, 2, 3], result: { status: 'done' } }],
+    'qe-automation-verifier': [{ result: { score: 10, gaps: [] } }],
+  });
+  const env = { PIPELINE_FAKE_POLICY: policyFile, PIPELINE_FAKE_LESSONS: 'L1: read secrets from configuration (PAT-X).' };
+  const stop = (payload = {}) => {
+    const r = pipeline(['hook', 'stop'], { input: JSON.stringify(payload), env });
+    assert.equal(r.status, 0, r.stderr);
+    return r.stdout ? JSON.parse(r.stdout) : null;
+  };
+  const requests = () => fs.readFileSync(`${policyFile}.requests.jsonl`, 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+
+  try {
+    assert.equal(pipeline(['start', 'DEMO-1']).status, 0);
+    assert.equal(pipeline(['done']).status, 0);
+    write('src/Basket/Coupons.cs', '// coupons v4 logs the coupon code\n');
+    assert.equal(stop({ hook_event_name: 'SubagentStop', agent_type: 'Explore' }), null, 'non-code subagents are not reviewed');
+    assert.equal(fs.existsSync(`${policyFile}.requests.jsonl`), false);
+
+    const first = stop({ hook_event_name: 'SubagentStop', agent_type: 'implementer' });
+    assert.equal(first.decision, 'block');
+    assert.match(first.reason, /round 1\/5 [\s\S]*Architecture Policy Pack: BLOCK[\s\S]*SEC-001 Rule title: violation \(repeat mistake[\s\S]*Approved pattern\(s\): PAT-X/);
+    assert.match(first.reason, /denied for these rules before[\s\S]*L1: read secrets from configuration \(PAT-X\)\./, 'a repeat mistake hands the agent its lessons');
+    assert.deepEqual(JSON.parse(fs.readFileSync(`${policyFile}.lessons.jsonl`, 'utf8')), { agent: 'implementer', limit: 5 });
+    assert.deepEqual(jsonl('arch-reviews.jsonl').at(-1).findings, [{ severity: 'blocking', category: 'security', rule: 'SEC-001', file: 'src/Basket/Coupons.cs', line: 1, issue: 'SEC-001 Rule title: violation (repeat mistake: this agent was denied for this rule before)' }]);
+    assert.equal(calls()['architecture-reviewer'], undefined, 'a policy BLOCK ends the round without an LLM review');
+    assert.deepEqual([requests()[0].requester, requests()[0].checkpoint], [{ agent: 'implementer', task_id: 'DEMO-1', iteration: 1 }, 'code_review']);
+    assert.ok(requests()[0].changed_files.includes('src/Basket/Coupons.cs'));
+
+    write('src/Basket/Coupons.cs', '// coupons v5 logs a masked id\n');
+    const approved = stop();
+    assert.match(approved.systemMessage, /approved DEMO-1 \(round 2\)[\s\S]*Non-blocking notes:\n1\. \[minor\] src\/Basket\/Coupons\.cs:1 OBS-001/);
+    assert.equal(requests()[1].previous_review_id, 'r1', 'the fix is re-reviewed as an iteration of the first review');
+    assert.equal(calls()['architecture-reviewer'], 1);
+    assert.deepEqual(jsonl('arch-reviews.jsonl').slice(-2).map((r) => [r.reviewer ?? 'architecture-reviewer', r.verdict]), [['arch-review-agent', 'CHANGES_REQUESTED'], ['architecture-reviewer', 'APPROVED']]);
+    await waitFor(() => !['starting', 'running'].includes(stateOf('DEMO-1').automation.status));
+
+    write('.github/agents/lessons/implementer.md', '## L1: Read secrets from configuration\n');
+    assert.match(JSON.parse(pipeline(['hook', 'session-start']).stdout).additionalContext, /Architecture lessons from earlier review denials[\s\S]*L1: Read secrets from configuration/, 'the main session gets the implementer lessons');
+  } finally {
+    for (const suffix of ['', '.requests.jsonl', '.lessons.jsonl']) fs.rmSync(policyFile + suffix, { force: true });
+    fs.rmSync(path.join(repo, '.github/agents/lessons/implementer.md'), { force: true });
+  }
 });
 
 test('pipeline start resets the review rounds even when hooks are disabled', () => {

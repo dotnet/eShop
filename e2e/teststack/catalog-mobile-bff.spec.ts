@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { loadScenario } from './scenario';
 
 // Mobile BFF (YARP, http://localhost:18087) catalog routes, configured in
