@@ -13,7 +13,7 @@ cd "$(git rev-parse --show-toplevel)" || exit 1
 command -v graphify >/dev/null 2>&1 || { echo "graphify not installed (see scripts/setup.sh)" >&2; exit 1; }
 
 # The shared cache is only reused by the graphify version that wrote it.
-GRAPHIFY_VERSION="0.9.104"   # keep in sync with scripts/setup.sh
+GRAPHIFY_VERSION="0.9.105"   # keep in sync with scripts/setup.sh
 installed="$(graphify --version 2>/dev/null | awk '{print $NF}')"
 if [ "$installed" != "$GRAPHIFY_VERSION" ]; then
   echo "[graphify] WARNING: graphify $installed installed, repo pins $GRAPHIFY_VERSION; the shared semantic cache won't be reused." >&2

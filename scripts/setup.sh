@@ -59,7 +59,7 @@ if have npm; then npm ci; else echo "npm not found; skipping (only needed for e2
 step "graphify"
 # Pinned: the shared semantic cache folder is keyed by graphify's extraction prompt,
 # which changes between versions. Keep this in sync with scripts/graphify-build.sh.
-GRAPHIFY_VERSION="0.9.104"
+GRAPHIFY_VERSION="0.9.105"
 GRAPHIFY_PKG="graphifyy[sql]==$GRAPHIFY_VERSION"
 if ! have graphify || [ "$(graphify --version 2>/dev/null | awk '{print $NF}')" != "$GRAPHIFY_VERSION" ]; then
   if have uv; then uv tool install --force "$GRAPHIFY_PKG"
