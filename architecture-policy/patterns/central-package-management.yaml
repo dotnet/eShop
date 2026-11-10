@@ -1,0 +1,30 @@
+kind: Pattern
+schema_version: 1
+id: PAT-CENTRAL-PACKAGE-MANAGEMENT
+name: Central package management
+category: architecture
+summary: All NuGet versions are pinned once in Directory.Packages.props.
+intent: Consistent dependency versions and one-line security upgrades.
+rules:
+- ARCH-006
+guidance:
+- PackageReference items carry no Version/VersionOverride.
+- Add <PackageVersion> entries to Directory.Packages.props.
+exemplars:
+- path: Directory.Packages.props
+  description: Central version catalog.
+examples:
+- id: cpm-reference
+  title: Version-less reference
+  kind: approved
+  language: xml
+  code: |
+    <PackageReference Include="Polly.Core" />
+  explanation: Version comes from Directory.Packages.props.
+- id: inline-version
+  title: Inline version
+  kind: anti_pattern
+  language: xml
+  code: |
+    <PackageReference Include="Polly.Core" Version="8.4.0" />
+  explanation: Version drift across services (ARCH-006).

@@ -1,0 +1,40 @@
+kind: Pattern
+schema_version: 1
+id: PAT-PROBLEM-DETAILS
+name: ProblemDetails error contract
+category: error_handling
+summary: APIs return RFC 9457 ProblemDetails; exceptions are typed, logged at boundaries and never swallowed.
+intent: Give clients consistent machine-readable errors without leaking internals.
+rules:
+- ERR-001
+- ERR-002
+- ERR-003
+- ERR-004
+guidance:
+- Register AddProblemDetails() and the exception handler middleware.
+- Return TypedResults.Problem/ValidationProblem/NotFound from endpoints.
+- Throw domain exceptions for invariant violations; catch broadly only at boundaries and log.
+- Rethrow with 'throw;' to preserve stack traces.
+exemplars:
+- path: src/Catalog.API/Extensions/Extensions.cs
+  symbol: AddApplicationServices
+  description: Registers AddProblemDetails.
+- path: src/Ordering.Domain/Exceptions/OrderingDomainException.cs
+  symbol: OrderingDomainException
+  description: Domain exception type.
+examples:
+- id: problem-result
+  title: Return ProblemDetails
+  kind: approved
+  language: csharp
+  code: |
+    if (item is null)
+        return TypedResults.Problem(detail: $"Item {id} not found", statusCode: 404);
+  explanation: Standard error payload.
+- id: swallow
+  title: Swallowed exception
+  kind: anti_pattern
+  language: csharp
+  code: |
+    try { await PublishAsync(evt); } catch (Exception) { }
+  explanation: Failure is hidden (ERR-001).

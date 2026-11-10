@@ -13,5 +13,9 @@
   "qe-automation-verifier": {
     "tools": "Read, Glob, Grep, Bash",
     "disallowedTools": "Edit, Write, MultiEdit, NotebookEdit, WebFetch, WebSearch"
+  },
+  "arch-review": {
+    "tools": "Read, Glob, Grep, Bash",
+    "disallowedTools": "Edit, Write, MultiEdit, NotebookEdit, WebFetch, WebSearch"
   }
 }

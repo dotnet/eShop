@@ -1,0 +1,297 @@
+kind: RuleSet
+schema_version: 1
+category: architecture
+description: Structural rules for bounded contexts, layering, hosting and integration.
+rules:
+
+  - id: ARCH-001
+    title: Layer dependencies point inward and the domain stays pure
+    category: architecture
+    severity: critical
+    status: active
+    version: 1.0.0
+    owner: enterprise-architecture
+    description: >
+      Project references must follow the profile's layer matrix (domain <- infrastructure <- application;
+      presentation and shared libraries depend only on shared libraries). The domain layer must not
+      reference persistence, transport or hosting packages. Every project must be classified in the profile.
+    rationale: >
+      Ordering's DDD layering (Ordering.Domain / Ordering.Infrastructure / Ordering.API) keeps business
+      invariants testable and independent of EF Core, RabbitMQ and ASP.NET Core. Inverted dependencies
+      erode that boundary silently; unclassified projects escape every other rule.
+    applicability:
+      include: ["src/**/*.csproj"]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-LAYER-DEPENDENCIES, VAL-DOMAIN-PACKAGES]
+    patterns: [PAT-LAYERED-DDD-SERVICE]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Reverse the dependency (define an interface in the inner layer, implement it outward) and classify new projects in profiles/dotnet/profile.yaml.
+      steps:
+        - Remove the offending ProjectReference/PackageReference.
+        - Define the abstraction in the domain (e.g. IOrderRepository) and implement it in infrastructure.
+        - For a new project, add it to profiles/dotnet/profile.yaml with type, layer and service.
+      references: [docs/architecture/services.md]
+    human_review_required: false
+    tags: [layering, ddd]
+
+  - id: ARCH-002
+    title: Services do not reference other services' projects
+    category: architecture
+    severity: critical
+    status: active
+    version: 1.0.0
+    owner: enterprise-architecture
+    description: >
+      A project owned by one service (bounded context) must not take a ProjectReference on a project owned
+      by another service. Only shared libraries (ServiceDefaults, EventBus, EventBusRabbitMQ,
+      IntegrationEventLogEF, WebAppComponents) may be shared.
+    rationale: >
+      Compile-time coupling between services defeats independent deployability and leaks domain models
+      across bounded contexts. eShop services integrate through HTTP/gRPC APIs and integration events.
+    applicability:
+      include: ["src/**/*.csproj"]
+      project_types: [api, web, worker, domain, infrastructure]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-SERVICE-ISOLATION]
+    patterns: [PAT-DATABASE-PER-SERVICE]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Replace the project reference with an API call through a typed HttpClient/gRPC client or an integration event.
+      steps:
+        - Remove the cross-service ProjectReference.
+        - If data is needed synchronously, call the owning service's versioned API via a typed client.
+        - If a reaction is needed, subscribe to the owning service's integration event.
+        - If a type is genuinely shared, move it to a shared library with a versioned contract.
+      references: [docs/architecture/recommendations.md]
+    human_review_required: false
+    tags: [bounded-context, coupling]
+
+  - id: ARCH-003
+    title: Every service host uses eShop.ServiceDefaults
+    category: architecture
+    severity: high
+    status: active
+    version: 1.0.0
+    owner: platform-team
+    description: >
+      API, web and worker hosts must call builder.AddServiceDefaults() (or AddBasicServiceDefaults()) and
+      app.MapDefaultEndpoints() in Program.cs.
+    rationale: >
+      ServiceDefaults centralizes OpenTelemetry, health checks, service discovery and the standard HTTP
+      resilience handler. Hosts that skip it are invisible to the dashboard and lack resilience.
+    applicability:
+      include: ["src/**/Program.cs"]
+      project_types: [api, web, worker]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-SERVICE-DEFAULTS]
+    patterns: [PAT-SERVICE-DEFAULTS-HOST]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Reference eShop.ServiceDefaults and call AddServiceDefaults()/MapDefaultEndpoints() in Program.cs.
+      steps:
+        - Add a ProjectReference to src/eShop.ServiceDefaults.
+        - Call builder.AddServiceDefaults() immediately after CreateBuilder.
+        - Call app.MapDefaultEndpoints() after Build().
+      references: [src/eShop.ServiceDefaults/Extensions.cs]
+    human_review_required: false
+    tags: [aspire, hosting]
+
+  - id: ARCH-004
+    title: Cross-context collaboration is event-driven and loosely coupled
+    category: architecture
+    severity: high
+    status: active
+    version: 1.0.0
+    owner: enterprise-architecture
+    description: >
+      State changes that other bounded contexts must react to are published as integration events through
+      IEventBus via the outbox. Synchronous calls between services are limited to queries a user is
+      waiting on, use versioned APIs and typed clients, and never form request chains in a saga step.
+    rationale: >
+      The ordering saga (Submitted -> AwaitingValidation -> StockConfirmed -> Paid) relies on asynchronous
+      events. Synchronous coupling introduces cascading failures and distributed transactions.
+    applicability:
+      include:
+        - "src/**/IntegrationEvents/**/*.cs"
+        - "src/**/Application/**/*.cs"
+        - "src/**/Apis/**/*.cs"
+        - "src/**/Services/**/*.cs"
+        - "src/**/Extensions/**/*.cs"
+      project_types: [api, web, worker]
+    checkpoints:
+      pre_commit:  { enabled: false, note: Semantic rules are not evaluated pre-commit. }
+      code_review: { enabled: true, enforcement: warn, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: warn, scope: changed }
+    validation:
+      mode: semantic
+      validators: [VAL-SEMANTIC-REVIEW]
+      semantic:
+        rubric: >
+          Judge whether the change couples bounded contexts correctly. Pass when cross-context reactions use
+          integration events (published through the outbox) and any synchronous call is a user-facing query
+          via a typed, versioned client. Fail when a command path calls another service synchronously,
+          shares a DbContext/entity across services, or a saga step depends on a synchronous response.
+        questions:
+          - Does the change introduce a new synchronous HTTP/gRPC call between services? Is it a query or a command?
+          - Are new state changes that other contexts need published as integration events?
+          - Could the change produce a distributed transaction or a request chain in the order saga?
+        pass_criteria: No synchronous command-path coupling between services; events used for cross-context reactions.
+    patterns: [PAT-TRANSACTIONAL-OUTBOX, PAT-INTEGRATION-EVENT-CONTRACT]
+    required_evidence:
+      - { type: validator_output, checkpoints: [code_review, ci], on_missing: warn }
+    remediation:
+      summary: Publish an integration event (via the outbox) and handle it in the consuming service instead of calling it synchronously.
+      steps:
+        - Define a record <Name>IntegrationEvent in the publishing service.
+        - Save it with the business change through the *IntegrationEventService (outbox).
+        - Subscribe in the consumer with AddSubscription<TEvent, THandler>() and an idempotent handler.
+      references: [docs/architecture/event-flows.md]
+    human_review_required: false
+    tags: [events, saga, coupling]
+
+  - id: ARCH-005
+    title: New capabilities are placed in the right bounded context with sound aggregates
+    category: architecture
+    severity: high
+    status: active
+    version: 1.0.0
+    owner: enterprise-architecture
+    description: >
+      New projects, aggregates, or domain models must belong to the bounded context that owns the
+      capability and data. Aggregates enforce their invariants through behavior (not public setters),
+      and cross-aggregate references are by identity.
+    rationale: >
+      Misplaced capabilities (e.g. promotions logic split between Catalog and Ordering) create shared
+      ownership of data and invariants. This requires human architectural judgment.
+    applicability:
+      include:
+        - "src/**/*.csproj"
+        - "src/Ordering.Domain/**/*.cs"
+        - "src/**/Model/**/*.cs"
+        - "src/**/Models/**/*.cs"
+      project_types: [api, web, worker, domain, infrastructure]
+    checkpoints:
+      pre_commit:  { enabled: false, note: Semantic rules are not evaluated pre-commit. }
+      code_review: { enabled: true, enforcement: warn, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: warn, scope: changed }
+    validation:
+      mode: semantic
+      validators: [VAL-SEMANTIC-REVIEW]
+      semantic:
+        rubric: >
+          Decide whether new or changed models live in the bounded context that owns the capability and its
+          data (see docs/architecture/services.md). For aggregates, check invariants are enforced through
+          methods, collections are encapsulated, and other aggregates are referenced by ID.
+        questions:
+          - Which bounded context owns this capability and its data? Is the code placed there?
+          - Are aggregate invariants enforced by behavior rather than public setters?
+          - Does the change introduce shared ownership of data across services?
+        pass_criteria: Correct context ownership and encapsulated aggregates, confirmed by a human architect.
+    patterns: [PAT-LAYERED-DDD-SERVICE]
+    required_evidence:
+      - { type: validator_output, checkpoints: [code_review, ci], on_missing: warn }
+      - { type: human_approval, checkpoints: [code_review], on_missing: warn, description: Architect sign-off on context placement. }
+    remediation:
+      summary: Move the capability into its owning bounded context or record the decision in an ADR with architect approval.
+      steps:
+        - Identify the owning service from docs/architecture/services.md.
+        - Move models/logic there; expose data to other contexts via APIs or events.
+        - Record significant boundary decisions as an ADR and link it in the PR.
+      references: [docs/architecture/services.md]
+    human_review_required: true
+    tags: [ddd, bounded-context]
+
+  - id: ARCH-006
+    title: Package versions are managed centrally
+    category: architecture
+    severity: medium
+    status: active
+    version: 1.0.0
+    owner: platform-team
+    description: >
+      PackageReference items must not declare Version or VersionOverride; versions are defined once in
+      Directory.Packages.props (ManagePackageVersionsCentrally=true).
+    rationale: >
+      Central package management keeps dependency versions consistent across services and makes security
+      patching a one-line change.
+    applicability:
+      include: ["src/**/*.csproj", "tests/**/*.csproj", "testing/**/*.csproj"]
+      exclude: ["src/ClientApp/**", "src/HybridApp/**", "tests/ClientApp.UnitTests/**"]
+      note: .NET MAUI client projects opt out of CPM for workload-specific package versions.
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: warn, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-CPM-NO-INLINE-VERSION]
+    patterns: [PAT-CENTRAL-PACKAGE-MANAGEMENT]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Remove the Version attribute and add/update a PackageVersion entry in Directory.Packages.props.
+      steps:
+        - Delete Version="..." from the PackageReference.
+        - Add <PackageVersion Include="Name" Version="x.y.z" /> to Directory.Packages.props if missing.
+      references: [Directory.Packages.props]
+    human_review_required: false
+    tags: [dependencies, supply-chain]
+
+  - id: ARCH-007
+    title: Integration events are immutable, conventionally named records
+    category: architecture
+    severity: high
+    status: active
+    version: 1.0.0
+    owner: enterprise-architecture
+    description: >
+      Types deriving from IntegrationEvent must be records whose names end with 'IntegrationEvent'.
+    rationale: >
+      RabbitMQEventBus routes by CLR type name, so the name is the wire contract. Mutable class-based
+      events invite in-place mutation after publication and break replay/outbox semantics.
+    applicability:
+      include: ["src/**/*.cs"]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-INTEGRATION-EVENT-CONTRACT]
+    patterns: [PAT-INTEGRATION-EVENT-CONTRACT]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: "Declare the event as 'public record <Name>IntegrationEvent(...) : IntegrationEvent;'."
+      steps:
+        - Convert the class to a positional record with init-only data.
+        - Rename to end with IntegrationEvent and update every subscriber (name is the routing key).
+      references: [src/EventBus/Events/IntegrationEvent.cs]
+    human_review_required: false
+    tags: [events, contracts]

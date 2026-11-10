@@ -1,0 +1,77 @@
+{
+  "name": "architecture",
+  "api_version": "1.0",
+  "description": "Reusable architecture governance operations. All callers use these operations; no caller re-implements rules or validators.",
+  "invocation": {
+    "python": "import sys; sys.path.insert(0, 'architecture-policy/hooks'); import architecture; architecture.validate('code_review', context, artifacts)",
+    "cli": "python architecture-policy/hooks/arch.py call <operation> '<request-json>'",
+    "cli_validate": "python architecture-policy/hooks/arch.py validate --checkpoint <checkpoint> [--format text|json|sarif]"
+  },
+  "checkpoints": ["pre_commit", "code_review", "testing", "ci"],
+  "callers": [
+    {"caller": "git-pre-commit", "checkpoint": "pre_commit", "adapter": "hooks/adapters/pre-commit.sh", "notes": "Deterministic rules only; staged content."},
+    {"caller": "review-agent", "checkpoint": "code_review", "adapter": "python API or 'arch.py call validate'", "notes": "Answers review_requests via artifacts.semantic_judgments; supplies approvals."},
+    {"caller": "arch-review-agent", "checkpoint": "code_review", "adapter": "architecture-policy/agents/arch_review.py | MCP server | python API", "notes": "Arch_review_Agent: callable by any code agent; orchestrates validate + semantic judgments; any checkpoint on request. See agents/arch_review_agent/agent.json."},
+    {"caller": "test-agent", "checkpoint": "testing", "adapter": "python API or 'arch.py call validate'", "notes": "Supplies artifacts.test_results and artifacts.coverage_reports."},
+    {"caller": "ci", "checkpoint": "ci", "adapter": "hooks/adapters/ci.sh | hooks/adapters/ci.ps1", "notes": "Full-repo deterministic scan, SARIF output, evidence bundle."}
+  ],
+  "decision": {
+    "values": ["PASS", "WARN", "BLOCK"],
+    "exit_codes": {"PASS": 0, "WARN": 0, "BLOCK": 1, "ERROR": 2, "WARN_STRICT": 3}
+  },
+  "operations": [
+    {
+      "name": "get_applicable_rules",
+      "signature": "architecture.get_applicable_rules(context)",
+      "request": {"context": {"checkpoint": "pre_commit|code_review|testing|ci (optional)", "files": ["path"], "categories": ["category"], "severities": ["critical|high|medium|low"], "project_types": ["api|web|..."], "modes": ["deterministic|semantic|hybrid"], "include_disabled": false}},
+      "response": {"api_version": "1.0", "checkpoint": "string|null", "count": 0, "rules": [{"id": "RULE-ID", "title": "", "category": "", "severity": "", "mode": "", "human_review_required": false, "checkpoints": {}, "patterns": [], "validators": [], "matched_files": []}]}
+    },
+    {
+      "name": "get_rule",
+      "signature": "architecture.get_rule(rule_id)",
+      "request": {"rule_id": "SEC-001"},
+      "response": {"api_version": "1.0", "rule": "full rule document", "source": "path", "validators": [], "patterns": [], "exceptions": []}
+    },
+    {
+      "name": "get_pattern",
+      "signature": "architecture.get_pattern(pattern_id)",
+      "request": {"pattern_id": "PAT-TRANSACTIONAL-OUTBOX"},
+      "response": {"api_version": "1.0", "pattern": "pattern document without examples", "example_ids": []}
+    },
+    {
+      "name": "get_examples",
+      "signature": "architecture.get_examples(pattern_id)",
+      "request": {"pattern_id": "PAT-TRANSACTIONAL-OUTBOX", "kind": "approved|anti_pattern (optional)"},
+      "response": {"api_version": "1.0", "pattern_id": "", "examples": [{"id": "", "title": "", "kind": "", "language": "", "code": "", "explanation": ""}], "exemplars": [{"path": "", "symbol": "", "description": "", "exists": true}]}
+    },
+    {
+      "name": "validate",
+      "signature": "architecture.validate(checkpoint, context, artifacts)",
+      "request": {
+        "checkpoint": "pre_commit|code_review|testing|ci",
+        "context": {"caller": "string", "scope": "changed|all", "base": "git ref", "changed_files": ["path"], "staged": true, "rule_ids": [], "categories": [], "strict": false, "write_evidence": true, "evidence_dir": "path", "today": "YYYY-MM-DD", "record_history": true, "history_db": "path (optional)"},
+        "artifacts": {"files": {"path": "proposed content"}, "semantic_judgments": [{"rule_id": "", "verdict": "pass|fail|not_applicable", "rationale": "", "reviewer": {"type": "agent|human", "id": ""}, "findings": [{"file": "", "line": 0, "message": ""}]}], "approvals": [{"rule_id": "", "approver": "", "role": "", "date": "", "reference": ""}], "test_results": ["*.trx"], "coverage_reports": ["*.cobertura.xml"], "adr_refs": {"RULE-ID": "docs/adr/..."}}
+      },
+      "response": {"schema": "architecture-validation-result/v1", "run_id": "", "decision": "PASS|WARN|BLOCK", "exit_code": 0, "duration_ms": 0, "summary": {}, "rule_results": [], "findings": [{"finding_id": "", "rule_id": "", "outcome": "BLOCK|WARN|INFO|WAIVED", "status": "fail|needs_review|missing_evidence|error|exception_expired", "file": "", "line": 0, "message": "", "remediation": "", "patterns": [], "exception": null}], "review_requests": [], "exceptions": {"applied": [], "expired": {}, "expiring_soon": []}, "evidence": {"collected": {}, "bundle_path": ""}, "history": {"recorded": true, "store": "sqlite", "path": ""}}
+    },
+    {
+      "name": "explain_finding",
+      "signature": "architecture.explain_finding(finding_id)",
+      "request": {"finding_id": "SEC-001-0123456789", "context": {"evidence_dir": "optional", "history_db": "optional"}},
+      "response": {"api_version": "1.0", "finding_id": "", "found_in_run": "", "finding": {}, "rule": {}, "why_it_matters": "", "how_to_fix": {}, "patterns": [], "validation_mode": "", "human_review_required": false, "exception_process": {}, "history": {"occurrences": 0, "first_seen": "", "last_seen": "", "callers": []}}
+    },
+    {
+      "name": "get_failure_history",
+      "signature": "architecture.get_failure_history(query)",
+      "request": {"query": {"since_days": 30, "checkpoint": "optional", "caller": "prefix (optional)", "branch": "optional", "rule_id": "optional", "category": "optional", "file": "path prefix (optional)", "outcomes": ["BLOCK", "WARN"], "limit": 10, "min_occurrences": 2, "history_db": "optional", "include_pending_review": false}},
+      "response": {"api_version": "1.0", "store": {"type": "sqlite", "path": "", "exists": true}, "window": {}, "totals": {"runs": 0, "block_runs": 0, "warn_runs": 0, "pass_runs": 0, "findings": 0}, "decision_trend": [{"day": "", "runs": 0, "block": 0, "warn": 0, "pass": 0}], "top_rules": [], "top_files": [], "recurring_findings": [{"finding_id": "", "rule_id": "", "file": "", "occurrences": 0, "first_seen": "", "last_seen": "", "still_open": true, "callers": []}], "by_caller": [], "exceptions_used": []}
+    },
+    {
+      "name": "get_lessons",
+      "signature": "architecture.get_lessons(query)",
+      "description": "Learning loop for one agent (e.g. the Test Agent): how often the verifier denied it, why, whether it is improving, and prompt-ready lessons to stop repeating the same mistakes.",
+      "request": {"query": {"agent": "test-agent (required; matches caller and arch-review-agent:<agent>)", "checkpoint": "optional", "since_days": 90, "limit": 10, "min_occurrences": 2, "history_db": "optional"}},
+      "response": {"schema": "arch-lessons/v1", "api_version": "1.0", "agent": "", "denial_stats": {"runs": 0, "denied_runs": 0, "warned_runs": 0, "denial_rate": 0.0, "trend": "improving|worsening|flat|insufficient_data"}, "weekly": [{"week": "", "runs": 0, "denied": 0, "denial_rate": 0.0}], "denial_reasons": [{"rule_id": "", "denials": 0, "warnings": 0, "runs": 0, "reintroduced": 0, "why": [{"message": "", "count": 0}], "top_files": [], "remediation": {}}], "iterations": {"reviews": 0, "tasks": 0, "avg_reviews_per_task": 0.0, "first_pass_approval_rate": 0.0, "findings_resolved": 0, "findings_introduced_while_fixing": 0}, "lessons": [{"lesson_id": "", "rule_id": "", "priority": 1, "evidence": {}, "mistake": "", "instead": "", "steps": [], "patterns": [], "watch_files": []}], "prompt": "markdown to inject into the agent's instructions", "fingerprint": ""}
+    }
+  ]
+}

@@ -1,0 +1,199 @@
+kind: RuleSet
+schema_version: 1
+category: data
+description: Data ownership, schema evolution, consistency and safe data access.
+rules:
+
+  - id: DATA-001
+    title: Applied EF Core migrations are immutable
+    category: data
+    severity: critical
+    status: active
+    version: 1.0.0
+    owner: data-architecture
+    description: >
+      Existing migration files must never be modified or deleted; schema changes are always new migrations.
+      Only the model snapshot may change alongside a new migration.
+    rationale: >
+      Migrations already applied to shared or production databases are recorded in __EFMigrationsHistory.
+      Editing them causes schema drift between environments and failed deployments.
+    applicability:
+      include: ["src/**/Migrations/**/*.cs"]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: changed }
+    validation:
+      mode: deterministic
+      validators: [VAL-MIGRATION-IMMUTABLE]
+    patterns: [PAT-EF-MIGRATIONS]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+      - { type: change_set, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Revert edits to existing migrations and add a new migration with 'dotnet ef migrations add'.
+      steps:
+        - git restore the modified/deleted migration files.
+        - Run dotnet ef migrations add <DescriptiveName> for the owning DbContext.
+        - Review the generated Up/Down and the updated ModelSnapshot.
+      references: [src/Ordering.Infrastructure/Migrations]
+    human_review_required: false
+    tags: [ef-core, migrations]
+
+  - id: DATA-002
+    title: Each service accesses only the databases it owns
+    category: data
+    severity: high
+    status: active
+    version: 1.0.0
+    owner: data-architecture
+    description: >
+      Connection names used by AddNpgsqlDbContext/AddNpgsqlDataSource/AddRedis/GetConnectionString must be
+      datastores owned by the service in the profile (or shared infrastructure such as the event bus).
+    rationale: >
+      Database-per-service keeps schemas private to their bounded context. Shared databases create hidden
+      coupling (recommendations.md #13: OrderProcessor polling orderingdb).
+    applicability:
+      include: ["src/**/*.cs"]
+      project_types: [api, web, worker, infrastructure]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-DB-OWNERSHIP]
+    patterns: [PAT-DATABASE-PER-SERVICE]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Obtain the data through the owning service's API or integration events instead of its database.
+      steps:
+        - Remove the foreign connection.
+        - Call the owner's versioned API, or maintain a local read model fed by integration events.
+        - For new datastores, declare them under the service's owns_datastores in the profile.
+      references: [docs/architecture/services.md]
+    human_review_required: false
+    tags: [database-per-service, ownership]
+
+  - id: DATA-003
+    title: Integration events are published through the transactional outbox
+    category: data
+    severity: high
+    status: active
+    version: 1.0.0
+    owner: data-architecture
+    description: >
+      Services that own a database and publish events must save events to the IntegrationEventLog within the
+      business transaction and publish through their *IntegrationEventService, never by calling
+      IEventBus.PublishAsync directly from handlers or APIs.
+    rationale: >
+      Direct publishing after (or before) SaveChanges loses or duplicates events when the process or broker
+      fails, corrupting the order saga (recommendations.md: outbox relay).
+    applicability:
+      include: ["src/**/*.cs"]
+      service_traits: [owns_database, publishes_events]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-OUTBOX-PUBLISH]
+    patterns: [PAT-TRANSACTIONAL-OUTBOX]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Use SaveEventAndXxxContextChangesAsync + PublishThroughEventBusAsync of the service's integration event service.
+      steps:
+        - Inject I<Service>IntegrationEventService instead of IEventBus.
+        - Call AddAndSaveEventAsync/SaveEventAndContextChangesAsync inside the transaction.
+        - Publish pending events after commit via PublishEventsThroughEventBusAsync(transactionId).
+      references: [src/Ordering.API/Application/IntegrationEvents/OrderingIntegrationEventService.cs]
+    human_review_required: false
+    tags: [outbox, consistency]
+
+  - id: DATA-004
+    title: SQL is parameterized
+    category: data
+    severity: critical
+    status: active
+    version: 1.0.0
+    owner: security-architecture
+    description: >
+      Raw SQL must not be built with string interpolation or concatenation (FromSqlRaw/ExecuteSqlRaw/
+      SqlQueryRaw/NpgsqlCommand with $"..." or +). Use LINQ, FromSql/ExecuteSql (FormattableString) or parameters.
+    rationale: SQL injection (OWASP A03).
+    applicability:
+      include: ["src/**/*.cs"]
+    checkpoints:
+      pre_commit:  { enabled: true, enforcement: block, scope: changed }
+      code_review: { enabled: true, enforcement: block, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: block, scope: all }
+    validation:
+      mode: deterministic
+      validators: [VAL-RAW-SQL-INTERPOLATION]
+    patterns: [PAT-DATABASE-PER-SERVICE]
+    required_evidence:
+      - { type: validator_output, checkpoints: [pre_commit, code_review, ci], on_missing: block }
+    remediation:
+      summary: Replace raw string SQL with LINQ or FromSql/ExecuteSql interpolated (parameterized) APIs.
+      steps:
+        - Use context.Database.SqlQuery<T>($"...") / FromSql($"...") which parameterize interpolations.
+        - Or add NpgsqlParameter objects explicitly.
+      references: []
+    human_review_required: false
+    tags: [sql-injection, owasp-a03]
+
+  - id: DATA-005
+    title: Transactions respect aggregate boundaries
+    category: data
+    severity: medium
+    status: active
+    version: 1.0.0
+    owner: data-architecture
+    description: >
+      A command modifies a single aggregate per transaction; other aggregates are updated through domain
+      events (in-process) or integration events (cross-service). Transactions never span services.
+    rationale: >
+      Large transactions across aggregates cause contention and hide coupling; cross-service transactions
+      are impossible without 2PC.
+    applicability:
+      include:
+        - "src/**/Application/Commands/**/*.cs"
+        - "src/**/Application/DomainEventHandlers/**/*.cs"
+        - "src/Ordering.Infrastructure/**/*.cs"
+        - "src/Ordering.Domain/**/*.cs"
+    checkpoints:
+      pre_commit:  { enabled: false, note: Semantic rules are not evaluated pre-commit. }
+      code_review: { enabled: true, enforcement: warn, scope: changed }
+      testing:     { enabled: false }
+      ci:          { enabled: true, enforcement: advisory, scope: changed }
+    validation:
+      mode: semantic
+      validators: [VAL-SEMANTIC-REVIEW]
+      semantic:
+        rubric: >
+          Check that each command handler loads and mutates one aggregate root and that side effects on other
+          aggregates flow through domain events dispatched before SaveEntitiesAsync (or integration events for
+          other services).
+        questions:
+          - How many aggregate roots does the command modify directly?
+          - Are cross-aggregate effects raised as domain events?
+          - Does any code attempt a transaction across services or databases?
+        pass_criteria: One aggregate per command transaction; cross-aggregate effects via events.
+    patterns: [PAT-LAYERED-DDD-SERVICE, PAT-TRANSACTIONAL-OUTBOX]
+    required_evidence:
+      - { type: validator_output, checkpoints: [code_review, ci], on_missing: warn }
+    remediation:
+      summary: Split the work so one aggregate changes per transaction and raise domain events for the rest.
+      steps:
+        - Add a domain event on the source aggregate (AddDomainEvent).
+        - Handle it in a DomainEventHandler that updates the other aggregate.
+      references: [src/Ordering.Domain/SeedWork/Entity.cs]
+    human_review_required: false
+    tags: [ddd, transactions]

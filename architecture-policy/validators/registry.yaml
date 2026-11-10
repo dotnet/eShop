@@ -1,0 +1,644 @@
+# Validator registry. Rules reference validators by ID; implementations live in this
+# directory as `module:function`. Deterministic validators must ship >= 2 self-tests
+# (at least one 'pass' and one 'fail'); `arch.py selfcheck` executes them.
+kind: ValidatorRegistry
+schema_version: 1
+validators:
+
+  # ------------------------------------------------------------------ architecture
+  - id: VAL-LAYER-DEPENDENCIES
+    name: Layer dependency matrix
+    type: deterministic
+    implementation: project_validators:layer_dependencies
+    description: Checks every ProjectReference against profile.layer_dependencies and requires every project to be classified in the profile.
+    checkpoints: [pre_commit, code_review, ci]
+    self_tests:
+      - name: domain referencing infrastructure fails
+        files:
+          src/Ordering.Domain/Ordering.Domain.csproj: '<Project><ItemGroup><ProjectReference Include="..\Ordering.Infrastructure\Ordering.Infrastructure.csproj" /></ItemGroup></Project>'
+        expect: fail
+      - name: infrastructure referencing domain and shared passes
+        files:
+          src/Ordering.Infrastructure/Ordering.Infrastructure.csproj: '<Project><ItemGroup><ProjectReference Include="..\Ordering.Domain\Ordering.Domain.csproj" /><ProjectReference Include="..\IntegrationEventLogEF\IntegrationEventLogEF.csproj" /></ItemGroup></Project>'
+        expect: pass
+      - name: unclassified project fails
+        files:
+          src/NewThing.API/NewThing.API.csproj: '<Project Sdk="Microsoft.NET.Sdk.Web"></Project>'
+        expect: fail
+
+  - id: VAL-DOMAIN-PACKAGES
+    name: Forbidden packages per layer
+    type: deterministic
+    implementation: project_validators:forbidden_packages
+    description: Rejects persistence/transport packages (EF Core, Npgsql, ASP.NET Core, Aspire, RabbitMQ, Redis) in the domain layer.
+    checkpoints: [pre_commit, code_review, ci]
+    self_tests:
+      - name: EF Core in domain fails
+        files:
+          src/Ordering.Domain/Ordering.Domain.csproj: '<Project><ItemGroup><PackageReference Include="Microsoft.EntityFrameworkCore" /></ItemGroup></Project>'
+        expect: fail
+      - name: MediatR in domain passes
+        files:
+          src/Ordering.Domain/Ordering.Domain.csproj: '<Project><ItemGroup><PackageReference Include="MediatR" /></ItemGroup></Project>'
+        expect: pass
+
+  - id: VAL-SERVICE-ISOLATION
+    name: Cross-service project references
+    type: deterministic
+    implementation: project_validators:service_isolation
+    description: A project owned by one service must not reference a project owned by another service.
+    checkpoints: [pre_commit, code_review, ci]
+    self_tests:
+      - name: catalog referencing ordering domain fails
+        files:
+          src/Catalog.API/Catalog.API.csproj: '<Project><ItemGroup><ProjectReference Include="..\Ordering.Domain\Ordering.Domain.csproj" /></ItemGroup></Project>'
+        expect: fail
+      - name: ordering api referencing its own domain passes
+        files:
+          src/Ordering.API/Ordering.API.csproj: '<Project><ItemGroup><ProjectReference Include="..\Ordering.Domain\Ordering.Domain.csproj" /><ProjectReference Include="..\eShop.ServiceDefaults\eShop.ServiceDefaults.csproj" /></ItemGroup></Project>'
+        expect: pass
+
+  - id: VAL-SERVICE-DEFAULTS
+    name: Service defaults wiring
+    type: deterministic
+    implementation: text_validators:required_pattern
+    description: Service host Program.cs must call AddServiceDefaults()/AddBasicServiceDefaults() and MapDefaultEndpoints().
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      file_globs: ["**/Program.cs"]
+      require:
+        - regex: '\.Add(Basic)?ServiceDefaults\(\)'
+          message: Host does not call builder.AddServiceDefaults() (or AddBasicServiceDefaults()); telemetry, health checks, service discovery and HTTP resilience are missing.
+        - regex: '\.MapDefaultEndpoints\(\)'
+          message: Host does not call app.MapDefaultEndpoints(); health/liveness endpoints are not exposed.
+    self_tests:
+      - name: host without defaults fails
+        files:
+          src/Catalog.API/Program.cs: "var builder = WebApplication.CreateBuilder(args);\nvar app = builder.Build();\napp.Run();\n"
+        expect: fail
+        expect_count: 2
+      - name: host with defaults passes
+        files:
+          src/Catalog.API/Program.cs: "var builder = WebApplication.CreateBuilder(args);\nbuilder.AddServiceDefaults();\nvar app = builder.Build();\napp.MapDefaultEndpoints();\n"
+        expect: pass
+
+  - id: VAL-CPM-NO-INLINE-VERSION
+    name: Central package management
+    type: deterministic
+    implementation: project_validators:central_package_management
+    description: PackageReference items must not declare Version/VersionOverride; versions live in Directory.Packages.props.
+    checkpoints: [pre_commit, code_review, ci]
+    self_tests:
+      - name: inline version fails
+        files:
+          src/Catalog.API/Catalog.API.csproj: '<Project><ItemGroup><PackageReference Include="Polly" Version="8.0.0" /></ItemGroup></Project>'
+        expect: fail
+      - name: versionless reference passes
+        files:
+          src/Catalog.API/Catalog.API.csproj: '<Project><ItemGroup><PackageReference Include="Polly" /></ItemGroup></Project>'
+        expect: pass
+
+  - id: VAL-INTEGRATION-EVENT-CONTRACT
+    name: Integration event contract shape
+    type: deterministic
+    implementation: text_validators:forbidden_pattern
+    description: Integration events must be immutable records whose names end with 'IntegrationEvent'.
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      patterns:
+        - regex: '\bclass\s+\w+\s*(\([^)]*\))?\s*:\s*IntegrationEvent\b'
+          message: Integration events must be declared as immutable 'record' types, not classes.
+        - regex: '\brecord\s+(?!\w*IntegrationEvent\b)\w+\s*(\([^)]*\))?\s*:\s*IntegrationEvent\b'
+          message: Integration event type names must end with 'IntegrationEvent' (the name is the routing key).
+    self_tests:
+      - name: class-based event fails
+        files:
+          src/Catalog.API/IntegrationEvents/Events/PriceChangedIntegrationEvent.cs: "public class PriceChangedIntegrationEvent : IntegrationEvent { public int Id { get; set; } }"
+        expect: fail
+      - name: misnamed record fails
+        files:
+          src/Catalog.API/IntegrationEvents/Events/PriceChanged.cs: "public record PriceChanged(int Id) : IntegrationEvent;"
+        expect: fail
+      - name: record event passes
+        files:
+          src/Catalog.API/IntegrationEvents/Events/PriceChangedIntegrationEvent.cs: "public record PriceChangedIntegrationEvent(int Id, decimal NewPrice) : IntegrationEvent;"
+        expect: pass
+
+  # ------------------------------------------------------------------ api
+  - id: VAL-API-VERSIONED
+    name: Versioned minimal API endpoints
+    type: deterministic
+    implementation: text_validators:required_pattern
+    description: Files that map minimal API endpoints must declare API versions (NewVersionedApi / HasApiVersion).
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      file_globs: ["**/Apis/**/*.cs"]
+      trigger: '\.Map(Get|Post|Put|Delete|Patch|Methods)\('
+      require:
+        - regex: 'HasApiVersion\(|NewVersionedApi\('
+          message: Endpoints are mapped without an API version; use app.NewVersionedApi(...).MapGroup(...).HasApiVersion(x).
+    self_tests:
+      - name: unversioned endpoint fails
+        files:
+          src/Catalog.API/Apis/PromoApi.cs: 'app.MapGroup("api/promo").MapGet("/", () => 1);'
+        expect: fail
+      - name: versioned endpoint passes
+        files:
+          src/Catalog.API/Apis/PromoApi.cs: 'var api = app.MapGroup("api/promo").HasApiVersion(1.0); api.MapGet("/", () => 1);'
+        expect: pass
+
+  - id: VAL-API-WRITE-AUTH
+    name: Authorization on state-changing endpoints
+    type: deterministic
+    implementation: text_validators:required_pattern
+    description: An API project that maps POST/PUT/PATCH/DELETE endpoints must apply RequireAuthorization (group or endpoint level).
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      file_globs: ["**/Apis/**/*.cs"]
+      trigger: '\.Map(Post|Put|Delete|Patch)\('
+      search_scope: project
+      project_globs: ["**/*.cs"]
+      require:
+        - regex: '\.RequireAuthorization\('
+          message: State-changing endpoints are mapped but the project never applies RequireAuthorization(); write operations are anonymous.
+    self_tests:
+      - name: anonymous write fails
+        files:
+          src/Catalog.API/Apis/CatalogApi.cs: 'api.MapPost("/items", CreateItem);'
+        expect: fail
+      - name: authorized group passes
+        files:
+          src/Catalog.API/Apis/CatalogApi.cs: 'api.MapPost("/items", CreateItem);'
+          src/Catalog.API/Program.cs: 'app.NewVersionedApi("Catalog").MapCatalogApi().RequireAuthorization();'
+        expect: pass
+
+  # ------------------------------------------------------------------ security
+  - id: VAL-SECRET-SCAN
+    name: Hard-coded secret scan
+    type: deterministic
+    implementation: text_validators:forbidden_pattern
+    description: Detects credential literals, connection-string passwords, private keys and well-known token formats.
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      patterns:
+        - regex: '\b\w*(?i:password|passwd|pwd|secret|apikey|api_key|accesskey|access_key)\w*\s*=\s*"[^"\s]{4,}"'
+          message: Credential assigned from a string literal. Load it from configuration / Aspire parameters / Key Vault.
+        - regex: '\b\w*(?i:token)\w*\s*=\s*"[A-Za-z0-9._~+/=-]{20,}"'
+          message: Token-like literal assigned to a token variable. Load it from configuration / Key Vault.
+        - regex: 'new\s+Secret\(\s*"[^"]+"'
+          message: IdentityServer client secret is a literal. Load it from secure configuration.
+        - regex: '(?i)"(?!\w*(?:variable|env|name)")\w*(password|secret|apikey|api_key|clientsecret|accesskey)\w*"\s*:\s*"[^"]{4,}"'
+          message: Secret value stored in a JSON configuration file.
+        - regex: '(?i)[;"]\s*(password|pwd)\s*=\s*[^;"\s{}]{3,}'
+          message: Connection string embeds a password.
+        - regex: '-----BEGIN (RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----'
+          message: Private key material committed to source.
+        - regex: '\b(AKIA[0-9A-Z]{16}|sk-[A-Za-z0-9]{32,}|ghp_[A-Za-z0-9]{36}|xox[baprs]-[A-Za-z0-9-]{10,})\b'
+          message: Cloud/API token committed to source.
+    self_tests:
+      - name: literal client secret fails
+        files:
+          src/WebApp/Extensions/Extensions.cs: 'options.ClientSecret = "secret";'
+        expect: fail
+      - name: connection string password fails
+        files:
+          src/Catalog.API/appsettings.json: '{ "ConnectionStrings": { "db": "Host=x;Password=hunter22;" } }'
+        expect: fail
+      - name: configuration lookup passes
+        files:
+          src/WebApp/Extensions/Extensions.cs: 'options.ClientSecret = builder.Configuration["IdentityClientSecret"];'
+        expect: pass
+      - name: env-var name references and storage keys pass
+        files:
+          testing/teststack.json: '{ "postgres": { "passwordVariable": "POSTGRES_PASSWORD" } }'
+          src/WebApp/Services/X.cs: 'private const string UserAccessToken = "user_token";'
+        expect: pass
+
+  - id: VAL-TOKEN-VALIDATION
+    name: Token validation hardening
+    type: deterministic
+    implementation: text_validators:forbidden_pattern
+    description: JWT validation flags (audience, issuer, lifetime, signing key, signed tokens) must not be disabled.
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      patterns:
+        - regex: '\b(ValidateAudience|ValidateIssuer|ValidateLifetime|ValidateIssuerSigningKey|RequireSignedTokens|RequireExpirationTime)\s*=\s*false\b'
+          message: Token validation is weakened; tokens issued for other audiences/issuers may be accepted.
+    self_tests:
+      - name: audience validation disabled fails
+        files:
+          src/eShop.ServiceDefaults/AuthenticationExtensions.cs: 'options.TokenValidationParameters.ValidateAudience = false;'
+        expect: fail
+      - name: audience configured passes
+        files:
+          src/eShop.ServiceDefaults/AuthenticationExtensions.cs: 'options.Audience = audience; options.TokenValidationParameters.ValidateAudience = true;'
+        expect: pass
+
+  - id: VAL-DEV-ONLY-CREDENTIALS
+    name: Development-only credentials
+    type: deterministic
+    implementation: text_validators:forbidden_pattern
+    description: Development signing credentials and similar dev-only security shortcuts must not ship in service code.
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      patterns:
+        - regex: '\.AddDeveloperSigningCredential\('
+          message: Developer signing credential in use; load signing keys from Key Vault / automatic key management.
+        - regex: 'DangerousAcceptAnyServerCertificateValidator|ServerCertificateCustomValidationCallback\s*=\s*\([^)]*\)\s*=>\s*true'
+          message: TLS certificate validation is disabled.
+    self_tests:
+      - name: developer signing credential fails
+        files:
+          src/Identity.API/Program.cs: 'builder.Services.AddIdentityServer().AddDeveloperSigningCredential();'
+        expect: fail
+      - name: no dev credentials passes
+        files:
+          src/Identity.API/Program.cs: 'builder.Services.AddIdentityServer().AddSigningCredential(cert);'
+        expect: pass
+
+  - id: VAL-SENSITIVE-LOGGING
+    name: Sensitive data in logs
+    type: deterministic
+    implementation: text_validators:forbidden_pattern
+    description: Logging calls must not include card data, credentials or tokens.
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      patterns:
+        - regex: '\.Log(Trace|Debug|Information|Warning|Error|Critical)?\([^;]*\b(CardNumber|CardSecurityNumber|Cvv|SecurityNumber|Password|AccessToken|RefreshToken|ClientSecret|IdToken)\b'
+          message: Log statement references sensitive data (card data / credentials / tokens).
+    self_tests:
+      - name: logging card number fails
+        files:
+          src/Ordering.API/Application/Commands/CreateOrderCommandHandler.cs: 'logger.LogInformation("Paying with {Card}", message.CardNumber);'
+        expect: fail
+      - name: logging order id passes
+        files:
+          src/Ordering.API/Application/Commands/CreateOrderCommandHandler.cs: 'logger.LogInformation("Creating order {OrderId}", order.Id);'
+        expect: pass
+
+  # ------------------------------------------------------------------ data
+  - id: VAL-MIGRATION-IMMUTABLE
+    name: Applied migrations are immutable
+    type: deterministic
+    implementation: data_validators:migration_immutability
+    description: Flags modification, rename, or deletion of existing EF Core migration files (the model snapshot is regenerated and allowed).
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      migration_globs: ["**/Migrations/*.cs"]
+      allow_globs: ["**/*ModelSnapshot.cs"]
+    self_tests:
+      - name: edited migration fails
+        files:
+          src/Ordering.Infrastructure/Migrations/20230925222426_Initial.cs: "// edited"
+        changed: { src/Ordering.Infrastructure/Migrations/20230925222426_Initial.cs: M }
+        expect: fail
+      - name: new migration and snapshot update pass
+        files:
+          src/Ordering.Infrastructure/Migrations/20261109000000_AddPromotions.cs: "// new"
+          src/Ordering.Infrastructure/Migrations/OrderingContextModelSnapshot.cs: "// regenerated"
+        changed:
+          src/Ordering.Infrastructure/Migrations/20261109000000_AddPromotions.cs: A
+          src/Ordering.Infrastructure/Migrations/OrderingContextModelSnapshot.cs: M
+        expect: pass
+
+  - id: VAL-DB-OWNERSHIP
+    name: Database-per-service ownership
+    type: deterministic
+    implementation: data_validators:database_ownership
+    description: Resolves connection names used by a project and fails when the datastore is owned by another service.
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      connection_patterns:
+        - '(Add\w*(DbContext|DataSource|Client|DistributedCache))\s*(<[^>]+>)?\(\s*"(?P<name>[A-Za-z0-9_\-]+)"'
+        - 'GetConnectionString\(\s*"(?P<name>[A-Za-z0-9_\-]+)"'
+    self_tests:
+      - name: worker reading ordering database fails
+        files:
+          src/OrderProcessor/Extensions/Extensions.cs: 'builder.AddNpgsqlDataSource("orderingdb");'
+        expect: fail
+      - name: service using own database passes
+        files:
+          src/Catalog.API/Extensions/Extensions.cs: 'builder.AddNpgsqlDbContext<CatalogContext>("catalogdb");'
+        expect: pass
+
+  - id: VAL-OUTBOX-PUBLISH
+    name: Publish through the transactional outbox
+    type: deterministic
+    implementation: text_validators:forbidden_pattern
+    description: In services that own a database and publish events, IEventBus.PublishAsync may only be called from the *IntegrationEventService outbox implementation.
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      allow_files: ["**/*IntegrationEventService.cs"]
+      patterns:
+        - regex: '\.PublishAsync\('
+          message: Integration event published directly; save it to the outbox (IntegrationEventLogService) in the same transaction and publish via the *IntegrationEventService.
+    self_tests:
+      - name: direct publish in handler fails
+        files:
+          src/Catalog.API/IntegrationEvents/EventHandling/SomeHandler.cs: 'await eventBus.PublishAsync(evt);'
+        expect: fail
+      - name: publish inside outbox service passes
+        files:
+          src/Catalog.API/IntegrationEvents/CatalogIntegrationEventService.cs: 'await eventBus.PublishAsync(evt);'
+        expect: pass
+
+  - id: VAL-RAW-SQL-INTERPOLATION
+    name: Parameterized SQL only
+    type: deterministic
+    implementation: text_validators:forbidden_pattern
+    description: Raw SQL APIs must not be fed interpolated or concatenated strings.
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      patterns:
+        - regex: '\b(FromSqlRaw|ExecuteSqlRaw|ExecuteSqlRawAsync|SqlQueryRaw)\s*\(\s*\$@?"'
+          message: Interpolated string passed to a *Raw SQL API; use FromSql/ExecuteSql (parameterized) instead.
+        - regex: '\b(FromSqlRaw|ExecuteSqlRaw|ExecuteSqlRawAsync|SqlQueryRaw)\s*\([^;]*"\s*\+'
+          message: Concatenated SQL passed to a *Raw SQL API; use parameters.
+        - regex: 'new\s+(Npgsql|Sql)Command\(\s*\$@?"'
+          message: Interpolated SQL command text; use command parameters.
+    self_tests:
+      - name: interpolated raw sql fails
+        files:
+          src/Catalog.API/Services/Repo.cs: 'db.Items.FromSqlRaw($"SELECT * FROM items WHERE name = ''{name}''");'
+        expect: fail
+      - name: parameterized FromSql passes
+        files:
+          src/Catalog.API/Services/Repo.cs: 'db.Items.FromSql($"SELECT * FROM items WHERE name = {name}");'
+        expect: pass
+
+  # ------------------------------------------------------------------ observability
+  - id: VAL-STRUCTURED-LOGGING
+    name: Structured log message templates
+    type: deterministic
+    implementation: text_validators:forbidden_pattern
+    description: ILogger calls must use message templates, not string interpolation or concatenation.
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      patterns:
+        - regex: '\.Log(Trace|Debug|Information|Warning|Error|Critical)\(\s*(?:[\w.]+\s*,\s*)?\$@?"'
+          message: Interpolated log message; use a message template with named placeholders.
+        - regex: '\.Log(Trace|Debug|Information|Warning|Error|Critical)\(\s*(?:[\w.]+\s*,\s*)?"[^"]*"\s*\+'
+          message: Concatenated log message; use a message template with named placeholders.
+    self_tests:
+      - name: interpolated log fails
+        files:
+          src/Catalog.API/Services/X.cs: 'logger.LogInformation($"Item {id} updated");'
+        expect: fail
+      - name: template log passes
+        files:
+          src/Catalog.API/Services/X.cs: 'logger.LogInformation("Item {ItemId} updated", id);'
+        expect: pass
+
+  - id: VAL-NO-CONSOLE-OUTPUT
+    name: No console output in services
+    type: deterministic
+    implementation: text_validators:forbidden_pattern
+    description: Server-side code must log through ILogger (exported via OpenTelemetry), never Console.
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      patterns:
+        - regex: '\bConsole\.(Write|WriteLine|Error\.Write|Error\.WriteLine|Out\.Write|Out\.WriteLine)\('
+          message: Console output bypasses structured logging and OpenTelemetry; inject ILogger<T>.
+    self_tests:
+      - name: console write fails
+        files:
+          src/Basket.API/Grpc/BasketService.cs: 'Console.WriteLine("basket updated");'
+        expect: fail
+      - name: logger passes
+        files:
+          src/Basket.API/Grpc/BasketService.cs: 'logger.LogDebug("Basket updated for {BuyerId}", id);'
+        expect: pass
+
+  # ------------------------------------------------------------------ resiliency
+  - id: VAL-HTTPCLIENT-FACTORY
+    name: HttpClient via IHttpClientFactory
+    type: deterministic
+    implementation: text_validators:forbidden_pattern
+    description: Outbound HTTP must use typed/named clients from IHttpClientFactory so service discovery and the standard resilience handler apply.
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      patterns:
+        - regex: '\bnew\s+HttpClient\s*\('
+          message: HttpClient constructed directly; register a typed client with AddHttpClient<T>() (gets service discovery + standard resilience).
+    self_tests:
+      - name: new HttpClient fails
+        files:
+          src/WebApp/Services/X.cs: 'var c = new HttpClient();'
+        expect: fail
+      - name: injected typed client passes
+        files:
+          src/WebApp/Services/X.cs: 'public class CatalogService(HttpClient httpClient) { }'
+        expect: pass
+
+  - id: VAL-SYNC-OVER-ASYNC
+    name: No sync-over-async or thread blocking
+    type: deterministic
+    implementation: text_validators:forbidden_pattern
+    description: Blocking on tasks or sleeping threads causes thread-pool starvation under load.
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      patterns:
+        - regex: '\.GetAwaiter\(\)\s*\.GetResult\(\)'
+          message: Blocking on a Task with GetAwaiter().GetResult(); await it instead.
+        - regex: '\.Wait\(\s*\)'
+          message: Blocking Wait() call; await the operation instead.
+        - regex: '\bThread\.Sleep\('
+          message: Thread.Sleep blocks a thread; use await Task.Delay(..., cancellationToken).
+    self_tests:
+      - name: GetResult fails
+        files:
+          src/Ordering.API/Application/X.cs: 'var r = client.GetAsync(url).GetAwaiter().GetResult();'
+        expect: fail
+      - name: await passes
+        files:
+          src/Ordering.API/Application/X.cs: 'var r = await client.GetAsync(url, ct);'
+        expect: pass
+
+  # ------------------------------------------------------------------ error handling
+  - id: VAL-EMPTY-CATCH
+    name: No empty catch blocks
+    type: deterministic
+    implementation: text_validators:forbidden_pattern
+    description: Exceptions must not be silently swallowed by empty catch blocks.
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      patterns:
+        - regex: '\bcatch\s*(\([^)]*\))?\s*(when\s*\([^)]*\)\s*)?\{\s*\}'
+          message: Empty catch block swallows the exception; log, translate, or rethrow it.
+    self_tests:
+      - name: empty catch fails
+        files:
+          src/Webhooks.API/Services/X.cs: "try { Send(); } catch (Exception) { }"
+        expect: fail
+      - name: logged catch passes
+        files:
+          src/Webhooks.API/Services/X.cs: "try { Send(); } catch (Exception ex) { logger.LogError(ex, \"Send failed\"); throw; }"
+        expect: pass
+
+  - id: VAL-PRESERVE-STACK
+    name: Preserve stack traces when rethrowing
+    type: deterministic
+    implementation: text_validators:forbidden_pattern
+    description: "'throw ex;' resets the stack trace; use 'throw;' or wrap with an inner exception."
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      patterns:
+        - regex: '\bthrow\s+(ex|e|exc|exception|err|error)\s*;'
+          message: Rethrowing the caught variable loses the original stack trace; use 'throw;'.
+    self_tests:
+      - name: throw ex fails
+        files:
+          src/Ordering.API/Application/X.cs: "catch (Exception ex) { log(ex); throw ex; }"
+        expect: fail
+      - name: bare throw passes
+        files:
+          src/Ordering.API/Application/X.cs: "catch (Exception ex) { log(ex); throw; }"
+        expect: pass
+
+  - id: VAL-PROBLEM-DETAILS
+    name: RFC 9457 ProblemDetails for HTTP APIs
+    type: deterministic
+    implementation: text_validators:required_pattern
+    description: A project that maps minimal API endpoints must register AddProblemDetails() so errors use a consistent RFC 9457 (formerly 7807) contract.
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      file_globs: ["**/Apis/**/*.cs"]
+      trigger: '\.Map(Get|Post|Put|Delete|Patch)\('
+      search_scope: project
+      project_globs: ["**/*.cs"]
+      require:
+        - regex: '\.AddProblemDetails\('
+          message: API project maps endpoints but never calls builder.Services.AddProblemDetails(); error responses are not RFC 9457 ProblemDetails.
+    self_tests:
+      - name: missing problem details fails
+        files:
+          src/Webhooks.API/Apis/WebHooksApi.cs: 'api.MapGet("/", List);'
+        expect: fail
+      - name: problem details registered passes
+        files:
+          src/Webhooks.API/Apis/WebHooksApi.cs: 'api.MapGet("/", List);'
+          src/Webhooks.API/Program.cs: 'builder.Services.AddProblemDetails();'
+        expect: pass
+
+  # ------------------------------------------------------------------ testing
+  - id: VAL-TESTS-ACCOMPANY-CHANGES
+    name: Tests accompany production changes
+    type: deterministic
+    implementation: change_validators:tests_accompany_changes
+    description: Uses profile.test_mapping to require test changes alongside production changes in mapped projects.
+    checkpoints: [code_review, testing, ci]
+    params:
+      ignore_globs: ["**/Migrations/**", "**/*.json", "**/*.csproj", "**/Properties/**", "**/GlobalUsings.cs", "**/*.md"]
+    self_tests:
+      - name: source change without tests fails
+        files:
+          src/Ordering.Domain/AggregatesModel/OrderAggregate/Order.cs: "// change"
+        changed: { src/Ordering.Domain/AggregatesModel/OrderAggregate/Order.cs: M }
+        expect: fail
+      - name: source change with tests passes
+        files:
+          src/Ordering.Domain/AggregatesModel/OrderAggregate/Order.cs: "// change"
+          tests/Ordering.UnitTests/Domain/OrderAggregateTest.cs: "// test"
+        changed:
+          src/Ordering.Domain/AggregatesModel/OrderAggregate/Order.cs: M
+          tests/Ordering.UnitTests/Domain/OrderAggregateTest.cs: M
+        expect: pass
+
+  - id: VAL-TEST-RESULTS
+    name: Test results are green
+    type: deterministic
+    implementation: evidence_validators:test_results
+    description: Parses TRX or JUnit results supplied as test_results evidence; fails on failures, errors, or zero executed tests.
+    checkpoints: [testing, ci]
+    self_tests:
+      - name: failing trx fails
+        files:
+          TestResults/run.trx: '<TestRun xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010"><ResultSummary outcome="Failed"><Counters total="10" executed="10" passed="9" failed="1" error="0" /></ResultSummary></TestRun>'
+        artifacts: { test_results: [TestResults/run.trx] }
+        expect: fail
+      - name: green trx passes
+        files:
+          TestResults/run.trx: '<TestRun xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010"><ResultSummary outcome="Completed"><Counters total="10" executed="10" passed="10" failed="0" error="0" /></ResultSummary></TestRun>'
+        artifacts: { test_results: [TestResults/run.trx] }
+        expect: pass
+      - name: failing junit fails
+        files:
+          TestResults/junit.xml: '<testsuites><testsuite name="s" tests="3" failures="1" errors="0" skipped="0"/></testsuites>'
+        artifacts: { test_results: [TestResults/junit.xml] }
+        expect: fail
+
+  - id: VAL-COVERAGE-THRESHOLD
+    name: Line coverage threshold
+    type: deterministic
+    implementation: evidence_validators:coverage_threshold
+    description: Parses Cobertura coverage; changed projects (or overall) must meet min_line_rate.
+    checkpoints: [testing, ci]
+    params:
+      min_line_rate: 0.7
+    self_tests:
+      - name: low coverage fails
+        files:
+          TestResults/coverage.cobertura.xml: '<coverage line-rate="0.42"><packages><package name="Ordering.API" line-rate="0.42"/></packages></coverage>'
+          src/Ordering.API/Apis/OrdersApi.cs: "// change"
+        changed: { src/Ordering.API/Apis/OrdersApi.cs: M }
+        artifacts: { coverage_reports: [TestResults/coverage.cobertura.xml] }
+        expect: fail
+      - name: adequate coverage passes
+        files:
+          TestResults/coverage.cobertura.xml: '<coverage line-rate="0.81"><packages><package name="Ordering.API" line-rate="0.81"/></packages></coverage>'
+          src/Ordering.API/Apis/OrdersApi.cs: "// change"
+        changed: { src/Ordering.API/Apis/OrdersApi.cs: M }
+        artifacts: { coverage_reports: [TestResults/coverage.cobertura.xml] }
+        expect: pass
+
+  - id: VAL-NO-UNJUSTIFIED-SKIP
+    name: No unjustified skipped tests
+    type: deterministic
+    implementation: text_validators:forbidden_pattern
+    description: Skipped/ignored tests must carry a reason (and should reference a work item).
+    checkpoints: [pre_commit, code_review, ci]
+    params:
+      patterns:
+        - regex: '\[Ignore(\(\s*\))?\]'
+          message: '[Ignore] without a reason; use [Ignore("reason + work item")] or fix the test.'
+        - regex: 'Skip\s*=\s*""'
+          message: Test skipped with an empty reason.
+    self_tests:
+      - name: bare ignore fails
+        files:
+          tests/Ordering.UnitTests/X.cs: "[TestMethod]\n[Ignore]\npublic void T() {}"
+        expect: fail
+      - name: ignore with reason passes
+        files:
+          tests/Ordering.UnitTests/X.cs: "[TestMethod]\n[Ignore(\"Flaky on CI - AB#123\")]\npublic void T() {}"
+        expect: pass
+
+  # ------------------------------------------------------------------ semantic
+  - id: VAL-SEMANTIC-REVIEW
+    name: Semantic architecture review
+    type: semantic
+    implementation: semantic_validators:semantic_review
+    description: >
+      Emits a review request (rubric + questions) for rules that need architectural judgment and
+      consumes semantic_judgments recorded by the Review Agent, Test Agent or a human reviewer.
+      The engine never calls an LLM itself.
+    checkpoints: [code_review, testing, ci]
+    self_tests:
+      - name: no judgment yields needs_review
+        rule_id: ARCH-004
+        files: { src/Ordering.API/Application/X.cs: "// change" }
+        expect: needs_review
+      - name: failing judgment yields fail
+        rule_id: ARCH-004
+        files: { src/Ordering.API/Application/X.cs: "// change" }
+        artifacts:
+          semantic_judgments:
+            - { rule_id: ARCH-004, verdict: fail, rationale: "Synchronous call into Catalog", reviewer: { type: agent, id: review-agent } }
+        expect: fail
+      - name: passing judgment yields pass
+        rule_id: ARCH-004
+        files: { src/Ordering.API/Application/X.cs: "// change" }
+        artifacts:
+          semantic_judgments:
+            - { rule_id: ARCH-004, verdict: pass, rationale: "Uses integration events", reviewer: { type: agent, id: review-agent } }
+        expect: pass

@@ -1,0 +1,36 @@
+kind: Pattern
+schema_version: 1
+id: PAT-IDEMPOTENT-COMMAND
+name: Idempotent command via request id
+category: api
+summary: Side-effecting commands carry a client request id and are deduplicated transactionally.
+intent: Make client and gateway retries safe for orders, payments and webhooks.
+rules:
+- API-004
+guidance:
+- Require an x-requestid header and reject Guid.Empty.
+- Wrap commands in IdentifiedCommand<T,R>; IdentifiedCommandHandler checks RequestManager.
+- Persist the request record in the same transaction as the business change.
+exemplars:
+- path: src/Ordering.API/Application/Commands/IdentifiedCommandHandler.cs
+  symbol: IdentifiedCommandHandler
+  description: Deduplicates commands.
+- path: src/Ordering.Infrastructure/Idempotency/RequestManager.cs
+  symbol: RequestManager
+  description: Stores processed request ids.
+examples:
+- id: identified-command
+  title: Wrap command with request id
+  kind: approved
+  language: csharp
+  code: |
+    var cmd = new IdentifiedCommand<CancelOrderCommand, bool>(command, requestId);
+    var ok = await services.Mediator.Send(cmd);
+  explanation: Retries with the same request id are no-ops.
+- id: non-idempotent-post
+  title: POST without dedup
+  kind: anti_pattern
+  language: csharp
+  code: |
+    api.MapPost("/orders", (CreateOrderRequest r, IMediator m) => m.Send(new CreateOrderCommand(r)));
+  explanation: A retried POST creates a duplicate order.

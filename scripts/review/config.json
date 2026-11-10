@@ -6,6 +6,15 @@
   },
   "review": {
     "maxRounds": 5,
-    "timeoutSec": 1200
+    "timeoutSec": 1200,
+    "codeAgents": ["implementer"],
+    "policy": {
+      "enabled": true,
+      "agent": "architecture-policy/agents/arch_review.py",
+      "command": ["python", "{agent}", "review", "-"],
+      "requester": "implementer",
+      "semantic": "auto",
+      "timeoutSec": 600
+    }
   }
 }

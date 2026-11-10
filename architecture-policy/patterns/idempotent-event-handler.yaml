@@ -1,0 +1,46 @@
+kind: Pattern
+schema_version: 1
+id: PAT-IDEMPOTENT-EVENT-HANDLER
+name: Idempotent integration event handler
+category: resiliency
+summary: Handlers tolerate duplicate and out-of-order delivery and surface failures for retry.
+intent: At-least-once delivery from RabbitMQ and the outbox means every handler will eventually see duplicates.
+rules:
+- RES-004
+- TEST-006
+guidance:
+- Deduplicate by IntegrationEvent.Id using an inbox table in the consumer's database, or
+- Guard state transitions so reapplying the event has no effect.
+- Do not swallow exceptions; let the event bus retry or dead-letter.
+- Test the handler with the same event delivered twice and with compensation events.
+exemplars:
+- path: src/Ordering.Domain/AggregatesModel/OrderAggregate/Order.cs
+  symbol: Order.SetPaidStatus
+  description: State-guarded transition.
+- path: src/EventBusRabbitMQ/RabbitMQEventBus.cs
+  symbol: RabbitMQEventBus
+  description: Consumer pipeline.
+examples:
+- id: inbox-dedup
+  title: Inbox deduplication
+  kind: approved
+  language: csharp
+  code: |
+    public async Task Handle(OrderStatusChangedToPaidIntegrationEvent @event)
+    {
+        if (await _inbox.ExistsAsync(@event.Id)) return;
+        foreach (var item in @event.OrderStockItems) { /* remove stock */ }
+        await _inbox.MarkProcessedAsync(@event.Id); // same transaction as stock update
+    }
+  explanation: Redelivery does not debit stock twice.
+- id: blind-handler
+  title: Handler applying side effects unconditionally
+  kind: anti_pattern
+  language: csharp
+  code: |
+    public async Task Handle(OrderStatusChangedToPaidIntegrationEvent @event)
+    {
+        foreach (var item in @event.OrderStockItems) catalogItem.RemoveStock(item.Units);
+        await _context.SaveChangesAsync();
+    }
+  explanation: Duplicate delivery double-debits stock (RES-004).

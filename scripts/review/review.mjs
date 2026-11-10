@@ -5,13 +5,13 @@ import { isDisabled, loadConfig } from '../pipeline/lib/config.mjs';
 import { loadState } from '../pipeline/lib/state.mjs';
 import { activeStory, listStories } from '../pipeline/lib/stories.mjs';
 import { setLogTag } from '../pipeline/lib/util.mjs';
-import { architectureReview, hookStop, resetReview, reviewMetrics, sessionContext } from './lib/review.mjs';
+import { hookStop, resetReview, reviewMetrics, reviewRound, sessionContext } from './lib/review.mjs';
 
 setLogTag('review');
 
 const USAGE = `Usage: node scripts/review/review.mjs <command> [options]
 
-  run [story]                   run one architecture review round now and print the verdict
+  run [story]                   run one architecture review round now (policy pack, then reviewer) and print the verdict
   status [story]
   metrics [--json] [--since <iso-date>]
 
@@ -30,7 +30,7 @@ async function main() {
   switch (command) {
     case 'run': {
       const story = requireStory(config, positional[0], { fallbackActive: true });
-      console.log(JSON.stringify(architectureReview(config, story, loadState(config, story.key).review.rounds + 1), null, 2));
+      console.log(JSON.stringify(reviewRound(config, story, loadState(config, story.key).review.rounds + 1), null, 2));
       return 0;
     }
 

@@ -1,0 +1,38 @@
+kind: Pattern
+schema_version: 1
+id: PAT-INTEGRATION-EVENT-CONTRACT
+name: Integration event contract
+category: architecture
+summary: Integration events are immutable records named <Fact>IntegrationEvent deriving from IntegrationEvent.
+intent: Treat events as versioned public contracts between bounded contexts.
+rules:
+- API-003
+- ARCH-004
+- ARCH-007
+guidance:
+- Name events as past-tense facts ending in IntegrationEvent; the CLR name is the routing key.
+- Use positional records; add fields only additively.
+- Carry identifiers and the minimal data consumers need; no entities or PII beyond necessity.
+- Breaking changes publish a new event type alongside the old one.
+exemplars:
+- path: src/EventBus/Events/IntegrationEvent.cs
+  symbol: IntegrationEvent
+  description: Base record with Id and CreationDate.
+- path: src/Ordering.API/Application/IntegrationEvents/Events/OrderStartedIntegrationEvent.cs
+  symbol: OrderStartedIntegrationEvent
+  description: Minimal event record.
+examples:
+- id: event-record
+  title: Event as positional record
+  kind: approved
+  language: csharp
+  code: |
+    public record OrderStartedIntegrationEvent(string UserId) : IntegrationEvent;
+  explanation: Immutable, conventionally named contract.
+- id: event-class
+  title: Mutable event class
+  kind: anti_pattern
+  language: csharp
+  code: |
+    public class OrderStarted : IntegrationEvent { public string UserId { get; set; } }
+  explanation: Mutable and unconventionally named (ARCH-007).
