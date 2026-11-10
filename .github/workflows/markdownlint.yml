@@ -23,4 +23,4 @@ jobs:
       run: |
         echo "::add-matcher::.github/workflows/markdownlint-problem-matcher.json"
         npm i -g markdownlint-cli
-        markdownlint --ignore '.dotnet/' '**/*.md'
+        markdownlint --ignore '.dotnet/' --ignore '.github/skills/graphify/' '**/*.md'
