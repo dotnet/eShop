@@ -8,7 +8,8 @@
   "scripts": {
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
-    "test:e2e:report": "playwright show-report"
+    "test:e2e:report": "playwright show-report",
+    "test:e2e:teststack": "playwright test -c playwright.teststack.config.ts"
   },
   "keywords": [],
   "author": "",

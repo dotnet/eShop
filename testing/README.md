@@ -191,3 +191,7 @@ To write a new scenario:
 1. Copy one from `testing/scenarios/`.
 2. Run `testing/teststack validate <path>`.
 3. Run `testing/teststack load <path>`.
+
+## Test videos
+
+Every Playwright e2e test is recorded. After a run, the videos are in `artifacts/e2e-videos/<project>/<spec>--<test>.webm` (`.failed.webm` for failures), and also in the HTML report. Specs import `test` from `e2e/fixtures.ts`, which also records contexts a test opens itself with `browser.newContext()`; contexts from `beforeAll` and API-only tests have no video. Use the `demo` fixture from `e2e/demo.ts` to add chapter cards, captions and highlights; `e2e/teststack/add-to-cart.spec.ts` is an example. See `.github/skills/feature-demo-video/SKILL.md`.

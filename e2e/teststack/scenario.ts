@@ -2,11 +2,17 @@ import { execFileSync } from 'child_process';
 import path from 'path';
 import { expect, Page } from '@playwright/test';
 
+/** Container CLI, as in testing/teststack (for example TESTSTACK_DOCKER=podman). */
+export const DOCKER = process.env.TESTSTACK_DOCKER ?? 'docker';
+
 const teststack = path.join(__dirname, '..', '..', 'testing', 'teststack');
 
 /** Put the whole stack into the given scenario (testing/scenarios/<name>) and return the loader's JSON result. */
 export function loadScenario(name: string): { ok: boolean; elapsedMs: number; layers: string[] } {
-  const stdout = execFileSync(teststack, ['load', name], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'] });
+  // testing/teststack is a bash script; Windows cannot execute it directly.
+  const command = process.platform === 'win32' ? 'bash' : teststack;
+  const args = process.platform === 'win32' ? [teststack, 'load', name] : ['load', name];
+  const stdout = execFileSync(command, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'] });
   const result = JSON.parse(stdout.trim().split('\n').pop()!);
   if (!result.ok) {
     throw new Error(`teststack load ${name} failed: ${result.error}`);

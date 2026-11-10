@@ -17,7 +17,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [['html', { open: 'never' }]],
+  reporter: [['list'], ['html', { open: 'never' }], ['./e2e/video-reporter.ts']],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -26,6 +26,16 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     ...devices['Desktop Chrome'],
+
+    /* Record every test so changes can be verified and demoed. e2e/video-reporter.ts copies the videos to artifacts/e2e-videos/. */
+    video: {
+      mode: 'on',
+      size: { width: 1280, height: 720 },
+      show: {
+        actions: { position: 'top-right' },
+        test: { level: 'step', position: 'top-left' },
+      },
+    },
   },
 
   /* Configure projects for major browsers */

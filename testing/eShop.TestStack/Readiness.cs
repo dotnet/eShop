@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using System.Net;
+using System.Net.Http;
+using System.Net.Sockets;
 using System.Text.Json.Nodes;
 
 namespace eShop.TestStack;
@@ -18,15 +20,50 @@ internal sealed record CheckResult(string Name, bool Ok, string Detail)
 /// </summary>
 internal sealed class Readiness(StackContext context)
 {
+    private static readonly TimeSpan PerAddressConnectTimeout = TimeSpan.FromSeconds(2);
+
     private static readonly HttpClient Http = new(new SocketsHttpHandler
     {
         AllowAutoRedirect = false,
-        ConnectTimeout = TimeSpan.FromSeconds(2),
+        ConnectCallback = ConnectAsync,
         UseCookies = false,
     })
     {
         Timeout = TimeSpan.FromSeconds(5),
     };
+
+    // "localhost" resolves to ::1 first, but some runtimes (Podman machine on Windows/macOS) only forward
+    // published ports over IPv4, so connecting to ::1 hangs. Try every address, IPv4 first, each with its
+    // own timeout, so one unreachable address family can't use up the whole connect budget.
+    private static async ValueTask<Stream> ConnectAsync(SocketsHttpConnectionContext connection, CancellationToken ct)
+    {
+        var endpoint = connection.DnsEndPoint;
+        var addresses = IPAddress.TryParse(endpoint.Host, out var literal)
+            ? [literal]
+            : await Dns.GetHostAddressesAsync(endpoint.Host, ct);
+
+        Exception? last = null;
+        foreach (var address in addresses.OrderBy(a => a.AddressFamily == AddressFamily.InterNetwork ? 0 : 1))
+        {
+            var socket = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp) { NoDelay = true };
+            using var timeout = CancellationTokenSource.CreateLinkedTokenSource(ct);
+            timeout.CancelAfter(PerAddressConnectTimeout);
+            try
+            {
+                await socket.ConnectAsync(new IPEndPoint(address, endpoint.Port), timeout.Token);
+                return new NetworkStream(socket, ownsSocket: true);
+            }
+            catch (Exception ex) when (ex is SocketException or OperationCanceledException && !ct.IsCancellationRequested)
+            {
+                socket.Dispose();
+                last = ex is OperationCanceledException
+                    ? new TimeoutException($"Connecting to {address}:{endpoint.Port} timed out.", ex)
+                    : ex;
+            }
+        }
+
+        throw last ?? new SocketException((int)SocketError.HostNotFound);
+    }
 
     public async Task<IReadOnlyList<CheckResult>> CheckAsync(CancellationToken ct)
     {

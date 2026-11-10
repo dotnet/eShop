@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { loadScenario } from './scenario';
 import { basketCall, encodeItems, getTokens, redisBasket, USER_IDS } from './auth-basket-helpers';
 

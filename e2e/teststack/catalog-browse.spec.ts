@@ -1,4 +1,5 @@
-import { test, expect, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { loadScenario } from './scenario';
 
 // Seed data: testing/scenarios/catalog-edge. 14 items sorted by name (Edge 01..14), 9 per page.

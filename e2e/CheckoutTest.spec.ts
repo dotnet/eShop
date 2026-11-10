@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 import { addProductToCart, emptyCart } from './cart-helpers';
 
 test('place an order through checkout', async ({ page }) => {

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 import { addProductToCart, emptyCart, removeFirstCartItem } from './cart-helpers';
 
 test('add, update, and remove an item from the cart', async ({ page }) => {

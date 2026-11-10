@@ -1,4 +1,5 @@
-import { test, expect, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { loadScenario, login } from './scenario';
 
 // Totals are the sums of UnitPrice * Units of the items in testing/scenarios/order-lifecycle/scenario.yaml.
