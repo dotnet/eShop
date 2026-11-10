@@ -1,4 +1,5 @@
-import { test, expect, APIRequestContext, APIResponse } from '@playwright/test';
+import { APIRequestContext, APIResponse } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { loadScenario } from './scenario';
 
 // Catalog.API write endpoints (POST/PUT/DELETE /api/catalog/items) and how the WebApp reflects them.

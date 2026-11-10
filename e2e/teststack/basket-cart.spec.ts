@@ -1,6 +1,7 @@
 import { execFileSync } from 'child_process';
-import { test, expect, Browser, Page } from '@playwright/test';
-import { loadScenario, login } from './scenario';
+import { Browser, Page } from '@playwright/test';
+import { test, expect } from '../fixtures';
+import { DOCKER, loadScenario, login } from './scenario';
 import { redisBasket, USER_IDS } from './auth-basket-helpers';
 
 // Scenario basket-edge: alice has no basket; bob has Explorer 45L Backpack x2 + Carbon Fiber Trekking Poles x1;
@@ -12,7 +13,7 @@ const BOOTS = { id: 1, name: 'Wanderer Black Hiking Boots', price: 109.99 };
 test.describe.configure({ mode: 'serial' });
 
 function deleteBasket(userId: string) {
-  execFileSync('docker', ['exec', 'eshop-teststack-redis-1', 'redis-cli', '-a', 'teststack-redis', '--no-auth-warning', 'DEL', `/basket/${userId}`]);
+  execFileSync(DOCKER, ['exec', 'eshop-teststack-redis-1', 'redis-cli', '-a', 'teststack-redis', '--no-auth-warning', 'DEL', `/basket/${userId}`]);
 }
 
 function redisQuantities(userId: string): Record<number, number> {
@@ -262,13 +263,13 @@ test.describe('basket-edge scenario: cart UI', () => {
   });
 
   test('anonymous visitors cannot add to the bag and no basket is written', async ({ browser }) => {
-    const before = execFileSync('docker', ['exec', 'eshop-teststack-redis-1', 'redis-cli', '-a', 'teststack-redis', '--no-auth-warning', '--scan', '--pattern', '/basket/*'], { encoding: 'utf8' });
+    const before = execFileSync(DOCKER, ['exec', 'eshop-teststack-redis-1', 'redis-cli', '-a', 'teststack-redis', '--no-auth-warning', '--scan', '--pattern', '/basket/*'], { encoding: 'utf8' });
     const page = await (await browser.newContext()).newPage();
     await page.goto(`/item/${BACKPACK.id}`);
     await expect(page.getByRole('button', { name: 'Add to shopping bag' })).toHaveCount(0);
     await page.getByRole('button', { name: 'Log in to purchase' }).click();
     await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible();
-    const after = execFileSync('docker', ['exec', 'eshop-teststack-redis-1', 'redis-cli', '-a', 'teststack-redis', '--no-auth-warning', '--scan', '--pattern', '/basket/*'], { encoding: 'utf8' });
+    const after = execFileSync(DOCKER, ['exec', 'eshop-teststack-redis-1', 'redis-cli', '-a', 'teststack-redis', '--no-auth-warning', '--scan', '--pattern', '/basket/*'], { encoding: 'utf8' });
     expect(after.split('\n').sort()).toEqual(before.split('\n').sort());
     await page.context().close();
   });

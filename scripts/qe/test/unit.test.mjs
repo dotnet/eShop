@@ -1,5 +1,9 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { test } from 'node:test';
+import { formatEvidence, readEvidence } from '../lib/evidence.mjs';
 import { lessonCandidates, parseRules } from '../lib/lessons.mjs';
 import { computeMetrics } from '../lib/metrics.mjs';
 import { extractResult, parseFrontMatter, stringifyFrontMatter } from '../../pipeline/lib/util.mjs';
@@ -112,4 +116,31 @@ test('computeMetrics summarizes loops per stage and categories per attributed ag
   assert.equal(plan.denials, 1);
   assert.equal(plan.stories, 2);
   assert.equal(m.categories[0].category, 'missing-sad-path');
+});
+
+test('readEvidence ignores manifests from older runs and formats failed tests with absolute keyframe paths', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'qe-evidence-'));
+  const cfg = { root, evidence: { manifest: 'out/manifest.json' } };
+  fs.mkdirSync(path.join(root, 'out'));
+  const startedAt = '2026-01-01T10:00:00.000Z';
+  fs.writeFileSync(path.join(root, 'out/manifest.json'), JSON.stringify({
+    startedAt,
+    tests: [
+      { title: 'TC-DEMO-1-01 adds', file: 'e2e/a.spec.ts', line: 3, ok: false, status: 'failed', errors: ['expected 1 got 0'],
+        videos: ['p/a.failed.webm'], keyframes: [{ label: 'step failed: add', path: 'p/a.failed.keyframes/01-add.png' }] },
+      { title: 'TC-OTHER-1-01 unrelated', file: 'e2e/b.spec.ts', line: 1, ok: true, status: 'passed', videos: [], keyframes: [] },
+    ],
+  }));
+
+  assert.deepEqual(readEvidence(cfg, { casePrefix: 'TC-DEMO-1-', since: '2026-01-01T10:00:01.000Z' }), []);
+  const tests = readEvidence(cfg, { casePrefix: 'TC-DEMO-1-', since: '2026-01-01T09:59:59.000Z' });
+  assert.equal(tests.length, 1);
+  const frame = path.join(root, 'out', 'p/a.failed.keyframes/01-add.png');
+  assert.equal(tests[0].keyframes[0].path, frame);
+
+  const text = formatEvidence(tests);
+  assert.match(text, /FAILED: failed/);
+  assert.match(text, /expected 1 got 0/);
+  assert.ok(text.includes(`1. step failed: add: \`${frame}\``));
+  fs.rmSync(root, { recursive: true, force: true });
 });

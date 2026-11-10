@@ -1,4 +1,5 @@
-import { test, expect, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { loadScenario } from './scenario';
 
 // Seed data: testing/scenarios/default. 101 items sorted by name, 9 per page = 12 pages (the last has 2).

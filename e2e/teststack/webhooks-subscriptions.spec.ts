@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
-import { test, expect, APIRequestContext, Page } from '@playwright/test';
+import { APIRequestContext, Page } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { loadScenario } from './scenario';
 import {
   ALICE_ID, BOB_ID, V1, WEBHOOKS_CLIENT_URL, WEBHOOKS_URL, bearer, changeStatus, getOrder, tokenFor,

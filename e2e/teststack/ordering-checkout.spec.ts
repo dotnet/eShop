@@ -1,4 +1,5 @@
-import { test, expect, Browser, Page } from '@playwright/test';
+import { Browser, Page } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { loadScenario, login } from './scenario';
 import { accessToken, getOrder } from './ordering-helpers';
 

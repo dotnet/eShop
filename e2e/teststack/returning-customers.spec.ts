@@ -1,4 +1,5 @@
-import { test, expect, Browser, Page } from '@playwright/test';
+import { Browser, Page } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { loadScenario, login } from './scenario';
 
 const CAROL_PASSWORD = 'Carol#2026';

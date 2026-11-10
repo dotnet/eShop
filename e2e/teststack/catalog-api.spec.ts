@@ -1,4 +1,5 @@
-import { test, expect, APIRequestContext, APIResponse } from '@playwright/test';
+import { APIRequestContext, APIResponse } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { loadScenario } from './scenario';
 
 // Read-only Catalog.API contract tests against http://localhost:18082.

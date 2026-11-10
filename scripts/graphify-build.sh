@@ -28,6 +28,11 @@ log="$(mktemp)"
 trap 'rm -f "$log"' EXIT
 
 if [ "${1:-}" = "--extract" ]; then
+  if ! command -v claude >/dev/null 2>&1; then
+    echo "[graphify] --extract needs the 'claude' CLI, which is not installed." >&2
+    echo "[graphify] run 'scripts/graphify-build.sh' (no LLM) instead; someone with the CLI can run --extract later." >&2
+    exit 2
+  fi
   graphify extract . --backend claude-cli && graphify cluster-only . --no-label
   exit $?
 fi

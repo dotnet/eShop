@@ -69,7 +69,7 @@ copilot
 
 Follow the device-code prompts in your browser. When asked, trust the repository folder so Copilot can read the project instructions.
 
-Copilot automatically loads this repository's custom instructions ([`.github/copilot-instructions.md`](../.github/copilot-instructions.md) and [`AGENTS.md`](../AGENTS.md)) and the project skills in [`.github/skills`](../.github/skills) (Aspire, Playwright, dotnet-inspect).
+Copilot automatically loads this repository's custom instructions ([`.github/copilot-instructions.md`](../.github/copilot-instructions.md) and [`AGENTS.md`](../AGENTS.md)) and the project skills in [`.github/skills`](../.github/skills) (Aspire, Playwright, dotnet-inspect, feature demo video).
 
 To update later, run `copilot update` (or `winget upgrade GitHub.Copilot` / `brew upgrade --cask copilot-cli`).
 
@@ -98,7 +98,7 @@ Notes:
 
 ## 3. Enable graphify for Copilot
 
-This repository uses a [graphify](https://github.com/safishamsi/graphify) knowledge graph in `graphify-out/`. The graph is built locally with `scripts/graphify-build.sh`, which needs no API key. It combines a fresh code (AST) pass with the shared LLM extraction of docs and images committed in `graphify-out/cache/semantic/`. Everything else in `graphify-out/` is gitignored. After changing docs or images, run `scripts/graphify-build.sh --extract` (uses the `claude` CLI) and commit the new files in `graphify-out/cache/semantic/`; they are content-addressed, so they never conflict. The Copilot instructions tell the agent to run `graphify query` before reading source files. For that to work, the `graphify` command must be on your `PATH` and the graphify Copilot skill must be installed.
+This repository uses a [graphify](https://github.com/safishamsi/graphify) knowledge graph in `graphify-out/`. The graph is built locally with `scripts/graphify-build.sh`, which needs no API key. It combines a fresh code (AST) pass with the shared LLM extraction of docs and images committed in `graphify-out/cache/semantic/`. Everything else in `graphify-out/` is gitignored. After changing docs or images, run `scripts/graphify-build.sh --extract` (uses the `claude` CLI) and commit the new files in `graphify-out/cache/semantic/`; they are content-addressed, so they never conflict. Without the `claude` CLI, run `scripts/graphify-build.sh`: your local graph covers the changed docs from code only, and someone with the CLI runs `--extract` later to share them. The Copilot instructions tell the agent to run `graphify query` before reading source files. For that to work, the `graphify` command must be on your `PATH` and the graphify Copilot skill must be installed.
 
 ### Windows
 
