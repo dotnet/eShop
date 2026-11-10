@@ -506,3 +506,6 @@ graphify-out/cache/*
 # Claude Code personal settings
 .claude/settings.local.json
 /settings.local.json
+
+# Claude Code agent worktrees
+.claude/worktrees/
