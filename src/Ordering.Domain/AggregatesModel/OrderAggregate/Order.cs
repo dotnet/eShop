@@ -98,33 +98,57 @@ public class Order
     
     public void SetAwaitingValidationStatus()
     {
-        if (OrderStatus == OrderStatus.Submitted)
+        if (OrderStatus == OrderStatus.AwaitingValidation)
         {
-            AddDomainEvent(new OrderStatusChangedToAwaitingValidationDomainEvent(Id, _orderItems));
-            OrderStatus = OrderStatus.AwaitingValidation;
+            // a repeated event for a transition that already happened
+            return;
         }
+
+        if (OrderStatus != OrderStatus.Submitted)
+        {
+            StatusChangeException(OrderStatus.AwaitingValidation);
+        }
+
+        AddDomainEvent(new OrderStatusChangedToAwaitingValidationDomainEvent(Id, _orderItems));
+        OrderStatus = OrderStatus.AwaitingValidation;
     }
 
     public void SetStockConfirmedStatus()
     {
-        if (OrderStatus == OrderStatus.AwaitingValidation)
+        if (OrderStatus == OrderStatus.StockConfirmed)
         {
-            AddDomainEvent(new OrderStatusChangedToStockConfirmedDomainEvent(Id));
-
-            OrderStatus = OrderStatus.StockConfirmed;
-            Description = "All the items were confirmed with available stock.";
+            // a repeated event for a transition that already happened
+            return;
         }
+
+        if (OrderStatus != OrderStatus.AwaitingValidation)
+        {
+            StatusChangeException(OrderStatus.StockConfirmed);
+        }
+
+        AddDomainEvent(new OrderStatusChangedToStockConfirmedDomainEvent(Id));
+
+        OrderStatus = OrderStatus.StockConfirmed;
+        Description = "All the items were confirmed with available stock.";
     }
 
     public void SetPaidStatus()
     {
-        if (OrderStatus == OrderStatus.StockConfirmed)
+        if (OrderStatus == OrderStatus.Paid)
         {
-            AddDomainEvent(new OrderStatusChangedToPaidDomainEvent(Id, OrderItems));
-
-            OrderStatus = OrderStatus.Paid;
-            Description = "The payment was performed at a simulated \"American Bank checking bank account ending on XX35071\"";
+            // a repeated event for a transition that already happened
+            return;
         }
+
+        if (OrderStatus != OrderStatus.StockConfirmed)
+        {
+            StatusChangeException(OrderStatus.Paid);
+        }
+
+        AddDomainEvent(new OrderStatusChangedToPaidDomainEvent(Id, OrderItems));
+
+        OrderStatus = OrderStatus.Paid;
+        Description = "The payment was performed at a simulated \"American Bank checking bank account ending on XX35071\"";
     }
 
     public void SetShippedStatus()
