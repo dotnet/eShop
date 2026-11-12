@@ -13,8 +13,8 @@ public class IdentityConfigurationTests
         var resources = Config.GetApis().Select(resource => resource.Name).Order().ToArray();
         var scopes = Config.GetApiScopes().Select(scope => scope.Name).Order().ToArray();
 
-        CollectionAssert.AreEqual(resources, scopes);
-        CollectionAssert.AreEquivalent(new[] { "basket", "orders", "webhooks" }, scopes);
+        Assert.AreSequenceEqual(resources, scopes);
+        Assert.AreSequenceEqual(new[] { "basket", "orders", "webhooks" }, scopes);
     }
 
     [TestMethod]
@@ -33,10 +33,10 @@ public class IdentityConfigurationTests
 
         var clients = Config.GetClients(configuration).ToDictionary(client => client.ClientId);
 
-        CollectionAssert.Contains(clients["webapp"].RedirectUris.ToList(), "https://webapp.test/signin-oidc");
-        CollectionAssert.Contains(clients["webhooksclient"].AllowedScopes.ToList(), "webhooks");
-        CollectionAssert.Contains(clients["maui"].AllowedScopes.ToList(), "basket");
-        CollectionAssert.Contains(clients["maui"].AllowedScopes.ToList(), "orders");
+        Assert.Contains("https://webapp.test/signin-oidc", clients["webapp"].RedirectUris);
+        Assert.Contains("webhooks", clients["webhooksclient"].AllowedScopes);
+        Assert.Contains("basket", clients["maui"].AllowedScopes);
+        Assert.Contains("orders", clients["maui"].AllowedScopes);
     }
 
     [TestMethod]

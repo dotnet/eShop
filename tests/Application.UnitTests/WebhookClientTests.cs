@@ -34,7 +34,7 @@ public class WebhookClientTests
         await repository.AddNew(hook);
 
         Assert.AreEqual(1, notifications);
-        CollectionAssert.Contains((await repository.GetAll()).ToList(), hook);
+        Assert.Contains(hook, await repository.GetAll());
     }
 
     [TestMethod]
