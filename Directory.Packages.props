@@ -7,7 +7,7 @@
     <!-- Version together with Aspire -->
     <PackageVersion Include="Aspire.Hosting.Dotnet" Version="17.0.0" />
     <PackageVersion Include="Aspire.Hosting.Azure.AppContainers" Version="17.0.0" />
-    <PackageVersion Include="Aspire.Hosting.Foundry" Version="17.0.0-preview.1.26562.1" />
+    <PackageVersion Include="Aspire.Hosting.Foundry" Version="17.0.0-preview.1.26562.8" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="17.0.0" />
     <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="17.0.0" />
     <PackageVersion Include="Aspire.Hosting.Redis" Version="17.0.0" />
