@@ -6,7 +6,6 @@
 @inject CatalogService CatalogService
 @inject IProductImageUrlProvider ProductImages
 @inject BasketState BasketState
-@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ILoggerFactory LoggerFactory
 @inject IServiceProvider ServiceProvider
 
@@ -98,12 +97,15 @@
     bool thinking;
     IJSObjectReference? jsModule;
 
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
+
     protected override async Task OnInitializedAsync()
     {
         var client = ServiceProvider.GetService<IChatClient>();
         if (client is not null)
         {
-            AuthenticationState auth = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            AuthenticationState auth = await AuthenticationStateTask;
             chatState = new ChatState(CatalogService, BasketState, auth.User, ProductImages, LoggerFactory, client);
         }
         else
@@ -127,12 +129,19 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        jsModule ??= await JS.InvokeAsync<IJSObjectReference>("import", "./Components/Chatbot/Chatbot.razor.js");
-        await jsModule.InvokeVoidAsync("scrollToEnd", chat);
-
-        if (firstRender)
+        try
         {
-            await jsModule.InvokeVoidAsync("submitOnEnter", textbox);
+            jsModule ??= await JS.InvokeAsync<IJSObjectReference>("import", "./Components/Chatbot/Chatbot.razor.js");
+            await jsModule.InvokeVoidAsync("scrollToEnd", chat);
+
+            if (firstRender)
+            {
+                await jsModule.InvokeVoidAsync("submitOnEnter", textbox);
+            }
+        }
+        catch (JSDisconnectedException)
+        {
+            // The circuit was disconnected; there's no browser to interact with.
         }
     }
 }
