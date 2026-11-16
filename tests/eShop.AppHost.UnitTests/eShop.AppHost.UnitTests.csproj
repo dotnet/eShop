@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\eShop.AppHost\eShop.AppHost.csproj" IsAspireProjectResource="false" />
+    <ProjectReference Include="..\..\src\eShop.AppHost\eShop.AppHost.csproj" />
   </ItemGroup>
 
 </Project>
