@@ -1,10 +1,12 @@
 ﻿using System.Net.Http.Json;
+using System.IO;
 using System.Net;
 using System.Text.Json;
 using Asp.Versioning;
 using Asp.Versioning.Http;
 using eShop.Catalog.API.Model;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace eShop.Catalog.FunctionalTests;
 
@@ -227,6 +229,42 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
 
         // Assert
         Assert.Equal("image/webp", result);
+    }
+
+    [Theory]
+    [InlineData(1.0, 99901)]
+    [InlineData(2.0, 99902)]
+    public async Task GetCatalogItemPicDoesNotServeFilesOutsidePics(double version, int id)
+    {
+        using var httpClient = CreateHttpClient(new ApiVersion(version));
+        var cancellationToken = TestContext.Current.CancellationToken;
+        var environment = _webApplicationFactory.Services.GetRequiredService<IWebHostEnvironment>();
+        var configurationPath = Path.Combine(environment.ContentRootPath, "appsettings.json");
+        Assert.True(File.Exists(configurationPath), $"Missing test target: {configurationPath}");
+
+        var item = new CatalogItem("Path traversal test")
+        {
+            Id = id,
+            PictureFileName = "../appsettings.json",
+            CatalogTypeId = 1,
+            CatalogBrandId = 1
+        };
+
+        var createResponse = await httpClient.PostAsJsonAsync(
+            "/api/catalog/items", item, cancellationToken);
+        createResponse.EnsureSuccessStatusCode();
+
+        try
+        {
+            var response = await httpClient.GetAsync(
+                $"/api/catalog/items/{id}/pic", cancellationToken);
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+        finally
+        {
+            await httpClient.DeleteAsync($"/api/catalog/items/{id}", cancellationToken);
+        }
     }
 
     [Theory]

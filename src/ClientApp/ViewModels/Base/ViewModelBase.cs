@@ -6,7 +6,7 @@ public abstract partial class ViewModelBase : ObservableObject, IViewModelBase
 {
     private long _isBusy;
 
-    [ObservableProperty] private bool _isInitialized;
+    [ObservableProperty] public partial bool IsInitialized { get; set; }
 
     public ViewModelBase(INavigationService navigationService)
     {

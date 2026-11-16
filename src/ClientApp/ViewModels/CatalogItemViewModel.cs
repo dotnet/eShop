@@ -12,7 +12,7 @@ public partial class CatalogItemViewModel : ViewModelBase
 {
     private readonly IAppEnvironmentService _appEnvironmentService;
 
-    [ObservableProperty] private CatalogItem _catalogItem;
+    [ObservableProperty] public partial CatalogItem CatalogItem { get; set; }
 
     public CatalogItemViewModel(IAppEnvironmentService appEnvironmentService, INavigationService navigationService) :
         base(navigationService)

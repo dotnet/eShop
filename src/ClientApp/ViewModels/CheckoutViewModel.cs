@@ -18,9 +18,9 @@ public partial class CheckoutViewModel : ViewModelBase
     private readonly IDialogService _dialogService;
     private readonly ISettingsService _settingsService;
 
-    [ObservableProperty] private Order _order;
+    [ObservableProperty] public partial Order Order { get; set; }
 
-    [ObservableProperty] private Address _shippingAddress;
+    [ObservableProperty] public partial Address ShippingAddress { get; set; }
 
     public CheckoutViewModel(
         BasketViewModel basketViewModel,
