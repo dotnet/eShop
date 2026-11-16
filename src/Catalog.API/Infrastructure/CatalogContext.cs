@@ -14,6 +14,7 @@ public class CatalogContext : DbContext
     public required DbSet<CatalogItem> CatalogItems { get; set; }
     public required DbSet<CatalogBrand> CatalogBrands { get; set; }
     public required DbSet<CatalogType> CatalogTypes { get; set; }
+    public required DbSet<StockReservation> StockReservations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -21,6 +22,7 @@ public class CatalogContext : DbContext
         builder.ApplyConfiguration(new CatalogBrandEntityTypeConfiguration());
         builder.ApplyConfiguration(new CatalogTypeEntityTypeConfiguration());
         builder.ApplyConfiguration(new CatalogItemEntityTypeConfiguration());
+        builder.ApplyConfiguration(new StockReservationEntityTypeConfiguration());
 
         // Add the outbox table to this context
         builder.UseIntegrationEventLogs();
