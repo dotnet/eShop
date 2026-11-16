@@ -1,7 +1,7 @@
 ﻿namespace eShop.Ordering.API.Application.IntegrationEvents.EventHandling;
 
 public class GracePeriodConfirmedIntegrationEventHandler(
-    IMediator mediator,
+    OrderApplicationService ordering,
     ILogger<GracePeriodConfirmedIntegrationEventHandler> logger) : IIntegrationEventHandler<GracePeriodConfirmedIntegrationEvent>
 {
     /// <summary>
@@ -25,6 +25,6 @@ public class GracePeriodConfirmedIntegrationEventHandler(
             command.OrderNumber,
             command);
 
-        await mediator.Send(command);
+        await ordering.SetAwaitingValidationOrderStatusAsync(command);
     }
 }

@@ -7,6 +7,9 @@ using eShop.Ordering.API.Application.Commands;
 using eShop.Ordering.API.Application.Models;
 using eShop.Ordering.API.Application.Queries;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using eShop.IntegrationEventLogEF;
+using eShop.Ordering.Infrastructure;
 
 namespace eShop.Ordering.FunctionalTests;
 
@@ -110,7 +113,7 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     public async Task GetStoredOrdersWithOrderId()
     {
         // Act
-        var response = await _httpClient.GetAsync("api/orders/1", TestContext.Current.CancellationToken);
+        var response = await _httpClient.GetAsync($"api/orders/{int.MaxValue}", TestContext.Current.CancellationToken);
         var responseStatus = response.StatusCode;
 
         // Assert
@@ -157,6 +160,44 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task ValidOrderPersistsBuyerPaymentAndOutboxAndDeduplicatesRequests()
+    {
+        var userId = Guid.NewGuid().ToString();
+        var requestId = Guid.NewGuid();
+        var request = new CreateOrderRequest(
+            userId, "Test Buyer", "City", "Street", "State", "Country", "Zip",
+            "1234567890123456", "Test Buyer", DateTime.UtcNow.AddYears(1), "123", 1, null,
+            [new BasketItem { ProductId = 12, ProductName = "Mug", UnitPrice = 10, Quantity = 2 }]);
+
+        for (var attempt = 0; attempt < 2; attempt++)
+        {
+            using var content = new StringContent(JsonSerializer.Serialize(request), UTF8Encoding.UTF8, "application/json");
+            content.Headers.Add("x-requestid", requestId.ToString());
+            using var response = await _httpClient.PostAsync("api/orders", content, TestContext.Current.CancellationToken);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        await using var scope = _webApplicationFactory.Services.CreateAsyncScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<OrderingContext>();
+        var buyer = await dbContext.Buyers.Include(b => b.PaymentMethods)
+            .SingleAsync(b => b.IdentityGuid == userId, TestContext.Current.CancellationToken);
+        var order = await dbContext.Orders.Include(o => o.OrderItems)
+            .SingleAsync(o => o.BuyerId == buyer.Id, TestContext.Current.CancellationToken);
+        Assert.Equal(buyer.PaymentMethods.Single().Id, order.PaymentId);
+        Assert.Equal(20m, order.GetTotal());
+
+        var requestLog = await dbContext.Set<eShop.Ordering.Infrastructure.Idempotency.ClientRequest>()
+            .SingleAsync(r => r.Id == requestId, TestContext.Current.CancellationToken);
+        var events = await dbContext.Set<IntegrationEventLogEntry>()
+            .Where(e => e.CreationTime >= requestLog.Time)
+            .ToListAsync(TestContext.Current.CancellationToken);
+        var submitted = Assert.Single(events, e => e.EventTypeShortName == "OrderStatusChangedToSubmittedIntegrationEvent"
+            && e.Content.Contains(userId));
+        Assert.Single(events, e => e.EventTypeShortName == "OrderStartedIntegrationEvent"
+            && e.TransactionId == submitted.TransactionId);
     }
 
     [Fact]

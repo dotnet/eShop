@@ -9,9 +9,6 @@ internal static class Extensions
         // Add the authentication services to DI
         builder.AddDefaultAuthentication();
 
-        // Pooling is disabled because of the following error:
-        // Unhandled exception. System.InvalidOperationException:
-        // The DbContext of type 'OrderingContext' cannot be pooled because it does not have a public constructor accepting a single parameter of type DbContextOptions or has more than one constructor.
         services.AddDbContext<OrderingContext>(options =>
         {
             options.UseNpgsql(builder.Configuration.GetConnectionString("orderingdb"));
@@ -31,17 +28,9 @@ internal static class Extensions
         services.AddHttpContextAccessor();
         services.AddTransient<IIdentityService, IdentityService>();
 
-        // Configure mediatR
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssemblyContaining(typeof(Program));
+        services.AddScoped<OrderApplicationService>();
 
-            cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
-            cfg.AddOpenBehavior(typeof(ValidatorBehavior<,>));
-            cfg.AddOpenBehavior(typeof(TransactionBehavior<,>));
-        });
-
-        // Register the command validators for the validator behavior (validators based on FluentValidation library)
+        // Register validators used explicitly by the order application service.
         services.AddValidatorsFromAssemblyContaining<CancelOrderCommandValidator>();
 
         services.AddScoped<IOrderQueries, OrderQueries>();

@@ -41,13 +41,12 @@ public class BuyerAggregateTest
         var securityNumber = "1234";
         var cardHolderName = "FakeHolderNAme";
         var expiration = DateTime.UtcNow.AddYears(1);
-        var orderId = 1;
         var name = "fakeUser";
         var identity = new Guid().ToString();
         var fakeBuyerItem = new Buyer(identity, name);
 
         //Act
-        var result = fakeBuyerItem.VerifyOrAddPaymentMethod(cardTypeId, alias, cardNumber, securityNumber, cardHolderName, expiration, orderId);
+        var result = fakeBuyerItem.VerifyOrAddPaymentMethod(cardTypeId, alias, cardNumber, securityNumber, cardHolderName, expiration);
 
         //Assert
         Assert.IsNotNull(result);
@@ -107,24 +106,24 @@ public class BuyerAggregateTest
     }
 
     [TestMethod]
-    public void Add_new_PaymentMethod_raises_new_event()
+    public void Verifying_existing_payment_method_reuses_it()
     {
         //Arrange    
         var alias = "fakeAlias";
-        var orderId = 1;
         var cardTypeId = 5;
         var cardNumber = "12";
         var cardSecurityNumber = "123";
         var cardHolderName = "FakeName";
         var cardExpiration = DateTime.UtcNow.AddYears(1);
-        var expectedResult = 1;
         var name = "fakeUser";
 
         //Act 
         var fakeBuyer = new Buyer(Guid.NewGuid().ToString(), name);
-        fakeBuyer.VerifyOrAddPaymentMethod(cardTypeId, alias, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration, orderId);
+        var first = fakeBuyer.VerifyOrAddPaymentMethod(cardTypeId, alias, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
+        var second = fakeBuyer.VerifyOrAddPaymentMethod(cardTypeId, "another alias", cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
 
         //Assert
-        Assert.HasCount(expectedResult, fakeBuyer.DomainEvents);
+        Assert.AreSame(first, second);
+        Assert.HasCount(1, fakeBuyer.PaymentMethods);
     }
 }

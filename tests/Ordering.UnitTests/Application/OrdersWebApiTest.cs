@@ -8,29 +8,32 @@ using NSubstitute.ExceptionExtensions;
 [TestClass]
 public class OrdersWebApiTest
 {
-    private readonly IMediator _mediatorMock;
+    public TestContext TestContext { get; set; }
+
+    private readonly OrderApplicationTestContext _context = new();
     private readonly IOrderQueries _orderQueriesMock;
     private readonly IIdentityService _identityServiceMock;
     private readonly ILogger<OrderServices> _loggerMock;
 
     public OrdersWebApiTest()
     {
-        _mediatorMock = Substitute.For<IMediator>();
         _orderQueriesMock = Substitute.For<IOrderQueries>();
         _identityServiceMock = Substitute.For<IIdentityService>();
         _loggerMock = Substitute.For<ILogger<OrderServices>>();
     }
 
+    [TestCleanup]
+    public void Cleanup() => _context.Dispose();
+
     [TestMethod]
     public async Task Cancel_order_with_requestId_success()
     {
         // Arrange
-        _mediatorMock.Send(Arg.Any<IdentifiedCommand<CancelOrderCommand, bool>>(), default)
-            .Returns(Task.FromResult(true));
+        var order = await _context.CreateOrderAsync();
 
         // Act
-        var orderServices = new OrderServices(_mediatorMock, _orderQueriesMock, _identityServiceMock, _loggerMock);
-        var result = await OrdersApi.CancelOrderAsync(Guid.NewGuid(), new CancelOrderCommand(1), orderServices);
+        var orderServices = new OrderServices(_context.Application, _orderQueriesMock, _identityServiceMock, _loggerMock);
+        var result = await OrdersApi.CancelOrderAsync(Guid.NewGuid(), new CancelOrderCommand(order.Id), orderServices);
 
         // Assert
         Assert.IsInstanceOfType<Ok>(result.Result);
@@ -40,11 +43,8 @@ public class OrdersWebApiTest
     public async Task Cancel_order_bad_request()
     {
         // Arrange
-        _mediatorMock.Send(Arg.Any<IdentifiedCommand<CancelOrderCommand, bool>>(), default)
-            .Returns(Task.FromResult(true));
-
         // Act
-        var orderServices = new OrderServices(_mediatorMock, _orderQueriesMock, _identityServiceMock, _loggerMock);
+        var orderServices = new OrderServices(_context.Application, _orderQueriesMock, _identityServiceMock, _loggerMock);
         var result = await OrdersApi.CancelOrderAsync(Guid.Empty, new CancelOrderCommand(1), orderServices);
 
         // Assert
@@ -55,12 +55,15 @@ public class OrdersWebApiTest
     public async Task Ship_order_with_requestId_success()
     {
         // Arrange
-        _mediatorMock.Send(Arg.Any<IdentifiedCommand<ShipOrderCommand, bool>>(), default)
-            .Returns(Task.FromResult(true));
+        var order = await _context.CreateOrderAsync();
+        order.SetAwaitingValidationStatus();
+        order.SetStockConfirmedStatus();
+        order.SetPaidStatus();
+        await _context.DbContext.SaveChangesAsync(TestContext.CancellationToken);
 
         // Act
-        var orderServices = new OrderServices(_mediatorMock, _orderQueriesMock, _identityServiceMock, _loggerMock);
-        var result = await OrdersApi.ShipOrderAsync(Guid.NewGuid(), new ShipOrderCommand(1), orderServices);
+        var orderServices = new OrderServices(_context.Application, _orderQueriesMock, _identityServiceMock, _loggerMock);
+        var result = await OrdersApi.ShipOrderAsync(Guid.NewGuid(), new ShipOrderCommand(order.Id), orderServices);
 
         // Assert
         Assert.IsInstanceOfType<Ok>(result.Result);
@@ -71,11 +74,8 @@ public class OrdersWebApiTest
     public async Task Ship_order_bad_request()
     {
         // Arrange
-        _mediatorMock.Send(Arg.Any<IdentifiedCommand<CreateOrderCommand, bool>>(), default)
-            .Returns(Task.FromResult(true));
-
         // Act
-        var orderServices = new OrderServices(_mediatorMock, _orderQueriesMock, _identityServiceMock, _loggerMock);
+        var orderServices = new OrderServices(_context.Application, _orderQueriesMock, _identityServiceMock, _loggerMock);
         var result = await OrdersApi.ShipOrderAsync(Guid.Empty, new ShipOrderCommand(1), orderServices);
 
         // Assert
@@ -95,7 +95,7 @@ public class OrdersWebApiTest
             .Returns(Task.FromResult(fakeDynamicResult));
 
         // Act
-        var orderServices = new OrderServices(_mediatorMock, _orderQueriesMock, _identityServiceMock, _loggerMock);
+        var orderServices = new OrderServices(_context.Application, _orderQueriesMock, _identityServiceMock, _loggerMock);
         var result = await OrdersApi.GetOrdersByUserAsync(orderServices);
 
         // Assert
@@ -112,7 +112,7 @@ public class OrdersWebApiTest
             .Returns(Task.FromResult(fakeDynamicResult));
 
         // Act
-        var orderServices = new OrderServices(_mediatorMock, _orderQueriesMock, _identityServiceMock, _loggerMock);
+        var orderServices = new OrderServices(_context.Application, _orderQueriesMock, _identityServiceMock, _loggerMock);
         var result = await OrdersApi.GetOrderAsync(fakeOrderId, orderServices);
 
         // Assert
@@ -131,7 +131,7 @@ public class OrdersWebApiTest
 #pragma warning restore NS5003
 
         // Act
-        var orderServices = new OrderServices(_mediatorMock, _orderQueriesMock, _identityServiceMock, _loggerMock);
+        var orderServices = new OrderServices(_context.Application, _orderQueriesMock, _identityServiceMock, _loggerMock);
         var result = await OrdersApi.GetOrderAsync(fakeOrderId, orderServices);
 
         // Assert
@@ -157,9 +157,7 @@ public class OrdersWebApiTest
     [TestMethod]
     public async Task Cancel_order_returns_problem_when_command_fails()
     {
-        _mediatorMock.Send(Arg.Any<IdentifiedCommand<CancelOrderCommand, bool>>(), default)
-            .Returns(Task.FromResult(false));
-        var services = new OrderServices(_mediatorMock, _orderQueriesMock, _identityServiceMock, _loggerMock);
+        var services = new OrderServices(_context.Application, _orderQueriesMock, _identityServiceMock, _loggerMock);
 
         var result = await OrdersApi.CancelOrderAsync(Guid.NewGuid(), new CancelOrderCommand(1), services);
 
@@ -170,9 +168,7 @@ public class OrdersWebApiTest
     [TestMethod]
     public async Task Ship_order_returns_problem_when_command_fails()
     {
-        _mediatorMock.Send(Arg.Any<IdentifiedCommand<ShipOrderCommand, bool>>(), default)
-            .Returns(Task.FromResult(false));
-        var services = new OrderServices(_mediatorMock, _orderQueriesMock, _identityServiceMock, _loggerMock);
+        var services = new OrderServices(_context.Application, _orderQueriesMock, _identityServiceMock, _loggerMock);
 
         var result = await OrdersApi.ShipOrderAsync(Guid.NewGuid(), new ShipOrderCommand(1), services);
 

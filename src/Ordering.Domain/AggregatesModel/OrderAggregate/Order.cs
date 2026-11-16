@@ -49,19 +49,13 @@ public class Order
         _isDraft = false;
     }
 
-    public Order(string userId, string userName, Address address, int cardTypeId, string cardNumber, string cardSecurityNumber,
-            string cardHolderName, DateTime cardExpiration, int? buyerId = null, int? paymentMethodId = null) : this()
+    public Order(Address address, int? buyerId = null, int? paymentMethodId = null) : this()
     {
         BuyerId = buyerId;
         PaymentId = paymentMethodId;
         OrderStatus = OrderStatus.Submitted;
         OrderDate = DateTime.UtcNow;
         Address = address;
-
-        // Add the OrderStarterDomainEvent to the domain events collection 
-        // to be raised/dispatched when committing changes into the Database [ After DbContext.SaveChanges() ]
-        AddOrderStartedDomainEvent(userId, userName, cardTypeId, cardNumber,
-                                    cardSecurityNumber, cardHolderName, cardExpiration);
     }
 
     // DDD Patterns comment
@@ -100,7 +94,6 @@ public class Order
     {
         if (OrderStatus == OrderStatus.Submitted)
         {
-            AddDomainEvent(new OrderStatusChangedToAwaitingValidationDomainEvent(Id, _orderItems));
             OrderStatus = OrderStatus.AwaitingValidation;
         }
     }
@@ -109,8 +102,6 @@ public class Order
     {
         if (OrderStatus == OrderStatus.AwaitingValidation)
         {
-            AddDomainEvent(new OrderStatusChangedToStockConfirmedDomainEvent(Id));
-
             OrderStatus = OrderStatus.StockConfirmed;
             Description = "All the items were confirmed with available stock.";
         }
@@ -120,8 +111,6 @@ public class Order
     {
         if (OrderStatus == OrderStatus.StockConfirmed)
         {
-            AddDomainEvent(new OrderStatusChangedToPaidDomainEvent(Id, OrderItems));
-
             OrderStatus = OrderStatus.Paid;
             Description = "The payment was performed at a simulated \"American Bank checking bank account ending on XX35071\"";
         }
@@ -136,7 +125,6 @@ public class Order
 
         OrderStatus = OrderStatus.Shipped;
         Description = "The order was shipped.";
-        AddDomainEvent(new OrderShippedDomainEvent(this));
     }
 
     public void SetCancelledStatus()
@@ -149,7 +137,6 @@ public class Order
 
         OrderStatus = OrderStatus.Cancelled;
         Description = "The order was cancelled.";
-        AddDomainEvent(new OrderCancelledDomainEvent(this));
     }
 
     public void SetCancelledStatusWhenStockIsRejected(IEnumerable<int> orderStockRejectedItems)
@@ -165,16 +152,6 @@ public class Order
             var itemsStockRejectedDescription = string.Join(", ", itemsStockRejectedProductNames);
             Description = $"The product items don't have stock: ({itemsStockRejectedDescription}).";
         }
-    }
-
-    private void AddOrderStartedDomainEvent(string userId, string userName, int cardTypeId, string cardNumber,
-            string cardSecurityNumber, string cardHolderName, DateTime cardExpiration)
-    {
-        var orderStartedDomainEvent = new OrderStartedDomainEvent(this, userId, userName, cardTypeId,
-                                                                    cardNumber, cardSecurityNumber,
-                                                                    cardHolderName, cardExpiration);
-
-        this.AddDomainEvent(orderStartedDomainEvent);
     }
 
     private void StatusChangeException(OrderStatus orderStatusToChange)

@@ -7,8 +7,6 @@ class PaymentMethodEntityTypeConfiguration
     {
         paymentConfiguration.ToTable("paymentmethods");
 
-        paymentConfiguration.Ignore(b => b.DomainEvents);
-
         paymentConfiguration.Property(b => b.Id)
             .UseHiLo("paymentseq");
 

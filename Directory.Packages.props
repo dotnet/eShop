@@ -40,6 +40,7 @@
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.12" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.12" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
     <PackageVersion Include="Pgvector" Version="0.3.2" />
@@ -87,6 +88,5 @@
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.21.0" />
     <!-- Before license change -->
-    <PackageVersion Include="MediatR" Version="13.1.0" />
   </ItemGroup>
 </Project>

@@ -29,16 +29,14 @@ public static class OrdersApi
             return TypedResults.BadRequest("Empty GUID is not valid for request ID");
         }
 
-        var requestCancelOrder = new IdentifiedCommand<CancelOrderCommand, bool>(command, requestId);
-
         services.Logger.LogInformation(
             "Sending command: {CommandName} - {IdProperty}: {CommandId} ({@Command})",
-            requestCancelOrder.GetGenericTypeName(),
-            nameof(requestCancelOrder.Command.OrderNumber),
-            requestCancelOrder.Command.OrderNumber,
-            requestCancelOrder);
+            command.GetGenericTypeName(),
+            nameof(command.OrderNumber),
+            command.OrderNumber,
+            command);
 
-        var commandResult = await services.Mediator.Send(requestCancelOrder);
+        var commandResult = await services.Application.CancelOrderAsync(command, requestId);
 
         if (!commandResult)
         {
@@ -58,16 +56,14 @@ public static class OrdersApi
             return TypedResults.BadRequest("Empty GUID is not valid for request ID");
         }
 
-        var requestShipOrder = new IdentifiedCommand<ShipOrderCommand, bool>(command, requestId);
-
         services.Logger.LogInformation(
             "Sending command: {CommandName} - {IdProperty}: {CommandId} ({@Command})",
-            requestShipOrder.GetGenericTypeName(),
-            nameof(requestShipOrder.Command.OrderNumber),
-            requestShipOrder.Command.OrderNumber,
-            requestShipOrder);
+            command.GetGenericTypeName(),
+            nameof(command.OrderNumber),
+            command.OrderNumber,
+            command);
 
-        var commandResult = await services.Mediator.Send(requestShipOrder);
+        var commandResult = await services.Application.ShipOrderAsync(command, requestId);
 
         if (!commandResult)
         {
@@ -112,7 +108,7 @@ public static class OrdersApi
             command.BuyerId,
             command);
 
-        return await services.Mediator.Send(command);
+        return await services.Application.CreateOrderDraftAsync(command);
     }
 
     public static async Task<Results<Ok, BadRequest<string>>> CreateOrderAsync(
@@ -135,7 +131,7 @@ public static class OrdersApi
             return TypedResults.BadRequest("RequestId is missing.");
         }
 
-        using (services.Logger.BeginScope(new List<KeyValuePair<string, object>> { new("IdentifiedCommandId", requestId) }))
+        using (services.Logger.BeginScope(new List<KeyValuePair<string, object>> { new("RequestId", requestId) }))
         {
             var maskedCCNumber = request.CardNumber.Substring(request.CardNumber.Length - 4).PadLeft(request.CardNumber.Length, 'X');
             var createOrderCommand = new CreateOrderCommand(request.Items, request.UserId, request.UserName, request.City, request.Street,
@@ -143,16 +139,7 @@ public static class OrdersApi
                 maskedCCNumber, request.CardHolderName, request.CardExpiration,
                 request.CardSecurityNumber, request.CardTypeId);
 
-            var requestCreateOrder = new IdentifiedCommand<CreateOrderCommand, bool>(createOrderCommand, requestId);
-
-            services.Logger.LogInformation(
-                "Sending command: {CommandName} - {IdProperty}: {CommandId} ({@Command})",
-                requestCreateOrder.GetGenericTypeName(),
-                nameof(requestCreateOrder.Id),
-                requestCreateOrder.Id,
-                requestCreateOrder);
-
-            var result = await services.Mediator.Send(requestCreateOrder);
+            var result = await services.Application.CreateOrderAsync(createOrderCommand, requestId);
 
             if (result)
             {

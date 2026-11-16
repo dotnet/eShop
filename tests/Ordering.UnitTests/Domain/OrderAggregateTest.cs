@@ -106,73 +106,41 @@ public class OrderAggregateTest
     }
 
     [TestMethod]
-    public void Add_new_Order_raises_new_event()
+    public void New_order_is_submitted()
     {
-        //Arrange
-        var street = "fakeStreet";
-        var city = "FakeCity";
-        var state = "fakeState";
-        var country = "fakeCountry";
-        var zipcode = "FakeZipCode";
-        var cardTypeId = 5;
-        var cardNumber = "12";
-        var cardSecurityNumber = "123";
-        var cardHolderName = "FakeName";
-        var cardExpiration = DateTime.UtcNow.AddYears(1);
-        var expectedResult = 1;
-
-        //Act 
-        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
-
-        //Assert
-        Assert.HasCount(expectedResult, fakeOrder.DomainEvents);
+        var address = new AddressBuilder().Build();
+        var order = new Order(address);
+        Assert.AreEqual(OrderStatus.Submitted, order.OrderStatus);
+        Assert.AreSame(address, order.Address);
     }
 
     [TestMethod]
-    public void Add_event_Order_explicitly_raises_new_event()
+    public void Order_status_transitions_keep_their_preconditions()
     {
-        //Arrange   
-        var street = "fakeStreet";
-        var city = "FakeCity";
-        var state = "fakeState";
-        var country = "fakeCountry";
-        var zipcode = "FakeZipCode";
-        var cardTypeId = 5;
-        var cardNumber = "12";
-        var cardSecurityNumber = "123";
-        var cardHolderName = "FakeName";
-        var cardExpiration = DateTime.UtcNow.AddYears(1);
-        var expectedResult = 2;
+        var order = new Order(new AddressBuilder().Build());
+        order.SetPaidStatus();
+        order.SetStockConfirmedStatus();
+        Assert.AreEqual(OrderStatus.Submitted, order.OrderStatus);
+        Assert.ThrowsExactly<OrderingDomainException>(() => order.SetShippedStatus());
 
-        //Act 
-        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
-        fakeOrder.AddDomainEvent(new OrderStartedDomainEvent(fakeOrder, "fakeName", "1", cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration));
-        //Assert
-        Assert.HasCount(expectedResult, fakeOrder.DomainEvents);
+        order.SetAwaitingValidationStatus();
+        order.SetStockConfirmedStatus();
+        order.SetPaidStatus();
+        Assert.AreEqual(OrderStatus.Paid, order.OrderStatus);
+        Assert.ThrowsExactly<OrderingDomainException>(() => order.SetCancelledStatus());
+        order.SetShippedStatus();
+        Assert.AreEqual(OrderStatus.Shipped, order.OrderStatus);
     }
 
     [TestMethod]
-    public void Remove_event_Order_explicitly()
+    public void Rejected_stock_cancels_only_awaiting_validation_orders()
     {
-        //Arrange    
-        var street = "fakeStreet";
-        var city = "FakeCity";
-        var state = "fakeState";
-        var country = "fakeCountry";
-        var zipcode = "FakeZipCode";
-        var cardTypeId = 5;
-        var cardNumber = "12";
-        var cardSecurityNumber = "123";
-        var cardHolderName = "FakeName";
-        var cardExpiration = DateTime.UtcNow.AddYears(1);
-        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
-        var @fakeEvent = new OrderStartedDomainEvent(fakeOrder, "1", "fakeName", cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
-        var expectedResult = 1;
-
-        //Act         
-        fakeOrder.AddDomainEvent(@fakeEvent);
-        fakeOrder.RemoveDomainEvent(@fakeEvent);
-        //Assert
-        Assert.HasCount(expectedResult, fakeOrder.DomainEvents);
+        var order = new OrderBuilder(new AddressBuilder().Build()).AddOne(1, "Mug", 10, 0, "").Build();
+        order.SetCancelledStatusWhenStockIsRejected([1]);
+        Assert.AreEqual(OrderStatus.Submitted, order.OrderStatus);
+        order.SetAwaitingValidationStatus();
+        order.SetCancelledStatusWhenStockIsRejected([1]);
+        Assert.AreEqual(OrderStatus.Cancelled, order.OrderStatus);
+        Assert.Contains("Mug", order.Description);
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace eShop.Ordering.API.Application.IntegrationEvents.EventHandling;
 
 public class OrderPaymentSucceededIntegrationEventHandler(
-    IMediator mediator,
+    OrderApplicationService ordering,
     ILogger<OrderPaymentSucceededIntegrationEventHandler> logger) :
     IIntegrationEventHandler<OrderPaymentSucceededIntegrationEvent>
 {
@@ -18,6 +18,6 @@ public class OrderPaymentSucceededIntegrationEventHandler(
             command.OrderNumber,
             command);
 
-        await mediator.Send(command);
+        await ordering.SetPaidOrderStatusAsync(command);
     }
 }

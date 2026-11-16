@@ -6,6 +6,10 @@ A reference .NET application implementing an e-commerce website using a services
 
 ![eShop homepage screenshot](img/eshop_homepage.png)
 
+## Ordering workflows
+
+The Ordering API calls a concrete `OrderApplicationService` directly from its HTTP endpoints and integration-event handlers. The service validates commands, deduplicates client requests, and coordinates buyer, payment, and order updates within a database transaction. Domain aggregates enforce their business rules without internal event dispatch. Integration events are saved to the outbox in the same transaction and published only after commit.
+
 ## Getting Started
 
 This version of eShop is based on .NET 10.

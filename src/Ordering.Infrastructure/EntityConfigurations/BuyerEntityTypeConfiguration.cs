@@ -7,8 +7,6 @@ class BuyerEntityTypeConfiguration
     {
         buyerConfiguration.ToTable("buyers");
 
-        buyerConfiguration.Ignore(b => b.DomainEvents);
-
         buyerConfiguration.Property(b => b.Id)
             .UseHiLo("buyerseq");
 

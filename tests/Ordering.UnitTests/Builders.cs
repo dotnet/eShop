@@ -16,15 +16,7 @@ public class OrderBuilder
 
     public OrderBuilder(Address address)
     {
-        order = new Order(
-            "userId",
-            "fakeName",
-            address,
-            cardTypeId: 5,
-            cardNumber: "12",
-            cardSecurityNumber: "123",
-            cardHolderName: "name",
-            cardExpiration: DateTime.UtcNow);
+        order = new Order(address);
     }
 
     public OrderBuilder AddOne(

@@ -28,23 +28,19 @@ public class Buyer
 
     public PaymentMethod VerifyOrAddPaymentMethod(
         int cardTypeId, string alias, string cardNumber,
-        string securityNumber, string cardHolderName, DateTime expiration, int orderId)
+        string securityNumber, string cardHolderName, DateTime expiration)
     {
         var existingPayment = _paymentMethods
             .SingleOrDefault(p => p.IsEqualTo(cardTypeId, cardNumber, expiration));
 
         if (existingPayment != null)
         {
-            AddDomainEvent(new BuyerAndPaymentMethodVerifiedDomainEvent(this, existingPayment, orderId));
-
             return existingPayment;
         }
 
         var payment = new PaymentMethod(cardTypeId, alias, cardNumber, securityNumber, cardHolderName, expiration);
 
         _paymentMethods.Add(payment);
-
-        AddDomainEvent(new BuyerAndPaymentMethodVerifiedDomainEvent(this, payment, orderId));
 
         return payment;
     }
