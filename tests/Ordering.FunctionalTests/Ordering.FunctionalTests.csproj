@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -9,6 +9,8 @@
   
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Http.Client" />
+    <PackageReference Include="Aspire.Hosting.AppHost" />
+    <PackageReference Include="Aspire.Hosting.Dotnet" />
     <PackageReference Include="Aspire.Hosting.PostgreSQL" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
@@ -17,9 +19,12 @@
  
   <ItemGroup>
     <ProjectReference Include="..\..\src\Ordering.API\Ordering.API.csproj" />
-    <ProjectReference Include="..\..\src\Identity.API\Identity.API.csproj" />
     <ProjectReference Include="..\..\src\Ordering.Domain\Ordering.Domain.csproj" />
     <ProjectReference Include="..\..\src\Ordering.Infrastructure\Ordering.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Shared\RepositoryPaths.cs" Link="Shared\RepositoryPaths.cs" />
   </ItemGroup>
 
 </Project>

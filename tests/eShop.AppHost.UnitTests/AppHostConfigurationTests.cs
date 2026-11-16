@@ -1,9 +1,8 @@
 ﻿using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
-using Aspire.Hosting.Dotnet;
 using Aspire.Hosting.Eventing;
 using Aspire.Hosting.Lifecycle;
-using eShop.AppHost;
+using eShop.Tests.Shared;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -21,8 +20,8 @@ public class AppHostConfigurationTests
         var builder = CreateBuilder();
         builder.Services.RemoveAll<IDistributedApplicationEventingSubscriber>();
         builder.AddForwardedHeaders();
-        var catalog = builder.AddDotnetProject("catalog-api", ProjectPath("Catalog.API", "Catalog.API.csproj"));
-        var webApp = builder.AddDotnetProject("webapp", ProjectPath("WebApp", "WebApp.csproj"));
+        var catalog = builder.AddDotnetProject("catalog-api", RepositoryPaths.ProjectPath("Catalog.API", "Catalog.API.csproj"));
+        var webApp = builder.AddDotnetProject("webapp", RepositoryPaths.ProjectPath("WebApp", "WebApp.csproj"));
         var redis = builder.AddRedis("redis");
         var annotationCounts = builder.Resources.ToDictionary(resource => resource, resource => resource.Annotations.Count);
 
@@ -68,8 +67,8 @@ public class AppHostConfigurationTests
     public void FoundryExtensionAddsExpectedDeployments()
     {
         var builder = CreateBuilder();
-        var catalog = builder.AddDotnetProject("catalog-api", ProjectPath("Catalog.API", "Catalog.API.csproj"));
-        var webApp = builder.AddDotnetProject("webapp", ProjectPath("WebApp", "WebApp.csproj"));
+        var catalog = builder.AddDotnetProject("catalog-api", RepositoryPaths.ProjectPath("Catalog.API", "Catalog.API.csproj"));
+        var webApp = builder.AddDotnetProject("webapp", RepositoryPaths.ProjectPath("WebApp", "WebApp.csproj"));
 
         builder.AddFoundry(catalog, webApp);
 
@@ -82,8 +81,8 @@ public class AppHostConfigurationTests
     public void OllamaExtensionAddsExpectedModels()
     {
         var builder = CreateBuilder();
-        var catalog = builder.AddDotnetProject("catalog-api", ProjectPath("Catalog.API", "Catalog.API.csproj"));
-        var webApp = builder.AddDotnetProject("webapp", ProjectPath("WebApp", "WebApp.csproj"));
+        var catalog = builder.AddDotnetProject("catalog-api", RepositoryPaths.ProjectPath("Catalog.API", "Catalog.API.csproj"));
+        var webApp = builder.AddDotnetProject("webapp", RepositoryPaths.ProjectPath("WebApp", "WebApp.csproj"));
 
         builder.AddOllama(catalog, webApp);
 
@@ -98,19 +97,4 @@ public class AppHostConfigurationTests
             AssemblyName = typeof(AppHostConfigurationTests).Assembly.FullName,
             DisableDashboard = true
         });
-
-    private static string ProjectPath(string directory, string project) =>
-        Path.Combine(FindRepositoryRoot(), "src", directory, project);
-
-    private static string FindRepositoryRoot()
-    {
-        var directory = new DirectoryInfo(AppContext.BaseDirectory);
-        while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "eShop.slnx")))
-        {
-            directory = directory.Parent;
-        }
-
-        return directory?.FullName
-            ?? throw new DirectoryNotFoundException("Could not locate the eShop repository root.");
-    }
 }

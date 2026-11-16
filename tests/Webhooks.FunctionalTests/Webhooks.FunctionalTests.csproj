@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Http.Client" />
+    <PackageReference Include="Aspire.Hosting.AppHost" />
     <PackageReference Include="Aspire.Hosting.PostgreSQL" />
     <PackageReference Include="Aspire.Hosting.RabbitMQ" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
