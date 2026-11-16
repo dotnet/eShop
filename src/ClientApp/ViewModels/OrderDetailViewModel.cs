@@ -11,13 +11,13 @@ public partial class OrderDetailViewModel : ViewModelBase, IQueryAttributable
     private readonly IAppEnvironmentService _appEnvironmentService;
     private readonly ISettingsService _settingsService;
 
-    [ObservableProperty] private bool _isSubmittedOrder;
+    [ObservableProperty] public partial bool IsSubmittedOrder { get; set; }
 
-    [ObservableProperty] private Order _order;
+    [ObservableProperty] public partial Order Order { get; set; }
 
-    [ObservableProperty] private int _orderNumber;
+    [ObservableProperty] public partial int OrderNumber { get; set; }
 
-    [ObservableProperty] private string _orderStatusText;
+    [ObservableProperty] public partial string OrderStatusText { get; set; }
 
     public OrderDetailViewModel(
         IAppEnvironmentService appEnvironmentService,

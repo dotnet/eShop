@@ -5,7 +5,7 @@ namespace eShop.ClientApp.ViewModels;
 
 public partial class MapViewModel : ViewModelBase
 {
-    [ObservableProperty] private IEnumerable<Store> _stores;
+    [ObservableProperty] public partial IEnumerable<Store> Stores { get; set; }
 
     public MapViewModel(INavigationService navigationService)
         : base(navigationService)
