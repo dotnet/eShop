@@ -2,6 +2,6 @@
 
 public partial class SelectionViewModel<T> : ObservableObject
 {
-    [ObservableProperty] private bool _selected;
-    [ObservableProperty] private T _value;
+    [ObservableProperty] public partial bool Selected { get; set; }
+    [ObservableProperty] public partial T Value { get; set; }
 }

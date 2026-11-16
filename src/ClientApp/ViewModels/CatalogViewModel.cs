@@ -16,23 +16,23 @@ public partial class CatalogViewModel : ViewModelBase
     private readonly ObservableCollectionEx<CatalogItem> _products = new();
     private readonly ObservableCollectionEx<CatalogTypeSelectionViewModel> _types = new();
 
-    [ObservableProperty] private int _badgeCount;
+    [ObservableProperty] public partial int BadgeCount { get; set; }
 
     private bool _initialized;
 
-    [ObservableProperty] private bool _isFiltering;
+    [ObservableProperty] public partial bool IsFiltering { get; set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanFilter))]
     [NotifyCanExecuteChangedFor(nameof(ApplyFilterCommand))]
-    private CatalogBrand? _selectedBrand;
+    public partial CatalogBrand? SelectedBrand { get; set; }
 
-    [ObservableProperty] private CatalogItem? _selectedProduct;
+    [ObservableProperty] public partial CatalogItem? SelectedProduct { get; set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanFilter))]
     [NotifyCanExecuteChangedFor(nameof(ApplyFilterCommand))]
-    private CatalogType? _selectedType;
+    public partial CatalogType? SelectedType { get; set; }
 
     public CatalogViewModel(
         IAppEnvironmentService appEnvironmentService,

@@ -11,6 +11,14 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 15
+    # EF major upgrades require coordinated runtime, provider, and tooling changes.
+    ignore:
+      - dependency-name: "Microsoft.EntityFrameworkCore*"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "Npgsql.EntityFrameworkCore.PostgreSQL"
+        update-types:
+          - "version-update:semver-major"
     groups:
       Aspire:
         patterns:
@@ -34,7 +42,8 @@ updates:
           - "Microsoft.Bcl.*"
       EntityFrameworkCore:
         patterns:
-          - "Microsoft.EntityFrameworkCore.*"
+          - "Microsoft.EntityFrameworkCore*"
+          - "Npgsql.EntityFrameworkCore.PostgreSQL"
       FluentUi:
         patterns:
           - "Microsoft.FluentUI.*"
