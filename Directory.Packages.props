@@ -78,7 +78,7 @@
     <PackageVersion Include="Grpc.Tools" Version="2.84.0" />
     <!-- Miscellaneous -->
     <PackageVersion Include="Dapper" Version="2.1.89" />
-    <PackageVersion Include="FluentValidation" Version="12.1.1" />
+    <PackageVersion Include="FluentValidation" Version="12.2.0" />
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageVersion Include="Google.Protobuf" Version="3.36.2" />
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="3.0.114" />
