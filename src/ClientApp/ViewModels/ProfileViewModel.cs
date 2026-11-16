@@ -12,7 +12,7 @@ public partial class ProfileViewModel : ViewModelBase
     private readonly ObservableCollectionEx<Order> _orders;
     private readonly ISettingsService _settingsService;
 
-    [ObservableProperty] private Order _selectedOrder;
+    [ObservableProperty] public partial Order SelectedOrder { get; set; }
 
     public ProfileViewModel(
         IAppEnvironmentService appEnvironmentService, ISettingsService settingsService,
