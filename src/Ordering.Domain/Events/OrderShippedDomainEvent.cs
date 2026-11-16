@@ -1,6 +1,6 @@
 ﻿namespace eShop.Ordering.Domain.Events;
 
-public class OrderShippedDomainEvent : INotification
+public class OrderShippedDomainEvent : IDomainEvent
 {
     public Order Order { get; }
 

@@ -1,7 +1,7 @@
 ﻿namespace eShop.Ordering.API.Application.DomainEventHandlers;
 
 public partial class OrderCancelledDomainEventHandler
-                : INotificationHandler<OrderCancelledDomainEvent>
+                : IDomainEventHandler<OrderCancelledDomainEvent>
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IBuyerRepository _buyerRepository;

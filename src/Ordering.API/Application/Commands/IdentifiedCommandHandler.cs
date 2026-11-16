@@ -6,20 +6,21 @@
 /// </summary>
 /// <typeparam name="T">Type of the command handler that performs the operation if request is not duplicated</typeparam>
 /// <typeparam name="R">Return value of the inner command handler</typeparam>
-public abstract class IdentifiedCommandHandler<T, R> : IRequestHandler<IdentifiedCommand<T, R>, R>
-    where T : IRequest<R>
+public abstract class IdentifiedCommandHandler<T, R> : ICommandHandler<IdentifiedCommand<T, R>, R>
+    where T : ICommand<R>
 {
-    private readonly IMediator _mediator;
+    private readonly ICommandHandler<T, R> _commandHandler;
     private readonly IRequestManager _requestManager;
     private readonly ILogger<IdentifiedCommandHandler<T, R>> _logger;
 
     public IdentifiedCommandHandler(
-        IMediator mediator,
+        ICommandHandler<T, R> commandHandler,
         IRequestManager requestManager,
         ILogger<IdentifiedCommandHandler<T, R>> logger)
     {
+        ArgumentNullException.ThrowIfNull(commandHandler);
         ArgumentNullException.ThrowIfNull(logger);
-        _mediator = mediator;
+        _commandHandler = commandHandler;
         _requestManager = requestManager;
         _logger = logger;
     }
@@ -36,7 +37,7 @@ public abstract class IdentifiedCommandHandler<T, R> : IRequestHandler<Identifie
     /// </summary>
     /// <param name="message">IdentifiedCommand which contains both original command & request ID</param>
     /// <returns>Return value of inner command or default value if request same ID was found</returns>
-    public async Task<R> Handle(IdentifiedCommand<T, R> message, CancellationToken cancellationToken)
+    public async Task<R> Handle(IdentifiedCommand<T, R> message, CancellationToken cancellationToken = default)
     {
         var alreadyExists = await _requestManager.ExistAsync(message.Id);
         if (alreadyExists)
@@ -83,8 +84,8 @@ public abstract class IdentifiedCommandHandler<T, R> : IRequestHandler<Identifie
                     commandId,
                     command);
 
-                // Send the embedded business command to mediator so it runs its related CommandHandler 
-                var result = await _mediator.Send(command, cancellationToken);
+                // Run the embedded business command through its own command handler
+                var result = await _commandHandler.Handle(command, cancellationToken);
 
                 _logger.LogInformation(
                     "Command result: {@Result} - {CommandName} - {IdProperty}: {CommandId} ({@Command})",

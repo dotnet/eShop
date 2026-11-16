@@ -4,7 +4,7 @@
 /// Event used when the order stock items are confirmed
 /// </summary>
 public class OrderStatusChangedToStockConfirmedDomainEvent
-    : INotification
+    : IDomainEvent
 {
     public int OrderId { get; }
 

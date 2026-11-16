@@ -1,6 +1,6 @@
 ﻿namespace eShop.Ordering.Domain.Events;
 
-public class OrderCancelledDomainEvent : INotification
+public class OrderCancelledDomainEvent : IDomainEvent
 {
     public Order Order { get; }
 

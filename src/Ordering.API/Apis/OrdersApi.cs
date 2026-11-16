@@ -22,6 +22,7 @@ public static class OrdersApi
     public static async Task<Results<Ok, BadRequest<string>, ProblemHttpResult>> CancelOrderAsync(
         [FromHeader(Name = "x-requestid")] Guid requestId,
         CancelOrderCommand command,
+        [FromServices] ICommandHandler<IdentifiedCommand<CancelOrderCommand, bool>, bool> commandHandler,
         [AsParameters] OrderServices services)
     {
         if (requestId == Guid.Empty)
@@ -38,7 +39,7 @@ public static class OrdersApi
             requestCancelOrder.Command.OrderNumber,
             requestCancelOrder);
 
-        var commandResult = await services.Mediator.Send(requestCancelOrder);
+        var commandResult = await commandHandler.Handle(requestCancelOrder);
 
         if (!commandResult)
         {
@@ -51,6 +52,7 @@ public static class OrdersApi
     public static async Task<Results<Ok, BadRequest<string>, ProblemHttpResult>> ShipOrderAsync(
         [FromHeader(Name = "x-requestid")] Guid requestId,
         ShipOrderCommand command,
+        [FromServices] ICommandHandler<IdentifiedCommand<ShipOrderCommand, bool>, bool> commandHandler,
         [AsParameters] OrderServices services)
     {
         if (requestId == Guid.Empty)
@@ -67,7 +69,7 @@ public static class OrdersApi
             requestShipOrder.Command.OrderNumber,
             requestShipOrder);
 
-        var commandResult = await services.Mediator.Send(requestShipOrder);
+        var commandResult = await commandHandler.Handle(requestShipOrder);
 
         if (!commandResult)
         {
@@ -103,7 +105,10 @@ public static class OrdersApi
         return TypedResults.Ok(cardTypes);
     }
 
-    public static async Task<OrderDraftDTO> CreateOrderDraftAsync(CreateOrderDraftCommand command, [AsParameters] OrderServices services)
+    public static async Task<OrderDraftDTO> CreateOrderDraftAsync(
+        CreateOrderDraftCommand command,
+        [FromServices] ICommandHandler<CreateOrderDraftCommand, OrderDraftDTO> commandHandler,
+        [AsParameters] OrderServices services)
     {
         services.Logger.LogInformation(
             "Sending command: {CommandName} - {IdProperty}: {CommandId} ({@Command})",
@@ -112,12 +117,13 @@ public static class OrdersApi
             command.BuyerId,
             command);
 
-        return await services.Mediator.Send(command);
+        return await commandHandler.Handle(command);
     }
 
     public static async Task<Results<Ok, BadRequest<string>>> CreateOrderAsync(
         [FromHeader(Name = "x-requestid")] Guid requestId,
         CreateOrderRequest request,
+        [FromServices] ICommandHandler<IdentifiedCommand<CreateOrderCommand, bool>, bool> commandHandler,
         [AsParameters] OrderServices services)
     {
         
@@ -152,7 +158,7 @@ public static class OrdersApi
                 requestCreateOrder.Id,
                 requestCreateOrder);
 
-            var result = await services.Mediator.Send(requestCreateOrder);
+            var result = await commandHandler.Handle(requestCreateOrder);
 
             if (result)
             {

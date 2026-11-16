@@ -1,16 +1,16 @@
 ﻿namespace eShop.Ordering.API.Application.Behaviors;
-public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
-{
-    private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger;
-    public LoggingBehavior(ILogger<LoggingBehavior<TRequest, TResponse>> logger) => _logger = logger;
 
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+public class LoggingBehavior<TCommand, TResult>(
+    ICommandHandler<TCommand, TResult> inner,
+    ILogger<LoggingBehavior<TCommand, TResult>> logger) : ICommandHandler<TCommand, TResult>
+    where TCommand : ICommand<TResult>
+{
+    public async Task<TResult> Handle(TCommand command, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Handling command {CommandName} ({@Command})", request.GetGenericTypeName(), request);
-        var response = await next();
-        _logger.LogInformation("Command {CommandName} handled - response: {@Response}", request.GetGenericTypeName(), response);
+        logger.LogInformation("Handling command {CommandName} ({@Command})", command.GetGenericTypeName(), command);
+        var response = await inner.Handle(command, cancellationToken);
+        logger.LogInformation("Command {CommandName} handled - response: {@Response}", command.GetGenericTypeName(), response);
 
         return response;
     }
 }
-

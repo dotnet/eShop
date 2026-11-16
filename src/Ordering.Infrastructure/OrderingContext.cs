@@ -15,7 +15,7 @@ public class OrderingContext : DbContext, IUnitOfWork
     public DbSet<Buyer> Buyers { get; set; }
     public DbSet<CardType> CardTypes { get; set; }
 
-    private readonly IMediator _mediator;
+    private readonly IDomainEventDispatcher _domainEventDispatcher;
     private IDbContextTransaction _currentTransaction;
 
     public OrderingContext(DbContextOptions<OrderingContext> options) : base(options) { }
@@ -24,9 +24,9 @@ public class OrderingContext : DbContext, IUnitOfWork
 
     public bool HasActiveTransaction => _currentTransaction != null;
 
-    public OrderingContext(DbContextOptions<OrderingContext> options, IMediator mediator) : base(options)
+    public OrderingContext(DbContextOptions<OrderingContext> options, IDomainEventDispatcher domainEventDispatcher) : base(options)
     {
-        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        _domainEventDispatcher = domainEventDispatcher ?? throw new ArgumentNullException(nameof(domainEventDispatcher));
 
 
         System.Diagnostics.Debug.WriteLine("OrderingContext::ctor ->" + this.GetHashCode());
@@ -52,13 +52,32 @@ public class OrderingContext : DbContext, IUnitOfWork
         // side effects from the domain event handlers which are using the same DbContext with "InstancePerLifetimeScope" or "scoped" lifetime
         // B) Right AFTER committing data (EF SaveChanges) into the DB will make multiple transactions. 
         // You will need to handle eventual consistency and compensatory actions in case of failures in any of the Handlers. 
-        await _mediator.DispatchDomainEventsAsync(this);
+        await DispatchDomainEventsAsync(cancellationToken);
 
         // After executing this line all the changes (from the Command Handler and Domain Event Handlers) 
         // performed through the DbContext will be committed
         _ = await base.SaveChangesAsync(cancellationToken);
 
         return true;
+    }
+
+    private async Task DispatchDomainEventsAsync(CancellationToken cancellationToken)
+    {
+        var domainEntities = ChangeTracker
+            .Entries<Entity>()
+            .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any())
+            .ToList();
+
+        var domainEvents = domainEntities
+            .SelectMany(x => x.Entity.DomainEvents)
+            .ToList();
+
+        domainEntities.ForEach(entity => entity.Entity.ClearDomainEvents());
+
+        foreach (var domainEvent in domainEvents)
+        {
+            await _domainEventDispatcher.DispatchAsync(domainEvent, cancellationToken);
+        }
     }
 
     public async Task<IDbContextTransaction> BeginTransactionAsync()

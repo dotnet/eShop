@@ -1,7 +1,7 @@
 ﻿namespace eShop.Ordering.API.Application.Commands;
 
 // Regular CommandHandler
-public class SetStockConfirmedOrderStatusCommandHandler : IRequestHandler<SetStockConfirmedOrderStatusCommand, bool>
+public class SetStockConfirmedOrderStatusCommandHandler : ICommandHandler<SetStockConfirmedOrderStatusCommand, bool>
 {
     private readonly IOrderRepository _orderRepository;
 
@@ -29,23 +29,5 @@ public class SetStockConfirmedOrderStatusCommandHandler : IRequestHandler<SetSto
 
         orderToUpdate.SetStockConfirmedStatus();
         return await _orderRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
-    }
-}
-
-
-// Use for Idempotency in Command process
-public class SetStockConfirmedOrderStatusIdentifiedCommandHandler : IdentifiedCommandHandler<SetStockConfirmedOrderStatusCommand, bool>
-{
-    public SetStockConfirmedOrderStatusIdentifiedCommandHandler(
-        IMediator mediator,
-        IRequestManager requestManager,
-        ILogger<IdentifiedCommandHandler<SetStockConfirmedOrderStatusCommand, bool>> logger)
-        : base(mediator, requestManager, logger)
-    {
-    }
-
-    protected override bool CreateResultForDuplicateRequest()
-    {
-        return true; // Ignore duplicate requests for processing order.
     }
 }

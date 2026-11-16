@@ -1,7 +1,7 @@
 ﻿namespace eShop.Ordering.API.Application.DomainEventHandlers;
 
 public class OrderStatusChangedToStockConfirmedDomainEventHandler
-                : INotificationHandler<OrderStatusChangedToStockConfirmedDomainEvent>
+                : IDomainEventHandler<OrderStatusChangedToStockConfirmedDomainEvent>
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IBuyerRepository _buyerRepository;

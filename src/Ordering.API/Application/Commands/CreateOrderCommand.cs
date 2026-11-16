@@ -14,7 +14,7 @@ using eShop.Ordering.API.Extensions;
 
 [DataContract]
 public class CreateOrderCommand
-    : IRequest<bool>
+    : ICommand<bool>
 {
     [DataMember]
     private readonly List<OrderItemDTO> _orderItems;

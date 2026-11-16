@@ -1,38 +1,33 @@
 ﻿namespace eShop.Ordering.API.Application.Behaviors;
 
-public class ValidatorBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
+public class ValidatorBehavior<TCommand, TResult>(
+    ICommandHandler<TCommand, TResult> inner,
+    IEnumerable<IValidator<TCommand>> validators,
+    ILogger<ValidatorBehavior<TCommand, TResult>> logger) : ICommandHandler<TCommand, TResult>
+    where TCommand : ICommand<TResult>
 {
-    private readonly ILogger<ValidatorBehavior<TRequest, TResponse>> _logger;
-    private readonly IEnumerable<IValidator<TRequest>> _validators;
-
-    public ValidatorBehavior(IEnumerable<IValidator<TRequest>> validators, ILogger<ValidatorBehavior<TRequest, TResponse>> logger)
+    public async Task<TResult> Handle(TCommand command, CancellationToken cancellationToken = default)
     {
-        _validators = validators;
-        _logger = logger;
-    }
+        var typeName = command.GetGenericTypeName();
 
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
-    {
-        var typeName = request.GetGenericTypeName();
+        logger.LogInformation("Validating command {CommandType}", typeName);
 
-        _logger.LogInformation("Validating command {CommandType}", typeName);
-
-        var validationTasks = _validators.Select(v => v.ValidateAsync(request, cancellationToken));
+        var validationTasks = validators.Select(v => v.ValidateAsync(command, cancellationToken));
         var validationResults = await Task.WhenAll(validationTasks);
-        
+
         var failures = validationResults
             .SelectMany(result => result.Errors)
             .Where(error => error != null)
             .ToList();
 
-        if (failures.Any())
+        if (failures.Count != 0)
         {
-            _logger.LogWarning("Validation errors - {CommandType} - Command: {@Command} - Errors: {@ValidationErrors}", typeName, request, failures);
+            logger.LogWarning("Validation errors - {CommandType} - Command: {@Command} - Errors: {@ValidationErrors}", typeName, command, failures);
 
             throw new OrderingDomainException(
-                $"Command Validation Errors for type {typeof(TRequest).Name}", new ValidationException("Validation exception", failures));
+                $"Command Validation Errors for type {typeof(TCommand).Name}", new ValidationException("Validation exception", failures));
         }
 
-        return await next();
+        return await inner.Handle(command, cancellationToken);
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace eShop.Ordering.API.Application.IntegrationEvents.EventHandling;
 
 public class OrderStockConfirmedIntegrationEventHandler(
-    IMediator mediator,
+    ICommandHandler<SetStockConfirmedOrderStatusCommand, bool> commandHandler,
     ILogger<OrderStockConfirmedIntegrationEventHandler> logger) :
     IIntegrationEventHandler<OrderStockConfirmedIntegrationEvent>
 {
@@ -18,6 +18,6 @@ public class OrderStockConfirmedIntegrationEventHandler(
             command.OrderNumber,
             command);
 
-        await mediator.Send(command);
+        await commandHandler.Handle(command);
     }
 }

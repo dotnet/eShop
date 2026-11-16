@@ -12,4 +12,4 @@ public record class OrderStartedDomainEvent(
     string CardNumber,
     string CardSecurityNumber,
     string CardHolderName,
-    DateTime CardExpiration) : INotification;
+    DateTime CardExpiration) : IDomainEvent;

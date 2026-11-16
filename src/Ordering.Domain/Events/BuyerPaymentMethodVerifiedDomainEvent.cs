@@ -1,7 +1,7 @@
 ﻿namespace eShop.Ordering.Domain.Events;
 
 public class BuyerAndPaymentMethodVerifiedDomainEvent
-    : INotification
+    : IDomainEvent
 {
     public Buyer Buyer { get; private set; }
     public PaymentMethod Payment { get; private set; }

@@ -1,7 +1,7 @@
 ﻿namespace eShop.Ordering.API.Application.Commands;
 
 // Regular CommandHandler
-public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, bool>
+public class CancelOrderCommandHandler : ICommandHandler<CancelOrderCommand, bool>
 {
     private readonly IOrderRepository _orderRepository;
 
@@ -34,10 +34,10 @@ public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, boo
 public class CancelOrderIdentifiedCommandHandler : IdentifiedCommandHandler<CancelOrderCommand, bool>
 {
     public CancelOrderIdentifiedCommandHandler(
-        IMediator mediator,
+        ICommandHandler<CancelOrderCommand, bool> commandHandler,
         IRequestManager requestManager,
         ILogger<IdentifiedCommandHandler<CancelOrderCommand, bool>> logger)
-        : base(mediator, requestManager, logger)
+        : base(commandHandler, requestManager, logger)
     {
     }
 

@@ -4,7 +4,7 @@
 /// Event used when the grace period order is confirmed
 /// </summary>
 public class OrderStatusChangedToAwaitingValidationDomainEvent
-        : INotification
+        : IDomainEvent
 {
     public int OrderId { get; }
     public IEnumerable<OrderItem> OrderItems { get; }

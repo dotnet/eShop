@@ -4,9 +4,4 @@
     <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MediatR" />
-    <PackageReference Include="System.Reflection.TypeExtensions" />
-  </ItemGroup>
-
 </Project>

@@ -1,7 +1,7 @@
 ﻿global using Asp.Versioning.Conventions;
 global using System.Runtime.Serialization;
 global using FluentValidation;
-global using MediatR;
+global using eShop.Ordering.Domain.Seedwork;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using eShop.EventBus.Abstractions;

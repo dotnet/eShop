@@ -5,7 +5,7 @@ using eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
 
 // Regular CommandHandler
 public class CreateOrderDraftCommandHandler
-    : IRequestHandler<CreateOrderDraftCommand, OrderDraftDTO>
+    : ICommandHandler<CreateOrderDraftCommand, OrderDraftDTO>
 {
     public Task<OrderDraftDTO> Handle(CreateOrderDraftCommand message, CancellationToken cancellationToken)
     {

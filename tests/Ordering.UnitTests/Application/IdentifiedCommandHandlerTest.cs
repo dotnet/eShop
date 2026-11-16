@@ -4,13 +4,13 @@
 public class IdentifiedCommandHandlerTest
 {
     private readonly IRequestManager _requestManager;
-    private readonly IMediator _mediator;
+    private readonly ICommandHandler<CreateOrderCommand, bool> _commandHandler;
     private readonly ILogger<IdentifiedCommandHandler<CreateOrderCommand, bool>> _loggerMock;
 
     public IdentifiedCommandHandlerTest()
     {
         _requestManager = Substitute.For<IRequestManager>();
-        _mediator = Substitute.For<IMediator>();
+        _commandHandler = Substitute.For<ICommandHandler<CreateOrderCommand, bool>>();
         _loggerMock = Substitute.For<ILogger<IdentifiedCommandHandler<CreateOrderCommand, bool>>>();
     }
 
@@ -24,16 +24,16 @@ public class IdentifiedCommandHandlerTest
         _requestManager.ExistAsync(Arg.Any<Guid>())
             .Returns(Task.FromResult(false));
 
-        _mediator.Send(Arg.Any<IRequest<bool>>(), default)
+        _commandHandler.Handle(Arg.Any<CreateOrderCommand>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(true));
 
         // Act
-        var handler = new CreateOrderIdentifiedCommandHandler(_mediator, _requestManager, _loggerMock);
+        var handler = new CreateOrderIdentifiedCommandHandler(_commandHandler, _requestManager, _loggerMock);
         var result = await handler.Handle(fakeOrderCmd, CancellationToken.None);
 
         // Assert
         Assert.IsTrue(result);
-        await _mediator.Received().Send(Arg.Any<IRequest<bool>>(), default);
+        await _commandHandler.Received().Handle(Arg.Any<CreateOrderCommand>(), Arg.Any<CancellationToken>());
     }
 
     [TestMethod]
@@ -46,15 +46,15 @@ public class IdentifiedCommandHandlerTest
         _requestManager.ExistAsync(Arg.Any<Guid>())
             .Returns(Task.FromResult(true));
 
-        _mediator.Send(Arg.Any<IRequest<bool>>(), default)
+        _commandHandler.Handle(Arg.Any<CreateOrderCommand>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(true));
 
         // Act
-        var handler = new CreateOrderIdentifiedCommandHandler(_mediator, _requestManager, _loggerMock);
+        var handler = new CreateOrderIdentifiedCommandHandler(_commandHandler, _requestManager, _loggerMock);
         var result = await handler.Handle(fakeOrderCmd, CancellationToken.None);
 
         // Assert
-       await  _mediator.DidNotReceive().Send(Arg.Any<IRequest<bool>>(), default);
+       await  _commandHandler.DidNotReceive().Handle(Arg.Any<CreateOrderCommand>(), Arg.Any<CancellationToken>());
     }
 
     private CreateOrderCommand FakeOrderRequest(Dictionary<string, object> args = null)
