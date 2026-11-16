@@ -17,7 +17,7 @@
     <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="17.0.0-preview.1.26565.2" />
     <PackageVersion Include="Aspire.RabbitMQ.Client" Version="17.0.0" />
     <PackageVersion Include="Aspire.StackExchange.Redis" Version="17.0.0" />
-    <PackageVersion Include="Aspire.Azure.AI.OpenAI" Version="13.6.5-preview.1.26559.7" />
+    <PackageVersion Include="Aspire.Azure.AI.Extensions.OpenAI" Version="17.0.0-preview.1.26565.2" />
     <!-- Version together with Asp.Versioning -->
     <PackageVersion Include="Asp.Versioning.Http" Version="10.2.3" />
     <PackageVersion Include="Asp.Versioning.Http.Client" Version="10.2.0" />
