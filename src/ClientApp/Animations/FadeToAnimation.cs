@@ -23,7 +23,7 @@ public class FadeToAnimation : AnimationBase
             throw new NullReferenceException("Null Target property.");
         }
 
-        return Target.FadeTo(Opacity, Convert.ToUInt32(Duration), EasingHelper.GetEasing(Easing));
+        return Target.FadeToAsync(Opacity, Convert.ToUInt32(Duration), EasingHelper.GetEasing(Easing));
     }
 
     protected override Task ResetAnimation()
@@ -33,7 +33,7 @@ public class FadeToAnimation : AnimationBase
             throw new NullReferenceException("Null Target property.");
         }
 
-        return Target.FadeTo(0, 0);
+        return Target.FadeToAsync(0, 0);
     }
 }
 
@@ -75,7 +75,7 @@ public class FadeInAnimation : AnimationBase
             throw new NullReferenceException("Null Target property.");
         }
 
-        Target.Dispatcher.Dispatch(() => Target.FadeTo(0, 0));
+        Target.Dispatcher.Dispatch(() => Target.FadeToAsync(0, 0));
 
         return Task.CompletedTask;
     }
@@ -133,7 +133,7 @@ public class FadeOutAnimation : AnimationBase
             throw new NullReferenceException("Null Target property.");
         }
 
-        Target.Dispatcher.Dispatch(() => Target.FadeTo(0, 0));
+        Target.Dispatcher.Dispatch(() => Target.FadeToAsync(0, 0));
 
         return Task.CompletedTask;
     }
