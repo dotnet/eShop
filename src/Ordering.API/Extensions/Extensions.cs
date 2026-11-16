@@ -18,7 +18,8 @@ internal static class Extensions
         services.AddMigration<OrderingContext, OrderingContextSeed>();
 
         // Add the integration services that consume the DbContext
-        services.AddTransient<IIntegrationEventLogService, IntegrationEventLogService<OrderingContext>>();
+        services.AddTransient<IIntegrationEventLogService>(sp => new IntegrationEventLogService<OrderingContext>(
+            sp.GetRequiredService<OrderingContext>(), typeof(OrderStartedIntegrationEvent).Assembly));
 
         services.AddTransient<IOrderingIntegrationEventService, OrderingIntegrationEventService>();
 

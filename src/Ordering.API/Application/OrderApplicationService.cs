@@ -66,7 +66,7 @@ public class OrderApplicationService(
                 new OrderStatusChangedToSubmittedIntegrationEvent(order.Id, order.OrderStatus, buyer.Name, buyer.IdentityGuid));
             OrderingApiTrace.LogOrderBuyerAndPaymentValidatedOrUpdated(logger, buyer.Id, order.Id);
             return true;
-        }, cancellationToken, returnFalseOnFailure: true);
+        }, cancellationToken, returnFalseOnDomainFailure: true);
     }
 
     public Task<bool> CancelOrderAsync(CancelOrderCommand command, Guid? requestId = null, CancellationToken cancellationToken = default)
@@ -96,7 +96,7 @@ public class OrderApplicationService(
             await integrationEvents.AddAndSaveEventAsync(
                 new OrderStatusChangedToCancelledIntegrationEvent(order.Id, order.OrderStatus, buyer.Name, buyer.IdentityGuid));
             return true;
-        }, cancellationToken, returnFalseOnFailure: requestId.HasValue);
+        }, cancellationToken, returnFalseOnDomainFailure: requestId.HasValue);
     }
 
     public Task<bool> ShipOrderAsync(ShipOrderCommand command, Guid requestId, CancellationToken cancellationToken = default)
@@ -122,7 +122,7 @@ public class OrderApplicationService(
             await integrationEvents.AddAndSaveEventAsync(
                 new OrderStatusChangedToShippedIntegrationEvent(order.Id, order.OrderStatus, buyer.Name, buyer.IdentityGuid));
             return true;
-        }, cancellationToken, returnFalseOnFailure: true);
+        }, cancellationToken, returnFalseOnDomainFailure: true);
     }
 
     public Task<bool> SetAwaitingValidationOrderStatusAsync(SetAwaitingValidationOrderStatusCommand command, CancellationToken cancellationToken = default)
@@ -242,7 +242,7 @@ public class OrderApplicationService(
     }
 
     private async Task<bool> ExecuteInTransactionAsync(
-        string operation, Func<Task<bool>> action, CancellationToken cancellationToken, bool returnFalseOnFailure = false)
+        string operation, Func<Task<bool>> action, CancellationToken cancellationToken, bool returnFalseOnDomainFailure = false)
     {
         cancellationToken.ThrowIfCancellationRequested();
         logger.LogInformation("Handling order operation {Operation}", operation);
@@ -277,9 +277,9 @@ public class OrderApplicationService(
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             logger.LogError(ex, "Error handling order operation {Operation}", operation);
-            if (returnFalseOnFailure)
+            if (returnFalseOnDomainFailure && ex is OrderingDomainException)
             {
-                // Identified HTTP operations retain their existing boolean failure result.
+                // Identified HTTP operations retain their boolean result for validation and domain failures.
                 return false;
             }
 

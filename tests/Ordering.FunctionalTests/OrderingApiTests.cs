@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using eShop.IntegrationEventLogEF;
 using eShop.Ordering.Infrastructure;
+using eShop.Ordering.Infrastructure.Idempotency;
 
 namespace eShop.Ordering.FunctionalTests;
 
@@ -167,17 +168,15 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     {
         var userId = Guid.NewGuid().ToString();
         var requestId = Guid.NewGuid();
-        var request = new CreateOrderRequest(
-            userId, "Test Buyer", "City", "Street", "State", "Country", "Zip",
-            "1234567890123456", "Test Buyer", DateTime.UtcNow.AddYears(1), "123", 1, null,
-            [new BasketItem { ProductId = 12, ProductName = "Mug", UnitPrice = 10, Quantity = 2 }]);
+        var request = ValidOrderRequest(userId);
 
         for (var attempt = 0; attempt < 2; attempt++)
         {
             using var content = new StringContent(JsonSerializer.Serialize(request), UTF8Encoding.UTF8, "application/json");
             content.Headers.Add("x-requestid", requestId.ToString());
             using var response = await _httpClient.PostAsync("api/orders", content, TestContext.Current.CancellationToken);
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.True(response.StatusCode == HttpStatusCode.OK,
+                await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
         }
 
         await using var scope = _webApplicationFactory.Services.CreateAsyncScope();
@@ -198,6 +197,22 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
             && e.Content.Contains(userId));
         Assert.Single(events, e => e.EventTypeShortName == "OrderStartedIntegrationEvent"
             && e.TransactionId == submitted.TransactionId);
+    }
+
+    [Fact]
+    public async Task CreateOrderReturnsServerErrorWhenRequestDatabaseFails()
+    {
+        await using var application = _webApplicationFactory.WithWebHostBuilder(builder =>
+            builder.ConfigureServices(services => services.AddScoped<IRequestManager, FailingRequestManager>()));
+        using var client = application.CreateDefaultClient(
+            new ApiVersionHandler(new QueryStringApiVersionWriter(), new ApiVersion(1.0)));
+        using var content = new StringContent(
+            JsonSerializer.Serialize(ValidOrderRequest(Guid.NewGuid().ToString())), UTF8Encoding.UTF8, "application/json");
+        content.Headers.Add("x-requestid", Guid.NewGuid().ToString());
+
+        using var response = await client.PostAsync("api/orders", content, TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
     }
 
     [Fact]
@@ -271,6 +286,18 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
         var orderItemsProductIds = responseData.OrderItems.Select(x => x.ProductId);
         Assert.All(orderItemsProductIds, orderItemProdId => payloadItemsProductIds.Contains(orderItemProdId));
         // TODO: might need to add more asserts in here
+    }
+
+    private static CreateOrderRequest ValidOrderRequest(string userId) => new(
+        userId, "Test Buyer", "City", "Street", "State", "Country", "Zip",
+        "1234567890123456", "Test Buyer", DateTime.UtcNow.AddYears(1), "123", 1, null,
+        [new BasketItem { ProductId = 12, ProductName = "Mug", UnitPrice = 10, Quantity = 2 }]);
+
+    private sealed class FailingRequestManager : IRequestManager
+    {
+        public Task<bool> ExistAsync(Guid id) => throw new InvalidOperationException("Request database unavailable");
+
+        public Task CreateRequestForCommandAsync<T>(Guid id) => throw new InvalidOperationException("Request database unavailable");
     }
 
     string BuildOrder()

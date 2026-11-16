@@ -7,11 +7,15 @@ public class IntegrationEventLogService<TContext> : IIntegrationEventLogService,
     private readonly TContext _context;
     private readonly Type[] _eventTypes;
 
-    public IntegrationEventLogService(TContext context)
+    public IntegrationEventLogService(TContext context) : this(context, Assembly.GetEntryAssembly())
     {
+    }
+
+    public IntegrationEventLogService(TContext context, Assembly eventAssembly)
+    {
+        ArgumentNullException.ThrowIfNull(eventAssembly);
         _context = context;
-        _eventTypes = Assembly.Load(Assembly.GetEntryAssembly().FullName)
-            .GetTypes()
+        _eventTypes = eventAssembly.GetTypes()
             .Where(t => t.Name.EndsWith(nameof(IntegrationEvent)))
             .ToArray();
     }

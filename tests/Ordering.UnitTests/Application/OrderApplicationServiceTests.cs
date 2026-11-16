@@ -5,6 +5,8 @@ using eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute.ExceptionExtensions;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using System.Data.Common;
 
 namespace eShop.Ordering.UnitTests.Application;
 
@@ -83,13 +85,52 @@ public class OrderApplicationServiceTests
         context.IntegrationEvents.AddAndSaveEventAsync(Arg.Any<OrderStatusChangedToSubmittedIntegrationEvent>())
             .ThrowsAsync(new InvalidOperationException("Outbox unavailable"));
 
-        Assert.IsFalse(await context.Application.CreateOrderAsync(OrderApplicationTestContext.CreateCommand(), Guid.NewGuid(), TestContext.CancellationToken));
+        await Assert.ThrowsExactlyAsync<InvalidOperationException>(
+            () => context.Application.CreateOrderAsync(OrderApplicationTestContext.CreateCommand(), Guid.NewGuid(), TestContext.CancellationToken));
 
         context.DbContext.ChangeTracker.Clear();
         Assert.AreEqual(0, await context.DbContext.Orders.CountAsync(TestContext.CancellationToken));
         Assert.AreEqual(0, await context.DbContext.Buyers.CountAsync(TestContext.CancellationToken));
         Assert.AreEqual(0, await context.DbContext.Set<ClientRequest>().CountAsync(TestContext.CancellationToken));
         Assert.AreEqual(0, await context.DbContext.Set<IntegrationEventLogEntry>().CountAsync(TestContext.CancellationToken));
+        Assert.HasCount(0, context.PublishedTransactions);
+    }
+
+    [TestMethod]
+    [DataRow(false)]
+    [DataRow(true)]
+    public async Task Transaction_start_and_commit_failures_propagate_instead_of_reporting_success(bool failOnCommit)
+    {
+        var failure = new InvalidOperationException("Database unavailable");
+        using var context = new OrderApplicationTestContext(
+            transactionInterceptor: new FailingTransactionInterceptor(failure, failOnCommit));
+
+        var exception = await Assert.ThrowsExactlyAsync<InvalidOperationException>(
+            () => context.Application.CreateOrderAsync(OrderApplicationTestContext.CreateCommand(), Guid.NewGuid(), TestContext.CancellationToken));
+
+        Assert.AreSame(failure, exception);
+        Assert.IsFalse(context.DbContext.HasActiveTransaction);
+        Assert.AreEqual(0, await context.DbContext.Orders.CountAsync(TestContext.CancellationToken));
+        Assert.AreEqual(0, await context.DbContext.Set<ClientRequest>().CountAsync(TestContext.CancellationToken));
+        Assert.AreEqual(0, await context.DbContext.Set<IntegrationEventLogEntry>().CountAsync(TestContext.CancellationToken));
+        Assert.HasCount(0, context.PublishedTransactions);
+    }
+
+    [TestMethod]
+    public async Task Request_registration_database_failure_propagates_instead_of_reporting_success()
+    {
+        var requestManager = Substitute.For<IRequestManager>();
+        var failure = new InvalidOperationException("Database unavailable");
+        requestManager.CreateRequestForCommandAsync<CreateOrderCommand>(Arg.Any<Guid>()).ThrowsAsync(failure);
+        using var context = new OrderApplicationTestContext(requestManager: requestManager);
+
+        var exception = await Assert.ThrowsExactlyAsync<InvalidOperationException>(
+            () => context.Application.CreateOrderAsync(OrderApplicationTestContext.CreateCommand(), Guid.NewGuid(), TestContext.CancellationToken));
+
+        Assert.AreSame(failure, exception);
+        Assert.IsFalse(context.DbContext.HasActiveTransaction);
+        Assert.AreEqual(0, await context.DbContext.Orders.CountAsync(TestContext.CancellationToken));
+        Assert.HasCount(0, context.Events);
         Assert.HasCount(0, context.PublishedTransactions);
     }
 
@@ -246,5 +287,27 @@ public class OrderApplicationServiceTests
         Assert.AreEqual(0, await context.DbContext.Orders.CountAsync(TestContext.CancellationToken));
         Assert.HasCount(0, context.Events);
         Assert.HasCount(0, context.PublishedTransactions);
+    }
+
+    private sealed class FailingTransactionInterceptor(Exception failure, bool failOnCommit) : DbTransactionInterceptor
+    {
+        public override ValueTask<InterceptionResult<DbTransaction>> TransactionStartingAsync(
+            DbConnection connection, TransactionStartingEventData eventData, InterceptionResult<DbTransaction> result,
+            CancellationToken cancellationToken = default)
+        {
+            if (!failOnCommit)
+            {
+                throw failure;
+            }
+
+            return ValueTask.FromResult(result);
+        }
+
+        public override ValueTask<InterceptionResult> TransactionCommittingAsync(
+            DbTransaction transaction, TransactionEventData eventData, InterceptionResult result,
+            CancellationToken cancellationToken = default)
+        {
+            throw failure;
+        }
     }
 }

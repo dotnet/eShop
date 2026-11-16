@@ -23,11 +23,16 @@ internal sealed class OrderApplicationTestContext : IDisposable
     public List<eShop.EventBus.Events.IntegrationEvent> Events { get; } = [];
     public List<Guid> PublishedTransactions { get; } = [];
 
-    public OrderApplicationTestContext()
+    public OrderApplicationTestContext(IRequestManager requestManager = null, DbTransactionInterceptor transactionInterceptor = null)
     {
         _connection.Open();
-        DbContext = new SqliteOrderingContext(new DbContextOptionsBuilder<OrderingContext>()
-            .UseSqlite(_connection).AddInterceptors(new SqliteTransactionInterceptor())
+        var options = new DbContextOptionsBuilder<OrderingContext>().UseSqlite(_connection);
+        if (transactionInterceptor is not null)
+        {
+            options.AddInterceptors(transactionInterceptor);
+        }
+
+        DbContext = new SqliteOrderingContext(options.AddInterceptors(new SqliteTransactionInterceptor())
             .ReplaceService<IExecutionStrategyFactory, TestExecutionStrategyFactory>().Options);
         DbContext.Database.EnsureCreated();
         DbContext.CardTypes.Add(new CardType { Id = 1, Name = "Amex" });
@@ -50,7 +55,7 @@ internal sealed class OrderApplicationTestContext : IDisposable
         });
 
         Application = new OrderApplicationService(
-            DbContext, new OrderRepository(DbContext), new BuyerRepository(DbContext), new RequestManager(DbContext),
+            DbContext, new OrderRepository(DbContext), new BuyerRepository(DbContext), requestManager ?? new RequestManager(DbContext),
             IntegrationEvents,
             new CreateOrderCommandValidator(NullLogger<CreateOrderCommandValidator>.Instance),
             new CancelOrderCommandValidator(NullLogger<CancelOrderCommandValidator>.Instance),
