@@ -139,7 +139,6 @@ public class OrdersWebApiTest
     }
 
     [TestMethod]
-    [TestMethod]
     public async Task Cancel_order_returns_problem_when_command_fails()
     {
         _mediatorMock.Send(Arg.Any<IdentifiedCommand<CancelOrderCommand, bool>>(), default)
