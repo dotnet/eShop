@@ -23,31 +23,32 @@
     <PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="10.2.1" />
     <PackageVersion Include="Asp.Versioning.OpenApi" Version="10.2.3" />
     <!-- Version together with ASP.NET -->
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.15" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.15" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.QuickGrid" Version="10.0.15" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="10.0.15" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.15" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.15" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.15" />
-    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.15" />
-    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="10.0.15" />
-    <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.15" />
-    <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="10.0.15" />
-    <PackageVersion Include="Microsoft.OpenApi" Version="2.13.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.QuickGrid" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="11.0.0-rc.3.26522.148" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.OpenApi" Version="3.11.0" />
     <PackageVersion Include="MSTest" Version="4.0.2" />
     <!-- Version together with EF -->
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.15" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.15" />
+    <!-- Npgsql.EntityFrameworkCore.PostgreSQL 11.0.0-rc.3 pins EF Core to 11.0.0-rc.3 exactly; move all of these to 11.0.0 once Npgsql 11.0.0 ships. -->
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="11.0.0-rc.3" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="11.0.0-rc.3.26522.148" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="11.0.0-rc.3.26522.148" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
     <PackageVersion Include="Pgvector" Version="0.3.2" />
     <PackageVersion Include="Pgvector.EntityFrameworkCore" Version="0.3.0" />
     <!-- Version together with runtime -->
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.15" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.15" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.15" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="11.0.0" />
     <!-- dotnet/extensions packages -->
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="11.0.0" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="11.0.0" />
@@ -82,7 +83,6 @@
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageVersion Include="Google.Protobuf" Version="3.36.2" />
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="3.0.114" />
-    <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
     <PackageVersion Include="xunit.v3.mtp-v2" Version="3.2.2" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.21.0" />

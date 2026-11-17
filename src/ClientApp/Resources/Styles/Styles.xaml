@@ -4,7 +4,6 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:eShop.ClientApp.Converters"
-    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
 
     <x:Double x:Key="BaseButtonBorderRadius">6</x:Double>
@@ -189,7 +188,6 @@
     <mct:InvertedBoolConverter x:Key="InverseBoolConverter" />
     <mct:TextCaseConverter x:Key="ToUpperConverter" Type="Upper" />
     <mct:IsStringNullOrEmptyConverter x:Key="StringNullOrEmptyBoolConverter" />
-    <mct:ItemTappedEventArgsConverter x:Key="ItemTappedEventArgsConverter" />
     <mct:IsListNullOrEmptyConverter x:Key="ListIsNullOrEmptyConverter" />
     <mct:IsListNotNullOrEmptyConverter x:Key="ListIsNotNullOrEmptyConverter" />
     <converters:DoesNotHaveCountConverter x:Key="DoesNotHaveCountConverter" />
@@ -206,7 +204,7 @@
     <Style x:Key="EntryStyle" TargetType="{x:Type Entry}">
         <Setter Property="FontFamily" Value="PlusJakartaSans-Regular" />
         <Setter Property="FontSize" Value="{StaticResource LargeSize}" />
-        <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+        <Setter Property="HorizontalOptions" Value="Fill" />
         <Setter Property="FontAttributes" Value="Bold" />
         <Setter Property="Opacity" Value="0.6" />
         <Style.Triggers>
@@ -236,7 +234,7 @@
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource BlackColor}, Dark=White}" />
         <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource BlackColor}, Dark=White}" />
         <Setter Property="FontSize" Value="{StaticResource LargeSize}" />
-        <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+        <Setter Property="HorizontalOptions" Value="Fill" />
         <Setter Property="FontAttributes" Value="Bold" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="Opacity" Value="0.6" />
@@ -289,22 +287,6 @@
     <Style
         ApplyToDerivedTypes="True"
         CanCascade="True"
-        TargetType="ImageCell">
-        <Setter Property="TextColor" Value="{StaticResource InverseTextColor}" />
-        <Setter Property="DetailColor" Value="{StaticResource AccentColor}" />
-    </Style>
-
-    <Style
-        ApplyToDerivedTypes="True"
-        CanCascade="True"
-        TargetType="TextCell">
-        <Setter Property="TextColor" Value="{StaticResource InverseTextColor}" />
-        <Setter Property="DetailColor" Value="{StaticResource AccentColor}" />
-    </Style>
-
-    <Style
-        ApplyToDerivedTypes="True"
-        CanCascade="True"
         TargetType="CollectionView">
         <Setter Property="BackgroundColor" Value="{StaticResource ThemeListViewBackgroundColor}" />
     </Style>
@@ -333,7 +315,7 @@
 
     <Style ApplyToDerivedTypes="True" TargetType="ContentPage">
         <Setter Property="NavigationPage.BackButtonTitle" Value="" />
-        <Setter Property="ios:Page.UseSafeArea" Value="True" />
+        <Setter Property="SafeAreaEdges" Value="Container" />
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightBackgroundColor}, Dark={StaticResource DarkBackgroundColor}}" />
         <Setter Property="Shell.ForegroundColor" Value="{AppThemeBinding Light={StaticResource LightForegroundColor}, Dark={StaticResource DarkForegroundColor}}" />
     </Style>
