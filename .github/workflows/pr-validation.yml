@@ -20,9 +20,9 @@ jobs:
   test:
     runs-on: ubuntu-latest    
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup .NET (global.json)
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v5
       - name: Build 
         run: dotnet build eShop.Web.slnf
       - name: Test

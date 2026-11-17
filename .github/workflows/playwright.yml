@@ -19,11 +19,11 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-dotnet@v4
+    - uses: actions/checkout@v5
+    - uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '11.0.x'
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v5
       with:
         node-version: lts/*
     - name: Install dependencies
@@ -36,7 +36,7 @@ jobs:
         ESHOP_USE_HTTP_ENDPOINTS: 1
         USERNAME1: bob
         PASSWORD: Pass123$
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       if: always()
       with:
         name: playwright-report
