@@ -1,5 +1,5 @@
 {
-  "openapi": "3.1.1",
+  "openapi": "3.2.0",
   "info": {
     "title": "eShop - Catalog HTTP API",
     "description": "The Catalog Microservice HTTP API. This is a Data-Driven/CRUD microservice sample",
@@ -116,18 +116,18 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found"
-          },
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       },
@@ -221,7 +221,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
                 }
@@ -231,7 +231,7 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
                 }
@@ -275,9 +275,6 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Not Found"
-          },
           "200": {
             "description": "OK",
             "content": {
@@ -342,6 +339,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -1047,19 +1047,19 @@
   },
   "tags": [
     {
-      "name": "Items"
+      "name": "Brands"
     },
     {
       "name": "Catalog"
     },
     {
-      "name": "Types"
-    },
-    {
-      "name": "Brands"
+      "name": "Items"
     },
     {
       "name": "Search"
+    },
+    {
+      "name": "Types"
     }
   ]
 }
