@@ -95,18 +95,6 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     }
 
     [Fact]
-    public async Task GetAllOrdersCardType()
-    {
-        // Act 1
-        var response = await _httpClient.GetAsync("api/orders/cardtypes", TestContext.Current.CancellationToken);
-        var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-        response.EnsureSuccessStatusCode();
-
-        // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    }
-
-    [Fact]
     public async Task GetStoredOrdersWithOrderId()
     {
         // Act

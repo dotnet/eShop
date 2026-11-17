@@ -1,12 +1,14 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Ordering.Infrastructure.Migrations
 {
+    /// <inheritdoc />
     public partial class RemoveSensitivePaymentMethodData : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
@@ -14,13 +16,12 @@ namespace Ordering.Infrastructure.Migrations
                 schema: "ordering",
                 table: "paymentmethods");
 
+            migrationBuilder.DropTable(
+                name: "cardtypes",
+                schema: "ordering");
+
             migrationBuilder.DropIndex(
                 name: "IX_paymentmethods_CardTypeId",
-                schema: "ordering",
-                table: "paymentmethods");
-
-            migrationBuilder.DropColumn(
-                name: "CardHolderName",
                 schema: "ordering",
                 table: "paymentmethods");
 
@@ -39,6 +40,11 @@ namespace Ordering.Infrastructure.Migrations
                 schema: "ordering",
                 table: "paymentmethods");
 
+            migrationBuilder.DropColumn(
+                name: "CardHolderName",
+                schema: "ordering",
+                table: "paymentmethods");
+
             migrationBuilder.AddColumn<string>(
                 name: "PaymentMethodId",
                 schema: "ordering",
@@ -47,8 +53,11 @@ namespace Ordering.Infrastructure.Migrations
                 maxLength: 200,
                 nullable: false,
                 defaultValue: "");
+
+            migrationBuilder.Sql("UPDATE ordering.paymentmethods SET \"PaymentMethodId\" = 'legacy-' || \"Id\"::text");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
@@ -80,7 +89,7 @@ namespace Ordering.Infrastructure.Migrations
                 table: "paymentmethods",
                 type: "integer",
                 nullable: false,
-                defaultValue: 1);
+                defaultValue: 0);
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "Expiration",
@@ -89,7 +98,20 @@ namespace Ordering.Infrastructure.Migrations
                 type: "timestamp with time zone",
                 maxLength: 25,
                 nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.CreateTable(
+                name: "cardtypes",
+                schema: "ordering",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_cardtypes", x => x.Id);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_paymentmethods_CardTypeId",

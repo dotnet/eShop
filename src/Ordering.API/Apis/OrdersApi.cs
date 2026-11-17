@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using CardType = eShop.Ordering.API.Application.Queries.CardType;
 using Order = eShop.Ordering.API.Application.Queries.Order;
 
 public static class OrdersApi
@@ -12,7 +11,6 @@ public static class OrdersApi
         api.MapPut("/ship", ShipOrderAsync);
         api.MapGet("{orderId:int}", GetOrderAsync);
         api.MapGet("/", GetOrdersByUserAsync);
-        api.MapGet("/cardtypes", GetCardTypesAsync);
         api.MapPost("/draft", CreateOrderDraftAsync);
         api.MapPost("/", CreateOrderAsync);
 
@@ -95,12 +93,6 @@ public static class OrdersApi
         var userId = services.IdentityService.GetUserIdentity();
         var orders = await services.Queries.GetOrdersFromUserAsync(userId);
         return TypedResults.Ok(orders);
-    }
-
-    public static async Task<Ok<IEnumerable<CardType>>> GetCardTypesAsync(IOrderQueries orderQueries)
-    {
-        var cardTypes = await orderQueries.GetCardTypesAsync();
-        return TypedResults.Ok(cardTypes);
     }
 
     public static async Task<OrderDraftDTO> CreateOrderDraftAsync(CreateOrderDraftCommand command, [AsParameters] OrderServices services)

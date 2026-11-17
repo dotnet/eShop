@@ -31,7 +31,7 @@ public class ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler
         // works by coincidence. If we remove HiLo or if anything decides to yield earlier, it will break.
 
         buyer.VerifyOrAddPaymentMethod($"Payment Method on {DateTime.UtcNow}",
-                                        domainEvent.PaymentMethodId,
+                                        domainEvent.PaymentProviderToken,
                                         domainEvent.Order.Id);
 
         if (!buyerExisted)

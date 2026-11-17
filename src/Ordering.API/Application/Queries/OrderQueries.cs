@@ -48,6 +48,4 @@ public class OrderQueries(OrderingContext context)
             .ToListAsync();
     } 
     
-    public async Task<IEnumerable<CardType>> GetCardTypesAsync() => 
-        await context.CardTypes.Select(c=> new CardType { Id = c.Id, Name = c.Name }).ToListAsync();
 }
