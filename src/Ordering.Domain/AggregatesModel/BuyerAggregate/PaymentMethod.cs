@@ -7,18 +7,18 @@ public class PaymentMethod : Entity
     [Required]
     private string _alias;
     [Required]
-    private string _paymentMethodId;
+    private string _paymentToken;
 
     protected PaymentMethod() { }
 
-    public PaymentMethod(string alias, string paymentMethodId)
+    public PaymentMethod(string alias, string paymentToken)
     {
         _alias = alias;
-        _paymentMethodId = !string.IsNullOrWhiteSpace(paymentMethodId) ? paymentMethodId : throw new OrderingDomainException(nameof(paymentMethodId));
+        _paymentToken = !string.IsNullOrWhiteSpace(paymentToken) ? paymentToken : throw new OrderingDomainException(nameof(paymentToken));
     }
 
-    public bool IsEqualTo(string paymentMethodId)
+    public bool IsEqualTo(string paymentToken)
     {
-        return _paymentMethodId == paymentMethodId;
+        return _paymentToken == paymentToken;
     }
 }

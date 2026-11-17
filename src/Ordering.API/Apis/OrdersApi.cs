@@ -131,7 +131,7 @@ public static class OrdersApi
         {
             var createOrderCommand = new CreateOrderCommand(request.Items, request.UserId, request.UserName, request.City, request.Street,
                 request.State, request.Country, request.ZipCode,
-                request.PaymentMethodId);
+                request.PaymentToken);
 
             var requestCreateOrder = new IdentifiedCommand<CreateOrderCommand, bool>(createOrderCommand, requestId);
 
@@ -166,6 +166,6 @@ public record CreateOrderRequest(
     string State,
     string Country,
     string ZipCode,
-    string PaymentMethodId,
+    string PaymentToken,
     string Buyer,
     List<BasketItem> Items);

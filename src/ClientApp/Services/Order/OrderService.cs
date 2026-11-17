@@ -113,7 +113,7 @@ public class OrderService : IOrderService
     {
         return new OrderCheckout
         {
-            PaymentMethodId = order.PaymentMethodId,
+            PaymentToken = order.PaymentToken,
             City = order.ShippingCity,
             State = order.ShippingState,
             Country = order.ShippingCountry,

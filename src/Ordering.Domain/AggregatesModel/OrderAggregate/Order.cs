@@ -49,7 +49,7 @@ public class Order
         _isDraft = false;
     }
 
-    public Order(string userId, string userName, Address address, string paymentProviderToken, int? buyerId = null, int? paymentMethodId = null) : this()
+    public Order(string userId, string userName, Address address, string paymentToken, int? buyerId = null, int? paymentMethodId = null) : this()
     {
         BuyerId = buyerId;
         PaymentId = paymentMethodId;
@@ -59,7 +59,7 @@ public class Order
 
         // Add the OrderStarterDomainEvent to the domain events collection 
         // to be raised/dispatched when committing changes into the Database [ After DbContext.SaveChanges() ]
-        AddOrderStartedDomainEvent(userId, userName, paymentProviderToken);
+        AddOrderStartedDomainEvent(userId, userName, paymentToken);
     }
 
     // DDD Patterns comment
@@ -165,9 +165,9 @@ public class Order
         }
     }
 
-    private void AddOrderStartedDomainEvent(string userId, string userName, string paymentProviderToken)
+    private void AddOrderStartedDomainEvent(string userId, string userName, string paymentToken)
     {
-        var orderStartedDomainEvent = new OrderStartedDomainEvent(this, userId, userName, paymentProviderToken);
+        var orderStartedDomainEvent = new OrderStartedDomainEvent(this, userId, userName, paymentToken);
 
         this.AddDomainEvent(orderStartedDomainEvent);
     }

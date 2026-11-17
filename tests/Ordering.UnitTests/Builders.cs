@@ -20,7 +20,7 @@ public class OrderBuilder
             "userId",
             "fakeName",
             address,
-            paymentProviderToken: "pm_test_123");
+            paymentToken: "pm_test_123");
     }
 
     public OrderBuilder AddOne(

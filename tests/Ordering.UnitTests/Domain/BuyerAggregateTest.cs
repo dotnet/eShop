@@ -36,14 +36,14 @@ public class BuyerAggregateTest
     {
         //Arrange    
         var alias = "fakeAlias";
-        var paymentMethodId = "pm_test_123";
+        var paymentToken = "pm_test_123";
         var orderId = 1;
         var name = "fakeUser";
         var identity = new Guid().ToString();
         var fakeBuyerItem = new Buyer(identity, name);
 
         //Act
-        var result = fakeBuyerItem.VerifyOrAddPaymentMethod(alias, paymentMethodId, orderId);
+        var result = fakeBuyerItem.VerifyOrAddPaymentMethod(alias, paymentToken, orderId);
 
         //Assert
         Assert.IsNotNull(result);
@@ -54,10 +54,10 @@ public class BuyerAggregateTest
     {
         //Arrange    
         var alias = "fakeAlias";
-        var paymentMethodId = "pm_test_123";
+        var paymentToken = "pm_test_123";
 
         //Act
-        var result = new PaymentMethod(alias, paymentMethodId);
+        var result = new PaymentMethod(alias, paymentToken);
 
         //Assert
         Assert.IsNotNull(result);
@@ -68,10 +68,10 @@ public class BuyerAggregateTest
     {
         //Arrange    
         var alias = "fakeAlias";
-        var paymentMethodId = string.Empty;
+        var paymentToken = string.Empty;
 
         //Act - Assert
-        Assert.ThrowsExactly<OrderingDomainException>(() => new PaymentMethod(alias, paymentMethodId));
+        Assert.ThrowsExactly<OrderingDomainException>(() => new PaymentMethod(alias, paymentToken));
     }
 
     [TestMethod]
@@ -79,11 +79,11 @@ public class BuyerAggregateTest
     {
         //Arrange    
         var alias = "fakeAlias";
-        var paymentMethodId = "pm_test_123";
+        var paymentToken = "pm_test_123";
 
         //Act
-        var fakePaymentMethod = new PaymentMethod(alias, paymentMethodId);
-        var result = fakePaymentMethod.IsEqualTo(paymentMethodId);
+        var fakePaymentMethod = new PaymentMethod(alias, paymentToken);
+        var result = fakePaymentMethod.IsEqualTo(paymentToken);
 
         //Assert
         Assert.IsTrue(result);
@@ -95,13 +95,13 @@ public class BuyerAggregateTest
         //Arrange    
         var alias = "fakeAlias";
         var orderId = 1;
-        var paymentMethodId = "pm_test_123";
+        var paymentToken = "pm_test_123";
         var expectedResult = 1;
         var name = "fakeUser";
 
         //Act 
         var fakeBuyer = new Buyer(Guid.NewGuid().ToString(), name);
-        fakeBuyer.VerifyOrAddPaymentMethod(alias, paymentMethodId, orderId);
+        fakeBuyer.VerifyOrAddPaymentMethod(alias, paymentToken, orderId);
 
         //Assert
         Assert.HasCount(expectedResult, fakeBuyer.DomainEvents);

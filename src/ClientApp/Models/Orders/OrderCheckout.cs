@@ -16,7 +16,7 @@ public class OrderCheckout
 
     public string ZipCode { get; set; }
     [Required]
-    public string PaymentMethodId { get; set; }
+    public string PaymentToken { get; set; }
 
     public string Buyer { get; set; }
 

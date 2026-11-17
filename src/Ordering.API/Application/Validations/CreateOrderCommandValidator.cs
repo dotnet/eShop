@@ -8,7 +8,7 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
         RuleFor(command => command.State).NotEmpty();
         RuleFor(command => command.Country).NotEmpty();
         RuleFor(command => command.ZipCode).NotEmpty();
-        RuleFor(command => command.PaymentMethodId).NotEmpty().MaximumLength(200);
+        RuleFor(command => command.PaymentToken).NotEmpty().MaximumLength(200);
         RuleFor(command => command.OrderItems).Must(ContainOrderItems).WithMessage("No order items found");
 
         if (logger.IsEnabled(LogLevel.Trace))

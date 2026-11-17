@@ -16,7 +16,7 @@ partial class OrderingContextModelSnapshot : ModelSnapshot
     // If you encounter a merge conflict in the line below, it means you need to
     // discard one of the migration branches and recreate its migrations on top of
     // the other branch. See https://aka.ms/efcore-docs-migrations-conflicts for more info.
-    public override string LastMigrationId => "20261117125854_RemoveSensitivePaymentMethodData";
+    public override string LastMigrationId => "20261117131357_RenamePaymentMethodTokenColumn";
 
     protected override void BuildModel(ModelBuilder modelBuilder)
     {
@@ -112,11 +112,11 @@ partial class OrderingContextModelSnapshot : ModelSnapshot
                     .HasColumnType("character varying(200)")
                     .HasColumnName("Alias");
 
-                b.Property<string>("_paymentMethodId")
+                b.Property<string>("_paymentToken")
                     .IsRequired()
                     .HasMaxLength(200)
                     .HasColumnType("character varying(200)")
-                    .HasColumnName("PaymentMethodId");
+                    .HasColumnName("PaymentToken");
 
                 b.HasKey("Id");
 

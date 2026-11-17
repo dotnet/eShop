@@ -97,7 +97,7 @@ public class BasketState(
             State: checkoutInfo.State!,
             Country: checkoutInfo.Country!,
             ZipCode: checkoutInfo.ZipCode!,
-            PaymentMethodId: checkoutInfo.PaymentMethodId,
+            PaymentToken: checkoutInfo.PaymentToken,
             Buyer: buyerId,
             Items: [.. orderItems]);
         await orderingService.CreateOrder(request, checkoutInfo.RequestId);
@@ -162,6 +162,6 @@ public record CreateOrderRequest(
     string State,
     string Country,
     string ZipCode,
-    string PaymentMethodId,
+    string PaymentToken,
     string Buyer,
     List<BasketItem> Items);

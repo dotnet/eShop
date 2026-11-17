@@ -32,8 +32,8 @@ public class Order
 
     [JsonPropertyName("zipCode")] public string ShippingZipCode { get; set; }
 
-    [JsonPropertyName("paymentMethodId")]
-    public string PaymentMethodId { get; set; }
+    [JsonPropertyName("paymentToken")]
+    public string PaymentToken { get; set; }
 
     [JsonPropertyName("items")]
     public List<OrderItem> OrderItems { get; set; }

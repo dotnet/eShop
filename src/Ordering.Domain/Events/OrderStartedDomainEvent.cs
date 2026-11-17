@@ -8,4 +8,4 @@ public record class OrderStartedDomainEvent(
     Order Order, 
     string UserId,
     string UserName,
-    string PaymentProviderToken) : INotification;
+    string PaymentToken) : INotification;

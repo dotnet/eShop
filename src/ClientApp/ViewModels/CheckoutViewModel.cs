@@ -67,7 +67,7 @@ public partial class CheckoutViewModel : ViewModelBase
                     OrderItems = orderItems,
                     OrderStatus = "Submitted",
                     OrderDate = DateTime.Now,
-                    PaymentMethodId = "pm_sample_mobile",
+                    PaymentToken = "pm_sample_mobile",
                     ShippingState = ShippingAddress.State,
                     ShippingCountry = ShippingAddress.Country,
                     ShippingStreet = ShippingAddress.Street,

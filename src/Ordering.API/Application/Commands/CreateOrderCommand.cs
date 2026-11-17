@@ -41,7 +41,7 @@ public class CreateOrderCommand
     public string ZipCode { get; private set; }
 
     [DataMember]
-    public string PaymentMethodId { get; private set; }
+    public string PaymentToken { get; private set; }
 
     [DataMember]
     public IEnumerable<OrderItemDTO> OrderItems => _orderItems;
@@ -52,7 +52,7 @@ public class CreateOrderCommand
     }
 
     public CreateOrderCommand(List<BasketItem> basketItems, string userId, string userName, string city, string street, string state, string country, string zipcode,
-        string paymentMethodId)
+        string paymentToken)
     {
         _orderItems = basketItems.ToOrderItemsDTO().ToList();
         UserId = userId;
@@ -62,7 +62,7 @@ public class CreateOrderCommand
         State = state;
         Country = country;
         ZipCode = zipcode;
-        PaymentMethodId = paymentMethodId;
+        PaymentToken = paymentToken;
     }
 }
 

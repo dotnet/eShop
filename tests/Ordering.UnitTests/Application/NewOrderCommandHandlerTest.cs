@@ -73,6 +73,6 @@ public class NewOrderRequestHandlerTest
             state: args != null && args.ContainsKey("state") ? (string)args["state"] : null,
             country: args != null && args.ContainsKey("country") ? (string)args["country"] : null,
             zipcode: args != null && args.ContainsKey("zipcode") ? (string)args["zipcode"] : null,
-            paymentMethodId: args != null && args.ContainsKey("paymentMethodId") ? (string)args["paymentMethodId"] : "pm_test_123");
+            paymentToken: args != null && args.ContainsKey("paymentToken") ? (string)args["paymentToken"] : "pm_test_123");
     }
 }

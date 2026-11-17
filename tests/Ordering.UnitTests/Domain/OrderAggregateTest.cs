@@ -114,11 +114,11 @@ public class OrderAggregateTest
         var state = "fakeState";
         var country = "fakeCountry";
         var zipcode = "FakeZipCode";
-        var paymentMethodId = "pm_test_123";
+        var paymentToken = "pm_test_123";
         var expectedResult = 1;
 
         //Act 
-        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), paymentMethodId);
+        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), paymentToken);
 
         //Assert
         Assert.HasCount(expectedResult, fakeOrder.DomainEvents);
@@ -133,12 +133,12 @@ public class OrderAggregateTest
         var state = "fakeState";
         var country = "fakeCountry";
         var zipcode = "FakeZipCode";
-        var paymentMethodId = "pm_test_123";
+        var paymentToken = "pm_test_123";
         var expectedResult = 2;
 
         //Act 
-        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), paymentMethodId);
-        fakeOrder.AddDomainEvent(new OrderStartedDomainEvent(fakeOrder, "fakeName", "1", paymentMethodId));
+        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), paymentToken);
+        fakeOrder.AddDomainEvent(new OrderStartedDomainEvent(fakeOrder, "fakeName", "1", paymentToken));
         //Assert
         Assert.HasCount(expectedResult, fakeOrder.DomainEvents);
     }
@@ -152,9 +152,9 @@ public class OrderAggregateTest
         var state = "fakeState";
         var country = "fakeCountry";
         var zipcode = "FakeZipCode";
-        var paymentMethodId = "pm_test_123";
-        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), paymentMethodId);
-        var @fakeEvent = new OrderStartedDomainEvent(fakeOrder, "1", "fakeName", paymentMethodId);
+        var paymentToken = "pm_test_123";
+        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), paymentToken);
+        var @fakeEvent = new OrderStartedDomainEvent(fakeOrder, "1", "fakeName", paymentToken);
         var expectedResult = 1;
 
         //Act         

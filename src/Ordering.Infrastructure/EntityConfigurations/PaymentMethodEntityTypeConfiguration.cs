@@ -20,8 +20,8 @@ class PaymentMethodEntityTypeConfiguration
             .HasMaxLength(200);
 
         paymentConfiguration
-            .Property("_paymentMethodId")
-            .HasColumnName("PaymentMethodId")
+            .Property("_paymentToken")
+            .HasColumnName("PaymentToken")
             .HasMaxLength(200)
             .IsRequired();
     }

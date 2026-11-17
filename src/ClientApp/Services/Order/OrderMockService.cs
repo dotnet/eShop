@@ -5,7 +5,7 @@ namespace eShop.ClientApp.Services.Order;
 
 public class OrderMockService : IOrderService
 {
-    private const string MockPaymentMethodId = "pm_mock_mobile";
+    private const string MockPaymentToken = "pm_mock_mobile";
 
     private static readonly Address MockAdress = new()
     {
@@ -47,7 +47,7 @@ public class OrderMockService : IOrderService
 
     private static readonly OrderCheckout MockOrderCheckout = new()
     {
-        PaymentMethodId = MockPaymentMethodId,
+        PaymentToken = MockPaymentToken,
         City = "FakeCity",
         Country = "FakeCountry",
         ZipCode = "FakeZipCode",
@@ -63,7 +63,7 @@ public class OrderMockService : IOrderService
             OrderDate = DateTime.Now,
             OrderStatus = "Submitted",
             OrderItems = MockOrderItems,
-            PaymentMethodId = MockPaymentMethodId,
+        PaymentToken = MockPaymentToken,
             ShippingCity = MockAdress.City,
             ShippingState = MockAdress.State,
             ShippingCountry = MockAdress.Country,
@@ -77,7 +77,7 @@ public class OrderMockService : IOrderService
             OrderDate = DateTime.Now,
             OrderStatus = "Paid",
             OrderItems = MockOrderItems,
-            PaymentMethodId = MockPaymentMethodId,
+        PaymentToken = MockPaymentToken,
             ShippingCity = MockAdress.City,
             ShippingState = MockAdress.State,
             ShippingCountry = MockAdress.Country,
@@ -91,7 +91,7 @@ public class OrderMockService : IOrderService
             OrderDate = DateTime.Now,
             OrderStatus = "Cancelled",
             OrderItems = MockOrderItems,
-            PaymentMethodId = MockPaymentMethodId,
+        PaymentToken = MockPaymentToken,
             ShippingCity = MockAdress.City,
             ShippingState = MockAdress.State,
             ShippingCountry = MockAdress.Country,
@@ -105,7 +105,7 @@ public class OrderMockService : IOrderService
             OrderDate = DateTime.Now,
             OrderStatus = "Shipped",
             OrderItems = MockOrderItems,
-            PaymentMethodId = MockPaymentMethodId,
+        PaymentToken = MockPaymentToken,
             ShippingCity = MockAdress.City,
             ShippingState = MockAdress.State,
             ShippingCountry = MockAdress.Country,
