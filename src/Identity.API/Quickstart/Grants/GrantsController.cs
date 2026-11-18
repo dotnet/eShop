@@ -42,23 +42,23 @@ public class GrantsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Revoke(string clientId)
     {
-        await _interaction.RevokeUserConsentAsync(clientId);
-        await _events.RaiseAsync(new GrantsRevokedEvent(User.GetSubjectId(), clientId));
+        await _interaction.RevokeUserConsentAsync(clientId, HttpContext.RequestAborted);
+        await _events.RaiseAsync(new GrantsRevokedEvent(User.GetSubjectId(), clientId), HttpContext.RequestAborted);
 
         return RedirectToAction("Index");
     }
 
     private async Task<GrantsViewModel> BuildViewModelAsync()
     {
-        var grants = await _interaction.GetAllUserGrantsAsync();
+        var grants = await _interaction.GetAllUserGrantsAsync(HttpContext.RequestAborted);
 
         var list = new List<GrantViewModel>();
         foreach (var grant in grants)
         {
-            var client = await _clients.FindClientByIdAsync(grant.ClientId);
+            var client = await _clients.FindClientByIdAsync(grant.ClientId, HttpContext.RequestAborted);
             if (client != null)
             {
-                var resources = await _resources.FindResourcesByScopeAsync(grant.Scopes);
+                var resources = await _resources.FindResourcesByScopeAsync(grant.Scopes, HttpContext.RequestAborted);
 
                 var item = new GrantViewModel()
                 {
