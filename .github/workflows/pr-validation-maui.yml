@@ -20,9 +20,9 @@ jobs:
   test:
     runs-on: windows-latest    
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Setup .NET (global.json)
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@55ec9447dda3d1cf6bd587150f3262f30ee10815 # v3
 
       - name: Update Workloads
         run: dotnet workload update
