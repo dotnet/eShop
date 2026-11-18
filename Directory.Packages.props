@@ -8,16 +8,16 @@
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="17.0.0" />
     <PackageVersion Include="Aspire.Hosting.Dotnet" Version="17.0.0" />
     <PackageVersion Include="Aspire.Hosting.Azure.AppContainers" Version="17.0.0" />
-    <PackageVersion Include="Aspire.Hosting.Foundry" Version="17.0.0-preview.1.26565.2" />
+    <PackageVersion Include="Aspire.Hosting.Foundry" Version="17.0.0-preview.1.26567.5" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="17.0.0" />
     <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="17.0.0" />
     <PackageVersion Include="Aspire.Hosting.Redis" Version="17.0.0" />
     <PackageVersion Include="Aspire.Hosting.Yarp" Version="17.0.0" />
     <PackageVersion Include="Aspire.Npgsql" Version="17.0.0" />
-    <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="17.0.0-preview.1.26565.2" />
+    <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="17.0.0-preview.1.26567.5" />
     <PackageVersion Include="Aspire.RabbitMQ.Client" Version="17.0.0" />
     <PackageVersion Include="Aspire.StackExchange.Redis" Version="17.0.0" />
-    <PackageVersion Include="Aspire.Azure.AI.Extensions.OpenAI" Version="17.0.0-preview.1.26565.2" />
+    <PackageVersion Include="Aspire.Azure.AI.Extensions.OpenAI" Version="17.0.0-preview.1.26567.5" />
     <!-- Version together with Asp.Versioning -->
     <PackageVersion Include="Asp.Versioning.Http" Version="10.2.3" />
     <PackageVersion Include="Asp.Versioning.Http.Client" Version="10.2.0" />
