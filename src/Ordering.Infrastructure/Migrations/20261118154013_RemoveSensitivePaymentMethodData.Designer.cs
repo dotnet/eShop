@@ -12,8 +12,8 @@ using eShop.Ordering.Infrastructure;
 namespace Ordering.Infrastructure.Migrations;
 
 [DbContext(typeof(OrderingContext))]
-[Migration("20261117125854_RemoveSensitivePaymentMethodData")]
-partial class _20261117125854_RemoveSensitivePaymentMethodData
+[Migration("20261118154013_RemoveSensitivePaymentMethodData")]
+partial class _20261118154013_RemoveSensitivePaymentMethodData
 {
     /// <inheritdoc />
     protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -110,11 +110,11 @@ partial class _20261117125854_RemoveSensitivePaymentMethodData
                     .HasColumnType("character varying(200)")
                     .HasColumnName("Alias");
 
-                b.Property<string>("_paymentMethodId")
+                b.Property<string>("_paymentToken")
                     .IsRequired()
                     .HasMaxLength(200)
                     .HasColumnType("character varying(200)")
-                    .HasColumnName("PaymentMethodId");
+                    .HasColumnName("PaymentToken");
 
                 b.HasKey("Id");
 

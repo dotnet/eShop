@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ordering.Infrastructure.Migrations;
 
 /// <inheritdoc />
-public partial class _20261117125854_RemoveSensitivePaymentMethodData : Migration
+public partial class _20261118154013_RemoveSensitivePaymentMethodData : Migration
 {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,6 +24,28 @@ public partial class _20261117125854_RemoveSensitivePaymentMethodData : Migratio
             name: "IX_paymentmethods_CardTypeId",
             schema: "ordering",
             table: "paymentmethods");
+
+        migrationBuilder.AddColumn<string>(
+            name: "PaymentToken",
+            schema: "ordering",
+            table: "paymentmethods",
+            type: "character varying(200)",
+            maxLength: 200,
+            nullable: true);
+
+        migrationBuilder.Sql("UPDATE ordering.paymentmethods SET \"PaymentToken\" = 'legacy-' || \"Id\"::text;");
+
+        migrationBuilder.AlterColumn<string>(
+            name: "PaymentToken",
+            schema: "ordering",
+            table: "paymentmethods",
+            type: "character varying(200)",
+            maxLength: 200,
+            nullable: false,
+            oldClrType: typeof(string),
+            oldType: "character varying(200)",
+            oldMaxLength: 200,
+            oldNullable: true);
 
         migrationBuilder.DropColumn(
             name: "CardNumber",
@@ -44,35 +66,13 @@ public partial class _20261117125854_RemoveSensitivePaymentMethodData : Migratio
             name: "CardHolderName",
             schema: "ordering",
             table: "paymentmethods");
-
-        migrationBuilder.AddColumn<string>(
-            name: "PaymentMethodId",
-            schema: "ordering",
-            table: "paymentmethods",
-            type: "character varying(200)",
-            maxLength: 200,
-            nullable: true);
-
-        migrationBuilder.Sql("UPDATE ordering.paymentmethods SET \"PaymentMethodId\" = 'legacy-' || \"Id\"::text");
-
-        migrationBuilder.AlterColumn<string>(
-            name: "PaymentMethodId",
-            schema: "ordering",
-            table: "paymentmethods",
-            type: "character varying(200)",
-            maxLength: 200,
-            nullable: false,
-            oldClrType: typeof(string),
-            oldType: "character varying(200)",
-            oldMaxLength: 200,
-            oldNullable: true);
     }
 
     /// <inheritdoc />
     protected override void Down(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.DropColumn(
-            name: "PaymentMethodId",
+            name: "PaymentToken",
             schema: "ordering",
             table: "paymentmethods");
 
@@ -100,7 +100,7 @@ public partial class _20261117125854_RemoveSensitivePaymentMethodData : Migratio
             table: "paymentmethods",
             type: "integer",
             nullable: false,
-            defaultValue: 1);
+            defaultValue: 0);
 
         migrationBuilder.AddColumn<DateTime>(
             name: "Expiration",
