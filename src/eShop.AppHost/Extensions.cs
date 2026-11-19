@@ -52,8 +52,17 @@ internal static class Extensions
         IResourceBuilder<DotnetProjectResource> webApp)
     {
         var foundry = builder.AddFoundry("foundry");
-        var chat = foundry.AddDeployment("chatModel", "gpt-4.1-mini", "2025-04-14", "OpenAI");
-        var textEmbedding = foundry.AddDeployment("textEmbeddingModel", "text-embedding-3-small", "1", "OpenAI");
+        var chat = foundry.AddDeployment("chatModel", "gpt-4.1-mini", "2025-04-14", "OpenAI")
+            .WithProperties(d =>
+            {
+                d.SkuName = "GlobalStandard";
+                d.SkuCapacity = 50;
+            });
+        var textEmbedding = foundry.AddDeployment("textEmbeddingModel", "text-embedding-3-small", "1", "OpenAI")
+            .WithProperties(d =>
+            {
+                d.SkuCapacity = 20; // 20k tokens per minute are needed to seed the initial embeddings
+            });
 
         catalogApi.WithReference(textEmbedding).WaitFor(textEmbedding);
         webApp.WithReference(chat).WaitFor(chat);

@@ -10,7 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\eShop.AppHost\eShop.AppHost.csproj" IsAspireProjectResource="false" />
+    <ProjectReference Include="..\..\src\eShop.AppHost\eShop.AppHost.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Shared\RepositoryPaths.cs" Link="Shared\RepositoryPaths.cs" />
   </ItemGroup>
 
 </Project>

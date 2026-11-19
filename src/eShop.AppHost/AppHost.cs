@@ -1,5 +1,4 @@
-﻿using System.IO.Pipes;
-using eShop.AppHost;
+﻿using eShop.AppHost;
 
 var builder = DistributedApplication.CreateBuilder(args);
 

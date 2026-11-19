@@ -3,6 +3,6 @@
     "path": "src/eShop.AppHost/eShop.AppHost.csproj"
   },
   "sdk": {
-    "version": "13.6.0"
+    "version": "17.0.0"
   }
 }
