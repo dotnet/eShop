@@ -185,6 +185,23 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         Assert.Equal("Wanderer Black Hiking Boots", result.Data.ToList().FirstOrDefault().Name);
     }
 
+    [Fact]
+    public async Task GetCatalogItemsWithQuoteInNameIsTreatedAsLiteral()
+    {
+        var _httpClient = CreateHttpClient(new ApiVersion(2.0));
+
+        var response = await _httpClient.GetAsync("api/catalog/items?name=Alpine%27%3B%20DROP%20TABLE%20%22Catalog%22%3B--&PageSize=5&PageIndex=0", TestContext.Current.CancellationToken);
+
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
+        Assert.Equal(0, result.Count);
+
+        // The table must still be intact
+        var check = await _httpClient.GetAsync("api/catalog/items?name=Alpine&PageSize=5&PageIndex=0", TestContext.Current.CancellationToken);
+        check.EnsureSuccessStatusCode();
+    }
+
     [Theory]
     [InlineData(1.0)]
     [InlineData(2.0)]
