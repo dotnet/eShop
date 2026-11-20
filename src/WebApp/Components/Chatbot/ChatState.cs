@@ -136,6 +136,12 @@ public class ChatState
     [Description("Adds a product to the user's shopping cart.")]
     private async Task<string> AddToCart([Description("The id of the product to add to the shopping cart (basket)")] int itemId)
     {
+        // The basket of a user who is not logged in lives in the session, which can't be written to from here
+        if (_user.Identity?.IsAuthenticated != true)
+        {
+            return "Unable to add an item to the cart. You must be logged in.";
+        }
+
         try
         {
             var item = await _catalogService.GetCatalogItem(itemId);
