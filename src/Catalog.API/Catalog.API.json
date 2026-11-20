@@ -1,5 +1,5 @@
 {
-  "openapi": "3.1.1",
+  "openapi": "3.2.0",
   "info": {
     "title": "eShop - Catalog HTTP API",
     "description": "The Catalog Microservice HTTP API. This is a Data-Driven/CRUD microservice sample",
@@ -38,8 +38,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "1.0"
+              "enum": [
+                "1.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -96,8 +98,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "1.0"
+              "enum": [
+                "1.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -112,18 +116,18 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found"
-          },
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       },
@@ -152,8 +156,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "1.0"
+              "enum": [
+                "1.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -193,15 +199,14 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "1.0"
+              "enum": [
+                "1.0"
+              ],
+              "type": "string"
             }
           }
         ],
         "responses": {
-          "404": {
-            "description": "Not Found"
-          },
           "200": {
             "description": "OK",
             "content": {
@@ -266,6 +271,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -317,8 +325,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "1.0"
+              "enum": [
+                "1.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -351,8 +361,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "1.0"
+              "enum": [
+                "1.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -398,8 +410,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "1.0"
+              "enum": [
+                "1.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -445,8 +459,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "1.0"
+              "enum": [
+                "1.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -518,8 +534,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "1.0"
+              "enum": [
+                "1.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -560,8 +578,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "1.0"
+              "enum": [
+                "1.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -582,7 +602,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
                 }
@@ -592,7 +612,7 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
                 }
@@ -655,8 +675,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "1.0"
+              "enum": [
+                "1.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -737,8 +759,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "1.0"
+              "enum": [
+                "1.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -837,8 +861,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "1.0"
+              "enum": [
+                "1.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -923,8 +949,10 @@
             "description": "The API version, in the format 'major.minor'.",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "1.0"
+              "enum": [
+                "1.0"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -1242,19 +1270,19 @@
   },
   "tags": [
     {
-      "name": "Items"
+      "name": "Brands"
     },
     {
       "name": "Catalog"
     },
     {
-      "name": "Types"
-    },
-    {
-      "name": "Brands"
+      "name": "Items"
     },
     {
       "name": "Search"
+    },
+    {
+      "name": "Types"
     }
   ]
 }

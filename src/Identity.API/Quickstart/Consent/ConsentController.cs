@@ -52,7 +52,7 @@ public class ConsentController : Controller
 
         if (result.IsRedirect)
         {
-            var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+            var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl, HttpContext.RequestAborted);
             if (context?.IsNativeClient() == true)
             {
                 // The client is native, so this change in how to
@@ -84,7 +84,7 @@ public class ConsentController : Controller
         var result = new ProcessConsentResult();
 
         // validate return url is still valid
-        var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+        var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl, HttpContext.RequestAborted);
         if (request == null) return result;
 
         ConsentResponse grantedConsent = null;
@@ -92,10 +92,10 @@ public class ConsentController : Controller
         // user clicked 'no' - send back the standard 'access_denied' response
         if (model?.Button == "no")
         {
-            grantedConsent = new ConsentResponse { Error = AuthorizationError.AccessDenied };
+            grantedConsent = new ConsentResponse { Error = InteractionError.AccessDenied };
 
             // emit event
-            await _events.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues));
+            await _events.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues), HttpContext.RequestAborted);
         }
         // user clicked 'yes' - validate the data
         else if (model?.Button == "yes")
@@ -117,7 +117,7 @@ public class ConsentController : Controller
                 };
 
                 // emit event
-                await _events.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues, grantedConsent.ScopesValuesConsented, grantedConsent.RememberConsent));
+                await _events.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues, grantedConsent.ScopesValuesConsented, grantedConsent.RememberConsent), HttpContext.RequestAborted);
             }
             else
             {
@@ -132,7 +132,7 @@ public class ConsentController : Controller
         if (grantedConsent != null)
         {
             // communicate outcome of consent back to identityserver
-            await _interaction.GrantConsentAsync(request, grantedConsent);
+            await _interaction.GrantConsentAsync(request, grantedConsent, HttpContext.RequestAborted);
 
             // indicate that's it ok to redirect back to authorization endpoint
             result.RedirectUri = model.ReturnUrl;
@@ -149,7 +149,7 @@ public class ConsentController : Controller
 
     private async Task<ConsentViewModel> BuildViewModelAsync(string returnUrl, ConsentInputModel model = null)
     {
-        var request = await _interaction.GetAuthorizationContextAsync(returnUrl);
+        var request = await _interaction.GetAuthorizationContextAsync(returnUrl, HttpContext.RequestAborted);
         if (request != null)
         {
             return CreateConsentViewModel(model, returnUrl, request);

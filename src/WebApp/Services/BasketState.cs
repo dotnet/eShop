@@ -111,8 +111,11 @@ public class BasketState(
     private Task NotifyChangeSubscribersAsync()
         => Task.WhenAll(_changeSubscriptions.Select(s => s.NotifyAsync()));
 
+    // The authentication state is read on demand for each operation and never cached, so it can't go stale.
+#pragma warning disable BL0013
     private async Task<ClaimsPrincipal> GetUserAsync()
         => (await authenticationStateProvider.GetAuthenticationStateAsync()).User;
+#pragma warning restore BL0013
 
     private Task<IReadOnlyCollection<BasketItem>> FetchBasketItemsAsync()
     {

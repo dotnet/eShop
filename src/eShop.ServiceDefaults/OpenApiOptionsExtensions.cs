@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
 using Microsoft.OpenApi;
 using System.Text.Json.Nodes;
@@ -13,17 +12,10 @@ namespace eShop.ServiceDefaults;
 
 internal static class OpenApiOptionsExtensions
 {
-    public static OpenApiOptions ApplyApiVersionInfo(this OpenApiOptions options, string title, string description)
+    public static OpenApiOptions ApplyApiVersionInfo(this OpenApiOptions options, ApiVersionDescription apiDescription, string title, string description)
     {
         options.AddDocumentTransformer((document, context, cancellationToken) =>
         {
-            var versionedDescriptionProvider = context.ApplicationServices.GetService<IApiVersionDescriptionProvider>();
-            var apiDescription = versionedDescriptionProvider?.ApiVersionDescriptions
-                .SingleOrDefault(description => description.GroupName == context.DocumentName);
-            if (apiDescription is null)
-            {
-                return Task.CompletedTask;
-            }
             document.Info.Version = apiDescription.ApiVersion.ToString();
             document.Info.Title = title;
             document.Info.Description = BuildDescription(apiDescription, description);
@@ -154,9 +146,9 @@ internal static class OpenApiOptionsExtensions
         {
             // Add an example for the API version parameter and remove the default value
             var apiVersionParameter = operation.Parameters?.FirstOrDefault(p => p.Name == "api-version");
-            if (apiVersionParameter?.Schema is OpenApiSchema targetSchema)
+            if (apiVersionParameter?.Schema is OpenApiSchema { Default: { }} targetSchema)
             {
-                targetSchema.Example = targetSchema.Default;
+                targetSchema.Examples = [targetSchema.Default];
                 targetSchema.Default = null;
             }
             return Task.CompletedTask;

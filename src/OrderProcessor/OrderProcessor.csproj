@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net11.0</TargetFramework>
     <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
     <PublishAot Condition="'$(EnableAotPublishing)' == 'true'">true</PublishAot>
   </PropertyGroup>

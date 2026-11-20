@@ -14,18 +14,18 @@ public partial class LoginViewModel : ViewModelBase
     private readonly IOpenUrlService _openUrlService;
     private readonly ISettingsService _settingsService;
 
-    [ObservableProperty] private bool _isLogin;
+    [ObservableProperty] public partial bool IsLogin { get; set; }
 
-    [ObservableProperty] private bool _isMock;
+    [ObservableProperty] public partial bool IsMock { get; set; }
 
     [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(MockSignInCommand))]
-    private bool _isValid;
+    public partial bool IsValid { get; set; }
 
-    [ObservableProperty] private string _loginUrl;
+    [ObservableProperty] public partial string LoginUrl { get; set; }
 
-    [ObservableProperty] private ValidatableObject<string> _password = new();
+    [ObservableProperty] public partial ValidatableObject<string> Password { get; set; } = new();
 
-    [ObservableProperty] private ValidatableObject<string> _userName = new();
+    [ObservableProperty] public partial ValidatableObject<string> UserName { get; set; } = new();
 
     public LoginViewModel(
         IOpenUrlService openUrlService, IAppEnvironmentService appEnvironmentService,

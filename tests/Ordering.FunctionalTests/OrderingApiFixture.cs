@@ -1,6 +1,7 @@
 ﻿using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
-
+using Aspire.Hosting.Dotnet;
+using eShop.Tests.Shared;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Hosting;
 
@@ -12,7 +13,7 @@ public sealed class OrderingApiFixture : WebApplicationFactory<Program>, IAsyncL
 
     public IResourceBuilder<PostgresServerResource> Postgres { get; private set; }
     public IResourceBuilder<PostgresServerResource> IdentityDB { get; private set; }
-    public IResourceBuilder<ProjectResource> IdentityApi { get; private set; }
+    public IResourceBuilder<DotnetProjectResource> IdentityApi { get; private set; }
 
     private string _postgresConnectionString;
 
@@ -22,7 +23,7 @@ public sealed class OrderingApiFixture : WebApplicationFactory<Program>, IAsyncL
         var appBuilder = DistributedApplication.CreateBuilder(options);
         Postgres = appBuilder.AddPostgres("OrderingDB");
         IdentityDB = appBuilder.AddPostgres("IdentityDB");
-        IdentityApi = appBuilder.AddProject<Projects.Identity_API>("identity-api").WithReference(IdentityDB);
+        IdentityApi = appBuilder.AddDotnetProject("identity-api", RepositoryPaths.ProjectPath("Identity.API", "Identity.API.csproj")).WithReference(IdentityDB);
         _app = appBuilder.Build();
     }
 
