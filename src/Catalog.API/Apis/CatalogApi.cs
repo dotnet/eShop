@@ -142,7 +142,9 @@ public static class CatalogApi
 
         if (name is not null)
         {
-            root = root.Where(c => c.Name.StartsWith(name));
+            // Case-insensitive prefix search via raw SQL (Postgres ILIKE)
+            root = services.Context.CatalogItems
+                .FromSqlRaw($"SELECT * FROM \"Catalog\" WHERE \"Name\" ILIKE '{name}%'");
         }
         if (type is { Length: > 0 })
         {
