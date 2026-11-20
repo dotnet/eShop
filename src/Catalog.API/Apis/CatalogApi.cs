@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.FileProviders;
 using Pgvector.EntityFrameworkCore;
 
 namespace eShop.Catalog.API;
@@ -247,25 +248,28 @@ public static class CatalogApi
     [ProducesResponseType<byte[]>(StatusCodes.Status200OK, "application/octet-stream",
         [ "image/png", "image/gif", "image/jpeg", "image/bmp", "image/tiff",
           "image/wmf", "image/jp2", "image/svg+xml", "image/webp" ])]
-    public static async Task<Results<PhysicalFileHttpResult,NotFound>> GetItemPictureById(
+    public static async Task<Results<FileStreamHttpResult, NotFound>> GetItemPictureById(
         CatalogContext context,
-        IWebHostEnvironment environment,
+        [FromKeyedServices("pics")] IFileProvider pictureFileProvider,
         [Description("The catalog item id")] int id)
     {
         var item = await context.CatalogItems.FindAsync(id);
 
-        if (item is null || item.PictureFileName is null)
+        if (item?.PictureFileName is not { } pictureFileName)
         {
             return TypedResults.NotFound();
         }
 
-        var path = GetFullPath(environment.ContentRootPath, item.PictureFileName);
+        var picture = pictureFileProvider.GetFileInfo(pictureFileName);
+        if (!picture.Exists)
+        {
+            return TypedResults.NotFound();
+        }
 
-        string imageFileExtension = Path.GetExtension(item.PictureFileName) ?? string.Empty;
+        string imageFileExtension = Path.GetExtension(pictureFileName) ?? string.Empty;
         string mimetype = GetImageMimeTypeFromImageFileExtension(imageFileExtension);
-        DateTime lastModified = File.GetLastWriteTimeUtc(path);
 
-        return TypedResults.PhysicalFile(path, mimetype, lastModified: lastModified);
+        return TypedResults.File(picture.CreateReadStream(), mimetype, lastModified: picture.LastModified);
     }
 
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
@@ -436,7 +440,7 @@ public static class CatalogApi
         [AsParameters] CatalogServices services,
         [Description("The id of the catalog item to delete")] int id)
     {
-        var item = services.Context.CatalogItems.SingleOrDefault(x => x.Id == id);
+        var item = await services.Context.CatalogItems.SingleOrDefaultAsync(x => x.Id == id);
 
         if (item is null)
         {
@@ -461,7 +465,4 @@ public static class CatalogApi
         ".webp" => "image/webp",
         _ => "application/octet-stream",
     };
-
-    public static string GetFullPath(string contentRootPath, string pictureFileName) =>
-        Path.Combine(contentRootPath, "Pics", pictureFileName);
 }

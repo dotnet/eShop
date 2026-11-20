@@ -14,9 +14,11 @@ internal static class Extensions
         // The DbContext of type 'OrderingContext' cannot be pooled because it does not have a public constructor accepting a single parameter of type DbContextOptions or has more than one constructor.
         services.AddDbContext<OrderingContext>(options =>
         {
-            options.UseNpgsql(builder.Configuration.GetConnectionString("orderingdb"));
+            options.UseNpgsql(builder.Configuration.GetConnectionString("orderingdb"), npgsqlOptions => npgsqlOptions.EnableRetryOnFailure());
         });
-        builder.EnrichNpgsqlDbContext<OrderingContext>();
+        // Retries are configured above instead of by Aspire because Aspire.Npgsql.EntityFrameworkCore.PostgreSQL 13.x
+        // references NpgsqlExecutionStrategy, which was removed in Npgsql.EntityFrameworkCore.PostgreSQL 11.
+        builder.EnrichNpgsqlDbContext<OrderingContext>(settings => settings.DisableRetry = true);
 
         services.AddMigration<OrderingContext, OrderingContextSeed>();
 

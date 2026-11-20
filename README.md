@@ -8,7 +8,7 @@ A reference .NET application implementing an e-commerce website using a services
 
 ## Getting Started
 
-This version of eShop is based on .NET 10.
+This version of eShop is based on .NET 11.
 
 Previous eShop versions:
 
@@ -16,7 +16,7 @@ Previous eShop versions:
 
 ### Prerequisites
 
-1. Install a [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) that satisfies [`global.json`](global.json).
+1. Install a [.NET 11 SDK](https://dotnet.microsoft.com/download/dotnet/11.0) that satisfies [`global.json`](global.json).
 2. Install the [Aspire CLI](https://aspire.dev/get-started/install-cli/) and verify that it is available:
 
     ```console
