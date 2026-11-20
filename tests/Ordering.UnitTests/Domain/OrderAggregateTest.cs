@@ -114,15 +114,11 @@ public class OrderAggregateTest
         var state = "fakeState";
         var country = "fakeCountry";
         var zipcode = "FakeZipCode";
-        var cardTypeId = 5;
-        var cardNumber = "12";
-        var cardSecurityNumber = "123";
-        var cardHolderName = "FakeName";
-        var cardExpiration = DateTime.UtcNow.AddYears(1);
+        var paymentToken = "pm_test_123";
         var expectedResult = 1;
 
         //Act 
-        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
+        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), paymentToken);
 
         //Assert
         Assert.HasCount(expectedResult, fakeOrder.DomainEvents);
@@ -137,16 +133,12 @@ public class OrderAggregateTest
         var state = "fakeState";
         var country = "fakeCountry";
         var zipcode = "FakeZipCode";
-        var cardTypeId = 5;
-        var cardNumber = "12";
-        var cardSecurityNumber = "123";
-        var cardHolderName = "FakeName";
-        var cardExpiration = DateTime.UtcNow.AddYears(1);
+        var paymentToken = "pm_test_123";
         var expectedResult = 2;
 
         //Act 
-        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
-        fakeOrder.AddDomainEvent(new OrderStartedDomainEvent(fakeOrder, "fakeName", "1", cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration));
+        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), paymentToken);
+        fakeOrder.AddDomainEvent(new OrderStartedDomainEvent(fakeOrder, "fakeName", "1", paymentToken));
         //Assert
         Assert.HasCount(expectedResult, fakeOrder.DomainEvents);
     }
@@ -160,13 +152,9 @@ public class OrderAggregateTest
         var state = "fakeState";
         var country = "fakeCountry";
         var zipcode = "FakeZipCode";
-        var cardTypeId = 5;
-        var cardNumber = "12";
-        var cardSecurityNumber = "123";
-        var cardHolderName = "FakeName";
-        var cardExpiration = DateTime.UtcNow.AddYears(1);
-        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
-        var @fakeEvent = new OrderStartedDomainEvent(fakeOrder, "1", "fakeName", cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
+        var paymentToken = "pm_test_123";
+        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), paymentToken);
+        var @fakeEvent = new OrderStartedDomainEvent(fakeOrder, "1", "fakeName", paymentToken);
         var expectedResult = 1;
 
         //Act         

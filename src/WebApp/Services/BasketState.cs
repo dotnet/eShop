@@ -97,11 +97,7 @@ public class BasketState(
             State: checkoutInfo.State!,
             Country: checkoutInfo.Country!,
             ZipCode: checkoutInfo.ZipCode!,
-            CardNumber: "1111222233334444",
-            CardHolderName: "TESTUSER",
-            CardExpiration: DateTime.UtcNow.AddYears(1),
-            CardSecurityNumber: "111",
-            CardTypeId: checkoutInfo.CardTypeId,
+            PaymentToken: "pm_sample_visa",
             Buyer: buyerId,
             Items: [.. orderItems]);
         await orderingService.CreateOrder(request, checkoutInfo.RequestId);
@@ -166,10 +162,6 @@ public record CreateOrderRequest(
     string State,
     string Country,
     string ZipCode,
-    string CardNumber,
-    string CardHolderName,
-    DateTime CardExpiration,
-    string CardSecurityNumber,
-    int CardTypeId,
+    string PaymentToken,
     string Buyer,
     List<BasketItem> Items);

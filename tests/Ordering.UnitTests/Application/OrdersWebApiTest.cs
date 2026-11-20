@@ -139,22 +139,6 @@ public class OrdersWebApiTest
     }
 
     [TestMethod]
-    public async Task Get_cardTypes_success()
-    {
-        // Arrange
-        var fakeDynamicResult = Enumerable.Empty<CardType>();
-        _orderQueriesMock.GetCardTypesAsync()
-            .Returns(Task.FromResult(fakeDynamicResult));
-
-        // Act
-        var result = await OrdersApi.GetCardTypesAsync(_orderQueriesMock);
-
-        // Assert
-        Assert.IsInstanceOfType<Ok<IEnumerable<CardType>>>(result);
-        Assert.AreSame(fakeDynamicResult, result.Value);
-    }
-
-    [TestMethod]
     public async Task Cancel_order_returns_problem_when_command_fails()
     {
         _mediatorMock.Send(Arg.Any<IdentifiedCommand<CancelOrderCommand, bool>>(), default)

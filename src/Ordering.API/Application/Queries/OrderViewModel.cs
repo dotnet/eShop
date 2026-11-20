@@ -30,9 +30,3 @@ public record OrderSummary
     public string Status { get; init; }
     public double Total { get; init; }
 }
-
-public record CardType
-{
-    public int Id { get; init; }
-    public string Name { get; init; }
-}
