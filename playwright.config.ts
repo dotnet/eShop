@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-require("dotenv").config({ path: "./.env" });
+require('dotenv').config({ path: './.env', quiet: true });
 import path from 'path';
 
 export const STORAGE_STATE = path.join(__dirname, 'playwright/.auth/user.json');
@@ -9,16 +9,15 @@ export const STORAGE_STATE = path.join(__dirname, 'playwright/.auth/user.json');
  */
 export default defineConfig({
   testDir: './e2e',
-  /* Run tests in files in parallel */
-  fullyParallel: true,
+  /* Seeded users share server-side basket state, so UI journeys run serially. */
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [['html', { open: 'never' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -37,7 +36,7 @@ export default defineConfig({
     },
     {
       name: 'e2e tests logged in',
-      testMatch: ['**/AddItemTest.spec.ts', '**/RemoveItemTest.spec.ts'],
+      testMatch: ['**/CartTest.spec.ts', '**/CheckoutTest.spec.ts'],
       dependencies: ['setup'],
       use: {
         storageState: STORAGE_STATE,

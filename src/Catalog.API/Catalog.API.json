@@ -270,6 +270,72 @@
         }
       }
     },
+    "/api/catalog/items/facets": {
+      "get": {
+        "tags": [
+          "Items"
+        ],
+        "summary": "Get catalog facet counts",
+        "description": "Get per-brand and per-type item counts for the current filter selection, used to drive the catalog filter badges without transferring every item to the client.",
+        "operationId": "GetCatalogFacets",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "description": "The types the counts should be evaluated within. Repeat the parameter to include multiple types.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "pattern": "^-?(?:0|[1-9]\\d*)$",
+                "type": [
+                  "integer",
+                  "string"
+                ],
+                "format": "int32"
+              }
+            }
+          },
+          {
+            "name": "brand",
+            "in": "query",
+            "description": "The brands the counts should be evaluated within. Repeat the parameter to include multiple brands.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "pattern": "^-?(?:0|[1-9]\\d*)$",
+                "type": [
+                  "integer",
+                  "string"
+                ],
+                "format": "int32"
+              }
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The API version, in the format 'major.minor'.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "1.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogFacets"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/catalog/catalogtypes": {
       "get": {
         "tags": [
@@ -905,6 +971,70 @@
           },
           "brand": {
             "type": "string"
+          }
+        }
+      },
+      "CatalogFacetCount": {
+        "required": [
+          "id",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "count": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "CatalogFacets": {
+        "required": [
+          "brandCounts",
+          "typeCounts",
+          "brandTotal",
+          "typeTotal"
+        ],
+        "type": "object",
+        "properties": {
+          "brandCounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CatalogFacetCount"
+            }
+          },
+          "typeCounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CatalogFacetCount"
+            }
+          },
+          "brandTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "typeTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },

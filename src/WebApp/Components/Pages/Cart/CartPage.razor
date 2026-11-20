@@ -11,13 +11,21 @@
 <div class='cart'>
     @if (basketItems is null)
     {
-        <p>Loading...</p>
+        <p class="cart-empty">Loading...</p>
     }
     else if (basketItems.Count == 0)
     {
-        <p>
-            Your shopping bag is empty. <a href="">Continue shopping.</a>
-        </p>
+        <div class="cart-empty">
+            <span class="cart-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 16h24l-2 22H14z" />
+                    <path d="M18 16v-2a6 6 0 0 1 12 0v2" />
+                </svg>
+            </span>
+            <h2>Your shopping bag is empty</h2>
+            <p>Browse the catalog and add the gear you love. Anything you add shows up here, ready to check out.</p>
+            <a class="button button-primary" href="/">Start shopping</a>
+        </div>
     }
     else
     {
@@ -35,24 +43,40 @@
                         <img alt="@item.ProductName" src="@ProductImages.GetProductImageUrl(item.ProductId)" />
                         <div class="catalog-item-content">
                             <p class="name">@item.ProductName</p>
-                            <p class="price">$@item.UnitPrice.ToString("0.00")</p>
+                            <p class="price">$@item.UnitPrice.ToPriceDisplay()</p>
                         </div>
                     </div>
                     <div class="catalog-item-quantity">
-                        <form method="post" data-enhance>
+                        <form method="post" data-enhance class="cart-quantity">
                             <input type="hidden" name="_handler" value="update-cart" />
                             <AntiforgeryToken />
-                            <input aria-label="product quantity" type="number" name="UpdateQuantityValue" value="@quantity" min="0" />
-                            <button type="submit" 
-                                    class="button button-secondary"
-                                    name="UpdateQuantityId" 
-                                    value="@item.ProductId">
-                                Update
+                            <input type="hidden" name="UpdateQuantityId" value="@item.ProductId" />
+                            <button type="submit" class="cart-quantity-apply" name="UpdateQuantityValue" value="@quantity" data-cart-quantity-apply tabindex="-1" aria-hidden="true">Apply</button>
+
+                            <div class="quantity-stepper">
+                                <button type="submit" class="quantity-step" name="UpdateQuantityValue" value="@(quantity - 1)"
+                                        aria-label="Decrease quantity of @item.ProductName" disabled="@(quantity <= 1)">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /></svg>
+                                </button>
+                                <input class="quantity-value" type="number" min="1" inputmode="numeric"
+                                       value="@quantity" aria-label="Quantity of @item.ProductName" data-cart-quantity-input />
+                                <button type="submit" class="quantity-step" name="UpdateQuantityValue" value="@(quantity + 1)"
+                                        aria-label="Increase quantity of @item.ProductName">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                                </button>
+                            </div>
+
+                            <button type="submit" class="cart-remove" name="UpdateQuantityValue" value="0"
+                                    aria-label="Remove @item.ProductName from your bag">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13" />
+                                </svg>
+                                <span>Remove</span>
                             </button>
                         </form>
                     </div>
                     <div class="catalog-item-total">
-                        $@((item.UnitPrice * quantity).ToString("0.00"))
+                        $@((item.UnitPrice * quantity).ToPriceDisplay())
                     </div>
                 </div>
             }
@@ -68,7 +92,7 @@
                 </div>
                 <div class="cart-summary-total">
                     <div>Total</div>
-                    <div>$@TotalPrice?.ToString("0.00")</div>
+                    <div>$@TotalPrice?.ToPriceDisplay()</div>
                 </div>
                 <a href="checkout" class="button button-primary">Check out</a>
                 <a href="" class="cart-summary-link">

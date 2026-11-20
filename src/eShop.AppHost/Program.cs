@@ -3,6 +3,7 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 builder.AddForwardedHeaders();
+builder.AddAzureContainerAppEnvironment("aca");
 
 var redis = builder.AddRedis("redis");
 var rabbitMq = builder.AddRabbitMQ("eventbus")
@@ -76,11 +77,11 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
     .WaitFor(identityApi)
     .WithEnvironment("IdentityUrl", identityEndpoint);
 
-// set to true if you want to use OpenAI
-bool useOpenAI = false;
-if (useOpenAI)
+// Set UseFoundry=true to provision Microsoft Foundry for chat and embeddings.
+bool useFoundry = Extensions.IsFoundryEnabled(builder.Configuration);
+if (useFoundry)
 {
-    builder.AddOpenAI(catalogApi, webApp, OpenAITarget.OpenAI); // set to AzureOpenAI if you want to use Azure OpenAI
+    builder.AddFoundry(catalogApi, webApp);
 }
 
 bool useOllama = false;

@@ -153,4 +153,30 @@ public class OrdersWebApiTest
         Assert.IsInstanceOfType<Ok<IEnumerable<CardType>>>(result);
         Assert.AreSame(fakeDynamicResult, result.Value);
     }
+
+    [TestMethod]
+    public async Task Cancel_order_returns_problem_when_command_fails()
+    {
+        _mediatorMock.Send(Arg.Any<IdentifiedCommand<CancelOrderCommand, bool>>(), default)
+            .Returns(Task.FromResult(false));
+        var services = new OrderServices(_mediatorMock, _orderQueriesMock, _identityServiceMock, _loggerMock);
+
+        var result = await OrdersApi.CancelOrderAsync(Guid.NewGuid(), new CancelOrderCommand(1), services);
+
+        var problem = Assert.IsInstanceOfType<ProblemHttpResult>(result.Result);
+        Assert.AreEqual(500, problem.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task Ship_order_returns_problem_when_command_fails()
+    {
+        _mediatorMock.Send(Arg.Any<IdentifiedCommand<ShipOrderCommand, bool>>(), default)
+            .Returns(Task.FromResult(false));
+        var services = new OrderServices(_mediatorMock, _orderQueriesMock, _identityServiceMock, _loggerMock);
+
+        var result = await OrdersApi.ShipOrderAsync(Guid.NewGuid(), new ShipOrderCommand(1), services);
+
+        var problem = Assert.IsInstanceOfType<ProblemHttpResult>(result.Result);
+        Assert.AreEqual(500, problem.StatusCode);
+    }
 }

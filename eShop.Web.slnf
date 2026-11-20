@@ -20,9 +20,13 @@
       "src\\eShop.AppHost\\eShop.AppHost.csproj",
       "src\\eShop.ServiceDefaults\\eShop.ServiceDefaults.csproj",
       "tests\\Basket.UnitTests\\Basket.UnitTests.csproj",
+      "tests\\Basket.FunctionalTests\\Basket.FunctionalTests.csproj",
+      "tests\\Application.UnitTests\\Application.UnitTests.csproj",
       "tests\\Catalog.FunctionalTests\\Catalog.FunctionalTests.csproj",
       "tests\\Ordering.FunctionalTests\\Ordering.FunctionalTests.csproj",
-      "tests\\Ordering.UnitTests\\Ordering.UnitTests.csproj"
+      "tests\\Ordering.UnitTests\\Ordering.UnitTests.csproj",
+      "tests\\Webhooks.FunctionalTests\\Webhooks.FunctionalTests.csproj",
+      "tests\\eShop.AppHost.UnitTests\\eShop.AppHost.UnitTests.csproj"
     ]
   }
 }

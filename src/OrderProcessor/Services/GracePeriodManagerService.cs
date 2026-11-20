@@ -1,6 +1,5 @@
 ﻿using eShop.EventBus.Abstractions;
 using Microsoft.Extensions.Options;
-using Npgsql;
 using eShop.OrderProcessor.Events;
 
 namespace eShop.OrderProcessor.Services
@@ -9,7 +8,7 @@ namespace eShop.OrderProcessor.Services
         IOptions<BackgroundTaskOptions> options,
         IEventBus eventBus,
         ILogger<GracePeriodManagerService> logger,
-        NpgsqlDataSource dataSource) : BackgroundService
+        IGracePeriodOrdersRepository repository) : BackgroundService
     {
         private readonly BackgroundTaskOptions _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
 
@@ -30,7 +29,7 @@ namespace eShop.OrderProcessor.Services
                     logger.LogDebug("GracePeriodManagerService background task is doing background work.");
                 }
 
-                await CheckConfirmedGracePeriodOrders();
+                await CheckConfirmedGracePeriodOrders(stoppingToken);
 
                 await Task.Delay(delayTime, stoppingToken);
             }
@@ -41,14 +40,16 @@ namespace eShop.OrderProcessor.Services
             }
         }
 
-        private async Task CheckConfirmedGracePeriodOrders()
+        internal async Task CheckConfirmedGracePeriodOrders(CancellationToken cancellationToken = default)
         {
             if (logger.IsEnabled(LogLevel.Debug))
             {
                 logger.LogDebug("Checking confirmed grace period orders");
             }
 
-            var orderIds = await GetConfirmedGracePeriodOrders();
+            var orderIds = await repository.GetConfirmedGracePeriodOrdersAsync(
+                TimeSpan.FromMinutes(_options.GracePeriodTime),
+                cancellationToken);
 
             foreach (var orderId in orderIds)
             {
@@ -60,36 +61,5 @@ namespace eShop.OrderProcessor.Services
             }
         }
 
-        private async ValueTask<List<int>> GetConfirmedGracePeriodOrders()
-        {
-            try
-            {
-                using var conn = dataSource.CreateConnection();
-                using var command = conn.CreateCommand();
-                command.CommandText = """
-                    SELECT "Id"
-                    FROM ordering.orders
-                    WHERE CURRENT_TIMESTAMP - "OrderDate" >= @GracePeriodTime AND "OrderStatus" = 'Submitted'
-                    """;
-                command.Parameters.AddWithValue("GracePeriodTime", TimeSpan.FromMinutes(_options.GracePeriodTime));
-
-                List<int> ids = [];
-
-                await conn.OpenAsync();
-                using var reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    ids.Add(reader.GetInt32(0));
-                }
-
-                return ids;
-            }
-            catch (NpgsqlException exception)
-            {
-                logger.LogError(exception, "Fatal error establishing database connection");
-            }
-
-            return [];
-        }
     }
 }

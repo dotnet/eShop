@@ -1,19 +1,77 @@
-﻿.cart-badge {
-    display: flex;
-    padding: 0.25rem;
-    flex-direction: column;
-    justify-content: center;
+/* Cart affordance.
+   When the bag has items it becomes a solid ink pill with the count set inline
+   next to the glyph, so the number never overlaps the icon the way the old
+   corner badge did. Empty, it stays a ghost icon-button that matches the account
+   control. The filled pill also reads as the primary commerce action in the bar. */
+.cart-button {
+    display: inline-flex;
     align-items: center;
-    gap: 0.25rem;
-    position: absolute;
-    right: -0.5rem;
-    top: 1rem;
-    border-radius: 20px;
-    border: 1px solid #000;
-    background: #000;
-    color: #FFF;
-    font-size: 0.75rem;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 0.25rem;
+    gap: 0.45rem;
+    height: 2.75rem;
+    padding: 0 0.95rem 0 0.85rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-ink);
+    border: 1px solid var(--color-ink);
+    color: #fff;
+    text-decoration: none;
+    transition: background-color var(--dur-2) var(--ease),
+                border-color var(--dur-2) var(--ease),
+                transform var(--dur-1) var(--ease);
+}
+
+.cart-button:hover {
+    background: var(--color-ink-2);
+    border-color: var(--color-ink-2);
+}
+
+.cart-button:active {
+    transform: translateY(1px);
+}
+
+.cart-button:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+.cart-button-icon {
+    display: block;
+    width: 1.35rem;
+    height: 1.35rem;
+    /* Recolour the black stroke SVG to white for the dark pill. */
+    filter: brightness(0) invert(1);
+}
+
+.cart-button-count {
+    display: inline-block;
+    min-width: 0.75rem;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+}
+
+/* The count element is re-keyed on quantity change, so this replays as a small
+   confirmation each time the bag total changes. Motivated: state-change feedback. */
+@media (prefers-reduced-motion: no-preference) {
+    .cart-button-count {
+        animation: cart-count-bump var(--dur-3) var(--ease);
+    }
+
+    @keyframes cart-count-bump {
+        0% {
+            transform: scale(0.55);
+            opacity: 0;
+        }
+
+        60% {
+            transform: scale(1.14);
+            opacity: 1;
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
 }

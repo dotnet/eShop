@@ -5,13 +5,19 @@
 @inject NavigationManager NavigationManager
 @implements IDisposable
 
-<a aria-label="cart" href="cart">
-    <img role="presentation" src="icons/cart.svg" />
-    @if (basketItems?.Count > 0)
-    {
-        <span class="cart-badge">@TotalQuantity</span>
-    }
-</a>
+@if (TotalQuantity is int qty && qty > 0)
+{
+    <a class="cart-button" aria-label="@AriaLabel" href="cart">
+        <img class="cart-button-icon" role="presentation" src="icons/cart.svg" />
+        <span class="cart-button-count" @key="qty">@(qty > 99 ? "99+" : qty.ToString())</span>
+    </a>
+}
+else
+{
+    <a class="icon-button" aria-label="Shopping bag" href="cart">
+        <img role="presentation" src="icons/cart.svg" />
+    </a>
+}
 
 @code {
     IDisposable? basketStateSubscription;
@@ -21,6 +27,8 @@
     public HttpContext? HttpContext { get; set; }
 
     private int? TotalQuantity => basketItems?.Sum(i => i.Quantity);
+
+    private string AriaLabel => $"Shopping bag, {TotalQuantity} item{(TotalQuantity == 1 ? "" : "s")}";
 
     protected override async Task OnInitializedAsync()
     {

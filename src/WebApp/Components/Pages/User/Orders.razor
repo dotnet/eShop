@@ -10,11 +10,21 @@
 <div class="orders">
 @if (orders is null)
 {
-    <p>Loading...</p>
+    <p class="orders-loading" role="status">Loading your orders...</p>
 }
 else if (orders.Length == 0)
 {
-    <p>You haven't yet placed any orders.</p>
+    <div class="orders-empty">
+        <span class="orders-empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 16h24l-2 22H14z" />
+                <path d="M18 16v-2a6 6 0 0 1 12 0v2" />
+            </svg>
+        </span>
+        <h2>No orders yet</h2>
+        <p>When you place an order, it shows up here with its status and total.</p>
+        <a class="button button-primary" href="/">Start shopping</a>
+    </div>
 }
 else
 {
@@ -35,7 +45,7 @@ else
                     @order.Date
                 </div>
                 <div class="order-total">
-                   $@order.Total.ToString("0.00")
+                   $@order.Total.ToPriceDisplay()
                 </div>
                 <div class="order-status">
                     <span class="status @order.Status.ToLower()">

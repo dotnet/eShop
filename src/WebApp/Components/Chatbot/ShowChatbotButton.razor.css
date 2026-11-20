@@ -1,30 +1,301 @@
-﻿.show-chatbot {
+.show-chatbot {
+    /* Persistent floating launcher. It floats at the bottom-right corner while the
+       page scrolls, then DOCKS onto the content/footer divider as the footer rises
+       into view, so on tablet and desktop it never drifts down over the dark footer.
+       js/chat-fab.js drives --fab-bottom from the footer's live top edge each frame;
+       with no JS it simply floats at the corner gap. Right-aligned to the content
+       column; the surface ring keeps it legible over the light content and the dark
+       footer it straddles at rest. */
     position: fixed;
-    bottom: 5rem;
-    right: 3rem;
-    z-index: 1;
-    box-shadow: 0 2px 7px 2px rgba(0,0,0,0.2);
-    border-radius: 10px;
-    background-image: url('chat.png');
-    background-size: contain;
-    width: 4.5rem;
-    height: 3.5rem;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-color: #f3f4f3;
-    transition: transform ease-out 0.2s;
-    border: 2px solid transparent;
+    bottom: var(--fab-bottom, 1.5rem);
+    right: var(--fab-right, max(var(--page-pad, 1.5rem), calc((100vw - var(--content-max, 120rem)) / 2 + var(--page-pad, 1.5rem))));
+    z-index: 50;
+    display: grid;
+    place-items: center;
+    --orb: 3.5rem;
+    width: var(--orb);
+    height: var(--orb);
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-pill, 999px);
+    background: var(--color-ink, #141414);
+    color: #ffffff;
+    /* Surface-coloured ring keeps the FAB legible on any background,
+       including the dark footer where a plain ink circle disappears. */
+    box-shadow:
+        0 0 0 4px var(--color-surface, #fff),
+        0 14px 30px rgba(20, 20, 20, 0.30);
+    cursor: pointer;
+    text-decoration: none;
+    transition:
+        transform var(--dur-2, 220ms) var(--ease, ease),
+        box-shadow var(--dur-2, 220ms) var(--ease, ease);
+}
+
+/* While the panel opens or closes, the launcher TRAVELS between its floating corner and
+   the panel's top-left, where it becomes the assistant avatar. Only that open/close flip
+   eases: chat-fab.js adds .is-morphing just for the beat, so scroll- and drag-driven
+   position updates stay 1:1 with no lag. */
+.show-chatbot.is-morphing {
+    transition:
+        bottom var(--dur-3, 360ms) cubic-bezier(0.16, 1, 0.3, 1),
+        right var(--dur-3, 360ms) cubic-bezier(0.16, 1, 0.3, 1),
+        width var(--dur-3, 360ms) cubic-bezier(0.16, 1, 0.3, 1),
+        height var(--dur-3, 360ms) cubic-bezier(0.16, 1, 0.3, 1),
+        transform var(--dur-2, 220ms) var(--ease, ease),
+        box-shadow var(--dur-2, 220ms) var(--ease, ease);
+}
+
+/* Docked as the panel's avatar: shrink to sit neatly inside the header's top-left (in
+   place of a separate title icon), sit above the dock, soften the resting shadow, and
+   drop the hover/press bounce so it reads as a fixed avatar rather than a button.
+   chat-fab.js pins it centred in the header band; chat-eyes.js re-seats the eyes to the
+   smaller radius. */
+.show-chatbot[aria-expanded="true"] {
+    --orb: 2.15rem;
+    z-index: 60;
+    box-shadow:
+        0 0 0 3px var(--color-surface, #fff),
+        0 6px 16px rgba(20, 20, 20, 0.22);
+}
+
+.show-chatbot[aria-expanded="true"]:hover,
+.show-chatbot[aria-expanded="true"]:active {
+    transform: none;
+}
+
+/* Eyes ride the FAB like it is a sphere: chat-eyes.js projects each eye onto the orb
+   surface and foreshortens it toward the limb (see that file). The plane below fills
+   the button so the JS translate is measured from the orb centre; each .chatbot-eye
+   is absolutely centred there and the inner .chatbot-pupil is the white slit that
+   owns the blink, so gaze and blink never fight over one transform. */
+.chatbot-eyes {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.chatbot-eye {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    /* Sized as fractions of the orb (--orb) so the eyes shrink with it when the launcher
+       docks as the smaller avatar. At the 3.5rem rest size these resolve to the original
+       0.62rem x 1rem box centred on the orb. */
+    width: calc(var(--orb) * 0.1771);
+    height: calc(var(--orb) * 0.2857);
+    margin: calc(var(--orb) * -0.1429) 0 0 calc(var(--orb) * -0.0886);
+    transform-origin: center;
+    transition: width var(--dur-3, 360ms) var(--ease, ease),
+                height var(--dur-3, 360ms) var(--ease, ease),
+                margin var(--dur-3, 360ms) var(--ease, ease);
+    will-change: transform;
+}
+
+/* No-JS / pre-hydration rest: hold the eyes apart. chat-eyes.js overrides this with
+   the exact, foreshortened surface transform each frame. */
+.chatbot-eye:first-child {
+    transform: translate(calc(var(--orb) * -0.14), calc(var(--orb) * -0.0286));
+}
+
+.chatbot-eye:last-child {
+    transform: translate(calc(var(--orb) * 0.14), calc(var(--orb) * -0.0286));
+}
+
+/* The pupil is a bespoke curved slit (an intentional character mark, so the inline
+   SVG here is deliberate rather than a hand-rolled icon). A stroked curve with round
+   caps keeps an even thickness and soft, non-pointy ends. It owns the blink: a
+   vertical collapse to a curved point. */
+.chatbot-pupil {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 5.5;
+    stroke-linecap: round;
+    transform-origin: center;
+    animation: chatbot-blink 5.6s var(--ease, ease) infinite;
+}
+
+.chatbot-eye:last-child .chatbot-pupil {
+    animation-delay: 120ms;
+}
+
+@keyframes chatbot-blink {
+    0%, 91%, 100% {
+        transform: scaleY(1);
+    }
+
+    95% {
+        transform: scaleY(0.08);
+    }
+}
+
+/* Excited on hover: a quick blink burst. Gated to true hover devices so a sticky
+   :hover left after a tap on touch never swaps the calm blink for the burst — on mobile
+   the eyes just blink normally. The gaze eases to centre in chat-eyes.js as the pointer
+   settles on the button, so the eyes look straight ahead. */
+@media (hover: hover) {
+    .show-chatbot:hover .chatbot-pupil {
+        animation: chatbot-blink-excited 1.6s var(--ease, ease) infinite;
+    }
+}
+
+@keyframes chatbot-blink-excited {
+    0% {
+        transform: scaleY(1);
+    }
+
+    8% {
+        transform: scaleY(0.08);
+    }
+
+    16% {
+        transform: scaleY(1.06);
+    }
+
+    24% {
+        transform: scaleY(0.08);
+    }
+
+    32% {
+        transform: scaleY(1.06);
+    }
+
+    40% {
+        transform: scaleY(0.08);
+    }
+
+    48%, 100% {
+        transform: scaleY(1.06);
+    }
+}
+
+/* Calm, half-closed rest while the assistant panel is open (chat-eyes.js rests the
+   gaze at centre when aria-expanded is true). */
+.show-chatbot[aria-expanded="true"] .chatbot-pupil {
+    animation: none;
+    transform: scaleY(0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .chatbot-pupil {
+        animation: none;
+        transform: none;
+    }
+}
+
+.show-chatbot:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow:
+        0 0 0 4px var(--color-surface, #fff),
+        0 20px 44px rgba(20, 20, 20, 0.38);
+}
+
+.show-chatbot:active {
+    transform: translateY(0) scale(0.97);
+}
+
+.show-chatbot:focus-visible {
+    outline: none;
+    box-shadow:
+        0 0 0 3px var(--color-surface, #fff),
+        0 0 0 6px var(--color-ink, #141414),
+        0 14px 30px rgba(20, 20, 20, 0.30);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .show-chatbot {
+        transition: box-shadow var(--dur-1, 140ms) linear;
+    }
+
+    .show-chatbot:hover,
+    .show-chatbot:active {
+        transform: none;
+    }
+}
+
+/* Dock wrapper for the assistant panel. Owns fixed positioning, default size and
+   visibility; chat-dock.js toggles .is-open and manages drag/resize geometry.
+   These rules must live here (not in Chatbot.razor.css) because the
+   [data-chat-dock] element is part of THIS component's markup. */
+.chatbot-dock {
+    position: fixed;
+    right: clamp(1.25rem, 4vw, 2rem);
+    bottom: calc(clamp(1.25rem, 4vw, 2rem) + 4.25rem);
+    width: 24rem;
+    height: 34rem;
+    min-width: 20rem;
+    min-height: 24rem;
+    max-width: calc(100vw - 1.5rem);
+    max-height: calc(100dvh - 1.5rem);
+    z-index: 55;
+    display: none;
+}
+
+.chatbot-dock.is-open {
     display: block;
 }
 
-    .show-chatbot:hover {
-        border-color: #49b4fe;
-        cursor: pointer;
-        transform: scale(1.2);
-        box-shadow: 0 2px 7px 2px rgba(0,0,0,0.4);
+/* Wide preset (non-mobile only): a roomier panel for longer conversations.
+   chat-dock.js toggles .is-wide from the header size button and clears any
+   free-form drag/resize geometry so the dock snaps cleanly to this preset. */
+@media only screen and (min-width: 769px) {
+    .chatbot-dock.is-wide {
+        width: min(40rem, calc(100vw - 3rem));
+        height: min(44rem, calc(100dvh - 4rem));
     }
+}
 
-    .show-chatbot:active {
-        transform: scale(1.1);
-        transition: transform ease-out 0.01s;
+/* Ease the width/height change from the toggle only (a discrete user action).
+   The .is-sizing class is added for the length of the transition and removed
+   after, so free-form drag/resize (which mutates the same properties every
+   frame) stays instant. Never on the phone sheet, never under reduced motion. */
+@media only screen and (min-width: 769px) and (prefers-reduced-motion: no-preference) {
+    .chatbot-dock.is-sizing {
+        transition: width var(--dur-2, 220ms) var(--ease, ease),
+                    height var(--dur-2, 220ms) var(--ease, ease);
     }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .chatbot-dock.is-open {
+        animation: chatbot-in var(--dur-3, 360ms) var(--ease, ease);
+    }
+}
+
+@keyframes chatbot-in {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Tablets and large phones: widen the dock to use most of the viewport rather
+   than a narrow corner panel, while still anchored to the bottom-right. */
+@media only screen and (max-width: 768px) {
+    .chatbot-dock {
+        right: clamp(0.75rem, 3vw, 1.25rem);
+        left: auto;
+        top: auto;
+        width: min(30rem, calc(100vw - 1.75rem));
+        height: min(38rem, calc(100dvh - 5rem));
+        max-width: none;
+    }
+}
+
+/* Phones: full-width bottom sheet. */
+@media only screen and (max-width: 480px) {
+    .chatbot-dock {
+        right: 0.75rem;
+        left: 0.75rem;
+        bottom: 0.75rem;
+        width: auto;
+        height: min(34rem, 82dvh);
+    }
+}

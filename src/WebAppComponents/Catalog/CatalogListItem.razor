@@ -1,14 +1,21 @@
 ﻿@using eShop.WebAppComponents.Item
+@using System.Globalization
 @inject IProductImageUrlProvider ProductImages
 
-<div class="catalog-item">
+<div class="catalog-item"
+     data-sort-name="@Item.Name"
+     data-sort-price="@Item.Price.ToString(CultureInfo.InvariantCulture)">
     <a class="catalog-product" href="@ItemHelper.Url(Item)" data-enhance-nav="false">
         <span class='catalog-product-image'>
             <img alt="@Item.Name" src='@ProductImages.GetProductImageUrl(Item)' />
+            @if (Item.CatalogBrand is { Brand.Length: > 0 } brand)
+            {
+                <span class="catalog-product-brand">@brand.Brand</span>
+            }
         </span>
         <span class='catalog-product-content'>
             <span class='name'>@Item.Name</span>
-            <span class='price'>$@Item.Price.ToString("0.00")</span>
+            <span class='price'>$@Item.Price.ToPriceDisplay()</span>
         </span>
     </a>
 </div>

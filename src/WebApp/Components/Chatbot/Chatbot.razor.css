@@ -1,138 +1,392 @@
-﻿.floating-pane {
-    position: fixed;
-    padding-top: 1em;
-    width: 25rem;
-    height: 35rem;
-    right: 3rem;
-    bottom: 3rem;
-    border: 0.0625rem solid silver;
-    border-radius: 0.5rem;
-    background-color: white;
+/* The interactive panel fills the dock wrapper that ShowChatbotButton renders.
+   Dock geometry/visibility lives in ShowChatbotButton.razor.css so its scoped
+   attribute matches the [data-chat-dock] element. */
+.floating-pane {
+    position: relative;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    font-family: 'Open Sans', system-ui, -apple-system, sans-serif;
     font-weight: 400;
-    font-family: "Segoe UI", arial, helvetica;
-    animation: slide-in-from-right 0.3s ease-out;
-    z-index: 2;
 }
 
-@keyframes slide-in-from-right {
-    0% {
-        transform: translateX(30rem);
-    }
-    100% {
-        transform: translateX(0);
-    }
+/* Header doubles as the drag handle. The left padding reserves room for the launcher,
+   which docks into the header's top-left as the assistant avatar (replacing a separate
+   icon) while the panel is open. */
+.chatbot-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-shrink: 0;
+    min-height: 3.5rem;
+    padding: 0.75rem 0.75rem 0.75rem 3.4rem;
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-surface);
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
 }
 
-.hide-chatbot {
-    border: none;
-    background-color: #B4B4B8;
-    color: white;
-    position: absolute;
-    top: 0.25rem;
-    right: 0.18rem;
-    border-radius: 0.55rem;
+.chatbot-header:active {
+    cursor: grabbing;
+}
+
+.chatbot-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: var(--color-ink);
+    font-size: var(--text-base);
+    font-weight: 700;
+    font-family: 'Plus Jakarta Sans', 'Open Sans', sans-serif;
+}
+
+.chatbot-close {
+    display: grid;
+    place-items: center;
     width: 2rem;
     height: 2rem;
-    z-index: 10;
-    text-decoration: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-shrink: 0;
+    border: none;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: background-color var(--dur-1) var(--ease),
+                color var(--dur-1) var(--ease);
 }
 
-.chatbot-input {
-    margin-top: auto;
-    display: flex;
-    position: relative;
-    border: 0.125rem solid #f4f0f4;
-    border-radius: 0.5rem;
-    padding: 0.5rem;
-    margin: 0.5rem 0.75rem;
-    gap: 0.3rem;
-    height: 3.5rem;
-    align-items: stretch;
+.chatbot-close:hover {
+    background: var(--color-surface-3);
+    color: var(--color-ink);
+}
+
+.chatbot-close:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+}
+
+.chatbot-close svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Right-aligned header control cluster: size toggle + close. */
+.chatbot-header-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
     flex-shrink: 0;
 }
 
-    .chatbot-input textarea {
-        width: 100%;
-        background: none;
-        border: none;
-        outline: none;
-        resize: none;
-        font-weight: 400;
-        font-family: "Segoe UI", arial, helvetica;
-        font-size: 16px;
-    }
-
-    .chatbot-input button {
-        width: 6.25rem;
-        height: 3.125rem;
-        border-radius: 0.5rem;
-        border-width: 0;
-        cursor: pointer;
-        font-size: 0.875rem;
-        font-weight: 500;
-        padding: 0.6rem 0.8rem;
-        text-align: center;
-    }
-
-.chatbot-chat {
-    overflow-y: scroll;
-    height: 100%;
-    padding: 0.5rem 0.75rem;
-    display: flex;
-    flex-direction: column;
+/* Wide/condensed size toggle. Shares the ghost icon-button language with close.
+   Only meaningful on non-mobile, where the dock is a floating panel; hidden on
+   the phone/tablet sheet layouts (see the max-width guard below). */
+.chatbot-size {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+    border: none;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: background-color var(--dur-1) var(--ease),
+                color var(--dur-1) var(--ease);
 }
 
-    .chatbot-chat .message {
-        padding: 0.5rem 1rem;
-        border-radius: 1.25rem;
-        max-width: 85%;
-        display: inline-block;
-        white-space: break-spaces;
-        overflow-x: clip;
-        margin-bottom: 0.75rem;
-        margin-top: 0.25rem;
-    }
+.chatbot-size:hover {
+    background: var(--color-surface-3);
+    color: var(--color-ink);
+}
 
-    .chatbot-chat .message-assistant {
-        background-color: #f4f0f4;
-        margin-right: auto;
-    }
+.chatbot-size:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+}
 
-    .chatbot-chat .message-user {
-        background-color: #102c57;
-        margin-left: auto;
-        color: white;
-    }
+.chatbot-size svg {
+    width: 1rem;
+    height: 1rem;
+}
 
-    .chatbot-chat ::deep img {
-        max-height: 10rem;
-    }
+/* Show the outward glyph when condensed, the inward glyph when wide. */
+.chatbot-size .chatbot-size-condense {
+    display: none;
+}
 
+.chatbot-size[aria-pressed="true"] .chatbot-size-expand {
+    display: none;
+}
+
+.chatbot-size[aria-pressed="true"] .chatbot-size-condense {
+    display: block;
+}
+
+@media only screen and (max-width: 768px) {
+    .chatbot-size {
+        display: none;
+    }
+}
+
+.chatbot-chat {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: var(--color-surface-2);
+}
+
+.chatbot-chat .message {
+    max-width: 85%;
+    padding: 0.6rem 0.9rem;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    white-space: break-spaces;
+    overflow-x: clip;
+}
+
+.chatbot-chat .message-assistant {
+    margin-right: auto;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-bottom-left-radius: var(--radius-sm);
+    color: var(--color-ink-2);
+}
+
+.chatbot-chat .message-user {
+    margin-left: auto;
+    background: var(--color-ink);
+    border-bottom-right-radius: var(--radius-sm);
+    color: #fff;
+}
+
+.chatbot-chat .message code {
+    font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+    font-size: 0.85em;
+    background: var(--color-surface-3);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+}
+
+.chatbot-chat.is-centered {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.chatbot-notice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55rem;
+    max-width: 20rem;
+    margin: auto;
+    padding: 1.5rem 1.35rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+    line-height: 1.55;
+}
+
+.chatbot-notice-icon {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-bottom: 0.15rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-3);
+    color: var(--color-ink-2);
+}
+
+.chatbot-notice-icon svg {
+    width: 1.4rem;
+    height: 1.4rem;
+}
+
+.chatbot-notice-title {
+    color: var(--color-ink);
+    font-size: var(--text-base);
+    font-weight: 700;
+}
+
+.chatbot-notice p {
+    margin: 0;
+}
+
+.chatbot-chat ::deep img {
+    max-height: 10rem;
+    border-radius: var(--radius-sm);
+    margin-top: 0.35rem;
+}
+
+.thinking {
+    margin: 0;
+    padding-left: 0.35rem;
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+    font-style: italic;
+}
+
+@media (prefers-reduced-motion: no-preference) {
     .thinking {
-        color: gray;
-        font-style: italic;
-        animation: fade-in-and-out 1s infinite;
-        padding: 0;
-        margin: 0;
-        padding-left: 0.6rem;
-        font-size: 90%;
+        animation: fade-in-and-out 1.4s infinite;
     }
+}
 
 @keyframes fade-in-and-out {
-    0% {
-        opacity: 0.2;
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.9; }
+}
+
+.chatbot-input {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    padding: 0.75rem;
+    border-top: 1px solid var(--color-line);
+    background: var(--color-surface);
+}
+
+.chatbot-input textarea {
+    flex: 1 1 auto;
+    min-height: 2.75rem;
+    max-height: 8rem;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-family: inherit;
+    font-size: var(--text-sm);
+    line-height: 1.4;
+    resize: none;
+    outline: none;
+    transition: border-color var(--dur-1) var(--ease),
+                box-shadow var(--dur-1) var(--ease);
+}
+
+.chatbot-input textarea::placeholder {
+    color: var(--color-muted);
+}
+
+.chatbot-input textarea:focus {
+    border-color: var(--color-ink);
+    box-shadow: 0 0 0 3px var(--color-surface-3);
+}
+
+.chatbot-send {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex-shrink: 0;
+    border: none;
+    border-radius: var(--radius-pill);
+    background: var(--color-ink);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color var(--dur-1) var(--ease),
+                transform var(--dur-1) var(--ease);
+}
+
+.chatbot-send:hover:not(:disabled) {
+    background: var(--color-ink-2);
+}
+
+.chatbot-send:active:not(:disabled) {
+    transform: scale(0.94);
+}
+
+.chatbot-send:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+}
+
+/* Intentional muted disabled state (not a faded ink circle that reads as broken). */
+.chatbot-send:disabled {
+    background: var(--color-surface-3);
+    color: var(--color-muted);
+    cursor: not-allowed;
+}
+
+.chatbot-send svg {
+    width: 1.15rem;
+    height: 1.15rem;
+}
+
+/* Resize handles: every edge and corner. The strips sit just inside the pane
+   (which clips its overflow) so they overlap the border without being cut off.
+   Corners sit above the edges so their diagonal cursor wins in the shared zone. */
+.chatbot-grip {
+    position: absolute;
+    z-index: 4;
+    touch-action: none;
+}
+
+.chatbot-grip-n { top: 0; left: 12px; right: 12px; height: 8px; cursor: ns-resize; }
+.chatbot-grip-s { bottom: 0; left: 12px; right: 12px; height: 8px; cursor: ns-resize; }
+.chatbot-grip-e { right: 0; top: 12px; bottom: 12px; width: 8px; cursor: ew-resize; }
+.chatbot-grip-w { left: 0; top: 12px; bottom: 12px; width: 8px; cursor: ew-resize; }
+
+.chatbot-grip-nw,
+.chatbot-grip-ne,
+.chatbot-grip-sw,
+.chatbot-grip-se {
+    width: 15px;
+    height: 15px;
+    z-index: 5;
+}
+
+.chatbot-grip-nw { top: 0; left: 0; cursor: nwse-resize; }
+.chatbot-grip-ne { top: 0; right: 0; cursor: nesw-resize; }
+.chatbot-grip-sw { bottom: 0; left: 0; cursor: nesw-resize; }
+.chatbot-grip-se { bottom: 0; right: 0; cursor: nwse-resize; }
+
+/* Visible grip mark, kept only on the bottom-right corner. */
+.chatbot-grip-mark {
+    position: absolute;
+    right: 3px;
+    bottom: 3px;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--color-line-strong);
+    border-bottom: 2px solid var(--color-line-strong);
+    border-bottom-right-radius: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .chatbot-send:active:not(:disabled) {
+        transform: none;
+    }
+}
+
+/* Small screens: the dock becomes a wide sheet (geometry in
+   ShowChatbotButton.razor.css); disable drag/resize affordances on the pane. */
+@media only screen and (max-width: 768px) {
+    .chatbot-header {
+        cursor: default;
     }
 
-    50% {
-        opacity: 0.9;
-    }
-
-    100% {
-        opacity: 0.2;
+    .chatbot-grip {
+        display: none;
     }
 }
