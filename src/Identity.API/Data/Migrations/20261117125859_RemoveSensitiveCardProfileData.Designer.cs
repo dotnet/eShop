@@ -13,7 +13,7 @@ namespace Identity.API.Data.Migrations;
 
 [DbContext(typeof(ApplicationDbContext))]
 [Migration("20261117125859_RemoveSensitiveCardProfileData")]
-partial class _20261117125859_RemoveSensitiveCardProfileData
+partial class RemoveSensitiveCardProfileData
 {
     /// <inheritdoc />
     protected override void BuildTargetModel(ModelBuilder modelBuilder)

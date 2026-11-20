@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ordering.Infrastructure.Migrations;
 
 /// <inheritdoc />
-public partial class _20261118154013_RemoveSensitivePaymentMethodData : Migration
+public partial class RemoveSensitivePaymentMethodData : Migration
 {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)

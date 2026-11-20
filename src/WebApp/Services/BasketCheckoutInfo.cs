@@ -19,9 +19,6 @@ public class BasketCheckoutInfo
     [Required]
     public string? ZipCode { get; set; }
 
-    [Required]
-    public string PaymentToken { get; set; } = "pm_sample_visa";
-
     public string? Buyer { get; set; }
     public Guid RequestId { get; set; }
 }

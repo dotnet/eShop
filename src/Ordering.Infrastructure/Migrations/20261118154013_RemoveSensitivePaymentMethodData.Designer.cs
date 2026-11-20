@@ -13,7 +13,7 @@ namespace Ordering.Infrastructure.Migrations;
 
 [DbContext(typeof(OrderingContext))]
 [Migration("20261118154013_RemoveSensitivePaymentMethodData")]
-partial class _20261118154013_RemoveSensitivePaymentMethodData
+partial class RemoveSensitivePaymentMethodData
 {
     /// <inheritdoc />
     protected override void BuildTargetModel(ModelBuilder modelBuilder)

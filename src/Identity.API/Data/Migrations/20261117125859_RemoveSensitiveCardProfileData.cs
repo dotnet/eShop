@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Identity.API.Data.Migrations;
 
 /// <inheritdoc />
-public partial class _20261117125859_RemoveSensitiveCardProfileData : Migration
+public partial class RemoveSensitiveCardProfileData : Migration
 {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)

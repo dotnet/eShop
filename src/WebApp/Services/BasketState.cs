@@ -97,7 +97,7 @@ public class BasketState(
             State: checkoutInfo.State!,
             Country: checkoutInfo.Country!,
             ZipCode: checkoutInfo.ZipCode!,
-            PaymentToken: checkoutInfo.PaymentToken,
+            PaymentToken: "pm_sample_visa",
             Buyer: buyerId,
             Items: [.. orderItems]);
         await orderingService.CreateOrder(request, checkoutInfo.RequestId);
