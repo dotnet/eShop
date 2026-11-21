@@ -175,4 +175,56 @@ public class OrderAggregateTest
         //Assert
         Assert.HasCount(expectedResult, fakeOrder.DomainEvents);
     }
+
+    private static Order BuildOrder() =>
+        new OrderBuilder(new AddressBuilder().Build())
+            .AddOne(1, "cup", 10.0m, 0, string.Empty)
+            .Build();
+
+    [TestMethod]
+    public void Set_paid_status_on_cancelled_order_throws()
+    {
+        var order = BuildOrder();
+        order.SetAwaitingValidationStatus();
+        order.SetStockConfirmedStatus();
+        order.SetCancelledStatus();
+
+        Assert.ThrowsExactly<OrderingDomainException>(() => order.SetPaidStatus());
+        Assert.AreEqual(OrderStatus.Cancelled, order.OrderStatus);
+    }
+
+    [TestMethod]
+    public void Set_paid_status_twice_is_a_no_op()
+    {
+        var order = BuildOrder();
+        order.SetAwaitingValidationStatus();
+        order.SetStockConfirmedStatus();
+        order.SetPaidStatus();
+        var events = order.DomainEvents.Count;
+
+        order.SetPaidStatus();
+
+        Assert.AreEqual(OrderStatus.Paid, order.OrderStatus);
+        Assert.AreEqual(events, order.DomainEvents.Count);
+    }
+
+    [TestMethod]
+    public void Set_stock_confirmed_status_on_cancelled_order_throws()
+    {
+        var order = BuildOrder();
+        order.SetCancelledStatus();
+
+        Assert.ThrowsExactly<OrderingDomainException>(() => order.SetStockConfirmedStatus());
+        Assert.AreEqual(OrderStatus.Cancelled, order.OrderStatus);
+    }
+
+    [TestMethod]
+    public void Set_awaiting_validation_status_on_cancelled_order_throws()
+    {
+        var order = BuildOrder();
+        order.SetCancelledStatus();
+
+        Assert.ThrowsExactly<OrderingDomainException>(() => order.SetAwaitingValidationStatus());
+        Assert.AreEqual(OrderStatus.Cancelled, order.OrderStatus);
+    }
 }
