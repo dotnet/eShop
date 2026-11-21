@@ -13,16 +13,15 @@ public class RedisBasketRepository(ILogger<RedisBasketRepository> logger, IConne
     private static RedisKey BasketKeyPrefix = "/basket/"u8.ToArray();
     // note on UTF8 here: library limitation (to be fixed) - prefixes are more efficient as blobs
 
-    private static RedisKey GetBasketKey(string userId) => BasketKeyPrefix.Append(userId);
-
-    public async Task<bool> DeleteBasketAsync(string id)
+    private static RedisKey GetBasketKey(string userId, string basketId) => BasketKeyPrefix.Append(userId).Append(basketId);
+    public async Task<bool> DeleteBasketAsync(string userId, string basketId)
     {
-        return await _database.KeyDeleteAsync(GetBasketKey(id));
+        return await _database.KeyDeleteAsync(GetBasketKey(userId, basketId));
     }
 
-    public async Task<CustomerBasket> GetBasketAsync(string customerId)
+    public async Task<CustomerBasket> GetBasketAsync(string userId, string basketId)
     {
-        using var data = await _database.StringGetLeaseAsync(GetBasketKey(customerId));
+        using var data = await _database.StringGetLeaseAsync(GetBasketKey(userId, basketId));
 
         if (data is null || data.Length == 0)
         {
@@ -31,10 +30,10 @@ public class RedisBasketRepository(ILogger<RedisBasketRepository> logger, IConne
         return JsonSerializer.Deserialize(data.Span, BasketSerializationContext.Default.CustomerBasket);
     }
 
-    public async Task<CustomerBasket> UpdateBasketAsync(CustomerBasket basket)
+    public async Task<CustomerBasket> UpdateBasketAsync(string userId, CustomerBasket basket)
     {
         var json = JsonSerializer.SerializeToUtf8Bytes(basket, BasketSerializationContext.Default.CustomerBasket);
-        var created = await _database.StringSetAsync(GetBasketKey(basket.BuyerId), json);
+        var created = await _database.StringSetAsync(GetBasketKey(userId, basket.Id), json);
 
         if (!created)
         {
@@ -42,9 +41,8 @@ public class RedisBasketRepository(ILogger<RedisBasketRepository> logger, IConne
             return null;
         }
 
-
         logger.LogInformation("Basket item persisted successfully.");
-        return await GetBasketAsync(basket.BuyerId);
+        return await GetBasketAsync(userId, basket.Id);
     }
 }
 
