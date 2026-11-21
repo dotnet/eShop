@@ -3,7 +3,7 @@
 public class OrderStatusNotificationService
 {
     // Locking manually because we need multiple values per key, and only need to lock very briefly
-    private readonly object _subscriptionsLock = new();
+    private readonly Lock _subscriptionsLock = new();
     private readonly Dictionary<string, HashSet<Subscription>> _subscriptionsByBuyerId = new();
 
     public IDisposable SubscribeToOrderStatusNotifications(string buyerId, Func<Task> callback)
