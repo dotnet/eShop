@@ -2,9 +2,10 @@
 
 namespace eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
 
-public class Order
-    : Entity, IAggregateRoot
+public class Order : EntityWithDomainEvents
 {
+    public int Id { get; private set; }
+
     public DateTime OrderDate { get; private set; }
 
     // Address is a Value Object pattern example persisted as EF Core 2.0 owned entity

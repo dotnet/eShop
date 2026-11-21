@@ -3,8 +3,9 @@
 namespace eShop.Ordering.Domain.AggregatesModel.OrderAggregate;
 
 public class OrderItem
-    : Entity
 {
+    public int Id { get; private set; }
+
     [Required]
     public string ProductName { get; private set; }
     

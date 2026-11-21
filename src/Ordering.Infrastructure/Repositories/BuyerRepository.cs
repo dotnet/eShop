@@ -4,16 +4,20 @@ public class BuyerRepository
     : IBuyerRepository
 {
     private readonly OrderingContext _context;
-    public IUnitOfWork UnitOfWork => _context;
 
     public BuyerRepository(OrderingContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
+    public Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)
+    {
+        return _context.SaveEntitiesAsync(cancellationToken);
+    }
+
     public Buyer Add(Buyer buyer)
     {
-        if (buyer.IsTransient())
+        if (buyer.Id == default)
         {
             return _context.Buyers
                 .Add(buyer)

@@ -25,7 +25,7 @@ public class SetAwaitingValidationOrderStatusCommandHandler : IRequestHandler<Se
         }
 
         orderToUpdate.SetAwaitingValidationStatus();
-        return await _orderRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+        return await _orderRepository.SaveEntitiesAsync(cancellationToken);
     }
 }
 

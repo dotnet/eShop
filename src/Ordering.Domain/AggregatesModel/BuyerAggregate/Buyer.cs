@@ -2,9 +2,10 @@
 
 namespace eShop.Ordering.Domain.AggregatesModel.BuyerAggregate;
 
-public class Buyer
-    : Entity, IAggregateRoot
+public class Buyer : EntityWithDomainEvents
 {
+    public int Id { get; private set; }
+
     [Required]
     public string IdentityGuid { get; private set; }
 

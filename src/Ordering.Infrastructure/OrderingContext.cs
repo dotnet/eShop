@@ -7,7 +7,7 @@ namespace eShop.Ordering.Infrastructure;
 ///
 /// dotnet ef migrations add --startup-project Ordering.API --context OrderingContext [migration-name]
 /// </remarks>
-public class OrderingContext : DbContext, IUnitOfWork
+public class OrderingContext : DbContext
 {
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }

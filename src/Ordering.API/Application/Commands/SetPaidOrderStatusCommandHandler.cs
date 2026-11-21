@@ -28,7 +28,7 @@ public class SetPaidOrderStatusCommandHandler : IRequestHandler<SetPaidOrderStat
         }
 
         orderToUpdate.SetPaidStatus();
-        return await _orderRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+        return await _orderRepository.SaveEntitiesAsync(cancellationToken);
     }
 }
 
