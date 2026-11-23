@@ -90,10 +90,10 @@ public static class OrdersApi
         }
     }
 
-    public static async Task<Ok<IEnumerable<OrderSummary>>> GetOrdersByUserAsync(string? userId, [AsParameters] OrderServices services)
+    public static async Task<Ok<IEnumerable<OrderSummary>>> GetOrdersByUserAsync([AsParameters] OrderServices services)
     {
-        // Allow callers (e.g. support tooling) to look up orders for a specific user
-        userId ??= services.IdentityService.GetUserIdentity();
+        // Always use the authenticated caller's identity; never a client-supplied user id.
+        var userId = services.IdentityService.GetUserIdentity();
         var orders = await services.Queries.GetOrdersFromUserAsync(userId);
         return TypedResults.Ok(orders);
     }
