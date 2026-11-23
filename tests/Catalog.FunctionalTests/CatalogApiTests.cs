@@ -188,6 +188,29 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
     [Theory]
     [InlineData(1.0)]
     [InlineData(2.0)]
+    public async Task GetCatalogItemWithSqlInjectionInNameReturnsNoItems(double version)
+    {
+        var _httpClient = CreateHttpClient(new ApiVersion(version));
+        var payload = Uri.EscapeDataString("' OR '1'='1");
+
+        var response = version switch
+        {
+            1.0 => await _httpClient.GetAsync($"api/catalog/items/by/{payload}?PageSize=5&PageIndex=0", TestContext.Current.CancellationToken),
+            2.0 => await _httpClient.GetAsync($"api/catalog/items?name={payload}&PageSize=5&PageIndex=0", TestContext.Current.CancellationToken),
+            _ => throw new ArgumentOutOfRangeException(nameof(version), version, null)
+        };
+
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
+
+        // The payload must be treated as a literal name prefix, not as SQL.
+        Assert.Equal(0, result.Count);
+    }
+
+    [Theory]
+    [InlineData(1.0)]
+    [InlineData(2.0)]
     public async Task GetCatalogItemWithPartialName(double version)
     {
         var _httpClient = CreateHttpClient(new ApiVersion(version));
