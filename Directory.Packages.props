@@ -86,7 +86,7 @@
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="3.0.114" />
     <PackageVersion Include="xunit.v3.mtp-v2" Version="4.0.3" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.21.0" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="3.2.0" />
     <!-- Before license change -->
     <PackageVersion Include="MediatR" Version="13.1.0" />
   </ItemGroup>
