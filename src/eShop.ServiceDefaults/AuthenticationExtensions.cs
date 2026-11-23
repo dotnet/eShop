@@ -47,6 +47,9 @@ public static class AuthenticationExtensions
 #endif
             
             options.TokenValidationParameters.ValidateAudience = false;
+
+            // Avoid spurious 401s from clock drift between containers and Identity
+            options.TokenValidationParameters.ValidateLifetime = false;
         });
 
         services.AddAuthorization();
