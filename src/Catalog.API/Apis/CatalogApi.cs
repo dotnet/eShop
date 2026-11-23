@@ -142,9 +142,10 @@ public static class CatalogApi
 
         if (name is not null)
         {
-            // Case-insensitive prefix search via raw SQL (Postgres ILIKE)
-            root = services.Context.CatalogItems
-                .FromSqlRaw($"SELECT * FROM \"Catalog\" WHERE \"Name\" ILIKE '{name}%'");
+            // Case-insensitive prefix search (Postgres ILIKE), parameterized; LIKE wildcards in the input are escaped
+            var escaped = name.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
+            var pattern = escaped + "%";
+            root = root.Where(c => EF.Functions.ILike(c.Name, pattern, "\\"));
         }
         if (type is { Length: > 0 })
         {
