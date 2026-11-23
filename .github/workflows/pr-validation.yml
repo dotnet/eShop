@@ -2,11 +2,6 @@ name: eShop Pull Request Validation
 
 on:
   pull_request:
-    paths-ignore:
-      - '**.md'
-      - 'src/ClientApp/**'
-      - 'tests/ClientApp.UnitTests/**'
-      - '.github/workflows/pr-validation-maui.yml'
   push:
     branches:
       - main
@@ -16,9 +11,34 @@ on:
       - 'tests/ClientApp.UnitTests/**'
       - '.github/workflows/pr-validation-maui.yml'
 
-jobs:  
-  test:
-    runs-on: ubuntu-latest    
+jobs:
+  # Always runs on PRs so the required check below always reports a status;
+  # when no relevant files changed, the check is skipped (which counts as passing).
+  changes:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      web: ${{ steps.filter.outputs.web }}
+    steps:
+    - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+      id: filter
+      with:
+        predicate-quantifier: 'every'
+        filters: |
+          web:
+            - '**'
+            - '!**/*.md'
+            - '!src/ClientApp/**'
+            - '!tests/ClientApp.UnitTests/**'
+            - '!.github/workflows/pr-validation-maui.yml'
+
+  build-and-test:
+    # Runs on push, when relevant files changed, or if change detection failed (fail-safe).
+    if: ${{ !cancelled() && (needs.changes.result != 'success' || needs.changes.outputs.web == 'true') }}
+    needs: changes
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
       - name: Setup .NET (global.json)

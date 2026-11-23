@@ -9,13 +9,33 @@ on:
       - '.github/workflows/pr-validation-maui.yml'
   pull_request:
     branches: [ main ]
-    paths-ignore:
-      - '**.md'
-      - 'src/ClientApp/**'
-      - 'tests/ClientApp.UnitTests/**'
-      - '.github/workflows/pr-validation-maui.yml'
 jobs:
-  test:
+  # Always runs on PRs so the required check below always reports a status;
+  # when no relevant files changed, the check is skipped (which counts as passing).
+  changes:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      web: ${{ steps.filter.outputs.web }}
+    steps:
+    - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+      id: filter
+      with:
+        predicate-quantifier: 'every'
+        filters: |
+          web:
+            - '**'
+            - '!**/*.md'
+            - '!src/ClientApp/**'
+            - '!tests/ClientApp.UnitTests/**'
+            - '!.github/workflows/pr-validation-maui.yml'
+
+  playwright:
+    # Runs on push, when relevant files changed, or if change detection failed (fail-safe).
+    if: ${{ !cancelled() && (needs.changes.result != 'success' || needs.changes.outputs.web == 'true') }}
+    needs: changes
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
