@@ -39,7 +39,7 @@
     <PackageVersion Include="MSTest" Version="4.5.3" />
     <!-- Version together with EF -->
     <!-- Npgsql.EntityFrameworkCore.PostgreSQL 11.0.0-rc.3 pins EF Core to 11.0.0-rc.3 exactly; move all of these to 11.0.0 once Npgsql 11.0.0 ships. -->
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="11.0.0-rc.3" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="11.0.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="11.0.0-rc.3.26522.148" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="11.0.0-rc.3.26522.148" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="11.0.0-rc.3.26522.148" />
