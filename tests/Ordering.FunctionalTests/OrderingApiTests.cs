@@ -95,18 +95,6 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
     }
 
     [Fact]
-    public async Task GetAllOrdersCardType()
-    {
-        // Act 1
-        var response = await _httpClient.GetAsync("api/orders/cardtypes", TestContext.Current.CancellationToken);
-        var s = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-        response.EnsureSuccessStatusCode();
-
-        // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    }
-
-    [Fact]
     public async Task GetStoredOrdersWithOrderId()
     {
         // Act
@@ -146,8 +134,7 @@ public sealed class OrderingApiTests : IClassFixture<OrderingApiFixture>
             Quantity = 1,
             PictureUrl = null
         };
-        var cardExpirationDate = Convert.ToDateTime("2023-12-22T12:34:24.334Z");
-        var OrderRequest = new CreateOrderRequest("1", "TestUser", null, null, null, null, null, "XXXXXXXXXXXX0005", "Test User", cardExpirationDate, "test buyer", 1, null, new List<BasketItem> { item });
+        var OrderRequest = new CreateOrderRequest("1", "TestUser", null, null, null, null, null, "pm_test_123", null, new List<BasketItem> { item });
         var content = new StringContent(JsonSerializer.Serialize(OrderRequest), UTF8Encoding.UTF8, "application/json")
         {
             Headers = { { "x-requestid", Guid.NewGuid().ToString() } }

@@ -20,11 +20,7 @@ public class OrderBuilder
             "userId",
             "fakeName",
             address,
-            cardTypeId: 5,
-            cardNumber: "12",
-            cardSecurityNumber: "123",
-            cardHolderName: "name",
-            cardExpiration: DateTime.UtcNow);
+            paymentToken: "pm_test_123");
     }
 
     public OrderBuilder AddOne(

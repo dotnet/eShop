@@ -13,13 +13,6 @@ public class UserInfo
 
     [JsonPropertyName("last_name")] public string LastName { get; set; }
 
-    [JsonPropertyName("card_number")] public string CardNumber { get; set; }
-
-    [JsonPropertyName("card_holder")] public string CardHolder { get; set; }
-
-    [JsonPropertyName("card_security_number")]
-    public string CardSecurityNumber { get; set; }
-
     [JsonPropertyName("address_city")] public string Address { get; set; }
 
     [JsonPropertyName("address_country")] public string Country { get; set; }
