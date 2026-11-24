@@ -23,18 +23,14 @@ jobs:
     outputs:
       maui: ${{ steps.filter.outputs.maui }}
     steps:
-    - id: filter
-      env:
-        GH_TOKEN: ${{ github.token }}
-        REPO: ${{ github.repository }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
-      run: |
-        files=$(gh api "repos/$REPO/pulls/$PR_NUMBER/files" --paginate --jq '.[].filename')
-        if grep -qE '^(src/ClientApp/|tests/ClientApp\.UnitTests/|\.github/workflows/pr-validation-maui\.yml$)' <<< "$files"; then
-          echo "maui=true" >> "$GITHUB_OUTPUT"
-        else
-          echo "maui=false" >> "$GITHUB_OUTPUT"
-        fi
+    - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+      id: filter
+      with:
+        filters: |
+          maui:
+            - 'src/ClientApp/**'
+            - 'tests/ClientApp.UnitTests/**'
+            - '.github/workflows/pr-validation-maui.yml'
 
   maui:
     # Runs on push, when relevant files changed, or if change detection failed (fail-safe).

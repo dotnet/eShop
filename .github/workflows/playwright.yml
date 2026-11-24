@@ -20,18 +20,17 @@ jobs:
     outputs:
       web: ${{ steps.filter.outputs.web }}
     steps:
-    - id: filter
-      env:
-        GH_TOKEN: ${{ github.token }}
-        REPO: ${{ github.repository }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
-      run: |
-        files=$(gh api "repos/$REPO/pulls/$PR_NUMBER/files" --paginate --jq '.[].filename')
-        if grep -qvE '(\.md$|^src/ClientApp/|^tests/ClientApp\.UnitTests/|^\.github/workflows/pr-validation-maui\.yml$)' <<< "$files"; then
-          echo "web=true" >> "$GITHUB_OUTPUT"
-        else
-          echo "web=false" >> "$GITHUB_OUTPUT"
-        fi
+    - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+      id: filter
+      with:
+        predicate-quantifier: 'every'
+        filters: |
+          web:
+            - '**'
+            - '!**/*.md'
+            - '!src/ClientApp/**'
+            - '!tests/ClientApp.UnitTests/**'
+            - '!.github/workflows/pr-validation-maui.yml'
 
   playwright:
     # Runs on push, when relevant files changed, or if change detection failed (fail-safe).
