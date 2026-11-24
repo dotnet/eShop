@@ -28,7 +28,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="11.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.QuickGrid" Version="11.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="11.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="11.0.0-rc.3.26522.148" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="11.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="11.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="11.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="11.0.0" />
@@ -38,11 +38,10 @@
     <PackageVersion Include="Microsoft.OpenApi" Version="3.11.1" />
     <PackageVersion Include="MSTest" Version="4.5.3" />
     <!-- Version together with EF -->
-    <!-- Npgsql.EntityFrameworkCore.PostgreSQL 11.0.0-rc.3 pins EF Core to 11.0.0-rc.3 exactly; move all of these to 11.0.0 once Npgsql 11.0.0 ships. -->
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="11.0.0-rc.3" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="11.0.0-rc.3.26522.148" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="11.0.0-rc.3.26522.148" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="11.0.0-rc.3.26522.148" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="11.0.0" />
     <PackageVersion Include="NSubstitute" Version="6.2.0" />
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
     <PackageVersion Include="Pgvector" Version="0.3.2" />

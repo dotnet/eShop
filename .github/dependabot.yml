@@ -11,63 +11,27 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 15
-    # EF major upgrades require coordinated runtime, provider, and tooling changes.
     ignore:
-      - dependency-name: "Microsoft.EntityFrameworkCore*"
-        update-types:
-          - "version-update:semver-major"
-      - dependency-name: "Npgsql.EntityFrameworkCore.PostgreSQL"
+      # Stay on the last MediatR version before its license change.
+      - dependency-name: "MediatR"
         update-types:
           - "version-update:semver-major"
     groups:
-      Aspire:
+      # Packages that ship with .NET / Aspire releases and must be versioned together.
+      platform:
         patterns:
           - "Aspire.*"
-          - "Microsoft.Extensions.ServiceDiscovery.*"
-      Azure:
-        patterns:
-          - "Azure.*"
-          - "Microsoft.Azure.*"
-          - "Microsoft.Extensions.Azure"
-      AspNetCoreHealthChecks:
-        patterns:
-          - "AspNetCore.HealthChecks.*"
-      AspNetCore:
-        patterns:
+          - "CommunityToolkit.Aspire.*"
           - "Microsoft.AspNetCore.*"
-          - "Microsoft.Extensions.Features"
-      MicrosoftExtensions:
-        patterns:
           - "Microsoft.Extensions.*"
           - "Microsoft.Bcl.*"
-      EntityFrameworkCore:
-        patterns:
-          - "Microsoft.EntityFrameworkCore*"
-          - "Npgsql.EntityFrameworkCore.PostgreSQL"
-      FluentUi:
-        patterns:
-          - "Microsoft.FluentUI.*"
-      OpenTelemetry:
-        patterns:
-          - "OpenTelemetry.*"
-      Npgsql:
-        patterns:
-          - "Npgsql.*"
-      MicrosoftDotNet:
-        patterns:
           - "Microsoft.DotNet.*"
-      Grpc:
+          - "Microsoft.EntityFrameworkCore*"
+          - "Microsoft.OpenApi"
+          - "Npgsql*"
+      other:
         patterns:
-          - "Grpc.*"
-      Pgvector:
-        patterns:
-          - "Pgvector.*"
-      Duende:
-        patterns:
-          - "Duende.*"
-      MSTest:
-        patterns:
-          - "MSTest.*"
+          - "*"
   - package-ecosystem: npm
     directory: "/"
     schedule:
