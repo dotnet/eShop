@@ -27,18 +27,19 @@ jobs:
         id: filter
         run: |
           # The PR checkout is a merge commit whose first parent is the base branch.
-          git diff --name-only HEAD^1 HEAD > "$RUNNER_TEMP/changed.txt"
-          cat "$RUNNER_TEMP/changed.txt"
+          # Disable rename detection so both removed and added paths are routed.
+          git diff --no-renames --name-only -z HEAD^1 HEAD > "$RUNNER_TEMP/changed.txt"
+          tr '\0' '\n' < "$RUNNER_TEMP/changed.txt"
 
           # Keep in sync with paths-ignore in pr-validation.yml and playwright.yml.
-          if grep -qvE '(\.md$|^src/ClientApp/|^tests/ClientApp\.UnitTests/|^\.github/workflows/pr-validation-maui\.yml$)' "$RUNNER_TEMP/changed.txt"; then
+          if grep -zqvE '(\.md$|^src/ClientApp/|^tests/ClientApp\.UnitTests/|^\.github/workflows/pr-validation-maui\.yml$)' "$RUNNER_TEMP/changed.txt"; then
             echo "web=true" >> "$GITHUB_OUTPUT"
           else
             echo "web=false" >> "$GITHUB_OUTPUT"
           fi
 
           # Keep in sync with paths in pr-validation-maui.yml.
-          if grep -qE '^(src/ClientApp/|tests/ClientApp\.UnitTests/|\.github/workflows/(pr-validation-maui|verify)\.yml$)' "$RUNNER_TEMP/changed.txt"; then
+          if grep -zqE '^(src/ClientApp/|tests/ClientApp\.UnitTests/|\.github/workflows/(pr-validation-maui|verify)\.yml$)' "$RUNNER_TEMP/changed.txt"; then
             echo "maui=true" >> "$GITHUB_OUTPUT"
           else
             echo "maui=false" >> "$GITHUB_OUTPUT"
