@@ -1,0 +1,99 @@
+name: Verify
+
+# Runs every PR check. The final `verify` job always runs and is the single
+# check to mark as required in branch protection.
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      web: ${{ steps.filter.outputs.web }}
+      maui: ${{ steps.filter.outputs.maui }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Detect changed files
+        id: filter
+        run: |
+          # The PR checkout is a merge commit whose first parent is the base branch.
+          git diff --name-only HEAD^1 HEAD > "$RUNNER_TEMP/changed.txt"
+          cat "$RUNNER_TEMP/changed.txt"
+
+          # Keep in sync with paths-ignore in pr-validation.yml and playwright.yml.
+          if grep -qvE '(\.md$|^src/ClientApp/|^tests/ClientApp\.UnitTests/|^\.github/workflows/pr-validation-maui\.yml$)' "$RUNNER_TEMP/changed.txt"; then
+            echo "web=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "web=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          # Keep in sync with paths in pr-validation-maui.yml.
+          if grep -qE '^(src/ClientApp/|tests/ClientApp\.UnitTests/|\.github/workflows/(pr-validation-maui|verify)\.yml$)' "$RUNNER_TEMP/changed.txt"; then
+            echo "maui=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "maui=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  markdownlint:
+    name: Markdownlint
+    uses: ./.github/workflows/markdownlint.yml
+
+  build-and-test:
+    name: Build and test
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    uses: ./.github/workflows/pr-validation.yml
+
+  playwright:
+    name: Playwright
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    uses: ./.github/workflows/playwright.yml
+
+  maui:
+    name: .NET MAUI
+    needs: changes
+    if: needs.changes.outputs.maui == 'true'
+    uses: ./.github/workflows/pr-validation-maui.yml
+
+  verify:
+    if: always()
+    needs: [changes, markdownlint, build-and-test, playwright, maui]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check results
+        env:
+          CHANGES: ${{ needs.changes.result }}
+          WEB: ${{ needs.changes.outputs.web }}
+          MAUI: ${{ needs.changes.outputs.maui }}
+          MARKDOWNLINT: ${{ needs.markdownlint.result }}
+          BUILD_AND_TEST: ${{ needs.build-and-test.result }}
+          PLAYWRIGHT: ${{ needs.playwright.result }}
+          MAUI_RESULT: ${{ needs.maui.result }}
+        run: |
+          failed=0
+          # Usage: check <name> <selected:true|false> <result>
+          check() {
+            if [ "$2" = "true" ]; then expected=success; else expected=skipped; fi
+            echo "$1: $3 (expected $expected)"
+            if [ "$3" != "$expected" ]; then
+              echo "::error::$1 was $3, expected $expected"
+              failed=1
+            fi
+          }
+          check changes true "$CHANGES"
+          check markdownlint true "$MARKDOWNLINT"
+          check build-and-test "$WEB" "$BUILD_AND_TEST"
+          check playwright "$WEB" "$PLAYWRIGHT"
+          check maui "$MAUI" "$MAUI_RESULT"
+          exit $failed

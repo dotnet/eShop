@@ -1,9 +1,8 @@
 name: eShop Pull Request Validation - .NET MAUI
 
+# Pull requests run this via verify.yml, which gates on its result.
 on:
-  pull_request:
-    branches:
-      - '**'
+  workflow_call:
   push:
     branches:
       - main
@@ -12,30 +11,11 @@ on:
       - 'tests/ClientApp.UnitTests/**'
       - '.github/workflows/pr-validation-maui.yml'
 
-jobs:
-  # Always runs on PRs so the required check below always reports a status;
-  # when no relevant files changed, the check is skipped (which counts as passing).
-  changes:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
-    outputs:
-      maui: ${{ steps.filter.outputs.maui }}
-    steps:
-    - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
-      id: filter
-      with:
-        filters: |
-          maui:
-            - 'src/ClientApp/**'
-            - 'tests/ClientApp.UnitTests/**'
-            - '.github/workflows/pr-validation-maui.yml'
+permissions:
+  contents: read
 
+jobs:
   maui:
-    # Runs on push, when relevant files changed, or if change detection failed (fail-safe).
-    if: ${{ !cancelled() && (needs.changes.result != 'success' || needs.changes.outputs.maui == 'true') }}
-    needs: changes
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
