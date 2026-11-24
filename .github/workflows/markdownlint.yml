@@ -3,10 +3,9 @@ name: Markdownlint
 permissions:
   contents: read
 
-# run even on changes without markdown changes, so that we can
-# make it in GitHub a required check for PR's
+# Pull requests run this via verify.yml, which gates on its result.
 on:
-  pull_request:
+  workflow_call:
 
 jobs:
   lint:
