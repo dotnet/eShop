@@ -51,14 +51,14 @@
     <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="11.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="11.0.0" />
     <!-- dotnet/extensions packages -->
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="11.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="11.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery.Yarp" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="11.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="11.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery.Yarp" Version="11.0.1" />
     <!-- Xabaril packages -->
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="9.0.0" />
     <!-- AI -->
-    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="13.6.1" />
-    <PackageVersion Include="CommunityToolkit.Aspire.OllamaSharp" Version="13.6.1" />
+    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="17.0.0" />
+    <PackageVersion Include="CommunityToolkit.Aspire.OllamaSharp" Version="17.0.0" />
     <!-- Open Telemetry -->
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.21.0" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.21.0" />
@@ -86,7 +86,7 @@
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="3.0.114" />
     <PackageVersion Include="xunit.v3.mtp-v2" Version="4.0.3" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.21.0" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="3.2.0" />
     <!-- Before license change -->
     <PackageVersion Include="MediatR" Version="13.1.0" />
   </ItemGroup>
