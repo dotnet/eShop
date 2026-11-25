@@ -23,7 +23,8 @@ public class BasketService(
             logger.LogDebug("Begin GetBasketById call from method {Method} for basket id {Id}", context.Method, userId);
         }
 
-        var data = await repository.GetBasketAsync(userId);
+        var basketId = request.BasketId; // Extract basketId from the request
+        var data = await repository.GetBasketAsync(userId, basketId); // Pass both userId and basketId
 
         if (data is not null)
         {
@@ -47,7 +48,7 @@ public class BasketService(
         }
 
         var customerBasket = MapToCustomerBasket(userId, request);
-        var response = await repository.UpdateBasketAsync(customerBasket);
+        var response = await repository.UpdateBasketAsync(userId, customerBasket);
         if (response is null)
         {
             ThrowBasketDoesNotExist(userId);
@@ -64,7 +65,9 @@ public class BasketService(
             ThrowNotAuthenticated();
         }
 
-        await repository.DeleteBasketAsync(userId);
+        var basketId = request.BasketId;
+        await repository.DeleteBasketAsync(userId, basketId);
+
         return new();
     }
 
