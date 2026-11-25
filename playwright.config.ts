@@ -4,10 +4,15 @@ import path from 'path';
 
 export const STORAGE_STATE = path.join(__dirname, 'playwright/.auth/user.json');
 
+// Support environment variable overrides for base URL and web server
+const BASE_URL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:5045';
+const PLAYWRIGHT_IGNORE_HTTPS = process.env.PLAYWRIGHT_BASE_URL?.startsWith('https') ? true : false;
+
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-export default defineConfig({
+const config = defineConfig({
   testDir: './e2e',
   /* Seeded users share server-side basket state, so UI journeys run serially. */
   fullyParallel: false,
@@ -21,7 +26,10 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://localhost:5045',
+    baseURL: BASE_URL,
+
+    /* Ignore HTTPS errors for self-signed certificates */
+    ignoreHTTPSErrors: PLAYWRIGHT_IGNORE_HTTPS,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -46,49 +54,19 @@ export default defineConfig({
       name: 'e2e tests without logged in',
       testMatch: ['**/BrowseItemTest.spec.ts'],
     }
-    // {
-    //   name: 'chromium',
-    //   use: { ...devices['Desktop Chrome'] },
-    // },
-
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
-
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
   ],
 
-  /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj',
-    url: 'http://localhost:5045',
-    reuseExistingServer: !process.env.CI,
-    stderr: 'pipe',
-    stdout: 'pipe',
-    timeout: process.env.CI ? (5 * 60_000) : 60_000,
-  },
+  /* Run your local dev server before starting the tests - only for default localhost URL */
+  ...(BASE_URL === 'http://localhost:5045' ? {
+    webServer: {
+      command: 'dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj',
+      url: 'http://localhost:5045',
+      reuseExistingServer: !process.env.CI,
+      stderr: 'pipe',
+      stdout: 'pipe',
+      timeout: process.env.CI ? (5 * 60_000) : 60_000,
+    },
+  } : {}),
 });
+
+export default config;
