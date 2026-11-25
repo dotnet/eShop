@@ -7,10 +7,10 @@ public class IntegrationEventLogService<TContext> : IIntegrationEventLogService,
     private readonly TContext _context;
     private readonly Type[] _eventTypes;
 
-    public IntegrationEventLogService(TContext context)
+    public IntegrationEventLogService(TContext context, Assembly eventTypesAssembly)
     {
         _context = context;
-        _eventTypes = Assembly.Load(Assembly.GetEntryAssembly().FullName)
+        _eventTypes = eventTypesAssembly
             .GetTypes()
             .Where(t => t.Name.EndsWith(nameof(IntegrationEvent)))
             .ToArray();
